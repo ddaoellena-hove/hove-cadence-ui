@@ -1,0 +1,77 @@
+/* ── TooltipTrigger container ─────────────────────────────────── */
+.tooltip-trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Info icon button ─────────────────────────────────────────── */
+.tooltip-trigger__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #7A8A96;
+  border-radius: 50%;
+  transition: color 0.15s ease;
+}
+
+.tooltip-trigger__icon:focus-visible {
+  outline: 2px solid #0d2b35;
+  outline-offset: 2px;
+}
+
+.tooltip-trigger--hovered .tooltip-trigger__icon {
+  color: #0d2b35;
+}
+
+/* ── Positioned bubble wrapper ────────────────────────────────── */
+/*
+ * The arrow pseudo-element is a 12×12px square rotated 45deg.
+ * Its tip protrudes ~7.5px beyond the bubble edge.
+ * Using 8px offset makes the arrow tip land flush against the trigger.
+ */
+.tooltip-trigger__bubble {
+  position: absolute;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  /* Prevent layout from wrapping when centering very short labels */
+  white-space: nowrap;
+}
+
+/* ── Top: tooltip above, arrow pointing down ─────────────────── */
+.tooltip-trigger__bubble--top {
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ── Bottom: tooltip below, arrow pointing up ────────────────── */
+.tooltip-trigger__bubble--bottom {
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ── Left: tooltip to the left, arrow pointing right ─────────── */
+.tooltip-trigger__bubble--left {
+  right: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* ── Right: tooltip to the right, arrow pointing left ────────── */
+.tooltip-trigger__bubble--right {
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+}

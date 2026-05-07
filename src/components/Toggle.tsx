@@ -20,7 +20,7 @@ export const Toggle = ({
   className,
   thumbClassName,
   onChange,
-}: ToggleProps): JSX.Element => {
+}: ToggleProps) => {
   const rootClass = ["toggle", state, className].filter(Boolean).join(" ");
   const thumbClass = ["toggle-thumb", thumbClassName].filter(Boolean).join(" ");
 

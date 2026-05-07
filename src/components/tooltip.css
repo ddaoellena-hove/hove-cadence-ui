@@ -1,0 +1,90 @@
+/* ── Tooltip base ─────────────────────────────────────────────── */
+.tooltip {
+  --_bg: #ffffff;
+  --_color: #163535;
+  --_arrow-size: 10px;
+
+  /* Outer shell: no own background — drop-shadow sees inner + arrow together */
+  display: inline-flex;
+  position: relative;
+  overflow: visible;
+  white-space: nowrap;
+  box-sizing: border-box;
+  font-family: var(--web-mobile-base-bold-font-family, "Inter", Helvetica);
+  font-size: var(--web-mobile-base-bold-font-size, 14px);
+  font-weight: var(--web-mobile-base-bold-font-weight, 600);
+  letter-spacing: var(--web-mobile-base-bold-letter-spacing, 0px);
+  line-height: 1.2;
+  color: var(--_color);
+}
+
+/* ── Inner bubble — owns background, border-radius and padding ── */
+.tooltip-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  border-radius: 12px;
+  background-color: var(--_bg);
+  position: relative;
+  z-index: 1; /* sits above the ::after arrow square */
+}
+
+/* ── Light theme ──────────────────────────────────────────────── */
+.tooltip--light {
+  --_bg: #ffffff;
+  --_color: #163535;
+  filter: drop-shadow(0 1px 8px rgba(0, 0, 0, 0.1))
+    drop-shadow(0 0 1px rgba(0, 0, 0, 0.25));
+}
+
+/* ── Dark theme ───────────────────────────────────────────────── */
+.tooltip--dark {
+  --_bg: #163535;
+  --_color: #ffffff;
+}
+
+/* ── Label ────────────────────────────────────────────────────── */
+.tooltip-label {
+  position: relative;
+  z-index: 2;
+}
+
+/* ── Shared arrow pseudo-element ─────────────────────────────── */
+.tooltip::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: var(--_bg);
+  border-radius: 2px;
+  z-index: 0;
+}
+
+/* ── Arrow: top-center (pointing straight up) ────────────────── */
+.tooltip--arrow-top::after {
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* ── Arrow: bottom-center (pointing straight down) ───────────── */
+.tooltip--arrow-bottom::after {
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+/* ── Arrow: right (pointing right from right edge) ───────────── */
+.tooltip--arrow-right::after {
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+/* ── Arrow: left (pointing left from left edge) ──────────────── */
+.tooltip--arrow-left::after {
+  left: -5px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
