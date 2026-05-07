@@ -1,5 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { NavigationDropdown } from "./Navigationdropdown";
+import React from "react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { NavigationDropdown } from "./NavigationDropdown";
 
 const sampleItems = [
   { id: "home", label: "Home" },
@@ -54,7 +55,7 @@ export const RightAligned: Story = {
     items: richItems,
   },
   decorators: [
-    (StoryFn) => (
+    (StoryFn: React.ComponentType) => (
       <div style={{ display: "flex", justifyContent: "flex-end", padding: "16px" }}>
         <StoryFn />
       </div>
