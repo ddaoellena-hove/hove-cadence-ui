@@ -1,0 +1,86 @@
+/* ── SegmentedControl root ───────────────────────────────────────────────── */
+.segmented-control {
+  align-items: center;
+  background-color: #ffffff;
+  border: 1px solid #bfbfbf;
+  border-radius: 12px;
+  display: inline-flex;
+  gap: 0;
+  overflow: hidden;
+  padding: 4px;
+  position: relative;
+}
+
+.segmented-control--disabled {
+  background-color: #e5e5e5;
+  cursor: not-allowed;
+}
+
+/* ── Individual segment button ───────────────────────────────────────────── */
+.segmented-control__segment {
+  align-items: center;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: #000000;
+  cursor: pointer;
+  display: flex;
+  font-family: "Inter", Helvetica;
+  font-size: 13px;
+  font-weight: 500;
+  justify-content: center;
+  letter-spacing: 0;
+  line-height: normal;
+  min-width: 200px;
+  outline: none;
+  padding: 8px 20px;
+  position: relative;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
+  white-space: nowrap;
+}
+
+.segmented-control__segment:focus-visible {
+  outline: 2px solid #1b6cff;
+  outline-offset: -2px;
+}
+
+/* inactive segment in a disabled control */
+.segmented-control--disabled .segmented-control__segment {
+  color: #737373;
+  cursor: not-allowed;
+}
+
+/* ── Active segment ──────────────────────────────────────────────────────── */
+.segmented-control__segment--active {
+  background-color: #1a3e45;
+  border: 1px solid #1a3e45;
+  box-shadow:
+    inset 0px 2px 0px rgba(255, 255, 255, 0.25),
+    inset 0px -2px 12px rgba(0, 0, 0, 0.05),
+    inset 0px -3px 0px rgba(0, 0, 0, 0.1);
+  color: #ffffff;
+  font-weight: 600;
+  /* pull back the padding to keep sizing consistent with the extra border */
+  padding: 7px 19px;
+}
+
+.segmented-control__segment--active:hover:not(:disabled) {
+  background-color: #002830;
+}
+
+/* active segment in a disabled control */
+.segmented-control--disabled .segmented-control__segment--active {
+  background-color: #808080;
+  border-color: #808080;
+  color: #ffffff;
+}
+
+/* inactive hover */
+.segmented-control__segment:not(.segmented-control__segment--active):hover:not(:disabled) {
+  background-color: rgba(0, 0, 0, 0.04);
+}

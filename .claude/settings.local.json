@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "Bash(sed -n '100,115p' /Users/ddao-ellena/hove-cadence-ui/src/components/Icons/Icons.tsx)",
+      "Bash(sed -n '185,200p' /Users/ddao-ellena/hove-cadence-ui/src/components/Icons/Icons.tsx)",
+      "Bash(sed -n '345,360p' /Users/ddao-ellena/hove-cadence-ui/src/components/Icons/Icons.tsx)",
+      "Bash(node -e \"require\\('@storybook/react-vite'\\)\")"
+    ]
+  }
+}
