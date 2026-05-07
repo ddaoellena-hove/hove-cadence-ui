@@ -58,10 +58,10 @@
 .checkbox.hover .checkbox-inner {
   background-color: #0028301a;
   border-radius: 18px;
-  height: 26px;
-  width: 26px;
-  left: calc(50% - 13px);
-  top: calc(50% - 13px);
+  height: 30px;
+  width: 30px;
+  left: calc(50% - 15px);
+  top: calc(50% - 15px);
   position: absolute;
   pointer-events: none;
 }
@@ -71,10 +71,10 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 10px;
-  height: 6px;
-  border-left: 2px solid #ffffff;
-  border-bottom: 2px solid #ffffff;
+  width: 8px;
+  height: 4px;
+  border-left: 1.5px solid #ffffff;
+  border-bottom: 1.5px solid #ffffff;
   transform: translate(-50%, -60%) rotate(-45deg);
   pointer-events: none;
 }
@@ -84,10 +84,10 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 10px;
-  height: 6px;
-  border-left: 2px solid #bfbfbf;
-  border-bottom: 2px solid #bfbfbf;
+  width: 8px;
+  height: 4px;
+  border-left: 1.5px solid #bfbfbf;
+  border-bottom: 1.5px solid #bfbfbf;
   transform: translate(-50%, -60%) rotate(-45deg);
   pointer-events: none;
 }

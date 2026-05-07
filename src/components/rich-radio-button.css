@@ -40,7 +40,7 @@
 .rich-radio-button.selected {
   background-color: #ffffff;
   border-color: #1a3e45;
-  border-width: 2px;
+  border-width: 1.5px;
   color: #1a3e45;
   box-shadow:
     0 -2px 8px 0 rgba(0, 0, 0, 0.05) inset,
