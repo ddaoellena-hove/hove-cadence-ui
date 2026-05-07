@@ -50,9 +50,9 @@
 
 /* focus */
 .text-input__field--focus {
-  border: 3px solid #1b6cff;
-  box-shadow: var(--input-field-shadow);
-  padding: 0 18px; /* compensate for extra border width */
+  border: 1.5px solid #2d5f6b;
+  box-shadow: 0 0 0 4px rgba(45, 95, 107, 0.12);
+  padding: 0 20px;
 }
 
 /* disabled */
