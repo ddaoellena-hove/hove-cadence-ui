@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { NavigationDropdown } from "./Navigationdropdown";
+import { NavigationDropdown } from "./NavigationDropdown";
 
 const sampleItems = [
   { id: "home", label: "Home" },
