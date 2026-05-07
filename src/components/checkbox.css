@@ -1,0 +1,110 @@
+/* Checkbox — base */
+.checkbox {
+  border: 1px solid;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  width: 18px;
+  position: relative;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.checkbox:focus-visible {
+  box-shadow: 0 0 0 3px #1a3e4566;
+}
+
+/* ── States ── */
+.checkbox.unchecked {
+  background-color: #ffffff;
+  border-color: #69797d;
+}
+
+.checkbox.hover {
+  background-color: #ffffff;
+  border-color: #002830;
+}
+
+.checkbox.checked {
+  background-color: #002830;
+  border-color: #002830;
+}
+
+.checkbox.indeterminate {
+  background-color: #ffffff;
+  border-color: #002830;
+}
+
+.checkbox.disabled {
+  background-color: #e5e5e5;
+  border-color: #bfbfbf;
+  cursor: not-allowed;
+}
+
+.checkbox.disabled-checked {
+  background-color: #e5e5e5;
+  border-color: #bfbfbf;
+  cursor: not-allowed;
+}
+
+/* ── Hover ripple ring ── */
+.checkbox.hover .checkbox-inner {
+  background-color: #0028301a;
+  border-radius: 18px;
+  height: 26px;
+  width: 26px;
+  left: calc(50% - 13px);
+  top: calc(50% - 13px);
+  position: absolute;
+  pointer-events: none;
+}
+
+/* ── Checked tick mark ── */
+.checkbox.checked .checkbox-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 6px;
+  border-left: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  transform: translate(-50%, -60%) rotate(-45deg);
+  pointer-events: none;
+}
+
+/* ── Disabled-checked tick mark ── */
+.checkbox.disabled-checked .checkbox-inner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 6px;
+  border-left: 2px solid #bfbfbf;
+  border-bottom: 2px solid #bfbfbf;
+  transform: translate(-50%, -60%) rotate(-45deg);
+  pointer-events: none;
+}
+
+/* ── Indeterminate dash ── */
+.checkbox.indeterminate .checkbox-inner {
+  background-color: #002830;
+  border-radius: 1px;
+  height: 2px;
+  width: 8px;
+  position: absolute;
+  left: calc(50% - 4px);
+  top: calc(50% - 1px);
+  pointer-events: none;
+}
+
+/* ── Native hover on unchecked state ── */
+.checkbox.unchecked:hover {
+  border-color: #002830;
+}
