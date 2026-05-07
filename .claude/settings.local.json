@@ -9,7 +9,10 @@
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
       "Bash(brew list *)",
-      "Read(//opt/homebrew/bin/**)"
+      "Read(//opt/homebrew/bin/**)",
+      "Bash(git push *)",
+      "Bash(git pull *)",
+      "Bash(git stash *)"
     ]
   }
 }
