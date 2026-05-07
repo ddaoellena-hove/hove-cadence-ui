@@ -58,14 +58,14 @@
 /* ── Selected dot ── */
 .radio-button.selected .radio-button-inner {
   background-color: #1a3e45;
-  border: 1px solid;
-  border-color: #1a3e45;
+  border: 1px solid #1a3e45;
   border-radius: 5px;
   height: 10px;
   width: 10px;
-  left: calc(50% - 5px);
-  top: calc(50% - 5px);
   position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   pointer-events: none;
 }
 
