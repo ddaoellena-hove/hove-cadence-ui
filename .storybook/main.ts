@@ -10,8 +10,20 @@ const config: StorybookConfig = {
     "@storybook/addon-vitest",
     "@storybook/addon-a11y",
     "@storybook/addon-docs",
-    "@storybook/addon-onboarding"
+    "@storybook/addon-onboarding",
+    "@storybook/addon-mcp"
   ],
-  "framework": "@storybook/react-vite"
+  "framework": "@storybook/react-vite",
+  viteFinal: async (config) => {
+    // Story UI: Exclude from dependency optimization to handle CSS imports correctly
+    config.optimizeDeps = {
+      ...config.optimizeDeps,
+      exclude: [
+        ...(config.optimizeDeps?.exclude || []),
+        '@tpitre/story-ui'
+      ]
+    };
+    return config;
+  },
 };
 export default config;
