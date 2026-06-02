@@ -1,0 +1,124 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 240px;
+  height: 100%;
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  font-family: "Inter", Helvetica, sans-serif;
+  transition: width 0.2s ease;
+  overflow: hidden;
+}
+
+.sidebar--collapsed {
+  width: 64px;
+}
+
+/* ── Header ── */
+.sidebar__header {
+  padding: 16px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+/* ── Body ── */
+.sidebar__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+/* ── Section ── */
+.sidebar__section {
+  padding: 4px 0;
+}
+
+.sidebar__section + .sidebar__section {
+  border-top: 1px solid #f3f4f6;
+  margin-top: 4px;
+  padding-top: 8px;
+}
+
+.sidebar__section-title {
+  margin: 0 0 4px;
+  padding: 0 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+/* ── List ── */
+.sidebar__list {
+  list-style: none;
+  margin: 0;
+  padding: 0 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ── Item ── */
+.sidebar__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sidebar__item:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.sidebar__item--active,
+.sidebar__item--active:hover {
+  background: #002830;
+  color: #ffffff;
+}
+
+.sidebar__item-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.sidebar__item-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Footer ── */
+.sidebar__footer {
+  padding: 12px;
+  border-top: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+/* ── Collapsed state ── */
+.sidebar--collapsed .sidebar__item {
+  justify-content: center;
+  padding: 10px;
+}
+
+.sidebar--collapsed .sidebar__list {
+  padding: 0 8px;
+}

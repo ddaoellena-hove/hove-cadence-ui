@@ -1,4 +1,7 @@
+export * from './AlertToast';
 export * from './Checkbox';
+export * from './DataVisualization';
+export * from './DatePicker';
 export * from './Icons';
 export * from './NavigationDropdown';
 export * from './PrimaryButton';
@@ -6,6 +9,7 @@ export * from './RadioButton';
 export * from './RichRadioButton';
 export * from './SecondaryButton';
 export * from './SegmentedControl';
+export * from './Sidebar';
 export * from './SegmentedControlAlt';
 export * from './TextInput';
 export * from './Toggle';

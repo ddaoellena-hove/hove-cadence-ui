@@ -1,0 +1,161 @@
+/* ─── AlertToast ───────────────────────────────────────────────────────── */
+
+.alert-toast {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow:
+    0px 0px 8px #0000001a,
+    0px 0px 2px #00000040;
+  display: inline-flex;
+  align-items: stretch;
+  overflow: hidden;
+  position: relative;
+  width: 360px;
+  font-family: "Inter", Helvetica;
+}
+
+/* ── Left accent bar ── */
+.alert-toast__accent {
+  flex-shrink: 0;
+  width: 4px;
+  border-radius: 0;
+}
+
+.alert-toast--information .alert-toast__accent {
+  background-color: #0f62fe;
+}
+.alert-toast--success .alert-toast__accent {
+  background-color: #24a148;
+}
+.alert-toast--warning .alert-toast__accent {
+  background-color: #f1c21b;
+}
+.alert-toast--error .alert-toast__accent {
+  background-color: #da1e28;
+}
+
+/* ── Icon column ── */
+.alert-toast__icon-col {
+  display: flex;
+  align-items: flex-start;
+  padding: 14px 12px 14px 10px;
+  flex-shrink: 0;
+}
+
+.alert-toast__state-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* ── Body ── */
+.alert-toast__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 8px 0 0;
+}
+
+.alert-toast__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.alert-toast__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #000000;
+  letter-spacing: 0;
+  line-height: normal;
+  margin: 0;
+}
+
+.alert-toast__description {
+  font-size: 13px;
+  font-weight: 500;
+  color: #737373;
+  letter-spacing: 0;
+  line-height: normal;
+  margin: 0;
+}
+
+/* ── Action buttons row ── */
+.alert-toast__actions {
+  display: flex;
+  gap: 8px;
+  padding: 10px 0 12px;
+  align-items: center;
+}
+
+/* ── Progress bar (bottom of card) ── */
+.alert-toast__progress-track {
+  height: 6px;
+  background-color: #e5e5e5;
+  margin: 8px 0 0;
+  overflow: hidden;
+  border-radius: 0;
+  width: 100%;
+}
+
+.alert-toast__progress-fill {
+  height: 100%;
+  border-radius: 0;
+  transition: width 0.3s ease;
+}
+
+.alert-toast--information .alert-toast__progress-fill {
+  background-color: #0f62fe;
+}
+.alert-toast--success .alert-toast__progress-fill {
+  background-color: #24a148;
+}
+.alert-toast--warning .alert-toast__progress-fill {
+  background-color: #f1c21b;
+}
+.alert-toast--error .alert-toast__progress-fill {
+  background-color: #da1e28;
+}
+
+/* ── Close button column ── */
+.alert-toast__close-col {
+  display: flex;
+  align-items: flex-start;
+  padding: 10px 8px 10px 4px;
+  flex-shrink: 0;
+}
+
+.alert-toast__close-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #737373;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+  line-height: 0;
+}
+
+.alert-toast__close-btn:hover {
+  background-color: #f2f2f2;
+  color: #000000;
+}
+
+.alert-toast__close-btn:focus-visible {
+  outline: 2px solid #0f62fe;
+  outline-offset: 2px;
+}
+
+.alert-toast__close-icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+}

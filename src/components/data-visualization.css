@@ -1,0 +1,84 @@
+/* ─── DataVisualization ─────────────────────────────────────────────────────── */
+
+.dv {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #ffffff;
+  font-family: "Spline Sans Mono", monospace;
+  width: 100%;
+}
+
+/* SVG canvas */
+.dv__svg {
+  display: block;
+  overflow: visible;
+}
+
+/* Grid lines */
+.dv__grid-line {
+  stroke: #f1f3f5;
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+}
+
+/* Axis lines (baseline + y-axis rule) */
+.dv__axis-line {
+  stroke: #e9ecef;
+  stroke-width: 1;
+}
+
+/* Axis tick labels */
+.dv__axis-label {
+  fill: #adb5bd;
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+/* Bar paths (hover opacity) */
+.dv__bar {
+  transition: opacity 0.15s ease;
+}
+.dv__bar:hover {
+  opacity: 0.82;
+}
+
+/* Value labels inside bars */
+.dv__value-label {
+  fill: #ffffff;
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 10px;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+/* ─── Legend ─────────────────────────────────────────────────────────────── */
+
+.dv__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 0 4px;
+}
+
+.dv__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dv__legend-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+}
+
+.dv__legend-label {
+  color: #495057;
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+}
