@@ -35,6 +35,9 @@ export interface PrimaryButtonProps {
 
   /** Native disabled attribute — also sets state to "disabled". */
   disabled?: boolean;
+
+  /** Fallback URL used by the Icons component for the "map-01" icon. */
+  iconMap?: string;
 }
 
 /**
@@ -53,6 +56,7 @@ export const PrimaryButton = React.forwardRef<
       destructive = false,
       label = "Label",
       icon = "map-01",
+      iconMap = "https://c.animaapp.com/moieyt2ccA1Ry9/img/icon-map-01-1_1.svg",
       className,
       onClick,
       disabled = false,
@@ -100,7 +104,7 @@ export const PrimaryButton = React.forwardRef<
       .join(" ");
 
     const iconEl = (
-      <Icons className="icons-instance" icon={icon} iconMap="" />
+      <Icons className="icons-instance" icon={icon} iconMap={iconMap} />
     );
 
     let content: React.ReactNode;
