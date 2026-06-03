@@ -1,0 +1,77 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundation/Guidelines/Formulaires" />
+
+<style>{`
+  .g { font-family: "Inter", sans-serif; max-width: 760px; }
+  .g h2 { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #9ca3af; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; margin: 40px 0 20px; }
+  .g p { font-size: 14px; color: #374151; line-height: 1.6; margin: 0 0 12px; }
+  .g ul { font-size: 14px; color: #374151; line-height: 1.8; padding-left: 20px; margin: 0 0 16px; }
+  .rule { display: flex; gap: 16px; margin-bottom: 12px; }
+  .rule-icon { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-top: 2px; }
+  .do .rule-icon { background: #dcfce7; color: #15803d; }
+  .dont .rule-icon { background: #fee2e2; color: #b91c1c; }
+  .rule-text { font-size: 14px; color: #374151; line-height: 1.5; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 13px; }
+  th { text-align: left; padding: 8px 12px; background: #f9fafb; color: #374151; font-weight: 600; border: 1px solid #e5e7eb; }
+  td { padding: 8px 12px; border: 1px solid #e5e7eb; color: #374151; vertical-align: top; }
+`}</style>
+
+<div className="g">
+
+# Formulaires
+
+<div className="g h2">Choisir le bon composant de saisie</div>
+
+<table>
+  <thead>
+    <tr><th>Composant</th><th>Quand l'utiliser</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>TextInput</code></td><td>Texte libre — nom, description, recherche.</td></tr>
+    <tr><td><code>Dropdown</code></td><td>Choix parmi une liste fixe (3 options ou plus). En dessous de 3, préférer <code>SegmentedControl</code>.</td></tr>
+    <tr><td><code>SegmentedControl</code></td><td>2 à 4 options mutuellement exclusives et visibles d'un coup.</td></tr>
+    <tr><td><code>DatePicker</code></td><td>Sélection d'une date ou plage de dates.</td></tr>
+    <tr><td><code>Checkbox</code></td><td>Option booléenne indépendante, ou sélection multiple dans une liste.</td></tr>
+    <tr><td><code>RadioButton</code></td><td>Sélection exclusive parmi 2 à 5 options courtes.</td></tr>
+    <tr><td><code>RichRadioButton</code></td><td>Sélection exclusive quand chaque option mérite une icône + description.</td></tr>
+    <tr><td><code>Toggle</code></td><td>Activation/désactivation immédiate d'un paramètre (effet sans validation).</td></tr>
+  </tbody>
+</table>
+
+<div className="g h2">Structure d'un formulaire</div>
+
+```tsx
+// ✅ Pattern recommandé
+<form>
+  {/* 1. Sections numérotées pour les formulaires longs */}
+  <p style={{ fontFamily: "Inter", fontSize: 13, fontWeight: 600,
+               color: "#1a1a2e", textTransform: "uppercase" }}>
+    1. Informations générales
+  </p>
+
+  {/* 2. Champs avec labels systématiques */}
+  <TextInput label="Nom du scénario" placeholder="Ex : Perturbation ligne A" />
+  <Dropdown
+    label="Réseau"
+    options={[{ id: "bdx", label: "Bordeaux Métropole" }]}
+  />
+
+  {/* 3. Actions alignées à droite */}
+  <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 24 }}>
+    <SecondaryButton label="Annuler" />
+    <PrimaryButton label="Créer le scénario" />
+  </div>
+</form>
+```
+
+<div className="g h2">Règles</div>
+
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Toujours fournir un <code>label</code> à chaque champ — jamais de placeholder seul.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Utiliser le <code>helper</code> de <code>TextInput</code> pour les instructions, jamais le placeholder.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Afficher les erreurs de validation avec <code>state="error"</code> + message <code>helper</code>.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Grouper les champs connexes et les séparer des autres par un espace ou un titre de section.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas mélanger <code>Checkbox</code> et <code>RadioButton</code> dans la même liste de sélection.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas utiliser <code>Toggle</code> pour des choix qui nécessitent une confirmation (préférer <code>Checkbox</code> + bouton).</span></div>
+
+</div>

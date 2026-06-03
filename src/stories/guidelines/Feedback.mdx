@@ -1,0 +1,76 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundation/Guidelines/Feedback" />
+
+<style>{`
+  .g { font-family: "Inter", sans-serif; max-width: 760px; }
+  .g h2 { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #9ca3af; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; margin: 40px 0 20px; }
+  .g p { font-size: 14px; color: #374151; line-height: 1.6; margin: 0 0 12px; }
+  .rule { display: flex; gap: 16px; margin-bottom: 12px; }
+  .rule-icon { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-top: 2px; }
+  .do .rule-icon { background: #dcfce7; color: #15803d; }
+  .dont .rule-icon { background: #fee2e2; color: #b91c1c; }
+  .rule-text { font-size: 14px; color: #374151; line-height: 1.5; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 13px; }
+  th { text-align: left; padding: 8px 12px; background: #f9fafb; color: #374151; font-weight: 600; border: 1px solid #e5e7eb; }
+  td { padding: 8px 12px; border: 1px solid #e5e7eb; color: #374151; vertical-align: top; }
+`}</style>
+
+<div className="g">
+
+# Feedback & messages
+
+<div className="g h2">Choisir le bon composant</div>
+
+<table>
+  <thead>
+    <tr><th>Situation</th><th>Composant</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Confirmation d'une action (sauvegarde, export réussi)</td><td><code>AlertToast</code> variant <code>success</code></td></tr>
+    <tr><td>Erreur système ou action échouée</td><td><code>AlertToast</code> variant <code>error</code></td></tr>
+    <tr><td>Avertissement non bloquant</td><td><code>AlertToast</code> variant <code>warning</code></td></tr>
+    <tr><td>Information contextuelle sur un élément UI</td><td><code>Tooltip</code> via <code>TooltipTrigger</code></td></tr>
+    <tr><td>Explication d'un bouton désactivé</td><td><code>Tooltip</code> sur le bouton <code>disabled</code></td></tr>
+    <tr><td>Erreur de validation d'un champ</td><td><code>TextInput state="error"</code> + prop <code>helper</code></td></tr>
+  </tbody>
+</table>
+
+<div className="g h2">AlertToast</div>
+
+```tsx
+// ✅ Usage — afficher en overlay, coin supérieur droit
+<AlertToast
+  variant="success"
+  title="Scénario créé"
+  description="Le scénario a été enregistré avec succès."
+  onClose={() => setVisible(false)}
+/>
+
+// ✅ Durée recommandée : auto-dismiss après 4s pour success/info,
+//    persistant (onClose manuel) pour error/warning
+```
+
+<div className="g h2">Tooltip</div>
+
+```tsx
+// ✅ Informer sur un élément sans surcharger l'interface
+<TooltipTrigger tooltip={<Tooltip label="Exporter en CSV" arrowPosition="bottom" />}>
+  <SecondaryButton label="Exporter" />
+</TooltipTrigger>
+
+// ✅ Expliquer un bouton désactivé
+<TooltipTrigger tooltip={<Tooltip label="Sélectionne un réseau d'abord" arrowPosition="bottom" />}>
+  <PrimaryButton label="Analyser" disabled />
+</TooltipTrigger>
+```
+
+<div className="g h2">Règles</div>
+
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text"><code>AlertToast</code> s'affiche en overlay — ne jamais l'insérer dans le flux du contenu.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Les messages <code>success</code> et <code>info</code> se ferment automatiquement après 4 secondes.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Les messages <code>error</code> restent visibles jusqu'à fermeture manuelle.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas afficher plus de 3 toasts simultanément — les empiler verticalement si nécessaire.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas utiliser <code>Tooltip</code> pour du contenu long ou interactif — il doit être bref et informatif.</span></div>
+
+</div>

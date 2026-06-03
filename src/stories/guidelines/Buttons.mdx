@@ -1,0 +1,75 @@
+import { Meta, Canvas } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundation/Guidelines/Boutons" />
+
+<style>{`
+  .g { font-family: "Inter", sans-serif; max-width: 760px; }
+  .g h2 { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #9ca3af; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; margin: 40px 0 20px; }
+  .g p { font-size: 14px; color: #374151; line-height: 1.6; margin: 0 0 12px; }
+  .g ul { font-size: 14px; color: #374151; line-height: 1.8; padding-left: 20px; margin: 0 0 16px; }
+  .rule { display: flex; gap: 16px; margin-bottom: 12px; }
+  .rule-icon { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-top: 2px; }
+  .do .rule-icon { background: #dcfce7; color: #15803d; }
+  .dont .rule-icon { background: #fee2e2; color: #b91c1c; }
+  .rule-text { font-size: 14px; color: #374151; line-height: 1.5; }
+  .chip { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; margin-right: 6px; }
+  .chip-primary { background: #002830; color: #fff; }
+  .chip-secondary { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; }
+  .chip-link { color: #1b6cff; text-decoration: underline; font-size: 14px; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 13px; }
+  th { text-align: left; padding: 8px 12px; background: #f9fafb; color: #374151; font-weight: 600; border: 1px solid #e5e7eb; }
+  td { padding: 8px 12px; border: 1px solid #e5e7eb; color: #374151; vertical-align: top; }
+`}</style>
+
+<div className="g">
+
+# Boutons
+
+<div className="g h2">Choisir le bon bouton</div>
+
+<table>
+  <thead>
+    <tr><th>Composant</th><th>Quand l'utiliser</th><th>Exemple</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>PrimaryButton</code></td>
+      <td>Action principale de la page. <strong>Un seul par vue.</strong></td>
+      <td>« Créer », « Enregistrer », « Lancer »</td>
+    </tr>
+    <tr>
+      <td><code>SecondaryButton</code></td>
+      <td>Actions secondaires ou alternatives. Peut être utilisé plusieurs fois.</td>
+      <td>« Exporter », « Annuler », « Voir les détails »</td>
+    </tr>
+    <tr>
+      <td><code>Link</code></td>
+      <td>Navigation inline dans du texte, ou action tertiaire discrète.</td>
+      <td>« Retour », « En savoir plus », « Supprimer »</td>
+    </tr>
+  </tbody>
+</table>
+
+<div className="g h2">Règles</div>
+
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Un seul <code>PrimaryButton</code> par zone d'action — il représente l'intention principale.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Placer le bouton principal à droite quand il est aligné avec un bouton secondaire.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Utiliser le variant <code>danger</code> de <code>Link</code> pour les actions destructives (suppression).</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas utiliser <code>PrimaryButton</code> pour des actions de navigation — préférer <code>Link</code>.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas empiler deux <code>PrimaryButton</code> côte à côte.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas désactiver un bouton sans expliquer pourquoi via un <code>Tooltip</code>.</span></div>
+
+<div className="g h2">Hiérarchie visuelle recommandée</div>
+
+```tsx
+// ✅ Bonne structure dans un formulaire
+<div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+  <SecondaryButton label="Annuler" onClick={onCancel} />
+  <PrimaryButton label="Enregistrer" onClick={onSave} />
+</div>
+
+// ✅ Action destructive
+<Link variant="danger" onClick={onDelete}>Supprimer le scénario</Link>
+```
+
+</div>

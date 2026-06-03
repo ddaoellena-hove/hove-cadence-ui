@@ -1,0 +1,91 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundation/Guidelines/Navigation" />
+
+<style>{`
+  .g { font-family: "Inter", sans-serif; max-width: 760px; }
+  .g h2 { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #9ca3af; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; margin: 40px 0 20px; }
+  .g p { font-size: 14px; color: #374151; line-height: 1.6; margin: 0 0 12px; }
+  .g ul { font-size: 14px; color: #374151; line-height: 1.8; padding-left: 20px; margin: 0 0 16px; }
+  .rule { display: flex; gap: 16px; margin-bottom: 12px; }
+  .rule-icon { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-top: 2px; }
+  .do .rule-icon { background: #dcfce7; color: #15803d; }
+  .dont .rule-icon { background: #fee2e2; color: #b91c1c; }
+  .rule-text { font-size: 14px; color: #374151; line-height: 1.5; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 13px; }
+  th { text-align: left; padding: 8px 12px; background: #f9fafb; color: #374151; font-weight: 600; border: 1px solid #e5e7eb; }
+  td { padding: 8px 12px; border: 1px solid #e5e7eb; color: #374151; vertical-align: top; }
+`}</style>
+
+<div className="g">
+
+# Navigation
+
+<div className="g h2">Rôle de chaque composant</div>
+
+<table>
+  <thead>
+    <tr><th>Composant</th><th>Rôle</th><th>Position</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>Sidebar</code></td><td>Navigation principale entre les grandes sections de l'app.</td><td>Gauche, pleine hauteur</td></tr>
+    <tr><td><code>Header</code></td><td>Contexte global : sélecteur de périmètre (réseau) + profil utilisateur.</td><td>Haut, pleine largeur</td></tr>
+    <tr><td><code>Breadcrumbs</code></td><td>Localisation dans l'arborescence + navigation ascendante.</td><td>Au-dessus du titre de page</td></tr>
+    <tr><td><code>NavigationDropdown</code></td><td>Sélecteur de contexte dans le breadcrumb (ex : choix du produit).</td><td>Dans le breadcrumb</td></tr>
+    <tr><td><code>Tab</code></td><td>Navigation entre vues au sein d'une même page.</td><td>Sous le titre de page</td></tr>
+  </tbody>
+</table>
+
+<div className="g h2">Layout recommandé</div>
+
+```tsx
+// ✅ Structure de page standard
+<div style={{ display: "flex", height: "100vh" }}>
+
+  {/* Navigation principale */}
+  <Sidebar product="datahub" clientName="Bordeaux Métropole" sections={[…]} />
+
+  <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+
+    {/* Contexte global */}
+    <Header
+      leftContent={<Dropdown options={reseaux} value={reseau} onChange={setReseau} />}
+      rightContent={<Avatar name="Hector Malot" email="hector.malot@hove.com" showIcon showProfile size="sm" color="gray" />}
+    />
+
+    <main style={{ flex: 1, overflow: "auto", padding: "24px 32px" }}>
+
+      {/* Localisation */}
+      <Breadcrumbs items={[
+        { id: "home", label: "Accueil", href: "#" },
+        { id: "section", label: "Perturbations", href: "#" },
+        { id: "current", label: "Vue détaillée" },
+      ]} />
+
+      {/* Titre de page */}
+      <h1 style={{ fontFamily: "Uxum Grotesque", fontSize: 28, fontWeight: 500, color: "#002830" }}>
+        Perturbations non planifiées
+      </h1>
+
+      {/* Navigation intra-page */}
+      <div style={{ display: "flex", gap: 4, marginTop: 16 }}>
+        <Tab label="En cours" active />
+        <Tab label="Historique" />
+        <Tab label="Statistiques" />
+      </div>
+
+      {/* Contenu */}
+    </main>
+  </div>
+</div>
+```
+
+<div className="g h2">Règles</div>
+
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Toujours afficher un <code>Breadcrumbs</code> dès que l'utilisateur est à plus d'un niveau de profondeur.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Le dernier item du <code>Breadcrumbs</code> est la page courante — sans <code>href</code>, souligné.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Utiliser <code>NavigationDropdown</code> dans le breadcrumb pour les sélecteurs de produit/module.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas imbriquer <code>Sidebar</code> dans <code>Sidebar</code> — un seul niveau de navigation principale.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas utiliser <code>Tab</code> pour de la navigation entre pages — uniquement pour des vues au sein d'une même URL.</span></div>
+
+</div>
