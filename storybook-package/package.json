@@ -1,5 +1,5 @@
 {
-  "name": "@ddaoellena-hove/cadence-ui-storybook",
+  "name": "@ddaoellena/cadence-ui-storybook",
   "version": "0.1.1",
   "description": "Hove Cadence UI — Storybook + MCP server for AI-assisted development",
   "type": "module",

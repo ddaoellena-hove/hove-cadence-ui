@@ -26,8 +26,8 @@ Le design system Hove Cadence UI se compose de deux packages npm :
 
 | Package | Rôle |
 |---|---|
-| `@ddaoellena-hove/cadence-ui` | Composants React + CSS — à installer dans ton app |
-| `@ddaoellena-hove/cadence-ui-storybook` | Storybook + serveur MCP — pour le vibe-coding avec l'IA |
+| `@ddaoellena/cadence-ui` | Composants React + CSS — à installer dans ton app |
+| `@ddaoellena/cadence-ui-storybook` | Storybook + serveur MCP — pour le vibe-coding avec l'IA |
 
 ```
 ton-projet/
@@ -83,9 +83,9 @@ ou directement dans `~/.npmrc` (global) :
 ### 3.1 Installer les composants
 
 ```bash
-npm install @ddaoellena-hove/cadence-ui
+npm install @ddaoellena/cadence-ui
 # ou
-pnpm add @ddaoellena-hove/cadence-ui
+pnpm add @ddaoellena/cadence-ui
 ```
 
 ### 3.2 Importer le CSS global
@@ -93,7 +93,7 @@ pnpm add @ddaoellena-hove/cadence-ui
 Dans le point d'entrée de ton application (ex : `main.tsx`, `layout.tsx`) :
 
 ```tsx
-import "@ddaoellena-hove/cadence-ui/style.css";
+import "@ddaoellena/cadence-ui/style.css";
 ```
 
 > ⚠️ Ce fichier ne doit être importé **qu'une seule fois**. Il contient tous les styles des composants.
@@ -106,7 +106,7 @@ import {
   TextInput,
   Dropdown,
   Sidebar,
-} from "@ddaoellena-hove/cadence-ui";
+} from "@ddaoellena/cadence-ui";
 ```
 
 ---
@@ -119,10 +119,10 @@ Le serveur MCP expose la documentation des composants à ton outil IA en temps r
 
 ```bash
 # En global (recommandé)
-npm install -g @ddaoellena-hove/cadence-ui-storybook
+npm install -g @ddaoellena/cadence-ui-storybook
 
 # ou en dépendance de développement
-npm install -D @ddaoellena-hove/cadence-ui-storybook
+npm install -D @ddaoellena/cadence-ui-storybook
 ```
 
 ### 4.2 Démarrer le serveur
@@ -190,8 +190,8 @@ Lance Claude Code avec `claude` dans le terminal — il détecte automatiquement
 ### Exemple minimal
 
 ```tsx
-import "@ddaoellena-hove/cadence-ui/style.css";
-import { PrimaryButton, TextInput } from "@ddaoellena-hove/cadence-ui";
+import "@ddaoellena/cadence-ui/style.css";
+import { PrimaryButton, TextInput } from "@ddaoellena/cadence-ui";
 
 export default function LoginForm() {
   return (
@@ -207,8 +207,8 @@ export default function LoginForm() {
 ### Exemple avec Sidebar + Header
 
 ```tsx
-import "@ddaoellena-hove/cadence-ui/style.css";
-import { Sidebar, Header, Dropdown, Avatar } from "@ddaoellena-hove/cadence-ui";
+import "@ddaoellena/cadence-ui/style.css";
+import { Sidebar, Header, Dropdown, Avatar } from "@ddaoellena/cadence-ui";
 
 export default function AppLayout() {
   return (
@@ -468,7 +468,7 @@ R : Assure-toi que `.mcp.json` est bien à la racine de ton projet ET que le ser
 R : Crée-le dans ton projet en respectant les conventions : BEM, valeurs absolues (pas de variables CSS), Inter comme police. Signale-le à l'équipe design pour l'intégrer au design system.
 
 **Q : Comment mettre à jour les composants ?**  
-R : `npm update @ddaoellena-hove/cadence-ui && npm update @ddaoellena-hove/cadence-ui-storybook`
+R : `npm update @ddaoellena/cadence-ui && npm update @ddaoellena/cadence-ui-storybook`
 
 **Q : Puis-je utiliser uniquement les composants sans le MCP ?**  
 R : Oui. Installe seulement `hove-cadence-ui` et importe `hove-cadence-ui/style.css`. Le MCP est uniquement utile pour le vibe-coding avec l'IA.

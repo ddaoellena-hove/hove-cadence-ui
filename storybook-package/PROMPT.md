@@ -23,8 +23,8 @@ Si un composant n'existe pas dans le design system, crée-le en respectant les c
 
 Tous les composants s'importent depuis le package `hove-cadence-ui` :
 
-import { PrimaryButton, TextInput, Dropdown } from "@ddaoellena-hove/cadence-ui";
-import "@ddaoellena-hove/cadence-ui/style.css"; // à inclure une seule fois dans le point d'entrée
+import { PrimaryButton, TextInput, Dropdown } from "@ddaoellena/cadence-ui";
+import "@ddaoellena/cadence-ui/style.css"; // à inclure une seule fois dans le point d'entrée
 
 ## Typographie
 
