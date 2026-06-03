@@ -7,8 +7,8 @@
     "url": "https://github.com/ddaoellena-hove/hove-cadence-ui.git"
   },
   "publishConfig": {
-    "access": "restricted",
-    "registry": "https://npm.pkg.github.com"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "main": "./dist/hove-cadence-ui.cjs",
   "module": "./dist/hove-cadence-ui.js",
