@@ -1,4 +1,6 @@
 export * from './AlertToast';
+export * from './Breadcrumbs';
+export * from './Dropdown';
 export * from './Checkbox';
 export * from './DataVisualization';
 export * from './DatePicker';
@@ -11,6 +13,7 @@ export * from './SecondaryButton';
 export * from './SegmentedControl';
 export * from './Sidebar';
 export * from './SegmentedControlAlt';
+export * from './Tab';
 export * from './TextInput';
 export * from './Toggle';
 export * from './Tooltip';

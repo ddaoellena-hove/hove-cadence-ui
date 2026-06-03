@@ -1,0 +1,172 @@
+/* ── Root ── */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  font-family: "Inter", Helvetica, sans-serif;
+}
+
+/* ── Trigger button ── */
+.dropdown__trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #ffffff;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: "Inter", Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #111827;
+  line-height: 1.4;
+  white-space: nowrap;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+  text-align: left;
+  min-width: 160px;
+}
+
+.dropdown__trigger:hover:not(:disabled) {
+  border-color: #9ca3af;
+}
+
+.dropdown__trigger:focus-visible {
+  outline: none;
+  border-color: #1b6cff;
+  box-shadow: 0 0 0 3px rgba(27, 108, 255, 0.15);
+}
+
+.dropdown--open .dropdown__trigger {
+  border-color: #1b6cff;
+  box-shadow: 0 0 0 3px rgba(27, 108, 255, 0.15);
+}
+
+/* ── Disabled state ── */
+.dropdown--disabled .dropdown__trigger {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* ── Trigger icon ── */
+.dropdown__trigger-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  color: #6b7280;
+}
+
+/* ── Trigger label ── */
+.dropdown__trigger-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown__trigger-label--placeholder {
+  color: #9ca3af;
+}
+
+/* ── Chevron ── */
+.dropdown__chevron {
+  flex-shrink: 0;
+  color: #6b7280;
+  margin-left: auto;
+}
+
+/* ── Menu ── */
+.dropdown__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 200;
+  min-width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.10);
+  overflow: hidden;
+}
+
+/* ── Divider ── */
+.dropdown__divider {
+  height: 1px;
+  background: #f3f4f6;
+  margin: 4px 0;
+}
+
+/* ── Option ── */
+.dropdown__option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: "Inter", Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #111827;
+  line-height: 1.4;
+  transition: background 0.1s;
+}
+
+.dropdown__option:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+
+.dropdown__option:focus-visible {
+  outline: none;
+  background: #eff6ff;
+}
+
+/* ── Selected option ── */
+.dropdown__option--selected {
+  color: #1b6cff;
+  font-weight: 500;
+}
+
+.dropdown__option--selected:hover:not(:disabled) {
+  background: #eff6ff;
+}
+
+/* ── Disabled option ── */
+.dropdown__option--disabled {
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* ── Option icon ── */
+.dropdown__option-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  color: inherit;
+}
+
+/* ── Option label ── */
+.dropdown__option-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Check mark ── */
+.dropdown__option-check {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  color: #1b6cff;
+  margin-left: auto;
+}
