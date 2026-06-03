@@ -1,0 +1,59 @@
+/* ── Root ── */
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: "Inter", Helvetica, sans-serif;
+}
+
+/* ── Breadcrumbs area ── */
+.header__breadcrumbs {
+  margin-bottom: 2px;
+}
+
+/* ── Title row ── */
+.header__row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* ── Title block ── */
+.header__title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* ── Title ── */
+.header__title {
+  font-family: "Uxum Grotesque", "Georgia", sans-serif;
+  font-size: 28px;
+  font-weight: 500;
+  color: #002830;
+  line-height: 1.2;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Subtitle ── */
+.header__subtitle {
+  font-family: "Inter", Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #888;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Actions slot ── */
+.header__actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 4px;
+}
