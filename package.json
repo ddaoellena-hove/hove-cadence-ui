@@ -1,7 +1,11 @@
 {
-  "name": "hove-cadence-ui",
+  "name": "@hove/cadence-ui",
   "version": "0.1.0",
   "type": "module",
+  "publishConfig": {
+    "access": "restricted",
+    "registry": "https://registry.npmjs.org/"
+  },
   "main": "./dist/hove-cadence-ui.cjs",
   "module": "./dist/hove-cadence-ui.js",
   "types": "./dist/index.d.ts",

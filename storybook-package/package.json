@@ -1,5 +1,5 @@
 {
-  "name": "hove-cadence-ui-storybook",
+  "name": "@hove/cadence-ui-storybook",
   "version": "0.1.0",
   "description": "Hove Cadence UI — Storybook + MCP server for AI-assisted development",
   "type": "module",
@@ -13,7 +13,9 @@
     "tsconfig.json",
     "tsconfig.app.json",
     "vite.config.ts",
-    "story-ui.config.js"
+    "story-ui.config.js",
+    "GUIDE.md",
+    "PROMPT.md"
   ],
   "scripts": {
     "start": "node bin/start.mjs",
@@ -40,5 +42,8 @@
   },
   "keywords": ["hove", "design-system", "storybook", "mcp", "vibe-coding"],
   "license": "UNLICENSED",
-  "private": true
+  "publishConfig": {
+    "access": "restricted",
+    "registry": "https://registry.npmjs.org/"
+  }
 }
