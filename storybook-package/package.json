@@ -1,0 +1,44 @@
+{
+  "name": "hove-cadence-ui-storybook",
+  "version": "0.1.0",
+  "description": "Hove Cadence UI — Storybook + MCP server for AI-assisted development",
+  "type": "module",
+  "bin": {
+    "hove-cadence": "./bin/start.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    ".storybook",
+    "tsconfig.json",
+    "tsconfig.app.json",
+    "vite.config.ts",
+    "story-ui.config.js"
+  ],
+  "scripts": {
+    "start": "node bin/start.mjs",
+    "sync": "node bin/sync.mjs",
+    "prepublishOnly": "node bin/sync.mjs"
+  },
+  "dependencies": {
+    "@chromatic-com/storybook": "^5.2.1",
+    "@storybook/addon-a11y": "^10.4.0",
+    "@storybook/addon-docs": "^10.4.0",
+    "@storybook/addon-mcp": "^0.6.0",
+    "@storybook/addon-onboarding": "^10.4.0",
+    "@storybook/addon-vitest": "^10.4.0",
+    "@storybook/react-vite": "^10.4.0",
+    "@tpitre/story-ui": "^4.16.12",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "storybook": "^10.4.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.0.10"
+  },
+  "keywords": ["hove", "design-system", "storybook", "mcp", "vibe-coding"],
+  "license": "UNLICENSED",
+  "private": true
+}

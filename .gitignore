@@ -30,3 +30,11 @@ storybook-static
 
 src/stories/generated
 .story-ui-history/
+
+# storybook-package — sources syncées (générées)
+storybook-package/src
+storybook-package/.storybook
+storybook-package/tsconfig*.json
+storybook-package/vite.config.ts
+storybook-package/story-ui.config.js
+storybook-package/node_modules
