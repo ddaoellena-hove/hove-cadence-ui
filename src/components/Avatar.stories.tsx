@@ -70,6 +70,7 @@ export const Profile: Story = {
     color: "gray",
     showIcon: true,
     showProfile: true,
+    size: "lg"
   },
 };
 
