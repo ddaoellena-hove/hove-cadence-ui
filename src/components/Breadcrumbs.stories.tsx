@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Breadcrumbs } from "./Breadcrumbs";
 import type { BreadcrumbItem } from "./Breadcrumbs";
+import { NavigationDropdown } from "./NavigationDropdown";
 
 // ── Sample data ────────────────────────────────────────────────────────────────
 
@@ -89,4 +90,47 @@ export const CustomSeparator: Story = {
     items: basicItems,
     separator: <span style={{ fontSize: 12, color: "#d1d5db", padding: "0 2px" }}>/</span>,
   },
+};
+
+const ChevronSep = () => (
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+    <path d="M5 3l4 4-4 4" stroke="#d1d5db" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+export const WithNavigationDropdown: Story = {
+  render: () => (
+    <nav aria-label="Fil d'Ariane" className="breadcrumbs">
+      <ol className="breadcrumbs__list">
+        {/* Item 1 — lien simple */}
+        <li className="breadcrumbs__item">
+          <a href="#" className="breadcrumbs__link" onClick={(e) => e.preventDefault()}>
+            <span className="breadcrumbs__item-label">Accueil</span>
+          </a>
+          <span className="breadcrumbs__separator" aria-hidden="true"><ChevronSep /></span>
+        </li>
+
+        {/* Item 2 — NavigationDropdown */}
+        <li className="breadcrumbs__item">
+          <NavigationDropdown
+            label="Traffic Report"
+            items={[
+              { id: "datahub", label: "Datahub", onClick: () => {} },
+              { id: "traffic", label: "Traffic Report", active: true, onClick: () => {} },
+              { id: "insights", label: "Insights", onClick: () => {} },
+            ]}
+            onSelect={() => {}}
+          />
+          <span className="breadcrumbs__separator" aria-hidden="true"><ChevronSep /></span>
+        </li>
+
+        {/* Item 3 — page courante */}
+        <li className="breadcrumbs__item">
+          <span className="breadcrumbs__link breadcrumbs__link--current" aria-current="page">
+            <span className="breadcrumbs__item-label">Perturbations non planifiées</span>
+          </span>
+        </li>
+      </ol>
+    </nav>
+  ),
 };
