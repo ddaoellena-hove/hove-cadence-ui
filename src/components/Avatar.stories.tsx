@@ -65,9 +65,10 @@ export const WithIcon: Story = {
 
 export const Profile: Story = {
   args: {
-    name: "Diane Ellena",
-    email: "diane.ellena@hove.com",
-    color: "blue",
+    name: "Hector Malot",
+    email: "hector.malot@hove.com",
+    color: "gray",
+    showIcon: true,
     showProfile: true,
   },
 };
