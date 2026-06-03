@@ -1,0 +1,478 @@
+import { Meta, ColorPalette, ColorItem, Typeset } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundation/Typography" />
+
+<style>
+{`
+  .typo-page {
+    font-family: "Inter", Helvetica, sans-serif;
+    max-width: 860px;
+  }
+
+  .typo-section {
+    margin: 48px 0 0;
+  }
+
+  .typo-section h2 {
+    font-family: "Inter", Helvetica, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #9ca3af;
+    margin: 0 0 24px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  /* ── Specimen card ── */
+  .specimen {
+    display: flex;
+    align-items: flex-start;
+    gap: 32px;
+    padding: 24px 0;
+    border-bottom: 1px solid #f9fafb;
+  }
+
+  .specimen:last-child {
+    border-bottom: none;
+  }
+
+  .specimen__meta {
+    flex: 0 0 200px;
+  }
+
+  .specimen__name {
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 6px;
+  }
+
+  .specimen__props {
+    font-family: "Spline Sans Mono", "Fira Code", monospace;
+    font-size: 10.5px;
+    color: #9ca3af;
+    line-height: 1.8;
+    margin: 0;
+    list-style: none;
+    padding: 0;
+  }
+
+  .specimen__props li::before {
+    content: "→ ";
+    color: #d1d5db;
+  }
+
+  .specimen__preview {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    padding: 20px 24px;
+    background: #fafafa;
+    border-radius: 10px;
+    border: 1px solid #f3f4f6;
+    min-height: 72px;
+  }
+
+  /* ── Type specimens ── */
+  .type-page-title {
+    font-family: "Uxum Grotesque", "Georgia", sans-serif;
+    font-size: 28px;
+    font-weight: 500;
+    color: #002830;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .type-breadcrumb-parent {
+    font-family: "Inter", Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: #888;
+    margin: 0;
+  }
+
+  .type-breadcrumb-current {
+    font-family: "Inter", Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: #555;
+    margin: 0;
+  }
+
+  .type-nav-dropdown {
+    font-family: "Inter", Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #002830;
+    margin: 0;
+    padding: 5px 12px;
+    background: #f3f4f6;
+    border-radius: 6px;
+    display: inline-block;
+  }
+
+  .type-section-title {
+    font-family: "Inter", Helvetica, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a2e;
+    text-transform: uppercase;
+    margin: 0;
+    letter-spacing: 0.02em;
+  }
+
+  .type-field-label {
+    font-family: "Inter", Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #374151;
+    margin: 0;
+  }
+
+  .type-body {
+    font-family: "Inter", Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: #888;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .type-mono {
+    font-family: "Spline Sans Mono", "Fira Code", monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #002830;
+    margin: 0;
+  }
+
+  /* ── Font import block ── */
+  .import-block {
+    background: #1a1a2e;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-top: 8px;
+    overflow-x: auto;
+  }
+
+  .import-block code {
+    font-family: "Spline Sans Mono", "Fira Code", monospace;
+    font-size: 12px;
+    color: #a5f3fc;
+    line-height: 1.7;
+    white-space: pre;
+  }
+
+  /* ── Color swatches ── */
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .color-swatch {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #f3f4f6;
+    background: #fff;
+  }
+
+  .color-swatch__dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+
+  .color-swatch__info {
+    min-width: 0;
+  }
+
+  .color-swatch__label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #374151;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .color-swatch__value {
+    font-family: "Spline Sans Mono", monospace;
+    font-size: 10px;
+    color: #9ca3af;
+  }
+
+  /* ── Breadcrumb example composite ── */
+  .breadcrumb-example {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+  }
+
+  .breadcrumb-sep {
+    color: #ccc;
+    font-size: 12px;
+  }
+`}
+</style>
+
+<div className="typo-page">
+
+# Typography
+
+Le design system Hove utilise trois familles de caractères selon le contexte d'usage.
+
+---
+
+<div className="typo-section">
+
+## Hiérarchie
+
+<div className="specimen">
+  <div className="specimen__meta">
+    <p className="specimen__name">Titre de page</p>
+    <ul className="specimen__props">
+      <li>Uxum Grotesque</li>
+      <li>28px / 500</li>
+      <li>#002830</li>
+      <li>line-height 1.2</li>
+    </ul>
+  </div>
+  <div className="specimen__preview">
+    <p className="type-page-title">IV Multicritère</p>
+  </div>
+</div>
+
+<div className="specimen">
+  <div className="specimen__meta">
+    <p className="specimen__name">Breadcrumb</p>
+    <ul className="specimen__props">
+      <li>Inter</li>
+      <li>12px / 400</li>
+      <li>#888 → #555</li>
+    </ul>
+  </div>
+  <div className="specimen__preview">
+    <div className="breadcrumb-example">
+      <span className="type-breadcrumb-parent">Accueil</span>
+      <span className="breadcrumb-sep">›</span>
+      <span className="type-breadcrumb-parent">Rapports</span>
+      <span className="breadcrumb-sep">›</span>
+      <span className="type-breadcrumb-current">IV Multicritère</span>
+    </div>
+  </div>
+</div>
+
+<div className="specimen">
+  <div className="specimen__meta">
+    <p className="specimen__name">NavigationDropdown</p>
+    <ul className="specimen__props">
+      <li>Inter</li>
+      <li>14px / 400</li>
+      <li>padding 5px 12px</li>
+    </ul>
+  </div>
+  <div className="specimen__preview">
+    <span className="type-nav-dropdown">Traffic Report ▾</span>
+  </div>
+</div>
+
+<div className="specimen">
+  <div className="specimen__meta">
+    <p className="specimen__name">Titre de section</p>
+    <ul className="specimen__props">
+      <li>Inter</li>
+      <li>13px / 600</li>
+      <li>#1a1a2e</li>
+      <li>UPPERCASE</li>
+    </ul>
+  </div>
+  <div className="specimen__preview">
+    <p className="type-section-title">1. Définissez le titre du scénario</p>
+  </div>
+</div>
+
+<div className="specimen">
+  <div className="specimen__meta">
+    <p className="specimen__name">Label de champ</p>
+    <ul className="specimen__props">
+      <li>Inter</li>
+      <li>12px / 500</li>
+      <li>#374151</li>
+    </ul>
+  </div>
+  <div className="specimen__preview">
+    <p className="type-field-label">Nom du scénario</p>
+  </div>
+</div>
+
+<div className="specimen">
+  <div className="specimen__meta">
+    <p className="specimen__name">Corps / texte secondaire</p>
+    <ul className="specimen__props">
+      <li>Inter</li>
+      <li>12px / 400</li>
+      <li>#888</li>
+      <li>line-height 1.5</li>
+    </ul>
+  </div>
+  <div className="specimen__preview">
+    <p className="type-body">Ce scénario sera utilisé pour simuler les déplacements sur le réseau de transport en commun de la métropole.</p>
+  </div>
+</div>
+
+<div className="specimen">
+  <div className="specimen__meta">
+    <p className="specimen__name">Tag technique</p>
+    <ul className="specimen__props">
+      <li>Spline Sans Mono</li>
+      <li>11px / 700</li>
+      <li>letter-spacing 0.05em</li>
+    </ul>
+  </div>
+  <div className="specimen__preview">
+    <div style={{ display: "flex", gap: 8 }}>
+      <p className="type-mono">LATITUDE</p>
+      <p className="type-mono">LONGITUDE</p>
+      <p className="type-mono">NAMES</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+---
+
+<div className="typo-section">
+
+## Couleurs typographiques
+
+<div className="color-grid">
+  <div className="color-swatch">
+    <div className="color-swatch__dot" style={{ background: "#002830" }} />
+    <div className="color-swatch__info">
+      <span className="color-swatch__label">Titre principal</span>
+      <span className="color-swatch__value">#002830</span>
+    </div>
+  </div>
+  <div className="color-swatch">
+    <div className="color-swatch__dot" style={{ background: "#1a1a2e" }} />
+    <div className="color-swatch__info">
+      <span className="color-swatch__label">Texte principal</span>
+      <span className="color-swatch__value">#1a1a2e</span>
+    </div>
+  </div>
+  <div className="color-swatch">
+    <div className="color-swatch__dot" style={{ background: "#555" }} />
+    <div className="color-swatch__info">
+      <span className="color-swatch__label">Texte secondaire</span>
+      <span className="color-swatch__value">#555555</span>
+    </div>
+  </div>
+  <div className="color-swatch">
+    <div className="color-swatch__dot" style={{ background: "#888" }} />
+    <div className="color-swatch__info">
+      <span className="color-swatch__label">Placeholder / hint</span>
+      <span className="color-swatch__value">#888888</span>
+    </div>
+  </div>
+  <div className="color-swatch">
+    <div className="color-swatch__dot" style={{ background: "#888" }} />
+    <div className="color-swatch__info">
+      <span className="color-swatch__label">Breadcrumb parent</span>
+      <span className="color-swatch__value">#888888</span>
+    </div>
+  </div>
+  <div className="color-swatch">
+    <div className="color-swatch__dot" style={{ background: "#555" }} />
+    <div className="color-swatch__info">
+      <span className="color-swatch__label">Breadcrumb courant</span>
+      <span className="color-swatch__value">#555555</span>
+    </div>
+  </div>
+  <div className="color-swatch">
+    <div className="color-swatch__dot" style={{ background: "#ccc" }} />
+    <div className="color-swatch__info">
+      <span className="color-swatch__label">Séparateur</span>
+      <span className="color-swatch__value">#cccccc</span>
+    </div>
+  </div>
+  <div className="color-swatch">
+    <div className="color-swatch__dot" style={{ background: "#374151" }} />
+    <div className="color-swatch__info">
+      <span className="color-swatch__label">Labels de champ</span>
+      <span className="color-swatch__value">#374151</span>
+    </div>
+  </div>
+</div>
+
+</div>
+
+---
+
+<div className="typo-section">
+
+## Import des polices
+
+**Google Fonts — Inter & Spline Sans Mono**
+
+<div className="import-block">
+  <code>{`<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Spline+Sans+Mono:wght@400;600;700&display=swap"
+  rel="stylesheet"
+/>`}</code>
+</div>
+
+**Uxum Grotesque — fichiers locaux**
+
+<div className="import-block">
+  <code>{`@font-face {
+  font-family: "Uxum Grotesque";
+  src: url("/fonts/UxumGrotesque-Regular.otf") format("opentype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Uxum Grotesque";
+  src: url("/fonts/UxumGrotesque-Medium.otf") format("opentype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Uxum Grotesque";
+  src: url("/fonts/UxumGrotesque-Bold.otf") format("opentype");
+  font-weight: 700;
+}`}</code>
+</div>
+
+</div>
+
+---
+
+<div className="typo-section">
+
+## Règles d'application
+
+| Contexte | Police |
+|---|---|
+| Titre de page principal | **Uxum Grotesque** |
+| Corps, labels, navigation, UI | **Inter** |
+| Tags techniques, colonnes de données | **Spline Sans Mono** |
+
+> Les composants du design system (Sidebar, Tab, Toggle, Button…) héritent de la police de leur contexte. Ne pas surcharger la `font-family` à l'intérieur des composants sauf besoin explicite.
+
+</div>
+
+</div>
