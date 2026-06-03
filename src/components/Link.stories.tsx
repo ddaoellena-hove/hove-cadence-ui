@@ -1,72 +1,107 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, fn } from "storybook/test";
+import type { Meta, StoryObj } from "@storybook/react";
 import { Link } from "./Link";
 
 const meta: Meta<typeof Link> = {
   title: "Components/Link",
   component: Link,
   tags: ["autodocs"],
-  args: {
-    children: "Voir le rapport",
-    href: "#",
-    onClick: fn(),
+  argTypes: {
+    variant: {
+      control: "select",
+      options: ["primary", "secondary", "destructive", "inverse"],
+    },
+    size: {
+      control: "select",
+      options: ["sm", "md", "lg"],
+    },
+    disabled: { control: "boolean" },
+    target: {
+      control: "select",
+      options: ["_self", "_blank", "_parent", "_top"],
+    },
+    href: { control: "text" },
+    children: { control: "text" },
   },
-  decorators: [
-    (StoryFn) => (
-      <div style={{ padding: "24px", fontFamily: "Inter, sans-serif", fontSize: 14 }}>
-        <StoryFn />
-      </div>
-    ),
-  ],
 };
 
 export default meta;
 type Story = StoryObj<typeof Link>;
 
-// ── Stories ────────────────────────────────────────────────────────────────────
-
-export const Default: Story = {};
-
-export const Subtle: Story = {
-  args: { variant: "subtle", children: "En savoir plus" },
-};
-
-export const Danger: Story = {
-  args: { variant: "danger", children: "Supprimer le scénario", href: undefined },
-};
-
-export const External: Story = {
+export const Default: Story = {
   args: {
-    children: "Documentation",
-    href: "https://hove.com",
-    external: true,
+    children: "Click here",
+    href: "https://example.com",
+    variant: "primary",
+    size: "md",
   },
+};
+
+export const Destructive: Story = {
+  args: {
+    children: "Delete account",
+    href: "https://example.com",
+    variant: "destructive",
+    size: "md",
+  },
+};
+
+export const Inverse: Story = {
+  args: {
+    children: "Inverse link",
+    href: "https://example.com",
+    variant: "inverse",
+    size: "md",
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ backgroundColor: "#1f2937", padding: "16px", borderRadius: "8px" }}>
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export const Disabled: Story = {
-  args: { children: "Lien désactivé", disabled: true },
-};
-
-export const InlineText: Story = {
-  render: (args) => (
-    <p style={{ color: "#374151", lineHeight: 1.6 }}>
-      Ce rapport est basé sur les données exportées depuis{" "}
-      <Link {...args} href="#">Datahub</Link>. Pour modifier les paramètres,{" "}
-      <Link {...args} href="#" variant="subtle">consultez les réglages</Link>.
-    </p>
-  ),
-  args: { onClick: fn() },
-};
-
-export const ClickCallback: Story = {
   args: {
-    href: undefined,
-    children: "Cliquer ici",
-    onClick: fn(),
+    children: "Disabled link",
+    href: "https://example.com",
+    disabled: true,
   },
-  play: async ({ canvas, args }) => {
-    const link = canvas.getByRole("button", { name: "Cliquer ici" });
-    await link.click();
-    await expect(args.onClick).toHaveBeenCalledTimes(1);
+};
+
+export const ExternalLink: Story = {
+  args: {
+    children: "Open in new tab",
+    href: "https://example.com",
+    target: "_blank",
+  },
+};
+
+export const AsButton: Story = {
+  args: {
+    children: "Button-style link",
+    onClick: () => alert("Clicked!"),
+  },
+};
+
+const ArrowLeft = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <path
+      d="M10 13L5 8l5-5"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const WithIcon: Story = {
+  args: {
+    children: "Retour",
+    href: "#",
+    variant: "secondary",
+    size: "md",
+    icon: <ArrowLeft />,
   },
 };

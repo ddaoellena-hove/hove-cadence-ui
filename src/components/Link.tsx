@@ -1,90 +1,85 @@
-import type { MouseEventHandler, ReactNode } from "react";
+import React from "react";
 import "./link.css";
 
-// ── Types ──────────────────────────────────────────────────────────────────────
-
 export interface LinkProps {
-  /** Content of the link. */
-  children: ReactNode;
-  /** Destination URL. If omitted, renders as a styled `<button>`. */
+  /** Link text content */
+  children: React.ReactNode;
+  /** Optional icon element rendered before the text */
+  icon?: React.ReactNode;
+  /** URL destination */
   href?: string;
-  /** Opens the link in a new tab and shows an external icon. */
-  external?: boolean;
-  /** Visual style variant. */
-  variant?: "default" | "subtle" | "danger";
-  /** Disables the link. */
+  /** Visual variant */
+  variant?: "primary" | "secondary" | "destructive" | "inverse";
+  /** Size of the link text */
+  size?: "sm" | "md" | "lg";
+  /** Whether the link is disabled */
   disabled?: boolean;
-  /** Extra class name. */
+  /** Open in new tab */
+  target?: "_blank" | "_self" | "_parent" | "_top";
+  /** Optional click handler (renders as button if no href) */
+  onClick?: (e: React.MouseEvent) => void;
+  /** Additional class name */
   className?: string;
-  /** Click handler. */
-  onClick?: MouseEventHandler;
-  /** Accessible label override. */
-  "aria-label"?: string;
-  /** Relationship attribute (for anchors). */
-  rel?: string;
-  /** Target attribute (for anchors). */
-  target?: string;
+  /** Optional inline styles */
+  style?: React.CSSProperties;
 }
-
-// ── External icon ──────────────────────────────────────────────────────────────
-
-const ExternalIcon = () => (
-  <svg
-    width="11"
-    height="11"
-    viewBox="0 0 11 11"
-    fill="none"
-    aria-hidden="true"
-    className="link__external-icon"
-  >
-    <path
-      d="M2 9L9 2M9 2H4.5M9 2V6.5"
-      stroke="currentColor"
-      strokeWidth="1.4"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-// ── Component ──────────────────────────────────────────────────────────────────
 
 export const Link = ({
   children,
+  icon,
   href,
-  external = false,
-  variant = "default",
+  variant = "primary",
+  size = "md",
   disabled = false,
-  className,
-  onClick,
-  rel,
   target,
-  "aria-label": ariaLabel,
+  onClick,
+  className = "",
+  style,
 }: LinkProps) => {
   const classes = [
     "link",
     `link--${variant}`,
+    `link--${size}`,
     disabled ? "link--disabled" : "",
     className,
   ]
     .filter(Boolean)
     .join(" ");
 
-  const externalProps = external
-    ? { target: "_blank", rel: "noopener noreferrer" }
-    : {};
+  const rel = target === "_blank" ? "noopener noreferrer" : undefined;
 
-  if (!href || disabled) {
+  const arrow = (
+    <svg
+      className="link__arrow"
+      width="1em"
+      height="1em"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path
+        d="M6 14L14 6M14 6H7M14 6V13"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+
+  if (!href) {
     return (
       <button
         type="button"
         className={classes}
+        style={style}
         disabled={disabled}
-        onClick={disabled ? undefined : onClick}
-        aria-disabled={disabled}
+        onClick={onClick}
       >
+        {icon && <span className="link__icon">{icon}</span>}
         {children}
-        {external && !disabled && <ExternalIcon />}
+        {!icon && arrow}
       </button>
     );
   }
@@ -93,13 +88,15 @@ export const Link = ({
     <a
       href={href}
       className={classes}
+      style={style}
+      target={target}
+      rel={rel}
       onClick={onClick}
-      aria-label={ariaLabel}
-      rel={externalProps.rel ?? rel}
-      target={externalProps.target ?? target}
+      aria-disabled={disabled || undefined}
     >
+      {icon && <span className="link__icon">{icon}</span>}
       {children}
-      {external && <ExternalIcon />}
+      {!icon && arrow}
     </a>
   );
 };
