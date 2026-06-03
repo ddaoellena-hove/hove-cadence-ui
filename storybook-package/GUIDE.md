@@ -26,8 +26,8 @@ Le design system Hove Cadence UI se compose de deux packages npm :
 
 | Package | Rôle |
 |---|---|
-| `@hove/cadence-ui` | Composants React + CSS — à installer dans ton app |
-| `@hove/cadence-ui-storybook` | Storybook + serveur MCP — pour le vibe-coding avec l'IA |
+| `@ddaoellena-hove/cadence-ui` | Composants React + CSS — à installer dans ton app |
+| `@ddaoellena-hove/cadence-ui-storybook` | Storybook + serveur MCP — pour le vibe-coding avec l'IA |
 
 ```
 ton-projet/
@@ -44,17 +44,48 @@ ton-projet/
 - **Node.js** ≥ 20
 - **npm** / **pnpm** / **yarn**
 - Un outil IA compatible MCP : [Claude Code](https://claude.ai/code), Cursor, Windsurf…
+- Un compte GitHub avec accès à l'organisation **ddaoellena-hove**
 
 ---
 
 ## 3. Installation dans ton projet
 
+### 3.0 Configurer l'accès GitHub Packages (une seule fois par machine)
+
+Les packages sont hébergés sur GitHub Packages. Avant d'installer, il faut :
+
+**a) Créer un Personal Access Token GitHub**
+
+1. Va sur https://github.com/settings/tokens/new
+2. Note : `Hove Cadence UI`
+3. Coche la permission **`read:packages`**
+4. Clique **Generate token** et copie le token
+
+**b) Configurer npm**
+
+```bash
+# Remplace TON_TOKEN_GITHUB par le token copié
+npm login --scope=@ddaoellena-hove --registry=https://npm.pkg.github.com
+# Username : ton nom d'utilisateur GitHub
+# Password : TON_TOKEN_GITHUB
+# Email    : ton email GitHub
+```
+
+ou directement dans `~/.npmrc` (global) :
+
+```
+@ddaoellena-hove:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=TON_TOKEN_GITHUB
+```
+
+---
+
 ### 3.1 Installer les composants
 
 ```bash
-npm install @hove/cadence-ui
+npm install @ddaoellena-hove/cadence-ui
 # ou
-pnpm add @hove/cadence-ui
+pnpm add @ddaoellena-hove/cadence-ui
 ```
 
 ### 3.2 Importer le CSS global
@@ -62,7 +93,7 @@ pnpm add @hove/cadence-ui
 Dans le point d'entrée de ton application (ex : `main.tsx`, `layout.tsx`) :
 
 ```tsx
-import "@hove/cadence-ui/style.css";
+import "@ddaoellena-hove/cadence-ui/style.css";
 ```
 
 > ⚠️ Ce fichier ne doit être importé **qu'une seule fois**. Il contient tous les styles des composants.
@@ -75,7 +106,7 @@ import {
   TextInput,
   Dropdown,
   Sidebar,
-} from "@hove/cadence-ui";
+} from "@ddaoellena-hove/cadence-ui";
 ```
 
 ---
@@ -88,10 +119,10 @@ Le serveur MCP expose la documentation des composants à ton outil IA en temps r
 
 ```bash
 # En global (recommandé)
-npm install -g @hove/cadence-ui-storybook
+npm install -g @ddaoellena-hove/cadence-ui-storybook
 
 # ou en dépendance de développement
-npm install -D @hove/cadence-ui-storybook
+npm install -D @ddaoellena-hove/cadence-ui-storybook
 ```
 
 ### 4.2 Démarrer le serveur
@@ -159,8 +190,8 @@ Lance Claude Code avec `claude` dans le terminal — il détecte automatiquement
 ### Exemple minimal
 
 ```tsx
-import "@hove/cadence-ui/style.css";
-import { PrimaryButton, TextInput } from "@hove/cadence-ui";
+import "@ddaoellena-hove/cadence-ui/style.css";
+import { PrimaryButton, TextInput } from "@ddaoellena-hove/cadence-ui";
 
 export default function LoginForm() {
   return (
@@ -176,8 +207,8 @@ export default function LoginForm() {
 ### Exemple avec Sidebar + Header
 
 ```tsx
-import "@hove/cadence-ui/style.css";
-import { Sidebar, Header, Dropdown, Avatar } from "@hove/cadence-ui";
+import "@ddaoellena-hove/cadence-ui/style.css";
+import { Sidebar, Header, Dropdown, Avatar } from "@ddaoellena-hove/cadence-ui";
 
 export default function AppLayout() {
   return (
@@ -437,7 +468,7 @@ R : Assure-toi que `.mcp.json` est bien à la racine de ton projet ET que le ser
 R : Crée-le dans ton projet en respectant les conventions : BEM, valeurs absolues (pas de variables CSS), Inter comme police. Signale-le à l'équipe design pour l'intégrer au design system.
 
 **Q : Comment mettre à jour les composants ?**  
-R : `npm update @hove/cadence-ui && npm update @hove/cadence-ui-storybook`
+R : `npm update @ddaoellena-hove/cadence-ui && npm update @ddaoellena-hove/cadence-ui-storybook`
 
 **Q : Puis-je utiliser uniquement les composants sans le MCP ?**  
 R : Oui. Installe seulement `hove-cadence-ui` et importe `hove-cadence-ui/style.css`. Le MCP est uniquement utile pour le vibe-coding avec l'IA.

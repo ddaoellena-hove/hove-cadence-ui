@@ -1,5 +1,5 @@
 {
-  "name": "@hove/cadence-ui-storybook",
+  "name": "@ddaoellena-hove/cadence-ui-storybook",
   "version": "0.1.0",
   "description": "Hove Cadence UI — Storybook + MCP server for AI-assisted development",
   "type": "module",
@@ -42,8 +42,12 @@
   },
   "keywords": ["hove", "design-system", "storybook", "mcp", "vibe-coding"],
   "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ddaoellena-hove/hove-cadence-ui.git"
+  },
   "publishConfig": {
     "access": "restricted",
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://npm.pkg.github.com"
   }
 }
