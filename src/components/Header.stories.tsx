@@ -19,15 +19,17 @@ export const Default: Story = {
   render: () => (
     <Header
       leftContent={
-        <div style={{ minWidth: 220 }}>
+        <div style={{ minWidth: 200 }}>
           <Dropdown
             options={[
-              { id: "all", label: "Toute la couverture" },
-              { id: "metro", label: "Métropole" },
-              { id: "periurbain", label: "Périurbain" },
-              { id: "rural", label: "Rural" },
+              { id: "bordeaux", label: "Bordeaux Métropole" },
+              { id: "lyon", label: "Métropole de Lyon" },
+              { id: "nantes", label: "Nantes Métropole" },
+              { id: "toulouse", label: "Toulouse Métropole" },
+              { id: "strasbourg", label: "Eurométropole de Strasbourg" },
+              { id: "grenoble", label: "Grenoble-Alpes Métropole" },
             ]}
-            value="all"
+            value="bordeaux"
           />
         </div>
       }
@@ -37,7 +39,7 @@ export const Default: Story = {
           email="hector.malot@hove.com"
           showIcon
           showProfile
-          size="lg"
+          size="sm"
           color="gray"
         />
       }
