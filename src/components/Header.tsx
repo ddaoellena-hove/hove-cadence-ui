@@ -11,7 +11,9 @@ export interface HeaderNavItem {
 }
 
 export interface HeaderProps {
-  /** Logo text or brand name displayed on the left. */
+  /** Arbitrary content on the left (e.g. a Dropdown). Takes priority over `logo`. */
+  leftContent?: ReactNode;
+  /** Logo text or brand name displayed on the left (used when `leftContent` is not set). */
   logo?: string;
   /** Navigation items displayed in the center. */
   navItems?: HeaderNavItem[];
@@ -22,9 +24,10 @@ export interface HeaderProps {
 }
 
 /**
- * A top-level navigation header with logo, navigation links, and a right-side slot.
+ * A top-level navigation header with left/right content slots and optional nav links.
  */
 export const Header = ({
+  leftContent,
   logo = "Brand",
   navItems = [],
   rightContent,
@@ -33,7 +36,7 @@ export const Header = ({
   return (
     <header className={`header ${className}`.trim()}>
       <div className="header__left">
-        <span className="header__logo">{logo}</span>
+        {leftContent ?? <span className="header__logo">{logo}</span>}
       </div>
 
       {navItems.length > 0 && (
