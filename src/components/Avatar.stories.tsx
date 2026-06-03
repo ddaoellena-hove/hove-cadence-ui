@@ -8,6 +8,7 @@ const meta: Meta<typeof Avatar> = {
   args: {
     name: "Diane Ellena",
     size: "md",
+    color: "blue",
   },
   decorators: [
     (StoryFn) => (
@@ -35,57 +36,52 @@ export const WithImage: Story = {
 export const Sizes: Story = {
   render: () => (
     <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-      <Avatar name="Alice Dupont"  size="xs" />
-      <Avatar name="Bob Richard"   size="sm" />
-      <Avatar name="Chloé Morin"   size="md" />
-      <Avatar name="David Leclerc" size="lg" />
-      <Avatar name="Eva Fontaine"  size="xl" />
+      <Avatar name="Alice Dupont"  size="sm" color="green" />
+      <Avatar name="Bob Richard"   size="md" color="blue" />
+      <Avatar name="Chloé Morin"   size="lg" color="purple" />
     </div>
   ),
 };
 
-export const Palette: Story = {
+export const Colors: Story = {
   render: () => (
     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-      <Avatar name="Alice Dupont" />
-      <Avatar name="Bob Richard" />
-      <Avatar name="Chloé Morin" />
-      <Avatar name="David Leclerc" />
-      <Avatar name="Eva Fontaine" />
-      <Avatar name="François Guérin" />
-      <Avatar name="Gabriel Hamelin" />
-      <Avatar name="Hannah Imbert" />
+      <Avatar name="Alice"   color="green" />
+      <Avatar name="Bob"     color="blue" />
+      <Avatar name="Chloé"   color="orange" />
+      <Avatar name="David"   color="purple" />
+      <Avatar name="Eva"     color="gray" />
     </div>
   ),
 };
 
-export const WithStatus: Story = {
-  render: () => (
-    <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, fontSize: 11, color: "#888", fontFamily: "Inter, sans-serif" }}>
-        <Avatar name="Alice Dupont" status="online" />
-        online
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, fontSize: 11, color: "#888", fontFamily: "Inter, sans-serif" }}>
-        <Avatar name="Bob Richard" status="away" />
-        away
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, fontSize: 11, color: "#888", fontFamily: "Inter, sans-serif" }}>
-        <Avatar name="Chloé Morin" status="busy" />
-        busy
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, fontSize: 11, color: "#888", fontFamily: "Inter, sans-serif" }}>
-        <Avatar name="David Leclerc" status="offline" />
-        offline
-      </div>
-    </div>
-  ),
+export const WithIcon: Story = {
+  args: {
+    showIcon: true,
+    name: "",
+    color: "blue",
+  },
+};
+
+export const Profile: Story = {
+  args: {
+    name: "Diane Ellena",
+    email: "diane.ellena@hove.com",
+    color: "blue",
+    showProfile: true,
+  },
+};
+
+export const ProfileLarge: Story = {
+  args: {
+    name: "Sophie Martin",
+    email: "s.martin@hove.com",
+    color: "green",
+    size: "lg",
+    showProfile: true,
+  },
 };
 
 export const NoName: Story = {
-  args: { name: undefined },
-};
-
-export const SingleName: Story = {
-  args: { name: "Sophie" },
+  args: { name: "", showIcon: true, color: "gray" },
 };

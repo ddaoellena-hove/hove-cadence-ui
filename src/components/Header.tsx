@@ -1,49 +1,58 @@
 import type { ReactNode } from "react";
-import { Breadcrumbs } from "./Breadcrumbs";
-import type { BreadcrumbItem } from "./Breadcrumbs";
 import "./header.css";
 
-// ── Types ──────────────────────────────────────────────────────────────────────
+export interface HeaderNavItem {
+  /** Label displayed for the navigation item. */
+  label: string;
+  /** Whether this nav item is currently active. */
+  active?: boolean;
+  /** Callback fired when the nav item is clicked. */
+  onClick?: () => void;
+}
 
 export interface HeaderProps {
-  /** Main page title — rendered in Uxum Grotesque. */
-  title: string;
-  /** Optional breadcrumb trail displayed above the title. */
-  breadcrumbs?: BreadcrumbItem[];
-  /** Optional subtitle / description below the title. */
-  subtitle?: string;
-  /** Optional slot for action buttons (top-right). */
-  actions?: ReactNode;
-  /** Extra class name. */
+  /** Logo text or brand name displayed on the left. */
+  logo?: string;
+  /** Navigation items displayed in the center. */
+  navItems?: HeaderNavItem[];
+  /** Content rendered on the right side (e.g., Avatar, buttons). */
+  rightContent?: ReactNode;
+  /** Optional additional class name. */
   className?: string;
 }
 
-// ── Component ──────────────────────────────────────────────────────────────────
-
+/**
+ * A top-level navigation header with logo, navigation links, and a right-side slot.
+ */
 export const Header = ({
-  title,
-  breadcrumbs,
-  subtitle,
-  actions,
-  className,
+  logo = "Brand",
+  navItems = [],
+  rightContent,
+  className = "",
 }: HeaderProps) => {
-  const rootClass = ["header", className].filter(Boolean).join(" ");
-
   return (
-    <header className={rootClass}>
-      {breadcrumbs && breadcrumbs.length > 0 && (
-        <div className="header__breadcrumbs">
-          <Breadcrumbs items={breadcrumbs} />
-        </div>
+    <header className={`header ${className}`.trim()}>
+      <div className="header__left">
+        <span className="header__logo">{logo}</span>
+      </div>
+
+      {navItems.length > 0 && (
+        <nav className="header__center">
+          {navItems.map((item) => (
+            <button
+              key={item.label}
+              type="button"
+              className={`header__nav-item ${item.active ? "header__nav-item--active" : ""}`.trim()}
+              onClick={item.onClick}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
       )}
 
-      <div className="header__row">
-        <div className="header__title-block">
-          <h1 className="header__title">{title}</h1>
-          {subtitle && <p className="header__subtitle">{subtitle}</p>}
-        </div>
-
-        {actions && <div className="header__actions">{actions}</div>}
+      <div className="header__right">
+        {rightContent}
       </div>
     </header>
   );

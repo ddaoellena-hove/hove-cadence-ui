@@ -1,98 +1,89 @@
-import type { ReactNode } from "react";
 import "./avatar.css";
 
-// ── Types ──────────────────────────────────────────────────────────────────────
-
-export type AvatarSize = "xs" | "sm" | "md" | "lg" | "xl";
-export type AvatarStatus = "online" | "offline" | "away" | "busy";
-
 export interface AvatarProps {
-  /** Image URL. When provided, displays the image instead of initials. */
+  /** Image URL for the avatar. If not provided, initials are shown. */
   src?: string;
-  /** Full name used to derive initials and fallback background color. */
-  name?: string;
-  /** Visual size of the avatar. */
-  size?: AvatarSize;
-  /** Optional status badge. */
-  status?: AvatarStatus;
-  /** Icon slot — overrides initials when no `src` is provided. */
-  icon?: ReactNode;
-  /** Alt text for the image. Defaults to `name`. */
+  /** Alt text for the avatar image. */
   alt?: string;
-  /** Extra class name. */
+  /** Display name used to generate initials when no image is provided. */
+  name?: string;
+  /** Size variant of the avatar. */
+  size?: "sm" | "md" | "lg";
+  /** Color variant for the initials background. */
+  color?: "green" | "blue" | "orange" | "purple" | "gray";
+  /** Show an icon placeholder instead of initials when no image is provided. */
+  showIcon?: boolean;
+  /** Email or subtitle displayed below the name in profile layout. */
+  email?: string;
+  /** Render as a profile card with name and email beside the avatar. */
+  showProfile?: boolean;
+  /** Optional additional class name. */
   className?: string;
 }
 
-// ── Helpers ────────────────────────────────────────────────────────────────────
-
-const PALETTE = [
-  ["#dbeafe", "#1d4ed8"], // blue
-  ["#dcfce7", "#15803d"], // green
-  ["#fef3c7", "#b45309"], // amber
-  ["#fce7f3", "#be185d"], // pink
-  ["#ede9fe", "#6d28d9"], // violet
-  ["#ffedd5", "#c2410c"], // orange
-  ["#e0f2fe", "#0369a1"], // sky
-  ["#f0fdf4", "#166534"], // emerald
-];
-
 function getInitials(name: string): string {
   const parts = name.trim().split(/\s+/);
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
 }
 
-function getPalette(name: string): [string, string] {
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  return PALETTE[Math.abs(hash) % PALETTE.length] as [string, string];
-}
-
-// ── Status dot ────────────────────────────────────────────────────────────────
-
-const StatusDot = ({ status }: { status: AvatarStatus }) => (
-  <span className={`avatar__status avatar__status--${status}`} aria-label={status} />
-);
-
-// ── Component ──────────────────────────────────────────────────────────────────
-
+/**
+ * A circular avatar component that displays either an image or user initials.
+ */
 export const Avatar = ({
   src,
-  name,
+  alt = "",
+  name = "",
   size = "md",
-  status,
-  icon,
-  alt,
-  className,
+  color = "gray",
+  showIcon = false,
+  email,
+  showProfile = false,
+  className = "",
 }: AvatarProps) => {
-  const [bg, fg] = name ? getPalette(name) : ["#e5e7eb", "#6b7280"];
-  const initials = name ? getInitials(name) : null;
+  const classes = [
+    "avatar",
+    `avatar--${size}`,
+    !src ? `avatar--${color}` : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
-  const rootClass = ["avatar", `avatar--${size}`, className].filter(Boolean).join(" ");
-
-  return (
-    <span className={rootClass} aria-label={name ?? alt ?? "Avatar"}>
-      {src ? (
-        <img src={src} alt={alt ?? name ?? "Avatar"} className="avatar__img" />
-      ) : icon ? (
-        <span className="avatar__icon" style={{ background: bg, color: fg }}>
-          {icon}
-        </span>
-      ) : initials ? (
-        <span className="avatar__initials" style={{ background: bg, color: fg }}>
-          {initials}
-        </span>
-      ) : (
-        <span className="avatar__placeholder" style={{ background: bg, color: fg }}>
-          <svg width="60%" height="60%" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path
-              d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM2 14s-1 0-1-1 1-4 7-4 7 3 7 4-1 1-1 1H2Z"
-              fill="currentColor"
-            />
-          </svg>
-        </span>
-      )}
-      {status && <StatusDot status={status} />}
-    </span>
+  const iconSvg = (
+    <svg
+      className="avatar__icon"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+    </svg>
   );
+
+  const avatarEl = (
+    <div className={classes} aria-label={alt || name || "avatar"} role="img">
+      {src ? (
+        <img className="avatar__image" src={src} alt={alt || name} />
+      ) : showIcon ? (
+        iconSvg
+      ) : (
+        <span>{name ? getInitials(name) : "?"}</span>
+      )}
+    </div>
+  );
+
+  if (showProfile) {
+    return (
+      <div className="avatar-profile">
+        {avatarEl}
+        <div className="avatar-profile__info">
+          {name && <span className="avatar-profile__name">{name}</span>}
+          {email && <span className="avatar-profile__email">{email}</span>}
+        </div>
+      </div>
+    );
+  }
+
+  return avatarEl;
 };
