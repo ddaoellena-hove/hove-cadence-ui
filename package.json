@@ -22,7 +22,8 @@
     "./style.css": "./dist/style.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "GUIDELINES.md"
   ],
   "scripts": {
     "dev": "vite",
