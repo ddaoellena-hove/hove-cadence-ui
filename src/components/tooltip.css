@@ -10,10 +10,10 @@
   overflow: visible;
   white-space: nowrap;
   box-sizing: border-box;
-  font-family: var(--web-mobile-base-bold-font-family, "Inter", Helvetica);
-  font-size: var(--web-mobile-base-bold-font-size, 14px);
-  font-weight: var(--web-mobile-base-bold-font-weight, 600);
-  letter-spacing: var(--web-mobile-base-bold-letter-spacing, 0px);
+  font-family: "Inter", Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0px;
   line-height: 1.2;
   color: var(--_color);
 }

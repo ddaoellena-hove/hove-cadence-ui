@@ -1,59 +1,63 @@
-/* ── Root ── */
 .header {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-family: "Inter", Helvetica, sans-serif;
-}
-
-/* ── Breadcrumbs area ── */
-.header__breadcrumbs {
-  margin-bottom: 2px;
-}
-
-/* ── Title row ── */
-.header__row {
-  display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 16px;
-}
-
-/* ── Title block ── */
-.header__title-block {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-
-/* ── Title ── */
-.header__title {
-  font-family: "Uxum Grotesque", "Georgia", sans-serif;
-  font-size: 28px;
-  font-weight: 500;
-  color: #002830;
-  line-height: 1.2;
-  margin: 0;
-  padding: 0;
-}
-
-/* ── Subtitle ── */
-.header__subtitle {
+  padding: 12px 24px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.06);
   font-family: "Inter", Helvetica, sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  color: #888;
-  line-height: 1.5;
-  margin: 0;
-  padding: 0;
+  min-height: 56px;
+  box-sizing: border-box;
 }
 
-/* ── Actions slot ── */
-.header__actions {
-  flex-shrink: 0;
+.header__left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header__logo {
+  font-family: "Uxum Grotesque", "Georgia", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+
+.header__center {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding-top: 4px;
+}
+
+.header__nav-item {
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555555;
+  text-decoration: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+.header__nav-item:hover {
+  background-color: #f5f5f5;
+  color: #1a1a1a;
+}
+
+.header__nav-item--active {
+  background-color: #eef2ff;
+  color: #3b5bdb;
+  font-weight: 600;
+}
+
+.header__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
