@@ -1,0 +1,204 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundation/Guidelines/Data Visualization" />
+
+<style>{`
+  .g { font-family: "Inter", sans-serif; max-width: 800px; }
+  .g h2 { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #9ca3af; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; margin: 40px 0 20px; }
+  .g p { font-size: 14px; color: #374151; line-height: 1.6; margin: 0 0 12px; }
+  .rule { display: flex; gap: 16px; margin-bottom: 10px; }
+  .rule-icon { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-top: 2px; }
+  .do .rule-icon { background: #dcfce7; color: #15803d; }
+  .dont .rule-icon { background: #fee2e2; color: #b91c1c; }
+  .rule-text { font-size: 14px; color: #374151; line-height: 1.5; }
+
+  /* ── Palette ── */
+  .palette { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; }
+  .swatch { display: flex; align-items: center; gap: 16px; }
+  .swatch__dot { width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0; }
+  .swatch__info { display: flex; flex-direction: column; gap: 2px; }
+  .swatch__hex { font-family: "Spline Sans Mono", monospace; font-size: 13px; font-weight: 600; color: #1a1a2e; }
+  .swatch__name { font-size: 12px; color: #9ca3af; }
+  .swatch__order { font-size: 11px; font-weight: 700; color: #d1d5db; width: 20px; text-align: right; flex-shrink: 0; }
+
+  /* ── Preview bar ── */
+  .preview-bar { display: flex; height: 32px; border-radius: 8px; overflow: hidden; margin: 20px 0; }
+  .preview-bar__seg { flex: 1; }
+
+  /* ── Usage table ── */
+  table { border-collapse: collapse; width: 100%; margin: 12px 0 20px; font-size: 13px; }
+  th { text-align: left; padding: 8px 12px; background: #f9fafb; color: #374151; font-weight: 600; border: 1px solid #e5e7eb; }
+  td { padding: 8px 12px; border: 1px solid #e5e7eb; color: #374151; vertical-align: top; }
+  .dot { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 8px; vertical-align: middle; }
+`}</style>
+
+<div className="g">
+
+# Data Visualization
+
+<div className="g h2">Palette de couleurs</div>
+
+Les couleurs sont ordonnées par priorité d'assignation : la première série de données reçoit la couleur 1, la deuxième la couleur 2, etc.
+
+<div className="preview-bar">
+  <div className="preview-bar__seg" style={{ background: "#6B3FD6" }} title="#6B3FD6" />
+  <div className="preview-bar__seg" style={{ background: "#1A91E8" }} title="#1A91E8" />
+  <div className="preview-bar__seg" style={{ background: "#007D79" }} title="#007D79" />
+  <div className="preview-bar__seg" style={{ background: "#F1A21B" }} title="#F1A21B" />
+  <div className="preview-bar__seg" style={{ background: "#A0185E" }} title="#A0185E" />
+  <div className="preview-bar__seg" style={{ background: "#F04E4E" }} title="#F04E4E" />
+  <div className="preview-bar__seg" style={{ background: "#5A2D82" }} title="#5A2D82" />
+  <div className="preview-bar__seg" style={{ background: "#55606E" }} title="#55606E" />
+</div>
+
+<div className="palette">
+  <div className="swatch">
+    <span className="swatch__order">1</span>
+    <div className="swatch__dot" style={{ background: "#6B3FD6" }} />
+    <div className="swatch__info">
+      <span className="swatch__hex">#6B3FD6</span>
+      <span className="swatch__name">Violet — série principale</span>
+    </div>
+  </div>
+  <div className="swatch">
+    <span className="swatch__order">2</span>
+    <div className="swatch__dot" style={{ background: "#1A91E8" }} />
+    <div className="swatch__info">
+      <span className="swatch__hex">#1A91E8</span>
+      <span className="swatch__name">Bleu</span>
+    </div>
+  </div>
+  <div className="swatch">
+    <span className="swatch__order">3</span>
+    <div className="swatch__dot" style={{ background: "#007D79" }} />
+    <div className="swatch__info">
+      <span className="swatch__hex">#007D79</span>
+      <span className="swatch__name">Teal</span>
+    </div>
+  </div>
+  <div className="swatch">
+    <span className="swatch__order">4</span>
+    <div className="swatch__dot" style={{ background: "#F1A21B" }} />
+    <div className="swatch__info">
+      <span className="swatch__hex">#F1A21B</span>
+      <span className="swatch__name">Ambre</span>
+    </div>
+  </div>
+  <div className="swatch">
+    <span className="swatch__order">5</span>
+    <div className="swatch__dot" style={{ background: "#A0185E" }} />
+    <div className="swatch__info">
+      <span className="swatch__hex">#A0185E</span>
+      <span className="swatch__name">Magenta</span>
+    </div>
+  </div>
+  <div className="swatch">
+    <span className="swatch__order">6</span>
+    <div className="swatch__dot" style={{ background: "#F04E4E" }} />
+    <div className="swatch__info">
+      <span className="swatch__hex">#F04E4E</span>
+      <span className="swatch__name">Corail</span>
+    </div>
+  </div>
+  <div className="swatch">
+    <span className="swatch__order">7</span>
+    <div className="swatch__dot" style={{ background: "#5A2D82" }} />
+    <div className="swatch__info">
+      <span className="swatch__hex">#5A2D82</span>
+      <span className="swatch__name">Violet foncé</span>
+    </div>
+  </div>
+  <div className="swatch">
+    <span className="swatch__order">8</span>
+    <div className="swatch__dot" style={{ background: "#55606E" }} />
+    <div className="swatch__info">
+      <span className="swatch__hex">#55606E</span>
+      <span className="swatch__name">Ardoise — divers / non catégorisé</span>
+    </div>
+  </div>
+</div>
+
+<div className="g h2">Usage</div>
+
+<table>
+  <thead>
+    <tr><th>Couleur</th><th>Usage recommandé</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span className="dot" style={{ background: "#6B3FD6" }} /><code>#6B3FD6</code></td>
+      <td>Série principale, métrique clé, ligne de référence</td>
+    </tr>
+    <tr>
+      <td><span className="dot" style={{ background: "#1A91E8" }} /><code>#1A91E8</code></td>
+      <td>Série secondaire, comparaison temporelle</td>
+    </tr>
+    <tr>
+      <td><span className="dot" style={{ background: "#007D79" }} /><code>#007D79</code></td>
+      <td>Série ternaire, données réseau, flux</td>
+    </tr>
+    <tr>
+      <td><span className="dot" style={{ background: "#F1A21B" }} /><code>#F1A21B</code></td>
+      <td>Alertes modérées, seuils, avertissements</td>
+    </tr>
+    <tr>
+      <td><span className="dot" style={{ background: "#A0185E" }} /><code>#A0185E</code></td>
+      <td>5e série, données d'exception</td>
+    </tr>
+    <tr>
+      <td><span className="dot" style={{ background: "#F04E4E" }} /><code>#F04E4E</code></td>
+      <td>Incidents critiques, perturbations majeures</td>
+    </tr>
+    <tr>
+      <td><span className="dot" style={{ background: "#5A2D82" }} /><code>#5A2D82</code></td>
+      <td>7e série, données historiques profondes</td>
+    </tr>
+    <tr>
+      <td><span className="dot" style={{ background: "#55606E" }} /><code>#55606E</code></td>
+      <td>Données non catégorisées, valeurs par défaut, légende neutre</td>
+    </tr>
+  </tbody>
+</table>
+
+<div className="g h2">Règles d'application</div>
+
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Toujours assigner les couleurs dans l'ordre (1 → 8) — ne pas sauter une couleur ni les mélanger aléatoirement.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Utiliser <code>#F04E4E</code> exclusivement pour les états d'erreur ou incidents critiques — ne pas l'utiliser comme couleur de série normale.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Utiliser <code>#55606E</code> pour tout élément neutre ou non catégorisé (ex : « Autres »).</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Limiter à 5 séries maximum sur un même graphique — au-delà, regrouper dans « Autres » (<code>#55606E</code>).</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas utiliser ces couleurs pour le texte courant ou les éléments d'interface — elles sont réservées aux données.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas modifier la teinte ou la luminosité d'une couleur pour créer des variantes — utiliser l'opacité (<code>0.3</code>) pour les zones de fond.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne jamais juxtaposer <code>#6B3FD6</code> et <code>#5A2D82</code> dans le même graphique sans légende claire — trop proches visuellement.</span></div>
+
+<div className="g h2">Tokens CSS</div>
+
+```css
+:root {
+  --dv-color-1: #6B3FD6;  /* Violet       — série 1 */
+  --dv-color-2: #1A91E8;  /* Bleu         — série 2 */
+  --dv-color-3: #007D79;  /* Teal         — série 3 */
+  --dv-color-4: #F1A21B;  /* Ambre        — série 4 / alertes */
+  --dv-color-5: #A0185E;  /* Magenta      — série 5 */
+  --dv-color-6: #F04E4E;  /* Corail       — incidents critiques */
+  --dv-color-7: #5A2D82;  /* Violet foncé — série 7 */
+  --dv-color-8: #55606E;  /* Ardoise      — neutre / divers */
+}
+```
+
+```ts
+// Tableau exportable pour les librairies de charts (Recharts, D3, Chart.js…)
+export const DV_COLORS = [
+  "#6B3FD6",
+  "#1A91E8",
+  "#007D79",
+  "#F1A21B",
+  "#A0185E",
+  "#F04E4E",
+  "#5A2D82",
+  "#55606E",
+] as const;
+
+export type DvColor = typeof DV_COLORS[number];
+```
+
+</div>
