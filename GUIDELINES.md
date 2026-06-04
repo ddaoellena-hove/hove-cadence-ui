@@ -24,12 +24,37 @@ Version complète et interactive disponible dans le Storybook (`@ddaoellena/cade
 - ❌ Ne pas empiler deux `PrimaryButton` côte à côte.
 - ❌ Ne pas désactiver un bouton sans `Tooltip` explicatif.
 
+**En fin de formulaire — deux boutons**
+
+Associer la variante `outline` (action secondaire, à gauche) et la variante `default` (action principale, à droite) :
+
 ```tsx
 <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-  <SecondaryButton label="Annuler" onClick={onCancel} />
-  <PrimaryButton label="Enregistrer" onClick={onSave} />
+  <PrimaryButton outline label="Réinitialiser" onClick={onReset} />
+  <PrimaryButton label="Suivant" onClick={onNext} />
 </div>
+```
 
+**Dans un dashboard — action principale**
+
+Positionner en haut à droite, à l'opposé des onglets/filtres :
+
+```tsx
+<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+  <div style={{ display: "flex", gap: 4 }}>
+    <Tab label="En cours" active />
+    <Tab label="À venir" />
+  </div>
+  <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+    <Toggle label="Affichage cartographique" />
+    <PrimaryButton label="Créer un scénario de mobilité" onClick={onCreate} />
+  </div>
+</div>
+```
+
+**Action destructive**
+
+```tsx
 <Link variant="danger" onClick={onDelete}>Supprimer le scénario</Link>
 ```
 

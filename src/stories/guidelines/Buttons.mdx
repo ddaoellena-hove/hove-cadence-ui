@@ -59,17 +59,45 @@ import { Meta, Canvas } from "@storybook/addon-docs/blocks";
 <div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas empiler deux <code>PrimaryButton</code> côte à côte.</span></div>
 <div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas désactiver un bouton sans expliquer pourquoi via un <code>Tooltip</code>.</span></div>
 
-<div className="g h2">Hiérarchie visuelle recommandée</div>
+<div className="g h2">Contextes d'usage du PrimaryButton</div>
+
+**En fin de formulaire**
+
+Le `PrimaryButton` clôt toujours un formulaire. Lorsque deux boutons sont nécessaires, on associe la variante **Outline** (action secondaire) à la variante **Default** (action principale), toujours positionnée à droite.
 
 ```tsx
-// ✅ Bonne structure dans un formulaire
+// ✅ Pied de formulaire — deux boutons
 <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-  <SecondaryButton label="Annuler" onClick={onCancel} />
-  <PrimaryButton label="Enregistrer" onClick={onSave} />
+  <PrimaryButton outline label="Réinitialiser" onClick={onReset} />
+  <PrimaryButton label="Suivant" onClick={onNext} />
 </div>
-
-// ✅ Action destructive
-<Link variant="danger" onClick={onDelete}>Supprimer le scénario</Link>
 ```
+
+**Dans un dashboard**
+
+Le `PrimaryButton` est utilisé comme **action principale de la page** — typiquement la création d'un nouvel élément — positionné en haut à droite, à l'opposé des filtres ou des onglets.
+
+```tsx
+// ✅ Action principale dans un dashboard
+<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+  <div style={{ display: "flex", gap: 4 }}>
+    <Tab label="En cours" active />
+    <Tab label="À venir" />
+    <Tab label="Passées" />
+    <Tab label="Brouillon" />
+  </div>
+  <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+    <Toggle label="Affichage cartographique" />
+    <PrimaryButton label="Créer un scénario de mobilité" onClick={onCreate} />
+  </div>
+</div>
+```
+
+<div className="g h2">Règles supplémentaires</div>
+
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">En formulaire avec deux boutons : <code>outline</code> à gauche, <code>default</code> à droite.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">En dashboard : <code>PrimaryButton</code> toujours en haut à droite, pour la création.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas combiner deux <code>PrimaryButton default</code> — l'un doit toujours être <code>outline</code>.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas utiliser <code>SecondaryButton</code> à la place de <code>PrimaryButton outline</code> en pied de formulaire.</span></div>
 
 </div>
