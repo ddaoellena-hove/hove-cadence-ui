@@ -1,0 +1,176 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundation/Guidelines/Page — Dashboard" />
+
+<style>{`
+  .g { font-family: "Inter", sans-serif; max-width: 800px; }
+  .g h2 { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #9ca3af; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; margin: 40px 0 20px; }
+  .g p { font-size: 14px; color: #374151; line-height: 1.6; margin: 0 0 12px; }
+  .g ul { font-size: 14px; color: #374151; line-height: 1.8; padding-left: 20px; margin: 0 0 16px; }
+  .rule { display: flex; gap: 16px; margin-bottom: 10px; }
+  .rule-icon { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-top: 2px; }
+  .do .rule-icon { background: #dcfce7; color: #15803d; }
+  .dont .rule-icon { background: #fee2e2; color: #b91c1c; }
+  .rule-text { font-size: 14px; color: #374151; line-height: 1.5; }
+  .spec { background: #f9fafb; border: 1px solid #f3f4f6; border-radius: 8px; padding: 16px 20px; margin: 12px 0 20px; font-size: 13px; color: #374151; line-height: 1.8; }
+  .spec code { background: #f3f4f6; padding: 1px 6px; border-radius: 4px; font-size: 12px; }
+  .label { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #9ca3af; margin-bottom: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0 20px; font-size: 13px; }
+  th { text-align: left; padding: 8px 12px; background: #f9fafb; color: #374151; font-weight: 600; border: 1px solid #e5e7eb; }
+  td { padding: 8px 12px; border: 1px solid #e5e7eb; color: #374151; vertical-align: top; }
+`}</style>
+
+<div className="g">
+
+# Page de type Dashboard
+
+Référence : **ScenariosMobilite**
+
+<div className="g h2">1. Structure globale</div>
+
+La page est composée de trois zones empilées verticalement dans un conteneur pleine hauteur :
+
+```
+┌─────────────────────────────────────────────────┐
+│  Header de page (breadcrumb + titre + actions)  │
+├─────────────────────────────────────────────────┤
+│  Carte principale (onglets + tableau + vide)    │
+└─────────────────────────────────────────────────┘
+```
+
+```tsx
+<div style={{ display: "flex", flexDirection: "column", height: "100%", padding: "24px 32px", gap: 24 }}>
+  <PageHeader /> {/* breadcrumb + titre + SegmentedControl */}
+  <ContentCard />  {/* onglets + actions + tableau */}
+</div>
+```
+
+<div className="g h2">2. Header de page</div>
+
+Le header regroupe sur une seule ligne : le breadcrumb + NavigationDropdown à gauche, et un `SegmentedControl` de bascule de vue à droite.
+
+<div className="spec">
+  <div className="label">Breadcrumb</div>
+  Composant : <code>Breadcrumbs</code> + <code>NavigationDropdown</code> en position centrale<br/>
+  Police : Inter 12px / 400 — couleur parents <code>#888</code>, courant <code>#555</code><br/>
+  Séparateur : <code>#ccc</code>
+
+  <br/><br/>
+  <div className="label">Titre de page</div>
+  Police : Uxum Grotesque, 28px, weight 500, couleur <code>#002830</code><br/>
+  Margin top : <code>6px</code> sous le breadcrumb
+
+  <br/><br/>
+  <div className="label">Bascule de vue (droite)</div>
+  Composant : <code>SegmentedControl</code><br/>
+  Aligné verticalement avec le titre, <code>align-self: flex-end</code>
+</div>
+
+```tsx
+<div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
+  <div>
+    <Breadcrumbs items={[
+      { id: "home", label: "Accueil", href: "#" },
+      { id: "current", label: "Scénarios de mobilité" },
+    ]} />
+    <h1 style={{ fontFamily: "Uxum Grotesque", fontSize: 28, fontWeight: 500,
+                 color: "#002830", margin: "6px 0 0" }}>
+      Scénarios de mobilité
+    </h1>
+  </div>
+  <SegmentedControl
+    options={[{ id: "list", label: "Liste" }, { id: "map", label: "Carte" }]}
+    value={view}
+    onChange={setView}
+  />
+</div>
+```
+
+<div className="g h2">3. Carte principale</div>
+
+Toute la zone de contenu est encapsulée dans une carte blanche.
+
+<div className="spec">
+  <code>background: #ffffff</code><br/>
+  <code>border-radius: 12px</code><br/>
+  <code>box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07)</code><br/>
+  <code>overflow: hidden</code> — pour que les onglets touchent les bords
+</div>
+
+<div className="g h2">4. Rangée d'onglets et actions</div>
+
+La rangée supérieure de la carte est divisée en deux zones : les onglets à gauche, les actions à droite. Elle a une `border-bottom` qui la sépare du tableau.
+
+<div className="spec">
+  <div className="label">Onglets</div>
+  Composant : <code>Tab</code>, gap <code>16px</code>, texte en <strong>UPPERCASE</strong><br/>
+  Padding de la rangée : <code>0 24px</code><br/>
+  Border bottom : <code>1px solid #f0f0f0</code>
+
+  <br/><br/>
+  <div className="label">Actions (droite)</div>
+  <code>Toggle</code> + <code>PrimaryButton</code> — séparés par <code>gap: 16px</code><br/>
+  Alignés verticalement au centre de la rangée<br/>
+  Le <code>PrimaryButton</code> est toujours l'action de création principale
+</div>
+
+```tsx
+<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between",
+              padding: "0 24px", borderBottom: "1px solid #f0f0f0", height: 52 }}>
+  <div style={{ display: "flex", gap: 16 }}>
+    <Tab label="En cours" active />
+    <Tab label="À venir" />
+    <Tab label="Passées" />
+    <Tab label="Brouillon" />
+  </div>
+  <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+    <Toggle label="Affichage cartographique" checked={mapView} onChange={setMapView} />
+    <PrimaryButton label="Créer un scénario de mobilité" onClick={onCreate} />
+  </div>
+</div>
+```
+
+<div className="g h2">5. En-têtes de tableau</div>
+
+<div className="spec">
+  Police : <strong>Spline Sans Mono</strong>, 11px, weight 400<br/>
+  Couleur : <code>#888</code><br/>
+  Texte en <strong>UPPERCASE</strong><br/>
+  Padding cellule : <code>12px 24px</code><br/>
+  Border bottom : <code>1px solid #f0f0f0</code>
+</div>
+
+```css
+.table-header {
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 11px;
+  font-weight: 400;
+  color: #888;
+  text-transform: uppercase;
+  padding: 12px 24px;
+  border-bottom: 1px solid #f0f0f0;
+}
+```
+
+<div className="g h2">6. État vide</div>
+
+<div className="spec">
+  Centré horizontalement et verticalement dans la zone tableau<br/>
+  Texte : Inter 14px / 400, couleur <code>#888</code><br/>
+  Padding vertical minimum : <code>64px</code><br/>
+  Message type : <em>« Aucun scénario enregistré pour le moment. »</em>
+</div>
+
+```tsx
+<div style={{ display: "flex", alignItems: "center", justifyContent: "center",
+              padding: "64px 24px", color: "#888", fontSize: 14 }}>
+  Aucun scénario enregistré pour le moment.
+</div>
+```
+
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Toujours afficher un message d'état vide explicite — jamais un tableau vide sans texte.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Le <code>PrimaryButton</code> de création reste visible même à l'état vide.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas utiliser le <code>SegmentedControl</code> des onglets de filtre — uniquement <code>Tab</code>.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas placer d'actions secondaires dans la carte — uniquement le <code>Toggle</code> et le <code>PrimaryButton</code>.</span></div>
+
+</div>

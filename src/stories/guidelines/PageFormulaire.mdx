@@ -1,0 +1,258 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundation/Guidelines/Page — Formulaire" />
+
+<style>{`
+  .g { font-family: "Inter", sans-serif; max-width: 800px; }
+  .g h2 { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #9ca3af; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; margin: 40px 0 20px; }
+  .g p { font-size: 14px; color: #374151; line-height: 1.6; margin: 0 0 12px; }
+  .g ul { font-size: 14px; color: #374151; line-height: 1.8; padding-left: 20px; margin: 0 0 16px; }
+  .rule { display: flex; gap: 16px; margin-bottom: 10px; }
+  .rule-icon { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-top: 2px; }
+  .do .rule-icon { background: #dcfce7; color: #15803d; }
+  .dont .rule-icon { background: #fee2e2; color: #b91c1c; }
+  .rule-text { font-size: 14px; color: #374151; line-height: 1.5; }
+  .spec { background: #f9fafb; border: 1px solid #f3f4f6; border-radius: 8px; padding: 16px 20px; margin: 12px 0 20px; font-size: 13px; color: #374151; line-height: 1.8; }
+  .spec code { background: #f3f4f6; padding: 1px 6px; border-radius: 4px; font-size: 12px; }
+  .label { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #9ca3af; margin-bottom: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0 20px; font-size: 13px; }
+  th { text-align: left; padding: 8px 12px; background: #f9fafb; color: #374151; font-weight: 600; border: 1px solid #e5e7eb; }
+  td { padding: 8px 12px; border: 1px solid #e5e7eb; color: #374151; vertical-align: top; }
+`}</style>
+
+<div className="g">
+
+# Page de type Formulaire
+
+Référence : **CreateScenarioForm**
+
+<div className="g h2">1. Structure globale</div>
+
+La page formulaire est un layout en **deux colonnes sans gap**, pleine hauteur, qui ne scroll pas au niveau de la page — chaque colonne gère son propre scroll.
+
+```
+┌──────────────────────────────────────────────────────────┐
+│  Header de page (identique au dashboard)                 │
+├────────────────────────┬─────────────────────────────────┤
+│  Panel formulaire      │  Carte contextuelle (carte,     │
+│  560px — scrollable    │  prévisualisation…)             │
+│                        │  pleine hauteur — fixe          │
+└────────────────────────┴─────────────────────────────────┘
+```
+
+```tsx
+<div style={{ display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden" }}>
+  <PageHeader />
+  <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+    <FormPanel />   {/* 560px, overflow-y: auto */}
+    <MapPanel />    {/* flex: 1, border-left */}
+  </div>
+</div>
+```
+
+<div className="g h2">2. Header de page</div>
+
+Identique à la page dashboard : breadcrumb + titre Uxum Grotesque. Pas de `SegmentedControl` côté droit sur les pages formulaire.
+
+<div className="spec">
+  Même structure que le dashboard<br/>
+  Padding : <code>24px 32px</code><br/>
+  Pas d'actions à droite du header — les actions sont dans le panel formulaire
+</div>
+
+<div className="g h2">3. Panel formulaire (colonne gauche)</div>
+
+<div className="spec">
+  <div className="label">Dimensions</div>
+  Largeur fixe : <code>560px</code>, flex-shrink : <code>0</code><br/>
+  Hauteur : <code>100%</code>, overflow-y : <code>auto</code><br/>
+
+  <br/>
+  <div className="label">Ombre</div>
+  <code>box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.10), 0 0 2px 0 rgba(0, 0, 0, 0.25)</code><br/>
+  Positionnée à droite du panel — le panel « flotte » au-dessus de la carte
+
+  <br/><br/>
+  <div className="label">Background</div>
+  <code>#ffffff</code> — pas de border-radius (bords franc haut/bas)
+</div>
+
+```css
+.form-panel {
+  width: 560px;
+  flex-shrink: 0;
+  height: 100%;
+  overflow-y: auto;
+  background: #ffffff;
+  box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.10),
+              0 0 2px 0 rgba(0, 0, 0, 0.25);
+}
+```
+
+<div className="g h2">4. En-tête du formulaire</div>
+
+La première zone du panel contient le titre du formulaire, un sous-titre descriptif et le lien de retour.
+
+<div className="spec">
+  <div className="label">Titre du formulaire</div>
+  Police : Inter, 14px, weight 600, couleur <code>#1a1a2e</code><br/>
+
+  <br/>
+  <div className="label">Sous-titre</div>
+  Police : Inter, 12px, weight 400, couleur <code>#888</code>, line-height 1.5<br/>
+
+  <br/>
+  <div className="label">Lien retour</div>
+  Composant : <code>Link</code> avec prop <code>icon={"{"}ArrowLeft{"}"}</code>, variant <code>secondary</code><br/>
+  Positionné au-dessus du titre<br/>
+
+  <br/>
+  <div className="label">Padding de la zone</div>
+  <code>24px</code> — séparée du reste par <code>border-bottom: 1px solid #f0f0f0</code>
+</div>
+
+```tsx
+<div style={{ padding: 24, borderBottom: "1px solid #f0f0f0" }}>
+  <Link icon={<ArrowLeft />} variant="secondary" href="/scenarios">
+    Retour aux scénarios
+  </Link>
+  <h2 style={{ fontFamily: "Inter", fontSize: 14, fontWeight: 600,
+               color: "#1a1a2e", margin: "12px 0 4px" }}>
+    Créer un scénario de mobilité
+  </h2>
+  <p style={{ fontFamily: "Inter", fontSize: 12, fontWeight: 400,
+              color: "#888", lineHeight: 1.5, margin: 0 }}>
+    Configurez les paramètres de votre nouveau scénario.
+  </p>
+</div>
+```
+
+<div className="g h2">5. Sections du formulaire</div>
+
+Chaque section est séparée de la suivante par un `border-bottom`.
+
+<div className="spec">
+  <div className="label">Titre de section</div>
+  Police : Inter, 13px, weight 600, couleur <code>#1a1a2e</code>, UPPERCASE<br/>
+  Margin bottom : <code>16px</code>
+
+  <br/><br/>
+  <div className="label">Séparateur</div>
+  <code>border-bottom: 1px solid #f0f0f0</code> entre chaque section<br/>
+
+  <br/>
+  <div className="label">Padding de section</div>
+  <code>24px</code> sur tous les côtés<br/>
+
+  <br/>
+  <div className="label">Champs</div>
+  Composants : <code>TextInput</code>, <code>Dropdown</code>, <code>SegmentedControlAlt</code>, <code>DatePicker</code><br/>
+  Police des valeurs : Inter 13px<br/>
+  Gap entre champs : <code>16px</code>
+</div>
+
+```tsx
+<section style={{ padding: 24, borderBottom: "1px solid #f0f0f0" }}>
+  <p style={{ fontFamily: "Inter", fontSize: 13, fontWeight: 600,
+              color: "#1a1a2e", textTransform: "uppercase", marginBottom: 16 }}>
+    1. Informations générales
+  </p>
+  <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <TextInput label="Nom du scénario" placeholder="Ex : Perturbation ligne A" />
+    <Dropdown label="Réseau" options={reseaux} value={reseau} onChange={setReseau} />
+    <SegmentedControlAlt
+      label="Type"
+      options={[{ id: "planned", label: "Planifié" }, { id: "unplanned", label: "Non planifié" }]}
+      value={type}
+      onChange={setType}
+    />
+  </div>
+</section>
+```
+
+<div className="g h2">6. Actions de navigation (pied de panel)</div>
+
+Le pied du panel est fixe (ne scroll pas) et contient les actions de navigation entre étapes.
+
+<div className="spec">
+  Position : collé au bas du panel, <code>position: sticky; bottom: 0</code><br/>
+  Background : <code>#ffffff</code> avec <code>border-top: 1px solid #f0f0f0</code><br/>
+  Padding : <code>16px 24px</code><br/>
+  Disposition : groupe d'actions aligné à droite
+</div>
+
+```tsx
+{/* Pied fixe */}
+<div style={{ position: "sticky", bottom: 0, background: "#ffffff",
+              borderTop: "1px solid #f0f0f0", padding: "16px 24px" }}>
+  <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end" }}>
+    {/* 3e action optionnelle */}
+    <Link variant="secondary" hideArrow onClick={onSaveDraft}>
+      Enregistrer comme brouillon
+    </Link>
+    <PrimaryButton outline label="Précédent" onClick={onPrev} />
+    <PrimaryButton label="Suivant" onClick={onNext} />
+  </div>
+</div>
+```
+
+<div className="g h2">7. Colonne contextuelle (droite)</div>
+
+<div className="spec">
+  Flex : <code>1</code> — occupe le reste de la largeur<br/>
+  Border left : <code>1px solid #e5e7eb</code><br/>
+  Overflow : <code>hidden</code> — la carte ou la visualisation gère son propre rendu<br/>
+  Pas de padding — le contenu (carte, image) occupe 100% de la zone
+</div>
+
+<div className="g h2">8. Volet latéral contextuel (bibliothèque, fichiers…)</div>
+
+Un panneau secondaire peut s'ouvrir en glissant depuis la droite par-dessus la colonne contextuelle.
+
+<div className="spec">
+  <div className="label">Dimensions</div>
+  Largeur : <code>900px</code><br/>
+  Hauteur : <code>100%</code><br/>
+  Border-radius : <code>10px 0 0 10px</code> (arrondi côté gauche uniquement)
+
+  <br/><br/>
+  <div className="label">Transition d'ouverture</div>
+  Propriété : <code>transform: translateX()</code><br/>
+  Timing : <code>300ms cubic-bezier(0.4, 0, 0.2, 1)</code><br/>
+  Fermé : <code>translateX(100%)</code> → Ouvert : <code>translateX(0)</code>
+
+  <br/><br/>
+  <div className="label">Ombre</div>
+  <code>box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12)</code>
+</div>
+
+```css
+.side-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 900px;
+  height: 100%;
+  background: #ffffff;
+  border-radius: 10px 0 0 10px;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
+  transform: translateX(100%);
+  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.side-panel--open {
+  transform: translateX(0);
+}
+```
+
+<div className="g h2">Règles</div>
+
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Le panel formulaire a toujours une largeur fixe de <code>560px</code> — ne pas le rendre fluide.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Chaque section est séparée par <code>border-bottom: 1px solid #f0f0f0</code> — jamais par un espace vide seul.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Les actions de navigation sont toujours en position sticky en bas du panel.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Utiliser <code>SegmentedControlAlt</code> (jamais <code>SegmentedControl</code>) dans les sections de formulaire.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas faire scroller la page entière — seul le panel gauche est scrollable.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas ajouter de padding sur la colonne contextuelle droite — le contenu occupe 100%.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas animer le volet avec <code>opacity</code> seul — toujours utiliser <code>translateX</code> + <code>cubic-bezier(0.4, 0, 0.2, 1)</code>.</span></div>
+
+</div>
