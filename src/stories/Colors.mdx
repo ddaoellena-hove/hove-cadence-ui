@@ -1,0 +1,242 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundation/Couleurs" />
+
+<style>{`
+  .colors-page { font-family: "Inter", sans-serif; max-width: 960px; }
+
+  /* ── Header ── */
+  .colors-header {
+    background: #002830;
+    border-radius: 12px;
+    padding: 32px 40px;
+    margin-bottom: 48px;
+  }
+  .colors-header__eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 8px;
+  }
+  .colors-header__dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #00AECE;
+  }
+  .colors-header__title {
+    font-family: "Uxum Grotesque", "Georgia", sans-serif;
+    font-size: 40px;
+    font-weight: 500;
+    color: #ffffff;
+    margin: 0;
+  }
+
+  /* ── Section title ── */
+  .palette-section { margin-bottom: 48px; }
+  .palette-section__title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #9ca3af;
+    margin: 0 0 20px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  /* ── Palette grid ── */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 16px;
+  }
+  .palette-grid--6 {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  /* ── Swatch card ── */
+  .swatch-card { display: flex; flex-direction: column; gap: 8px; }
+  .swatch-card__color {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+  .swatch-card__name {
+    font-size: 12px;
+    font-weight: 500;
+    color: #1a1a2e;
+    line-height: 1.3;
+  }
+  .swatch-card__hex {
+    font-family: "Spline Sans Mono", monospace;
+    font-size: 11px;
+    font-weight: 400;
+    color: #6b7280;
+  }
+  .swatch-card__tag {
+    display: inline-block;
+    background: #f3f4f6;
+    color: #6b7280;
+    font-family: "Spline Sans Mono", monospace;
+    font-size: 9px;
+    font-weight: 500;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 2px;
+  }
+`}</style>
+
+<div className="colors-page">
+
+<div className="colors-header">
+  <div className="colors-header__eyebrow">
+    <span className="colors-header__dot" />
+    Hove Design System
+  </div>
+  <h1 className="colors-header__title">Couleurs</h1>
+</div>
+
+<div className="palette-section">
+<p className="palette-section__title">Palettes</p>
+
+{/* ── Dark blue ── */}
+<div className="palette-grid" style={{ marginBottom: 32 }}>
+  {[
+    { name: "Dark blue 10%",     hex: "#E5E9EA", tag: "darkblue-10"     },
+    { name: "Dark blue 25%",     hex: "#BFC9CB", tag: "darkblue-25"     },
+    { name: "Dark blue 50%",     hex: "#809397", tag: "darkblue-50"     },
+    { name: "Dark blue 75%",     hex: "#405E64", tag: "darkblue-75"     },
+    { name: "Dark blue 90%",     hex: "#002830", tag: "darkblue-90"     },
+    { name: "Dark blue 100%",    hex: "#002830", tag: "darkblue-100"    },
+    { name: "Dark blue 50% AA",  hex: "#69797D", tag: "darkblue-50-AA"  },
+  ].map(s => (
+    <div className="swatch-card" key={s.tag}>
+      <div className="swatch-card__color" style={{ background: s.hex }} />
+      <span className="swatch-card__name">{s.name}</span>
+      <span className="swatch-card__hex">{s.hex}</span>
+      <span className="swatch-card__tag">{s.tag}</span>
+    </div>
+  ))}
+</div>
+
+{/* ── Blue teal ── */}
+<div className="palette-grid" style={{ marginBottom: 32 }}>
+  {[
+    { name: "Blue teal 10%",     hex: "#E5ECED", tag: "blueteal-10"     },
+    { name: "Blue teal 25%",     hex: "#BFD1D3", tag: "blueteal-25"     },
+    { name: "Blue teal 50%",     hex: "#80A2A7", tag: "blueteal-50"     },
+    { name: "Blue teal 75%",     hex: "#40747C", tag: "blueteal-75"     },
+    { name: "Blue teal 90%",     hex: "#004650", tag: "blueteal-90"     },
+    { name: "Blue teal 100%",    hex: "#004650", tag: "blueteal-100"    },
+    { name: "Blue teal 50% AA",  hex: "#5C7B80", tag: "blueteal-50-AA"  },
+  ].map(s => (
+    <div className="swatch-card" key={s.tag}>
+      <div className="swatch-card__color" style={{ background: s.hex }} />
+      <span className="swatch-card__name">{s.name}</span>
+      <span className="swatch-card__hex">{s.hex}</span>
+      <span className="swatch-card__tag">{s.tag}</span>
+    </div>
+  ))}
+</div>
+
+{/* ── Blue Keolis ── */}
+<div className="palette-grid--6 palette-grid" style={{ marginBottom: 32 }}>
+  {[
+    { name: "Blue Keolis 10%",   hex: "#E5F8FB", tag: "bluekeolis-10"   },
+    { name: "Blue Keolis 25%",   hex: "#BFEBF3", tag: "bluekeolis-25"   },
+    { name: "Blue Keolis 50%",   hex: "#80D7E7", tag: "bluekeolis-50"   },
+    { name: "Blue Keolis 75%",   hex: "#40C2DA", tag: "bluekeolis-75"   },
+    { name: "Blue Keolis 90%",   hex: "#00AECE", tag: "bluekeolis-90"   },
+    { name: "Blue Keolis 100%",  hex: "#00AECE", tag: "bluekeolis-100"  },
+  ].map(s => (
+    <div className="swatch-card" key={s.tag}>
+      <div className="swatch-card__color" style={{ background: s.hex }} />
+      <span className="swatch-card__name">{s.name}</span>
+      <span className="swatch-card__hex">{s.hex}</span>
+      <span className="swatch-card__tag">{s.tag}</span>
+    </div>
+  ))}
+</div>
+
+{/* ── Orange ── */}
+<div className="palette-grid--6 palette-grid" style={{ marginBottom: 32 }}>
+  {[
+    { name: "Orange 10%",   hex: "#FFEDE6", tag: "orange-10"   },
+    { name: "Orange 25%",   hex: "#FFD1C0", tag: "orange-25"   },
+    { name: "Orange 50%",   hex: "#FEA381", tag: "orange-50"   },
+    { name: "Orange 75%",   hex: "#FD7542", tag: "orange-75"   },
+    { name: "Orange 90%",   hex: "#FD4703", tag: "orange-90"   },
+    { name: "Orange 100%",  hex: "#FD4703", tag: "orange-100"  },
+  ].map(s => (
+    <div className="swatch-card" key={s.tag}>
+      <div className="swatch-card__color" style={{ background: s.hex }} />
+      <span className="swatch-card__name">{s.name}</span>
+      <span className="swatch-card__hex">{s.hex}</span>
+      <span className="swatch-card__tag">{s.tag}</span>
+    </div>
+  ))}
+</div>
+
+{/* ── Light grey ── */}
+<div className="palette-grid--6 palette-grid" style={{ marginBottom: 32 }}>
+  {[
+    { name: "Light grey 10%",   hex: "#FBFAFA", tag: "lightgrey-10"   },
+    { name: "Light grey 25%",   hex: "#F5F4F2", tag: "lightgrey-25"   },
+    { name: "Light grey 50%",   hex: "#EBE9E5", tag: "lightgrey-50"   },
+    { name: "Light grey 75%",   hex: "#E1DDD8", tag: "lightgrey-75"   },
+    { name: "Light grey 90%",   hex: "#D7D2CB", tag: "lightgrey-90"   },
+    { name: "Light grey 100%",  hex: "#D7D2CB", tag: "lightgrey-100"  },
+  ].map(s => (
+    <div className="swatch-card" key={s.tag}>
+      <div className="swatch-card__color" style={{ background: s.hex }} />
+      <span className="swatch-card__name">{s.name}</span>
+      <span className="swatch-card__hex">{s.hex}</span>
+      <span className="swatch-card__tag">{s.tag}</span>
+    </div>
+  ))}
+</div>
+
+{/* ── Brown ── */}
+<div className="palette-grid--6 palette-grid" style={{ marginBottom: 32 }}>
+  {[
+    { name: "Brown 10%",   hex: "#F2F1F0", tag: "brown-10"   },
+    { name: "Brown 25%",   hex: "#DEDCD9", tag: "brown-25"   },
+    { name: "Brown 50%",   hex: "#BDB9B4", tag: "brown-50"   },
+    { name: "Brown 75%",   hex: "#9D968E", tag: "brown-75"   },
+    { name: "Brown 90%",   hex: "#7C7369", tag: "brown-90"   },
+    { name: "Brown 100%",  hex: "#7C7369", tag: "brown-100"  },
+  ].map(s => (
+    <div className="swatch-card" key={s.tag}>
+      <div className="swatch-card__color" style={{ background: s.hex }} />
+      <span className="swatch-card__name">{s.name}</span>
+      <span className="swatch-card__hex">{s.hex}</span>
+      <span className="swatch-card__tag">{s.tag}</span>
+    </div>
+  ))}
+</div>
+
+{/* ── Black ── */}
+<div className="palette-grid" style={{ marginBottom: 32 }}>
+  {[
+    { name: "Black 10%",     hex: "#E5E5E5", tag: "black-10"     },
+    { name: "Black 25%",     hex: "#BFBFBF", tag: "black-25"     },
+    { name: "Black 50%",     hex: "#808080", tag: "black-50"     },
+    { name: "Black 75%",     hex: "#404040", tag: "black-75"     },
+    { name: "Black 90%",     hex: "#1A1A1A", tag: "black-90"     },
+    { name: "Black 100%",    hex: "#000000", tag: "black-100"    },
+    { name: "Black 50% AA",  hex: "#737373", tag: "black-50-AA"  },
+  ].map(s => (
+    <div className="swatch-card" key={s.tag}>
+      <div className="swatch-card__color" style={{ background: s.hex }} />
+      <span className="swatch-card__name">{s.name}</span>
+      <span className="swatch-card__hex">{s.hex}</span>
+      <span className="swatch-card__tag">{s.tag}</span>
+    </div>
+  ))}
+</div>
+
+</div>
+</div>
