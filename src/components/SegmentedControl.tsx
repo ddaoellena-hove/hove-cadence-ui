@@ -5,7 +5,7 @@
  * exclusive options. Supports 2 or 3 segments, enabled/disabled state, and
  * full keyboard / ARIA accessibility.
  */
-import React, { useState } from "react";
+import React, { useState, useRef, useLayoutEffect } from "react";
 import "./segmented-control.css";
 
 export interface SegmentedControlOption {
@@ -66,6 +66,17 @@ export const SegmentedControl = React.forwardRef<
 
     const activeValue = isControlled ? valueProp : internalValue;
 
+    // Pill slide animation
+    const segmentRefs = useRef<(HTMLButtonElement | null)[]>([]);
+    const [pillStyle, setPillStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
+
+    useLayoutEffect(() => {
+      const activeIdx = options.findIndex((o) => o.value === activeValue);
+      const el = segmentRefs.current[activeIdx];
+      if (!el) return;
+      setPillStyle({ left: el.offsetLeft, width: el.offsetWidth });
+    }, [activeValue, options]);
+
     const handleSelect = (val: string) => {
       if (disabled || val === activeValue) return;
       if (!isControlled) setInternalValue(val);
@@ -104,6 +115,13 @@ export const SegmentedControl = React.forwardRef<
         aria-label={ariaLabel}
         aria-disabled={disabled || undefined}
       >
+        {/* Sliding pill */}
+        <span
+          className="segmented-control__pill"
+          style={{ left: pillStyle.left, width: pillStyle.width }}
+          aria-hidden="true"
+        />
+
         {options.map((option, idx) => {
           const isActive = option.value === activeValue;
           const btnClass = [
@@ -116,6 +134,7 @@ export const SegmentedControl = React.forwardRef<
           return (
             <button
               key={option.value}
+              ref={(el) => { segmentRefs.current[idx] = el; }}
               type="button"
               role="radio"
               aria-checked={isActive}
