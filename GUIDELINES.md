@@ -19,12 +19,26 @@ Version complète et interactive disponible dans le Storybook (`@ddaoellena/cade
 
 - ✅ Un seul `PrimaryButton` par zone d'action.
 - ✅ Placer le bouton principal à droite quand aligné avec un secondaire.
+- ✅ En groupe de deux boutons (Primary ou Secondary) : toujours `outline` à gauche, `default` (rempli) à droite.
 - ✅ Utiliser `variant="danger"` sur `Link` pour les actions destructives.
+- ❌ Ne jamais mettre deux boutons remplis ni deux `outline` côte à côte.
+- ❌ Ne pas mélanger `PrimaryButton` et `SecondaryButton` dans le même groupe.
 - ❌ Ne pas utiliser `PrimaryButton` pour de la navigation.
-- ❌ Ne pas empiler deux `PrimaryButton` côte à côte.
 - ❌ Ne pas désactiver un bouton sans `Tooltip` explicatif.
 
-**En fin de formulaire — deux boutons**
+**Règle universelle — boutons en groupe**
+
+Que ce soit `PrimaryButton` ou `SecondaryButton`, lorsqu'ils apparaissent en groupe de deux, l'un est toujours `outline` (à gauche) et l'autre toujours `default` rempli (à droite). Jamais deux remplis, jamais deux outlines.
+
+```tsx
+// ✅ Groupe de SecondaryButton
+<div style={{ display: "flex", gap: 8 }}>
+  <SecondaryButton outline label="Exporter" />
+  <SecondaryButton label="Appliquer" />
+</div>
+```
+
+**En fin de formulaire — deux PrimaryButton**
 
 Associer la variante `outline` (action secondaire, à gauche) et la variante `default` (action principale, à droite) :
 

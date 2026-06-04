@@ -93,11 +93,27 @@ Le `PrimaryButton` est utilisé comme **action principale de la page** — typiq
 </div>
 ```
 
-<div className="g h2">Règles supplémentaires</div>
+<div className="g h2">Règle universelle — boutons en groupe</div>
 
-<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">En formulaire avec deux boutons : <code>outline</code> à gauche, <code>default</code> à droite.</span></div>
+La même règle s'applique à `PrimaryButton` **et** `SecondaryButton` : lorsqu'ils apparaissent en groupe de deux, **l'un est toujours `outline`, l'autre toujours `default` (rempli)**. On ne met jamais deux boutons remplis ni deux outlines côte à côte.
+
+```tsx
+// ✅ Groupe de SecondaryButton
+<div style={{ display: "flex", gap: 8 }}>
+  <SecondaryButton outline label="Exporter" onClick={onExport} />
+  <SecondaryButton label="Appliquer" onClick={onApply} />
+</div>
+
+// ✅ Groupe de PrimaryButton (fin de formulaire)
+<div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+  <PrimaryButton outline label="Réinitialiser" onClick={onReset} />
+  <PrimaryButton label="Suivant" onClick={onNext} />
+</div>
+```
+
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">En groupe de deux : toujours <code>outline</code> à gauche, <code>default</code> (rempli) à droite.</span></div>
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">En dashboard : <code>PrimaryButton</code> toujours en haut à droite, pour la création.</span></div>
-<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas combiner deux <code>PrimaryButton default</code> — l'un doit toujours être <code>outline</code>.</span></div>
-<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas utiliser <code>SecondaryButton</code> à la place de <code>PrimaryButton outline</code> en pied de formulaire.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne jamais mettre deux boutons remplis ni deux <code>outline</code> côte à côte.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas mélanger <code>PrimaryButton</code> et <code>SecondaryButton</code> dans le même groupe.</span></div>
 
 </div>
