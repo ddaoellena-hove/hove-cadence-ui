@@ -95,7 +95,8 @@ Positionner en haut à droite, à l'opposé des onglets/filtres :
 |---|---|
 | `TextInput` | Texte libre — nom, description, recherche. |
 | `Dropdown` | Choix parmi une liste fixe (3 options ou plus). |
-| `SegmentedControl` | 2 à 4 options mutuellement exclusives visibles d'un coup. |
+| `SegmentedControlAlt` | 2 à 4 options mutuellement exclusives dans un formulaire. **À privilégier dans les formulaires.** |
+| `SegmentedControl` | Réservé à la **navigation** entre vues ou sections — ne pas utiliser dans un formulaire. |
 | `DatePicker` | Sélection d'une date ou plage de dates. |
 | `Checkbox` | Option booléenne indépendante, ou sélection multiple. |
 | `RadioButton` | Sélection exclusive parmi 2 à 5 options courtes. |
@@ -108,6 +109,8 @@ Positionner en haut à droite, à l'opposé des onglets/filtres :
 - ✅ Utiliser la prop `helper` de `TextInput` pour les instructions.
 - ✅ Afficher les erreurs avec `state="error"` + message `helper`.
 - ✅ Grouper les champs connexes avec un titre de section.
+- ✅ Dans un formulaire, toujours utiliser `SegmentedControlAlt` — le `SegmentedControl` classique est réservé à la navigation.
+- ❌ Ne pas utiliser `SegmentedControl` dans un formulaire.
 - ❌ Ne pas mélanger `Checkbox` et `RadioButton` dans la même liste.
 - ❌ Ne pas utiliser `Toggle` pour des choix qui nécessitent une confirmation.
 

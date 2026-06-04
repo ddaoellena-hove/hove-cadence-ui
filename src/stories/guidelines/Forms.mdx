@@ -30,7 +30,8 @@ import { Meta } from "@storybook/addon-docs/blocks";
   <tbody>
     <tr><td><code>TextInput</code></td><td>Texte libre — nom, description, recherche.</td></tr>
     <tr><td><code>Dropdown</code></td><td>Choix parmi une liste fixe (3 options ou plus). En dessous de 3, préférer <code>SegmentedControl</code>.</td></tr>
-    <tr><td><code>SegmentedControl</code></td><td>2 à 4 options mutuellement exclusives et visibles d'un coup.</td></tr>
+    <tr><td><code>SegmentedControlAlt</code></td><td>2 à 4 options mutuellement exclusives dans un formulaire. <strong>Variante à privilégier dans les formulaires.</strong></td></tr>
+    <tr><td><code>SegmentedControl</code></td><td>Réservé à la <strong>navigation</strong> entre vues ou sections — ne pas utiliser dans un formulaire.</td></tr>
     <tr><td><code>DatePicker</code></td><td>Sélection d'une date ou plage de dates.</td></tr>
     <tr><td><code>Checkbox</code></td><td>Option booléenne indépendante, ou sélection multiple dans une liste.</td></tr>
     <tr><td><code>RadioButton</code></td><td>Sélection exclusive parmi 2 à 5 options courtes.</td></tr>
@@ -71,6 +72,8 @@ import { Meta } from "@storybook/addon-docs/blocks";
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Utiliser le <code>helper</code> de <code>TextInput</code> pour les instructions, jamais le placeholder.</span></div>
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Afficher les erreurs de validation avec <code>state="error"</code> + message <code>helper</code>.</span></div>
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Grouper les champs connexes et les séparer des autres par un espace ou un titre de section.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Dans un formulaire, toujours utiliser <code>SegmentedControlAlt</code> — le <code>SegmentedControl</code> classique est réservé à la navigation.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas utiliser <code>SegmentedControl</code> dans un formulaire.</span></div>
 <div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas mélanger <code>Checkbox</code> et <code>RadioButton</code> dans la même liste de sélection.</span></div>
 <div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas utiliser <code>Toggle</code> pour des choix qui nécessitent une confirmation (préférer <code>Checkbox</code> + bouton).</span></div>
 
