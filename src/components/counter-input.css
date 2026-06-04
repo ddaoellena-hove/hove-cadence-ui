@@ -1,0 +1,85 @@
+/* ── Root ── */
+.counter-input {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.06), 0px 1px 2px rgba(0, 0, 0, 0.04);
+  height: 52px;
+  font-family: "Inter", Helvetica, sans-serif;
+  user-select: none;
+}
+
+/* ── Buttons ── */
+.counter-input__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  flex-shrink: 0;
+  background: #004650;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 120ms ease;
+  outline: none;
+}
+
+.counter-input__btn--dec {
+  border-radius: 10px 0 0 10px;
+}
+
+.counter-input__btn--inc {
+  border-radius: 0 10px 10px 0;
+}
+
+.counter-input__btn:hover:not(:disabled) {
+  background: #002830;
+}
+
+.counter-input__btn:focus-visible {
+  outline: 2px solid #004650;
+  outline-offset: 2px;
+}
+
+.counter-input__btn:disabled {
+  background: #bfbfbf;
+  cursor: not-allowed;
+}
+
+/* ── Value display ── */
+.counter-input__value {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0 20px;
+  border-left: 1px solid #e5e5e5;
+  border-right: 1px solid #e5e5e5;
+  min-width: 80px;
+}
+
+.counter-input__number {
+  font-size: 16px;
+  font-weight: 500;
+  color: #9ca3af;
+  font-family: "Spline Sans Mono", monospace;
+  line-height: 1;
+}
+
+.counter-input__unit {
+  font-size: 14px;
+  font-weight: 400;
+  color: #9ca3af;
+  font-family: "Inter", Helvetica, sans-serif;
+  line-height: 1;
+}
+
+/* ── Disabled state ── */
+.counter-input--disabled {
+  opacity: 0.55;
+  pointer-events: none;
+}

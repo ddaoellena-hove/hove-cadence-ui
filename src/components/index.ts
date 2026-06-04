@@ -1,6 +1,7 @@
 export * from './AlertToast';
 export * from './Avatar';
 export * from './Breadcrumbs';
+export * from './CounterInput';
 export * from './Dropdown';
 export * from './Header';
 export * from './Link';
