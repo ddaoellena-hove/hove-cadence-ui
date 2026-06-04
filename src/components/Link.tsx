@@ -22,6 +22,8 @@ export interface LinkProps {
   className?: string;
   /** Optional inline styles */
   style?: React.CSSProperties;
+  /** Hide the default arrow icon (useful when used as a plain text button) */
+  hideArrow?: boolean;
 }
 
 export const Link = ({
@@ -35,6 +37,7 @@ export const Link = ({
   onClick,
   className = "",
   style,
+  hideArrow = false,
 }: LinkProps) => {
   const classes = [
     "link",
@@ -79,7 +82,7 @@ export const Link = ({
       >
         {icon && <span className="link__icon">{icon}</span>}
         {children}
-        {!icon && arrow}
+        {!icon && !hideArrow && arrow}
       </button>
     );
   }
@@ -96,7 +99,7 @@ export const Link = ({
     >
       {icon && <span className="link__icon">{icon}</span>}
       {children}
-      {!icon && arrow}
+      {!icon && !hideArrow && arrow}
     </a>
   );
 };

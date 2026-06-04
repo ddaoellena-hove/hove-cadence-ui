@@ -79,7 +79,9 @@ export const ExternalLink: Story = {
 
 export const AsButton: Story = {
   args: {
-    children: "Button-style link",
+    children: "Enregistrer comme brouillon",
+    variant: "secondary",
+    hideArrow: true,
     onClick: () => alert("Clicked!"),
   },
 };

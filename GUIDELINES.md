@@ -20,6 +20,7 @@ Version complète et interactive disponible dans le Storybook (`@ddaoellena/cade
 - ✅ Un seul `PrimaryButton` par zone d'action.
 - ✅ Placer le bouton principal à droite quand aligné avec un secondaire.
 - ✅ En groupe de deux boutons (Primary ou Secondary) : toujours `outline` à gauche, `default` (rempli) à droite.
+- ✅ Si une 3e action est nécessaire, la représenter sous forme de `Link` avec `hideArrow` — jamais un 3e bouton.
 - ✅ Utiliser `variant="danger"` sur `Link` pour les actions destructives.
 - ❌ Ne jamais mettre deux boutons remplis ni deux `outline` côte à côte.
 - ❌ Ne jamais associer un `PrimaryButton` et un `SecondaryButton` dans le même groupe — ils ne se mélangent pas.
@@ -63,6 +64,18 @@ Positionner en haut à droite, à l'opposé des onglets/filtres :
     <Toggle label="Affichage cartographique" />
     <PrimaryButton label="Créer un scénario de mobilité" onClick={onCreate} />
   </div>
+</div>
+```
+
+**Groupe de 3 actions — Link en 3e position**
+
+```tsx
+<div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end" }}>
+  <Link variant="secondary" hideArrow onClick={onSaveDraft}>
+    Enregistrer comme brouillon
+  </Link>
+  <PrimaryButton outline label="Réinitialiser" onClick={onReset} />
+  <PrimaryButton label="Valider" onClick={onSubmit} />
 </div>
 ```
 
