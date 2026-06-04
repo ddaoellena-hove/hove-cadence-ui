@@ -32,12 +32,14 @@ export interface DataVisualizationProps {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const SERIES_COLORS = [
-  "var(--CAI-dv-series-1)",
-  "var(--CAI-dv-series-2)",
-  "var(--CAI-dv-series-3)",
-  "var(--CAI-dv-series-4)",
-  "var(--CAI-dv-series-5)",
-  "var(--CAI-dv-series-6)",
+  "var(--CAI-dv-series-1)", /* #6B3FD6 Violet */
+  "var(--CAI-dv-series-2)", /* #1A91E8 Bleu */
+  "var(--CAI-dv-series-3)", /* #007D79 Teal */
+  "var(--CAI-dv-series-4)", /* #F1A21B Ambre */
+  "var(--CAI-dv-series-5)", /* #A0185E Magenta */
+  "var(--CAI-dv-series-6)", /* #F04E4E Corail */
+  "var(--CAI-dv-series-7)", /* #5A2D82 Violet foncé */
+  "var(--CAI-dv-series-8)", /* #55606E Ardoise */
 ];
 
 const MARGIN = { top: 16, right: 16, bottom: 36, left: 44 };

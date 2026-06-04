@@ -7,6 +7,16 @@
   background: #ffffff;
   font-family: "Spline Sans Mono", monospace;
   width: 100%;
+
+  /* ── Palette de séries ── */
+  --CAI-dv-series-1: #6B3FD6; /* Violet       — série principale */
+  --CAI-dv-series-2: #1A91E8; /* Bleu         — série 2 */
+  --CAI-dv-series-3: #007D79; /* Teal         — série 3 */
+  --CAI-dv-series-4: #F1A21B; /* Ambre        — série 4 / alertes */
+  --CAI-dv-series-5: #A0185E; /* Magenta      — série 5 */
+  --CAI-dv-series-6: #F04E4E; /* Corail       — incidents critiques */
+  --CAI-dv-series-7: #5A2D82; /* Violet foncé — série 7 */
+  --CAI-dv-series-8: #55606E; /* Ardoise      — neutre / divers */
 }
 
 /* SVG canvas */
