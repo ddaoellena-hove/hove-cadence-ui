@@ -61,6 +61,27 @@ export const ThirdActive: Story = {
   },
 };
 
+export const UnequalLengths: Story = {
+  args: {
+    options: [
+      { value: "scenario", label: "Scénario de mobilité" },
+      { value: "library",  label: "Bibliothèque" },
+    ],
+    defaultValue: "scenario",
+  },
+};
+
+export const UnequalLengthsThree: Story = {
+  args: {
+    options: [
+      { value: "planned",   label: "Perturbations planifiées" },
+      { value: "current",   label: "En cours" },
+      { value: "history",   label: "Historique" },
+    ],
+    defaultValue: "planned",
+  },
+};
+
 export const Disabled: Story = {
   args: {
     options: twoOptions,
