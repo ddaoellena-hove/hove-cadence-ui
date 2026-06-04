@@ -76,11 +76,14 @@ export const SegmentedControl = React.forwardRef<
       const el = segmentRefs.current[activeIdx];
       const container = containerRef.current;
       if (!el || !container) return;
-      // getBoundingClientRect gives pixel-perfect coords regardless of border width,
-      // avoiding the 1px offset that offsetLeft introduces when a border is present.
+      // getBoundingClientRect.left points to the outer border edge.
+      // CSS `left` on an absolute element is measured from the PADDING edge (inner border).
+      // We subtract the border width so the pill aligns exactly with the button,
+      // including on the last element where the 1px excess would be clipped.
       const containerRect = container.getBoundingClientRect();
       const elRect = el.getBoundingClientRect();
-      setPillStyle({ left: elRect.left - containerRect.left, width: elRect.width });
+      const borderLeft = parseFloat(getComputedStyle(container).borderLeftWidth) || 0;
+      setPillStyle({ left: elRect.left - containerRect.left - borderLeft, width: elRect.width });
     }, [activeValue, options]);
 
     const handleSelect = (val: string) => {
