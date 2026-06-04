@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, type ReactNode } from "react";
+import { useState, useRef, useEffect, useId, type ReactNode } from "react";
 import "./dropdown.css";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -15,6 +15,8 @@ export interface DropdownOption {
 export interface DropdownProps {
   /** Liste des options disponibles. */
   options: DropdownOption[];
+  /** Label affiché au-dessus du dropdown (même style que TextInput). */
+  label?: string;
   /** Valeur sélectionnée (id de l'option). */
   value?: string;
   /** Texte affiché quand aucune option n'est sélectionnée. */
@@ -53,6 +55,7 @@ const CheckIcon = () => (
 
 export const Dropdown = ({
   options,
+  label,
   value,
   placeholder = "Sélectionner…",
   disabled = false,
@@ -61,6 +64,7 @@ export const Dropdown = ({
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const triggerId = useId();
 
   const selectedOption = options.find((o) => o.id === value);
 
@@ -95,7 +99,13 @@ export const Dropdown = ({
 
   return (
     <div className={rootClass} ref={containerRef}>
+      {label && (
+        <label className="text-input__label" htmlFor={triggerId}>
+          {label}
+        </label>
+      )}
       <button
+        id={triggerId}
         type="button"
         className="dropdown__trigger"
         onClick={() => !disabled && setIsOpen((prev) => !prev)}

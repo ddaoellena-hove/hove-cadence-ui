@@ -85,6 +85,14 @@ type Story = StoryObj<typeof Dropdown>;
 
 export const Default: Story = {};
 
+export const WithLabel: Story = {
+  args: {
+    label: "Réseau de transport",
+    placeholder: "Sélectionner un réseau…",
+    options: basicOptions,
+  },
+};
+
 export const WithValue: Story = {
   args: {
     value: "lyon",
