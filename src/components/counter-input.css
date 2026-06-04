@@ -1,4 +1,10 @@
-/* ── Root ── */
+/* ── Wrapper (label + widget) ── */
+.counter-input__wrapper {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+/* ── Root (widget row) ── */
 .counter-input {
   display: inline-flex;
   align-items: stretch;

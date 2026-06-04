@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useId } from "react";
 import "./counter-input.css";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -20,6 +20,8 @@ export interface CounterInputProps {
   disabled?: boolean;
   /** Appelé à chaque changement avec la nouvelle valeur. */
   onChange?: (value: number) => void;
+  /** Label affiché au-dessus du composant (même style que TextInput). */
+  label?: string;
   /** Classe CSS additionnelle. */
   className?: string;
 }
@@ -35,8 +37,10 @@ export const CounterInput = ({
   unit,
   disabled = false,
   onChange,
+  label,
   className,
 }: CounterInputProps) => {
+  const inputId = useId();
   const isControlled = valueProp !== undefined;
   const [internalValue, setInternalValue] = useState(defaultValue);
   const [inputText, setInputText] = useState<string | null>(null);
@@ -76,49 +80,57 @@ export const CounterInput = ({
     .join(" ");
 
   return (
-    <div className={rootClass} role="group" aria-label="Compteur">
-      <button
-        type="button"
-        className="counter-input__btn counter-input__btn--dec"
-        onClick={() => update(current - step)}
-        disabled={disabled || !canDecrement}
-        aria-label="Décrémenter"
-      >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M3 8h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-      </button>
+    <div className="counter-input__wrapper">
+      {label && (
+        <label className="text-input__label" htmlFor={inputId}>
+          {label}
+        </label>
+      )}
+      <div className={rootClass} role="group" aria-label={label ?? "Compteur"}>
+        <button
+          type="button"
+          className="counter-input__btn counter-input__btn--dec"
+          onClick={() => update(current - step)}
+          disabled={disabled || !canDecrement}
+          aria-label="Décrémenter"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        </button>
 
-      <div className="counter-input__value">
-        <input
-          ref={inputRef}
-          type="number"
-          className="counter-input__input"
-          value={inputText !== null ? inputText : current}
-          onChange={handleInputChange}
-          onBlur={commitInput}
-          onKeyDown={handleKeyDown}
-          onFocus={(e) => { setInputText(String(current)); e.target.select(); }}
-          disabled={disabled}
-          aria-label="Valeur"
-          min={min}
-          max={max}
-          step={step}
-        />
-        {unit && <span className="counter-input__unit">{unit}</span>}
+        <div className="counter-input__value">
+          <input
+            ref={inputRef}
+            id={inputId}
+            type="number"
+            className="counter-input__input"
+            value={inputText !== null ? inputText : current}
+            onChange={handleInputChange}
+            onBlur={commitInput}
+            onKeyDown={handleKeyDown}
+            onFocus={(e) => { setInputText(String(current)); e.target.select(); }}
+            disabled={disabled}
+            aria-label="Valeur"
+            min={min}
+            max={max}
+            step={step}
+          />
+          {unit && <span className="counter-input__unit">{unit}</span>}
+        </div>
+
+        <button
+          type="button"
+          className="counter-input__btn counter-input__btn--inc"
+          onClick={() => update(current + step)}
+          disabled={disabled || !canIncrement}
+          aria-label="Incrémenter"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        </button>
       </div>
-
-      <button
-        type="button"
-        className="counter-input__btn counter-input__btn--inc"
-        onClick={() => update(current + step)}
-        disabled={disabled || !canIncrement}
-        aria-label="Incrémenter"
-      >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-        </svg>
-      </button>
     </div>
   );
 };

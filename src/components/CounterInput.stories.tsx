@@ -28,6 +28,10 @@ type Story = StoryObj<typeof CounterInput>;
 
 export const Default: Story = {};
 
+export const WithLabel: Story = {
+  args: { label: "Durée du trajet", unit: "s", defaultValue: 0, min: 0 },
+};
+
 export const WithUnit: Story = {
   args: { unit: "s", defaultValue: 0 },
 };
