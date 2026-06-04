@@ -217,13 +217,21 @@ function Legend({ series }: LegendProps) {
 // ─── Chart Tooltip ───────────────────────────────────────────────────────────
 
 function ChartTooltip({ tooltip }: { tooltip: TooltipState }) {
+  const total = tooltip.entries.reduce((sum, e) => sum + e.value, 0);
+
   return (
     <div
       className="dv__tooltip"
       style={{ left: tooltip.x, top: tooltip.y }}
       role="tooltip"
     >
-      <p className="dv__tooltip-category">{tooltip.category}</p>
+      {/* Ligne catégorie : label à gauche, total à droite */}
+      <div className="dv__tooltip-category">
+        <span className="dv__tooltip-category-label">{tooltip.category}</span>
+        <span className="dv__tooltip-category-value">{total}</span>
+      </div>
+
+      {/* Lignes séries : carré couleur à gauche, valeur à droite */}
       {tooltip.entries.map((e) => (
         <div key={e.label} className="dv__tooltip-row">
           <span className="dv__tooltip-dot" style={{ background: e.color }} />

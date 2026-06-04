@@ -69,40 +69,60 @@
   position: absolute;
   pointer-events: none;
   z-index: 100;
-  background: #1a1a2e;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
-  padding: 10px 14px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18), 0 1px 3px rgba(0, 0, 0, 0.12);
-  min-width: 140px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06);
+  min-width: 160px;
   transform: translate(0, -100%);
+  overflow: hidden;
 }
 
+/* Category row — label gauche, valeur droite */
 .dv__tooltip-category {
-  font-family: "Inter", Helvetica, sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.5);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin: 0 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #f3f4f6;
 }
 
+.dv__tooltip-category-label {
+  font-family: "Inter", Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+.dv__tooltip-category-value {
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1a1a2e;
+  white-space: nowrap;
+}
+
+/* Series rows */
 .dv__tooltip-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #f3f4f6;
 }
 
 .dv__tooltip-row:last-child {
-  margin-bottom: 0;
+  border-bottom: none;
 }
 
 .dv__tooltip-dot {
   flex-shrink: 0;
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
 }
 
 .dv__tooltip-label {
@@ -110,15 +130,17 @@
   font-family: "Inter", Helvetica, sans-serif;
   font-size: 12px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.75);
+  color: #6b7280;
   white-space: nowrap;
+  display: none; /* masqué — le dot suffit à identifier la série */
 }
 
 .dv__tooltip-value {
   font-family: "Spline Sans Mono", monospace;
   font-size: 12px;
   font-weight: 600;
-  color: #ffffff;
+  color: #1a1a2e;
+  white-space: nowrap;
 }
 
 /* ─── Legend ─────────────────────────────────────────────────────────────── */
