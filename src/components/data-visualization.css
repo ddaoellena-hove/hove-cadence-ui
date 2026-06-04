@@ -63,6 +63,64 @@
   pointer-events: none;
 }
 
+/* ─── Tooltip ────────────────────────────────────────────────────────────── */
+
+.dv__tooltip {
+  position: absolute;
+  pointer-events: none;
+  z-index: 100;
+  background: #1a1a2e;
+  border-radius: 8px;
+  padding: 10px 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18), 0 1px 3px rgba(0, 0, 0, 0.12);
+  min-width: 140px;
+  transform: translate(0, -100%);
+}
+
+.dv__tooltip-category {
+  font-family: "Inter", Helvetica, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 8px;
+}
+
+.dv__tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.dv__tooltip-row:last-child {
+  margin-bottom: 0;
+}
+
+.dv__tooltip-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.dv__tooltip-label {
+  flex: 1;
+  font-family: "Inter", Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.75);
+  white-space: nowrap;
+}
+
+.dv__tooltip-value {
+  font-family: "Spline Sans Mono", monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
 /* ─── Legend ─────────────────────────────────────────────────────────────── */
 
 .dv__legend {
