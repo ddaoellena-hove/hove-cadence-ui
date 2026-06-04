@@ -22,7 +22,7 @@ Version complète et interactive disponible dans le Storybook (`@ddaoellena/cade
 - ✅ En groupe de deux boutons (Primary ou Secondary) : toujours `outline` à gauche, `default` (rempli) à droite.
 - ✅ Utiliser `variant="danger"` sur `Link` pour les actions destructives.
 - ❌ Ne jamais mettre deux boutons remplis ni deux `outline` côte à côte.
-- ❌ Ne pas mélanger `PrimaryButton` et `SecondaryButton` dans le même groupe.
+- ❌ Ne jamais associer un `PrimaryButton` et un `SecondaryButton` dans le même groupe — ils ne se mélangent pas.
 - ❌ Ne pas utiliser `PrimaryButton` pour de la navigation.
 - ❌ Ne pas désactiver un bouton sans `Tooltip` explicatif.
 
