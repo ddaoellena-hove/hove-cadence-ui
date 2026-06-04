@@ -67,14 +67,20 @@ export const SegmentedControl = React.forwardRef<
     const activeValue = isControlled ? valueProp : internalValue;
 
     // Pill slide animation
+    const containerRef = useRef<HTMLDivElement>(null);
     const segmentRefs = useRef<(HTMLButtonElement | null)[]>([]);
     const [pillStyle, setPillStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
 
     useLayoutEffect(() => {
       const activeIdx = options.findIndex((o) => o.value === activeValue);
       const el = segmentRefs.current[activeIdx];
-      if (!el) return;
-      setPillStyle({ left: el.offsetLeft, width: el.offsetWidth });
+      const container = containerRef.current;
+      if (!el || !container) return;
+      // getBoundingClientRect gives pixel-perfect coords regardless of border width,
+      // avoiding the 1px offset that offsetLeft introduces when a border is present.
+      const containerRect = container.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+      setPillStyle({ left: elRect.left - containerRect.left, width: elRect.width });
     }, [activeValue, options]);
 
     const handleSelect = (val: string) => {
@@ -109,7 +115,11 @@ export const SegmentedControl = React.forwardRef<
 
     return (
       <div
-        ref={ref}
+        ref={(node) => {
+          (containerRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+          if (typeof ref === "function") ref(node);
+          else if (ref) ref.current = node;
+        }}
         className={rootClass}
         role="group"
         aria-label={ariaLabel}
