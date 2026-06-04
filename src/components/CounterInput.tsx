@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import "./counter-input.css";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -39,13 +39,33 @@ export const CounterInput = ({
 }: CounterInputProps) => {
   const isControlled = valueProp !== undefined;
   const [internalValue, setInternalValue] = useState(defaultValue);
+  const [inputText, setInputText] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const current = isControlled ? valueProp! : internalValue;
 
   const update = (next: number) => {
-    if (min !== undefined && next < min) return;
-    if (max !== undefined && next > max) return;
-    if (!isControlled) setInternalValue(next);
-    onChange?.(next);
+    const clamped = Math.round(
+      Math.min(max ?? Infinity, Math.max(min ?? -Infinity, next)) / step
+    ) * step;
+    if (!isControlled) setInternalValue(clamped);
+    onChange?.(clamped);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputText(e.target.value);
+  };
+
+  const commitInput = () => {
+    if (inputText !== null) {
+      const parsed = parseFloat(inputText);
+      if (!isNaN(parsed)) update(parsed);
+      setInputText(null);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") { commitInput(); inputRef.current?.blur(); }
+    if (e.key === "Escape") { setInputText(null); inputRef.current?.blur(); }
   };
 
   const canDecrement = min === undefined || current - step >= min;
@@ -69,8 +89,22 @@ export const CounterInput = ({
         </svg>
       </button>
 
-      <div className="counter-input__value" aria-live="polite" aria-atomic="true">
-        <span className="counter-input__number">{current}</span>
+      <div className="counter-input__value">
+        <input
+          ref={inputRef}
+          type="number"
+          className="counter-input__input"
+          value={inputText !== null ? inputText : current}
+          onChange={handleInputChange}
+          onBlur={commitInput}
+          onKeyDown={handleKeyDown}
+          onFocus={(e) => { setInputText(String(current)); e.target.select(); }}
+          disabled={disabled}
+          aria-label="Valeur"
+          min={min}
+          max={max}
+          step={step}
+        />
         {unit && <span className="counter-input__unit">{unit}</span>}
       </div>
 

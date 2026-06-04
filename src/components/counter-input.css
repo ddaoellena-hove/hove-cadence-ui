@@ -23,8 +23,12 @@
   border: none;
   color: #ffffff;
   cursor: pointer;
-  transition: background 120ms ease;
+  transition: background 120ms ease, box-shadow 120ms ease;
   outline: none;
+  box-shadow:
+    inset 0px 2px 0px #ffffff40,
+    inset 0px -2px 12px #0000001a,
+    inset 0px -2px 0px #0000001a;
 }
 
 .counter-input__btn--dec {
@@ -37,6 +41,16 @@
 
 .counter-input__btn:hover:not(:disabled) {
   background: #002830;
+  box-shadow:
+    inset 0px 2px 0px #ffffff40,
+    inset 0px -2px 12px #0000001a,
+    inset 0px -2px 0px #00000040;
+}
+
+.counter-input__btn:active:not(:disabled) {
+  box-shadow:
+    inset 0px -2px 8px #0000000d,
+    inset 0px -2px 0px #0000001a;
 }
 
 .counter-input__btn:focus-visible {
@@ -47,27 +61,49 @@
 .counter-input__btn:disabled {
   background: #bfbfbf;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
-/* ── Value display ── */
+/* ── Value area ── */
 .counter-input__value {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 4px;
-  padding: 0 20px;
+  padding: 0 12px;
   border-left: 1px solid #e5e5e5;
   border-right: 1px solid #e5e5e5;
   min-width: 80px;
 }
 
-.counter-input__number {
+/* ── Editable input ── */
+.counter-input__input {
+  width: 100%;
+  min-width: 0;
+  text-align: center;
+  background: transparent;
+  border: none;
+  outline: none;
   font-size: 16px;
   font-weight: 500;
   color: #9ca3af;
   font-family: "Spline Sans Mono", monospace;
   line-height: 1;
+  cursor: text;
+  /* Masquer les flèches natives du navigateur */
+  -moz-appearance: textfield;
+}
+.counter-input__input::-webkit-outer-spin-button,
+.counter-input__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.counter-input__input:focus {
+  color: #002830;
+}
+.counter-input__input:disabled {
+  cursor: not-allowed;
 }
 
 .counter-input__unit {
@@ -76,6 +112,7 @@
   color: #9ca3af;
   font-family: "Inter", Helvetica, sans-serif;
   line-height: 1;
+  flex-shrink: 0;
 }
 
 /* ── Disabled state ── */
