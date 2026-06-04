@@ -82,6 +82,9 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 <div className="g h2">Règles</div>
 
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">La <code>Sidebar</code> est toujours collée au bord gauche et occupe toute la hauteur de la page (<code>height: 100vh</code> sur le conteneur racine).</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne jamais décaler ou centrer la <code>Sidebar</code> — elle est toujours ancrée au bord gauche de la fenêtre.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne jamais tronquer la hauteur de la <code>Sidebar</code> — elle doit aller du haut au bas de l'écran.</span></div>
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Toujours afficher un <code>Breadcrumbs</code> dès que l'utilisateur est à plus d'un niveau de profondeur.</span></div>
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Le dernier item du <code>Breadcrumbs</code> est la page courante — sans <code>href</code>, souligné.</span></div>
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Utiliser <code>NavigationDropdown</code> dans le breadcrumb pour les sélecteurs de produit/module.</span></div>

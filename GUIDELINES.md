@@ -161,6 +161,9 @@ Positionner en haut à droite, à l'opposé des onglets/filtres :
 
 ### Règles
 
+- ✅ La `Sidebar` est toujours collée au bord gauche et occupe toute la hauteur de la page (`height: 100vh` sur le conteneur racine).
+- ❌ Ne jamais décaler ou centrer la `Sidebar` — elle est toujours ancrée au bord gauche.
+- ❌ Ne jamais tronquer la hauteur de la `Sidebar` — elle doit aller du haut au bas de l'écran.
 - ✅ Afficher `Breadcrumbs` dès que l'utilisateur est à plus d'un niveau de profondeur.
 - ✅ Le dernier item du breadcrumb est la page courante — sans `href`, souligné.
 - ❌ Ne pas imbriquer une `Sidebar` dans une `Sidebar`.
