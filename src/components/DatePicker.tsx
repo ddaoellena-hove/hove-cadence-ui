@@ -10,6 +10,8 @@ export interface DatePickerSegmentedOption {
 export interface DatePickerProps {
   value?: Date | null;
   onChange?: (date: Date) => void;
+  /** Label displayed above the trigger (same style as TextInput). */
+  label?: string;
   placeholder?: string;
   disabled?: boolean;
   minDate?: Date;
@@ -149,6 +151,7 @@ function InternalSegmented({
 export const DatePicker = ({
   value = null,
   onChange,
+  label,
   placeholder = "MM/DD/YYYY",
   disabled = false,
   minDate,
@@ -263,6 +266,7 @@ export const DatePicker = ({
       className={`date-picker${disabled ? " date-picker--disabled" : ""}`}
       ref={containerRef}
     >
+      {label && <span className="date-picker__label">{label}</span>}
       <button
         type="button"
         className={`date-picker__trigger${open ? " date-picker__trigger--open" : ""}`}

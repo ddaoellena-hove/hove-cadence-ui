@@ -186,38 +186,19 @@ export const WithLabel: Story = {
     const [value, setValue] = useState<Date | null>(null);
     return (
       <div style={{ padding: "24px", minHeight: "360px" }}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "6px",
-            width: "fit-content",
+        <DatePicker
+          {...args}
+          value={value}
+          onChange={(d) => {
+            setValue(d);
+            args.onChange?.(d);
           }}
-        >
-          <label
-            htmlFor="dp-demo"
-            style={{
-              fontSize: "13px",
-              fontWeight: 500,
-              color: "#374151",
-              fontFamily: "Inter, sans-serif",
-            }}
-          >
-            Appointment date
-          </label>
-          <DatePicker
-            {...args}
-            value={value}
-            onChange={(d) => {
-              setValue(d);
-              args.onChange?.(d);
-            }}
-          />
-        </div>
+        />
       </div>
     );
   },
   args: {
+    label: "Date de début",
     placeholder: "MM/DD/YYYY",
     disabled: false,
   },

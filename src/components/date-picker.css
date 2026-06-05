@@ -156,6 +156,18 @@
   font-family: "Inter", Helvetica, sans-serif;
 }
 
+/* ── Label (style + gap identiques à TextInput) ── */
+.date-picker__label {
+  display: block;
+  color: #1a3e45;
+  font-family: "Inter", Helvetica;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: normal;
+  padding: 0 0 10px 8px;
+}
+
 .date-picker--disabled {
   opacity: 0.5;
   pointer-events: none;
