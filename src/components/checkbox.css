@@ -23,34 +23,34 @@
 
 /* ── States ── */
 .checkbox.unchecked {
-  background-color: #ffffff;
-  border-color: #69797d;
+  background-color: var(--cadence-color-white, #ffffff);
+  border-color: var(--cadence-color-icon-muted, #69797d);
 }
 
 .checkbox.hover {
-  background-color: #ffffff;
-  border-color: #002830;
+  background-color: var(--cadence-color-white, #ffffff);
+  border-color: var(--cadence-color-primary, #002830);
 }
 
 .checkbox.checked {
-  background-color: #002830;
-  border-color: #002830;
+  background-color: var(--cadence-color-primary, #002830);
+  border-color: var(--cadence-color-primary, #002830);
 }
 
 .checkbox.indeterminate {
-  background-color: #ffffff;
-  border-color: #002830;
+  background-color: var(--cadence-color-white, #ffffff);
+  border-color: var(--cadence-color-primary, #002830);
 }
 
 .checkbox.disabled {
-  background-color: #e5e5e5;
-  border-color: #bfbfbf;
+  background-color: var(--cadence-color-border, #e5e5e5);
+  border-color: var(--cadence-color-border-strong, #bfc9cb);
   cursor: not-allowed;
 }
 
 .checkbox.disabled-checked {
-  background-color: #e5e5e5;
-  border-color: #bfbfbf;
+  background-color: var(--cadence-color-border, #e5e5e5);
+  border-color: var(--cadence-color-border-strong, #bfc9cb);
   cursor: not-allowed;
 }
 
@@ -73,8 +73,8 @@
   left: 50%;
   width: 8px;
   height: 4px;
-  border-left: 1.5px solid #ffffff;
-  border-bottom: 1.5px solid #ffffff;
+  border-left: 1.5px solid var(--cadence-color-white, #ffffff);
+  border-bottom: 1.5px solid var(--cadence-color-white, #ffffff);
   transform: translate(-50%, -60%) rotate(-45deg);
   pointer-events: none;
 }
@@ -86,15 +86,15 @@
   left: 50%;
   width: 8px;
   height: 4px;
-  border-left: 1.5px solid #bfbfbf;
-  border-bottom: 1.5px solid #bfbfbf;
+  border-left: 1.5px solid var(--cadence-color-border-strong, #bfc9cb);
+  border-bottom: 1.5px solid var(--cadence-color-border-strong, #bfc9cb);
   transform: translate(-50%, -60%) rotate(-45deg);
   pointer-events: none;
 }
 
 /* ── Indeterminate dash ── */
 .checkbox.indeterminate .checkbox-inner {
-  background-color: #002830;
+  background-color: var(--cadence-color-primary, #002830);
   border-radius: 1px;
   height: 2px;
   width: 8px;
@@ -106,5 +106,5 @@
 
 /* ── Native hover on unchecked state ── */
 .checkbox.unchecked:hover {
-  border-color: #002830;
+  border-color: var(--cadence-color-primary, #002830);
 }

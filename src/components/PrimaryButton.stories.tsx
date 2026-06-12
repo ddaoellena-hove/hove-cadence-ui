@@ -14,6 +14,10 @@ const meta: Meta<typeof PrimaryButton> = {
       options: ["left", "no", "only", "right"],
       control: { type: "select" },
     },
+    size: {
+      options: ["medium", "large"],
+      control: { type: "select" },
+    },
     outline: { control: { type: "boolean" } },
     destructive: { control: { type: "boolean" } },
     label: { control: { type: "text" } },
@@ -100,5 +104,38 @@ export const DestructiveOutline: Story = {
     outline: true,
     destructive: true,
     label: "Delete",
+  },
+};
+
+export const Large: Story = {
+  args: {
+    state: "enabled",
+    withIcon: "no",
+    outline: false,
+    destructive: false,
+    size: "large",
+    label: "Label",
+  },
+};
+
+export const LargeOutline: Story = {
+  args: {
+    state: "enabled",
+    withIcon: "no",
+    outline: true,
+    destructive: false,
+    size: "large",
+    label: "Label",
+  },
+};
+
+export const LargeWithIconLeft: Story = {
+  args: {
+    state: "enabled",
+    withIcon: "left",
+    outline: false,
+    destructive: false,
+    size: "large",
+    label: "Label",
   },
 };

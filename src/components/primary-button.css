@@ -36,7 +36,7 @@
 }
 
 .primary-button .text-wrapper {
-  font-family: "Inter", Helvetica;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.13px;
@@ -64,7 +64,7 @@
 }
 
 .primary-button .text-wrapper-2 {
-  font-family: "Inter", Helvetica;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.13px;
@@ -76,7 +76,7 @@
 }
 
 .primary-button .text-wrapper-3 {
-  font-family: "Inter", Helvetica;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 13px;
   font-weight: 500;
   margin-top: -0.5px;
@@ -94,7 +94,7 @@
 }
 
 .primary-button .text-wrapper-4 {
-  font-family: "Inter", Helvetica;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.13px;
@@ -157,7 +157,7 @@
 }
 
 .primary-button.outline-true.hover {
-  background-color: #fdfdfd;
+  background-color: var(--cadence-color-white, #ffffff);
   box-shadow:
     inset 0px -2px 8px #0000000d,
     inset 0px -2px 0px #0000001a,
@@ -166,19 +166,19 @@
 }
 
 .primary-button.destructive-true.clicked {
-  border-color: #da1e28;
+  border-color: var(--cadence-color-danger, #da1e28);
 }
 
 .primary-button.hover.destructive-true {
-  border-color: #da1e28;
+  border-color: var(--cadence-color-danger, #da1e28);
 }
 
 .primary-button.destructive-false.disabled {
-  border-color: #bfc9cb;
+  border-color: var(--cadence-color-border-strong, #bfc9cb);
 }
 
 .primary-button.outline-true.enabled {
-  background-color: #fdfdfd;
+  background-color: var(--cadence-color-white, #ffffff);
   box-shadow:
     inset 0px -2px 8px #0000000d,
     inset 0px -2px 0px #0000001a;
@@ -193,7 +193,7 @@
 }
 
 .primary-button.outline-true.disabled {
-  background-color: #ffffff;
+  background-color: var(--cadence-color-white, #ffffff);
 }
 
 .primary-button.destructive-true.disabled {
@@ -217,7 +217,7 @@
 }
 
 .primary-button.outline-false.hover.destructive-true {
-  background-color: #da1e28;
+  background-color: var(--cadence-color-danger, #da1e28);
   box-shadow:
     inset 0px 2px 0px #ffffff40,
     inset 0px -2px 12px #0000001a,
@@ -227,8 +227,8 @@
 }
 
 .primary-button.outline-false.hover.destructive-false {
-  background-color: #1a3e45;
-  border-color: #002830;
+  background-color: var(--cadence-color-label, #1a3e45);
+  border-color: var(--cadence-color-primary, #002830);
   box-shadow:
     inset 0px 2px 0px #ffffff40,
     inset 0px -2px 12px #0000001a,
@@ -242,16 +242,16 @@
 }
 
 .primary-button.outline-false.destructive-false.disabled {
-  background-color: #e5e9ea;
+  background-color: var(--cadence-color-border, #e5e5e5);
 }
 
 .primary-button.outline-true.destructive-false.hover {
-  border-color: #1a3e45;
+  border-color: var(--cadence-color-label, #1a3e45);
 }
 
 .primary-button.outline-false.enabled.destructive-false {
-  background-color: #1a3e45;
-  border-color: #002830;
+  background-color: var(--cadence-color-label, #1a3e45);
+  border-color: var(--cadence-color-primary, #002830);
   box-shadow:
     inset 0px 2px 0px #ffffff40,
     inset 0px -2px 12px #0000001a,
@@ -286,17 +286,17 @@
 }
 
 .primary-button.outline-true.destructive-false.clicked {
-  background-color: #f2f2f2;
-  border-color: #1a3e45;
+  background-color: var(--cadence-color-divider, #f0f0f0);
+  border-color: var(--cadence-color-label, #1a3e45);
 }
 
 .primary-button.outline-true.enabled.destructive-false {
-  border-color: #809397;
+  border-color: var(--cadence-color-text-muted, #809397);
 }
 
 .primary-button.outline-false.destructive-false.clicked {
-  background-color: #002830;
-  border-color: #002830;
+  background-color: var(--cadence-color-primary, #002830);
+  border-color: var(--cadence-color-primary, #002830);
   box-shadow:
     inset 0px 2px 0px #ffffff40,
     inset 0px -2px 12px #0000001a,
@@ -326,7 +326,7 @@
 }
 
 .primary-button.clicked.no .label {
-  font-family: "Inter", Helvetica;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.13px;
@@ -346,11 +346,11 @@
 }
 
 .primary-button.outline-false.enabled .label {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 .primary-button.disabled.no .label {
-  font-family: "Inter", Helvetica;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.13px;
@@ -360,7 +360,7 @@
 }
 
 .primary-button.hover.no .label {
-  font-family: "Inter", Helvetica;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.13px;
@@ -370,11 +370,11 @@
 }
 
 .primary-button.outline-false.hover .label {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 .primary-button.outline-false.clicked .label {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 .primary-button.enabled.only .label {
@@ -388,7 +388,7 @@
 }
 
 .primary-button.enabled.no .label {
-  font-family: "Inter", Helvetica;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.13px;
@@ -398,23 +398,23 @@
 }
 
 .primary-button.outline-false.disabled.no .label {
-  color: #808080;
+  color: var(--cadence-color-text-disabled, #808080);
 }
 
 .primary-button.outline-true.destructive-false.hover .label {
-  color: #002830;
+  color: var(--cadence-color-primary, #002830);
 }
 
 .primary-button.outline-true.destructive-false.clicked .label {
-  color: #002830;
+  color: var(--cadence-color-primary, #002830);
 }
 
 .primary-button.outline-true.enabled.destructive-false .label {
-  color: #002830;
+  color: var(--cadence-color-primary, #002830);
 }
 
 .primary-button.outline-true.destructive-false.disabled .label {
-  color: #bfc9cb;
+  color: var(--cadence-color-border-strong, #bfc9cb);
 }
 
 .primary-button.outline-true.disabled.destructive-true.no .label {
@@ -422,15 +422,15 @@
 }
 
 .primary-button.outline-true.enabled.destructive-true.no .label {
-  color: #da1e28;
+  color: var(--cadence-color-danger, #da1e28);
 }
 
 .primary-button.hover.outline-true.destructive-true.no .label {
-  color: #da1e28;
+  color: var(--cadence-color-danger, #da1e28);
 }
 
 .primary-button.outline-true.destructive-true.clicked.no .label {
-  color: #da1e28;
+  color: var(--cadence-color-danger, #da1e28);
 }
 
 .primary-button.left .div {
@@ -439,11 +439,11 @@
 }
 
 .primary-button.outline-false .div {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 .primary-button.no .div {
-  font-family: "Inter", Helvetica;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.13px;
@@ -459,7 +459,7 @@
 }
 
 .primary-button.right .div {
-  font-family: "Inter", Helvetica;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.13px;
@@ -470,19 +470,19 @@
 }
 
 .primary-button.outline-true.destructive-true .div {
-  color: #da1e28;
+  color: var(--cadence-color-danger, #da1e28);
 }
 
 .primary-button.outline-true.destructive-false .div {
-  color: #002830;
+  color: var(--cadence-color-primary, #002830);
 }
 
 .primary-button.outline-true .text-wrapper {
-  color: #002830;
+  color: var(--cadence-color-primary, #002830);
 }
 
 .primary-button.outline-false .text-wrapper {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 .primary-button.right .label-2 {
@@ -491,8 +491,8 @@
 }
 
 .primary-button.left .label-2 {
-  color: #da1e28;
-  font-family: "Inter", Helvetica;
+  color: var(--cadence-color-danger, #da1e28);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.13px;
@@ -511,11 +511,11 @@
 }
 
 .primary-button.outline-true .text-wrapper-2 {
-  color: #002830;
+  color: var(--cadence-color-primary, #002830);
 }
 
 .primary-button.outline-false .text-wrapper-2 {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 .primary-button.clicked .text-wrapper-3 {
@@ -544,35 +544,35 @@
 }
 
 .primary-button.outline-true.hover .text-wrapper-3 {
-  color: #002830;
+  color: var(--cadence-color-primary, #002830);
 }
 
 .primary-button.outline-false.enabled .text-wrapper-3 {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 .primary-button.outline-true.enabled .text-wrapper-3 {
-  color: #002830;
+  color: var(--cadence-color-primary, #002830);
 }
 
 .primary-button.outline-true.clicked .text-wrapper-3 {
-  color: #002830;
+  color: var(--cadence-color-primary, #002830);
 }
 
 .primary-button.outline-true.disabled .text-wrapper-3 {
-  color: #bfc9cb;
+  color: var(--cadence-color-border-strong, #bfc9cb);
 }
 
 .primary-button.outline-false.disabled .text-wrapper-3 {
-  color: #808080;
+  color: var(--cadence-color-text-disabled, #808080);
 }
 
 .primary-button.outline-false.hover .text-wrapper-3 {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 .primary-button.outline-false.clicked .text-wrapper-3 {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 .primary-button.outline-false.destructive-false.disabled .text-wrapper-3 {
@@ -594,7 +594,7 @@
 }
 
 .primary-button.right .map {
-  font-family: "Inter", Helvetica;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.13px;
@@ -605,11 +605,11 @@
 }
 
 .primary-button.right.clicked .map {
-  color: #da1e28;
+  color: var(--cadence-color-danger, #da1e28);
 }
 
 .primary-button.right.hover .map {
-  color: #da1e28;
+  color: var(--cadence-color-danger, #da1e28);
 }
 
 .primary-button.right.disabled .map {
@@ -617,11 +617,11 @@
 }
 
 .primary-button.right.enabled .map {
-  color: #da1e28;
+  color: var(--cadence-color-danger, #da1e28);
 }
 
 .primary-button.left .label-3 {
-  font-family: "Inter", Helvetica;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.13px;
@@ -645,7 +645,7 @@
 }
 
 .primary-button.left.enabled .label-3 {
-  color: #da1e28;
+  color: var(--cadence-color-danger, #da1e28);
 }
 
 .primary-button.left.disabled .label-3 {
@@ -653,41 +653,99 @@
 }
 
 .primary-button.left.clicked .label-3 {
-  color: #da1e28;
+  color: var(--cadence-color-danger, #da1e28);
 }
 
 .primary-button.left.hover .label-3 {
-  color: #da1e28;
+  color: var(--cadence-color-danger, #da1e28);
 }
 
 .primary-button.outline-false.enabled .text-wrapper-4 {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 .primary-button.outline-true.enabled .text-wrapper-4 {
-  color: #002830;
+  color: var(--cadence-color-primary, #002830);
 }
 
 .primary-button.outline-false.hover .text-wrapper-4 {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 .primary-button.outline-false.clicked .text-wrapper-4 {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 .primary-button.outline-true.clicked .text-wrapper-4 {
-  color: #002830;
+  color: var(--cadence-color-primary, #002830);
 }
 
 .primary-button.outline-true.disabled .text-wrapper-4 {
-  color: #bfc9cb;
+  color: var(--cadence-color-border-strong, #bfc9cb);
 }
 
 .primary-button.outline-true.hover .text-wrapper-4 {
-  color: #002830;
+  color: var(--cadence-color-primary, #002830);
 }
 
 .primary-button.outline-false.disabled .text-wrapper-4 {
-  color: #808080;
+  color: var(--cadence-color-text-disabled, #808080);
+}
+
+/* ── Large size ───────────────────────────────────────────────────────────── */
+
+/* Root padding for no-icon and icon-only */
+.primary-button.size-large.no {
+  padding: 12px 32px;
+}
+
+.primary-button.size-large.only {
+  padding: 12px;
+}
+
+/* Vertical padding for left/right icon variants (overrides per-state rules) */
+.primary-button.size-large.left.enabled,
+.primary-button.size-large.left.hover,
+.primary-button.size-large.left.clicked,
+.primary-button.size-large.left.disabled,
+.primary-button.size-large.right.enabled,
+.primary-button.size-large.right.hover,
+.primary-button.size-large.right.clicked,
+.primary-button.size-large.right.disabled {
+  padding: 12px 0;
+}
+
+/* Horizontal padding moved to label span */
+.primary-button.size-large.left .label {
+  padding: 0 28px 0 24px;
+}
+
+.primary-button.size-large.right .label {
+  padding: 0 24px 0 28px;
+}
+
+/* Icon size */
+.primary-button.size-large .icons-instance {
+  height: 20px !important;
+  width: 20px !important;
+}
+
+/* Font size */
+.primary-button.size-large .text-wrapper,
+.primary-button.size-large .text-wrapper-2,
+.primary-button.size-large .text-wrapper-3,
+.primary-button.size-large .text-wrapper-4 {
+  font-size: 15px;
+  letter-spacing: -0.15px;
+  line-height: 18px;
+}
+
+.primary-button.size-large.no .label,
+.primary-button.size-large.clicked.no .label,
+.primary-button.size-large.disabled.no .label,
+.primary-button.size-large.hover.no .label,
+.primary-button.size-large.enabled.no .label {
+  font-size: 15px;
+  letter-spacing: -0.15px;
+  line-height: 18px;
 }

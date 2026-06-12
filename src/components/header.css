@@ -3,10 +3,10 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px 24px;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e0e0e0;
+  background-color: var(--cadence-color-white, #ffffff);
+  border-bottom: 1px solid var(--cadence-color-border, #e5e5e5);
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.06);
-  font-family: "Inter", Helvetica, sans-serif;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   min-height: 56px;
   box-sizing: border-box;
 }
@@ -18,10 +18,10 @@
 }
 
 .header__logo {
-  font-family: "Uxum Grotesque", "Georgia", sans-serif;
+  font-family: var(--cadence-font-display, "Uxum Grotesque", "Space Grotesk", "Georgia", sans-serif);
   font-size: 20px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--cadence-color-primary, #002830);
   white-space: nowrap;
 }
 
@@ -35,7 +35,7 @@
   padding: 6px 12px;
   font-size: 14px;
   font-weight: 500;
-  color: #555555;
+  color: var(--cadence-color-label, #1a3e45);
   text-decoration: none;
   border-radius: 6px;
   cursor: pointer;
@@ -46,8 +46,8 @@
 }
 
 .header__nav-item:hover {
-  background-color: #f5f5f5;
-  color: #1a1a1a;
+  background-color: var(--cadence-color-divider, #f0f0f0);
+  color: var(--cadence-color-primary, #002830);
 }
 
 .header__nav-item--active {

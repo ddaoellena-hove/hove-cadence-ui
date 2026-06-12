@@ -1,36 +1,36 @@
-import "./rich-radio-button.css";
+import "./rich-checkbox.css";
 
-export interface RichRadioButtonProps {
-  /** Label text displayed inside the button. */
+export interface RichCheckboxProps {
+  /** Label text displayed inside the card. */
   label?: string;
   /** Optional description text displayed below the label. */
   description?: string;
-  /** Visual state of the rich radio button. */
-  state?: "default" | "hover" | "selected" | "disabled";
-  /** Size variant of the button. */
+  /** Visual state of the rich checkbox. */
+  state?: "unchecked" | "hover" | "checked" | "disabled";
+  /** Size variant of the card. */
   size?: "medium" | "large";
   /** Optional extra class name for the root element. */
   className?: string;
-  /** Callback fired when the user clicks the button (only when not disabled). */
-  onChange?: () => void;
+  /** Callback fired on click with the next checked value (only when not disabled). */
+  onChange?: (nextChecked: boolean) => void;
 }
 
 /**
- * RichRadioButton — a pill-shaped card with an icon, label, and a radio indicator.
- * Mirrors the four visual states of the RadioButton component.
+ * RichCheckbox — a pill-shaped card with an icon, label, and a checkbox indicator.
+ * Multi-select counterpart of RichRadioButton; mirrors the Checkbox indicator.
  */
-export const RichRadioButton = ({
+export const RichCheckbox = ({
   label = "Choice",
   description,
-  state = "default",
+  state = "unchecked",
   size = "medium",
   className,
   onChange,
-}: RichRadioButtonProps) => {
+}: RichCheckboxProps) => {
   const rootClass = [
-    "rich-radio-button",
-    size === "large" ? "rich-radio-button--large" : null,
-    description ? "rich-radio-button--with-description" : null,
+    "rich-checkbox",
+    size === "large" ? "rich-checkbox--large" : null,
+    description ? "rich-checkbox--with-description" : null,
     state,
     className,
   ]
@@ -39,14 +39,14 @@ export const RichRadioButton = ({
 
   const handleClick = () => {
     if (state === "disabled") return;
-    onChange?.();
+    onChange?.(!(state === "checked"));
   };
 
   return (
     <div
       className={rootClass}
-      role="radio"
-      aria-checked={state === "selected"}
+      role="checkbox"
+      aria-checked={state === "checked"}
       aria-disabled={state === "disabled"}
       tabIndex={state === "disabled" ? -1 : 0}
       onClick={handleClick}
@@ -56,7 +56,7 @@ export const RichRadioButton = ({
     >
       {/* Person icon */}
       <svg
-        className="rich-radio-button-icon"
+        className="rich-checkbox-icon"
         width="16"
         height="16"
         viewBox="0 0 16 16"
@@ -71,16 +71,16 @@ export const RichRadioButton = ({
       </svg>
 
       {/* Label + optional description */}
-      <span className="rich-radio-button-content">
-        <span className="rich-radio-button-label">{label}</span>
+      <span className="rich-checkbox-content">
+        <span className="rich-checkbox-label">{label}</span>
         {description && (
-          <span className="rich-radio-button-description">{description}</span>
+          <span className="rich-checkbox-description">{description}</span>
         )}
       </span>
 
-      {/* Radio indicator */}
-      <div className="rich-radio-button-radio" aria-hidden="true">
-        {state === "selected" && <div className="rich-radio-button-dot" />}
+      {/* Checkbox indicator */}
+      <div className="rich-checkbox-box" aria-hidden="true">
+        {state === "checked" && <div className="rich-checkbox-tick" />}
       </div>
     </div>
   );

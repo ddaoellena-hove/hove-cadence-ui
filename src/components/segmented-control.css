@@ -1,8 +1,8 @@
 /* ── SegmentedControl root ───────────────────────────────────────────────── */
 .segmented-control {
   align-items: center;
-  background-color: #ffffff;
-  border: 1px solid #bfbfbf;
+  background-color: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border-strong, #bfc9cb);
   border-radius: 12px;
   display: inline-flex;
   gap: 0;
@@ -12,14 +12,14 @@
 }
 
 .segmented-control--disabled {
-  background-color: #e5e5e5;
+  background-color: var(--cadence-color-border, #e5e5e5);
   cursor: not-allowed;
 }
 
 /* ── Sliding pill ────────────────────────────────────────────────────────── */
 .segmented-control__pill {
-  background-color: #1a3e45;
-  border: 1px solid #1a3e45;
+  background-color: var(--cadence-color-label, #1a3e45);
+  border: 1px solid var(--cadence-color-label, #1a3e45);
   border-radius: 8px;
   box-shadow:
     inset 0px 2px 0px rgba(255, 255, 255, 0.25),
@@ -36,8 +36,8 @@
 }
 
 .segmented-control--disabled .segmented-control__pill {
-  background-color: #808080;
-  border-color: #808080;
+  background-color: var(--cadence-color-text-disabled, #808080);
+  border-color: var(--cadence-color-text-disabled, #808080);
   box-shadow: none;
 }
 
@@ -53,7 +53,7 @@
   color: #000000;
   cursor: pointer;
   display: flex;
-  font-family: "Inter", Helvetica;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 13px;
   font-weight: 500;
   justify-content: center;
@@ -74,19 +74,19 @@
 
 /* inactive segment in a disabled control */
 .segmented-control--disabled .segmented-control__segment {
-  color: #737373;
+  color: var(--cadence-color-icon-neutral, #737373);
   cursor: not-allowed;
 }
 
 /* ── Active segment ──────────────────────────────────────────────────────── */
 .segmented-control__segment--active {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
   font-weight: 600;
 }
 
 /* active segment in a disabled control */
 .segmented-control--disabled .segmented-control__segment--active {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 /* inactive hover */

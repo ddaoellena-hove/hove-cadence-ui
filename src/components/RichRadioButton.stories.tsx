@@ -132,6 +132,49 @@ export const WithDescription: Story = {
   },
 };
 
+/**
+ * Plusieurs options alignées avec des descriptions longues :
+ * le texte passe à la ligne et reste entièrement lisible,
+ * la carte grandit en hauteur.
+ */
+export const LongDescriptions: Story = {
+  render: () => {
+    const [selected, setSelected] = useState<string>("lab");
+    const options = [
+      {
+        id: "studio",
+        label: "Studio immersif",
+        description: "Petit groupe, forte qualité d'échange et accompagnement personnalisé",
+      },
+      {
+        id: "forum",
+        label: "Forum central",
+        description: "Grand volume, parcours ouvert et programmation continue toute la journée",
+      },
+      {
+        id: "lab",
+        label: "Lab modulaire",
+        description: "Configuration flexible pour démos, ateliers pratiques et sessions de co-création",
+      },
+    ];
+    return (
+      <div style={{ display: "flex", gap: 12, padding: 16 }}>
+        {options.map((opt) => (
+          <div key={opt.id} style={{ flex: 1, minWidth: 0, display: "flex" }}>
+            <RichRadioButton
+              label={opt.label}
+              description={opt.description}
+              state={selected === opt.id ? "selected" : "default"}
+              onChange={() => setSelected(opt.id)}
+              className="rich-radio-button--fluid"
+            />
+          </div>
+        ))}
+      </div>
+    );
+  },
+};
+
 export const Interactive: Story = {
   render: () => {
     const [selected, setSelected] = useState<string | null>(null);

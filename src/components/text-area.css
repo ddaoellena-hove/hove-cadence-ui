@@ -1,12 +1,12 @@
-/* ── TextInput root ──────────────────────────────────────────────────────── */
-.text-input {
+/* ── TextArea root ────────────────────────────────────────────────────────── */
+.text-area {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
 /* ── Label ───────────────────────────────────────────────────────────────── */
-.text-input__label {
+.text-area__label {
   color: var(--cadence-color-label, #1a3e45);
   font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 13px;
@@ -17,16 +17,11 @@
 }
 
 /* ── Field wrapper ───────────────────────────────────────────────────────── */
-.text-input__field {
-  align-items: center;
+.text-area__field {
   background-color: var(--cadence-color-white, #ffffff);
   border: 1px solid;
   border-radius: 10px;
   display: flex;
-  gap: 10px;
-  height: 40px;
-  overflow: hidden;
-  padding: 0 20px;
   position: relative;
   transition:
     border-color 120ms ease,
@@ -35,13 +30,13 @@
 }
 
 /* enabled */
-.text-input__field--enabled {
+.text-area__field--enabled {
   border-color: var(--cadence-color-border, #e5e5e5);
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.06), 0px 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 /* hover */
-.text-input__field--hover {
+.text-area__field--hover {
   border-color: var(--cadence-color-border, #e5e5e5);
   box-shadow:
     0px 0px 12px rgba(0, 0, 0, 0.08),
@@ -49,71 +44,61 @@
 }
 
 /* focus */
-.text-input__field--focus {
+.text-area__field--focus {
   border: 1.5px solid #2d5f6b;
   box-shadow: 0 0 0 4px rgba(45, 95, 107, 0.12);
-  padding: 0 20px;
 }
 
 /* disabled */
-.text-input__field--disabled {
+.text-area__field--disabled {
   background-color: var(--cadence-color-border, #e5e5e5);
   border-color: var(--cadence-color-border-strong, #bfc9cb);
   cursor: not-allowed;
 }
 
 /* error */
-.text-input__field--error {
+.text-area__field--error {
   border: 2px solid var(--cadence-color-danger, #da1e28);
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.06), 0px 1px 2px rgba(0, 0, 0, 0.04);
-  padding: 0 19px;
 }
 
 /* success */
-.text-input__field--success {
+.text-area__field--success {
   border: 2px solid var(--cadence-color-success, #24a148);
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.06), 0px 1px 2px rgba(0, 0, 0, 0.04);
-  padding: 0 19px;
 }
 
-/* ── Native <input> ──────────────────────────────────────────────────────── */
-.text-input__input {
+/* ── Native <textarea> ───────────────────────────────────────────────────── */
+.text-area__textarea {
   background: transparent;
   border: none;
+  border-radius: 10px;
   color: var(--cadence-color-primary, #002830);
   flex: 1;
   font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 0;
-  line-height: normal;
+  line-height: 1.5;
   min-width: 0;
   outline: none;
+  padding: 10px 20px;
+  resize: vertical;
 }
 
-.text-input__input::placeholder {
+.text-area__textarea::placeholder {
   color: var(--cadence-color-border-strong, #bfc9cb);
   font-weight: 400;
 }
 
-.text-input__input:disabled {
+.text-area__textarea:disabled {
   color: var(--cadence-color-text-disabled, #808080);
   cursor: not-allowed;
-}
-
-/* ── Focus cursor indicator ──────────────────────────────────────────────── */
-.text-input__cursor {
-  color: var(--cadence-color-primary, #002830);
-  font-family: var(--cadence-font-sans, "Inter", Helvetica);
-  font-size: 13px;
-  font-weight: 500;
-  line-height: normal;
-  pointer-events: none;
-  user-select: none;
+  resize: none;
 }
 
 /* ── Helper / error text ─────────────────────────────────────────────────── */
-.text-input__helper {
+.text-area__helper {
   font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 11px;
   font-weight: 400;
@@ -123,17 +108,17 @@
   padding: 0;
 }
 
-.text-input__helper--enabled,
-.text-input__helper--hover,
-.text-input__helper--focus,
-.text-input__helper--disabled {
+.text-area__helper--enabled,
+.text-area__helper--hover,
+.text-area__helper--focus,
+.text-area__helper--disabled {
   color: var(--cadence-color-text-muted, #809397);
 }
 
-.text-input__helper--error {
+.text-area__helper--error {
   color: var(--cadence-color-danger, #da1e28);
 }
 
-.text-input__helper--success {
+.text-area__helper--success {
   color: var(--cadence-color-success, #24a148);
 }

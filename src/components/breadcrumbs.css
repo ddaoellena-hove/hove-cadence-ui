@@ -1,6 +1,6 @@
 /* ── Root ── */
 .breadcrumbs {
-  font-family: "Inter", Helvetica, sans-serif;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
 }
 
 /* ── List ── */
@@ -31,7 +31,7 @@
   font-size: 13px;
   font-weight: 400;
   line-height: 1.4;
-  color: #6b7280;
+  color: var(--cadence-color-icon-muted, #69797d);
   text-decoration: none;
   transition: color 0.15s, text-decoration-color 0.15s;
   text-decoration-color: transparent;
@@ -40,9 +40,9 @@
 
 /* ── Anchor / button interactive states ── */
 .breadcrumbs__link:not(.breadcrumbs__link--current):hover {
-  color: #111827;
+  color: var(--cadence-color-primary, #002830);
   text-decoration: underline;
-  text-decoration-color: #111827;
+  text-decoration-color: var(--cadence-color-primary, #002830);
   text-underline-offset: 3px;
 }
 
@@ -56,17 +56,17 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  font-family: "Inter", Helvetica, sans-serif;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   text-align: left;
 }
 
 /* ── Current page ── */
 .breadcrumbs__link--current {
-  color: #111827;
+  color: var(--cadence-color-primary, #002830);
   font-weight: 500;
   cursor: default;
   text-decoration: underline;
-  text-decoration-color: #111827;
+  text-decoration-color: var(--cadence-color-primary, #002830);
   text-underline-offset: 3px;
 }
 
@@ -86,7 +86,7 @@
 .breadcrumbs__separator {
   display: flex;
   align-items: center;
-  color: #d1d5db;
+  color: var(--cadence-color-border-strong, #bfc9cb);
 }
 
 .breadcrumbs__separator-icon {

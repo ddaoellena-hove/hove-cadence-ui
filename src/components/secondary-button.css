@@ -69,7 +69,7 @@
 
 /* ── Label text ── */
 .secondary-button .sb-text {
-  font-family: "Inter", Helvetica;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 11px;
   font-weight: 500;
   letter-spacing: -0.22px;
@@ -84,7 +84,7 @@
 /* ── Text color by variant ── */
 .secondary-button.no .sb-label,
 .secondary-button.only .sb-label {
-  font-family: "Inter", Helvetica;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 11px;
   font-weight: 500;
   letter-spacing: -0.22px;
@@ -109,7 +109,7 @@
 
 .secondary-button.outline-false.enabled.destructive-false .sb-label,
 .secondary-button.outline-false.enabled.destructive-false .sb-text {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 /* hover — same blue as default */
@@ -126,7 +126,7 @@
 
 .secondary-button.outline-false.hover.destructive-false .sb-label,
 .secondary-button.outline-false.hover.destructive-false .sb-text {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 /* clicked — dark blue */
@@ -143,18 +143,18 @@
 
 .secondary-button.outline-false.clicked.destructive-false .sb-label,
 .secondary-button.outline-false.clicked.destructive-false .sb-text {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 /* disabled */
 .secondary-button.outline-false.disabled.destructive-false {
-  background-color: #e5e9ea;
-  border-color: #bfc9cb;
+  background-color: var(--cadence-color-border, #e5e5e5);
+  border-color: var(--cadence-color-border-strong, #bfc9cb);
 }
 
 .secondary-button.outline-false.disabled.destructive-false .sb-label,
 .secondary-button.outline-false.disabled.destructive-false .sb-text {
-  color: #808080;
+  color: var(--cadence-color-text-disabled, #808080);
 }
 
 /* ── Filled destructive ── */
@@ -170,12 +170,12 @@
 
 .secondary-button.outline-false.enabled.destructive-true .sb-label,
 .secondary-button.outline-false.enabled.destructive-true .sb-text {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 .secondary-button.outline-false.hover.destructive-true {
-  background-color: #da1e28;
-  border-color: #da1e28;
+  background-color: var(--cadence-color-danger, #da1e28);
+  border-color: var(--cadence-color-danger, #da1e28);
   box-shadow:
     inset 0px 2px 0px #ffffff40,
     inset 0px -2px 12px #0000001a,
@@ -186,7 +186,7 @@
 
 .secondary-button.outline-false.hover.destructive-true .sb-label,
 .secondary-button.outline-false.hover.destructive-true .sb-text {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 .secondary-button.outline-false.clicked.destructive-true {
@@ -202,7 +202,7 @@
 
 .secondary-button.outline-false.clicked.destructive-true .sb-label,
 .secondary-button.outline-false.clicked.destructive-true .sb-text {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 .secondary-button.outline-false.disabled.destructive-true {
@@ -212,7 +212,7 @@
 
 .secondary-button.outline-false.disabled.destructive-true .sb-label,
 .secondary-button.outline-false.disabled.destructive-true .sb-text {
-  color: #808080;
+  color: var(--cadence-color-text-disabled, #808080);
 }
 
 /* ════════════════════════════════════════════════════════════════════
@@ -221,11 +221,11 @@
 
 /* enabled */
 .secondary-button.outline-true {
-  background-color: #ffffff;
+  background-color: var(--cadence-color-white, #ffffff);
 }
 
 .secondary-button.outline-true.enabled.destructive-false {
-  border-color: #809397;
+  border-color: var(--cadence-color-text-muted, #809397);
   box-shadow:
     inset 0px -2px 12px #0000000d,
     inset 0px -2px 0px #0000001a;
@@ -233,12 +233,12 @@
 
 .secondary-button.outline-true.enabled.destructive-false .sb-label,
 .secondary-button.outline-true.enabled.destructive-false .sb-text {
-  color: #002830;
+  color: var(--cadence-color-primary, #002830);
 }
 
 /* hover */
 .secondary-button.outline-true.hover.destructive-false {
-  border-color: #1a3e45;
+  border-color: var(--cadence-color-label, #1a3e45);
   box-shadow:
     inset 0px -2px 8px #0000000d,
     inset 0px -2px 0px #0000001a,
@@ -248,13 +248,13 @@
 
 .secondary-button.outline-true.hover.destructive-false .sb-label,
 .secondary-button.outline-true.hover.destructive-false .sb-text {
-  color: #002830;
+  color: var(--cadence-color-primary, #002830);
 }
 
 /* clicked */
 .secondary-button.outline-true.clicked.destructive-false {
-  background-color: #f2f2f2;
-  border-color: #1a3e45;
+  background-color: var(--cadence-color-divider, #f0f0f0);
+  border-color: var(--cadence-color-label, #1a3e45);
   box-shadow:
     inset 0px -2px 0px #00000040,
     inset 0px -2px 8px #0000000d,
@@ -264,17 +264,17 @@
 
 .secondary-button.outline-true.clicked.destructive-false .sb-label,
 .secondary-button.outline-true.clicked.destructive-false .sb-text {
-  color: #002830;
+  color: var(--cadence-color-primary, #002830);
 }
 
 /* disabled */
 .secondary-button.outline-true.disabled.destructive-false {
-  border-color: #bfbfbf;
+  border-color: var(--cadence-color-border-strong, #bfc9cb);
 }
 
 .secondary-button.outline-true.disabled.destructive-false .sb-label,
 .secondary-button.outline-true.disabled.destructive-false .sb-text {
-  color: #bfc9cb;
+  color: var(--cadence-color-border-strong, #bfc9cb);
 }
 
 /* ── Outline destructive ── */
@@ -288,11 +288,11 @@
 
 .secondary-button.outline-true.enabled.destructive-true .sb-label,
 .secondary-button.outline-true.enabled.destructive-true .sb-text {
-  color: #da1e28;
+  color: var(--cadence-color-danger, #da1e28);
 }
 
 .secondary-button.outline-true.hover.destructive-true {
-  border-color: #da1e28;
+  border-color: var(--cadence-color-danger, #da1e28);
   box-shadow:
     inset 0px -2px 12px #0000000d,
     inset 0px -2px 0px #0000001a,
@@ -302,12 +302,12 @@
 
 .secondary-button.outline-true.hover.destructive-true .sb-label,
 .secondary-button.outline-true.hover.destructive-true .sb-text {
-  color: #da1e28;
+  color: var(--cadence-color-danger, #da1e28);
 }
 
 .secondary-button.outline-true.clicked.destructive-true {
   background-color: #fdf4f4;
-  border-color: #da1e28;
+  border-color: var(--cadence-color-danger, #da1e28);
   box-shadow:
     inset 0px -2px 0px #0000001a,
     inset 0px -2px 12px #0000001a,
@@ -317,7 +317,7 @@
 
 .secondary-button.outline-true.clicked.destructive-true .sb-label,
 .secondary-button.outline-true.clicked.destructive-true .sb-text {
-  color: #da1e28;
+  color: var(--cadence-color-danger, #da1e28);
 }
 
 .secondary-button.outline-true.disabled.destructive-true {
@@ -327,4 +327,47 @@
 .secondary-button.outline-true.disabled.destructive-true .sb-label,
 .secondary-button.outline-true.disabled.destructive-true .sb-text {
   color: #f6c7c9;
+}
+
+/* ── Large size ───────────────────────────────────────────────────────────── */
+
+.secondary-button.size-large {
+  border-radius: 8px;
+}
+
+/* Label padding */
+.secondary-button.size-large.no .sb-label {
+  padding: 10px 16px;
+}
+
+.secondary-button.size-large.only .sb-label {
+  padding: 10px 16px;
+}
+
+.secondary-button.size-large.left .sb-label {
+  padding: 10px 14px 10px 12px;
+}
+
+.secondary-button.size-large.right .sb-label {
+  padding: 10px 12px 10px 14px;
+}
+
+/* Font size */
+.secondary-button.size-large.no .sb-label,
+.secondary-button.size-large.only .sb-label {
+  font-size: 13px;
+  letter-spacing: -0.13px;
+  line-height: 15.6px;
+}
+
+.secondary-button.size-large .sb-text {
+  font-size: 13px;
+  letter-spacing: -0.13px;
+  line-height: 15.6px;
+}
+
+/* Icon size */
+.secondary-button.size-large .sb-icons-instance {
+  height: 16px !important;
+  width: 16px !important;
 }

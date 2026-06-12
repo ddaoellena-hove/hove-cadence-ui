@@ -1,7 +1,7 @@
 /* ─── AlertToast ───────────────────────────────────────────────────────── */
 
 .alert-toast {
-  background-color: #ffffff;
+  background-color: var(--cadence-color-white, #ffffff);
   border-radius: 12px;
   box-shadow:
     0px 0px 8px #0000001a,
@@ -11,7 +11,7 @@
   overflow: hidden;
   position: relative;
   width: 360px;
-  font-family: "Inter", Helvetica;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
 }
 
 /* ── Left accent bar ── */
@@ -25,13 +25,13 @@
   background-color: #0f62fe;
 }
 .alert-toast--success .alert-toast__accent {
-  background-color: #24a148;
+  background-color: var(--cadence-color-success, #24a148);
 }
 .alert-toast--warning .alert-toast__accent {
   background-color: #f1c21b;
 }
 .alert-toast--error .alert-toast__accent {
-  background-color: #da1e28;
+  background-color: var(--cadence-color-danger, #da1e28);
 }
 
 /* ── Icon column ── */
@@ -75,7 +75,7 @@
 .alert-toast__description {
   font-size: 13px;
   font-weight: 500;
-  color: #737373;
+  color: var(--cadence-color-icon-neutral, #737373);
   letter-spacing: 0;
   line-height: normal;
   margin: 0;
@@ -92,7 +92,7 @@
 /* ── Progress bar (bottom of card) ── */
 .alert-toast__progress-track {
   height: 6px;
-  background-color: #e5e5e5;
+  background-color: var(--cadence-color-border, #e5e5e5);
   margin: 8px 0 0;
   overflow: hidden;
   border-radius: 0;
@@ -109,13 +109,13 @@
   background-color: #0f62fe;
 }
 .alert-toast--success .alert-toast__progress-fill {
-  background-color: #24a148;
+  background-color: var(--cadence-color-success, #24a148);
 }
 .alert-toast--warning .alert-toast__progress-fill {
   background-color: #f1c21b;
 }
 .alert-toast--error .alert-toast__progress-fill {
-  background-color: #da1e28;
+  background-color: var(--cadence-color-danger, #da1e28);
 }
 
 /* ── Close button column ── */
@@ -137,7 +137,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #737373;
+  color: var(--cadence-color-icon-neutral, #737373);
   transition:
     background-color 0.15s,
     color 0.15s;
@@ -145,7 +145,7 @@
 }
 
 .alert-toast__close-btn:hover {
-  background-color: #f2f2f2;
+  background-color: var(--cadence-color-divider, #f0f0f0);
   color: #000000;
 }
 

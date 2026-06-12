@@ -36,6 +36,9 @@ export interface PrimaryButtonProps {
   /** Native disabled attribute — also sets state to "disabled". */
   disabled?: boolean;
 
+  /** Button size. Defaults to "medium". */
+  size?: "medium" | "large";
+
   /** Fallback URL used by the Icons component for the "map-01" icon. */
   iconMap?: string;
 }
@@ -57,6 +60,7 @@ export const PrimaryButton = React.forwardRef<
       label = "Label",
       icon = "map-01",
       iconMap = "https://c.animaapp.com/moieyt2ccA1Ry9/img/icon-map-01-1_1.svg",
+      size = "medium",
       className,
       onClick,
       disabled = false,
@@ -98,6 +102,7 @@ export const PrimaryButton = React.forwardRef<
       withIcon,
       `outline-${outline}`,
       `destructive-${destructive}`,
+      `size-${size}`,
       className,
     ]
       .filter(Boolean)

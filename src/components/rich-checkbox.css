@@ -1,11 +1,11 @@
-/* RichRadioButton — base */
-.rich-radio-button {
+/* RichCheckbox — base */
+.rich-checkbox {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 8px 8px 9px 11px;
   border-radius: 12px;
-  border: 1.5px solid;
+  border: 1px solid;
   cursor: pointer;
   user-select: none;
   box-sizing: border-box;
@@ -16,20 +16,19 @@
     background-color 0.15s ease;
 }
 
-.rich-radio-button:focus-visible {
+.rich-checkbox:focus-visible {
   box-shadow: 0 0 0 3px #1a3e4540;
 }
 
 /* ── States ── */
-.rich-radio-button.default {
+.rich-checkbox.unchecked {
   background: linear-gradient(180deg, #fcfdfd 0%, #f2f6f6 100%);
   border-color: var(--cadence-color-border-strong, #bfc9cb);
-  border-width: 1px;
   box-shadow: 0 3px 0 0 rgba(255, 255, 255, 0.1) inset;
   color: var(--cadence-color-label, #1a3e45);
 }
 
-.rich-radio-button.default:hover {
+.rich-checkbox.unchecked:hover {
   border-color: #405e64;
   box-shadow:
     0 3px 0 0 rgba(255, 255, 255, 0.25) inset,
@@ -37,10 +36,9 @@
     0 -3px 0 0 rgba(0, 0, 0, 0.05) inset;
 }
 
-.rich-radio-button.hover {
+.rich-checkbox.hover {
   background: linear-gradient(180deg, #fcfdfd 0%, #f2f6f6 100%);
   border-color: #405e64;
-  border-width: 1px;
   box-shadow:
     0 3px 0 0 rgba(255, 255, 255, 0.25) inset,
     0 -2px 8px 0 rgba(0, 0, 0, 0.05) inset,
@@ -48,10 +46,9 @@
   color: var(--cadence-color-label, #1a3e45);
 }
 
-.rich-radio-button.selected {
+.rich-checkbox.checked {
   background: linear-gradient(180deg, #fcfdfd 0%, #f2f6f6 100%);
   border-color: #405e64;
-  border-width: 1px;
   color: var(--cadence-color-label, #1a3e45);
   box-shadow:
     0 3px 0 0 rgba(255, 255, 255, 0.25) inset,
@@ -59,23 +56,22 @@
     0 -3px 0 0 rgba(0, 0, 0, 0.05) inset;
 }
 
-.rich-radio-button.disabled {
+.rich-checkbox.disabled {
   background-color: var(--cadence-color-border, #e5e5e5);
   border-color: #bfbfbf;
-  border-width: 1px;
   color: var(--cadence-color-placeholder, #737373);
   cursor: not-allowed;
 }
 
 /* ── Icon ── */
-.rich-radio-button-icon {
+.rich-checkbox-icon {
   flex-shrink: 0;
   width: 16px;
   height: 16px;
 }
 
 /* ── Content (label + description stack) ── */
-.rich-radio-button-content {
+.rich-checkbox-content {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -84,7 +80,7 @@
 }
 
 /* ── Label ── */
-.rich-radio-button-label {
+.rich-checkbox-label {
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   font-size: 14px;
   font-weight: 500;
@@ -93,7 +89,7 @@
 }
 
 /* ── Description ── */
-.rich-radio-button-description {
+.rich-checkbox-description {
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   font-size: 12px;
   font-weight: 400;
@@ -102,73 +98,77 @@
   overflow-wrap: break-word;
 }
 
-.rich-radio-button.disabled .rich-radio-button-description {
+.rich-checkbox.disabled .rich-checkbox-description {
   color: var(--cadence-color-border-strong, #bfc9cb);
 }
 
-/* ── Radio circle ── */
-.rich-radio-button-radio {
+/* ── Checkbox square — identique au Checkbox de base ── */
+.rich-checkbox-box {
   flex-shrink: 0;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
   border: 1px solid;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
   box-sizing: border-box;
-  transition: border-color 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
 }
 
-.rich-radio-button.default .rich-radio-button-radio {
+.rich-checkbox.unchecked .rich-checkbox-box {
   border-color: var(--cadence-color-icon-muted, #69797d);
   background-color: var(--cadence-color-white, #ffffff);
 }
 
-.rich-radio-button.hover .rich-radio-button-radio {
-  border-color: var(--cadence-color-label, #1a3e45);
+.rich-checkbox.hover .rich-checkbox-box {
+  border-color: var(--cadence-color-primary, #002830);
   background-color: var(--cadence-color-white, #ffffff);
 }
 
-.rich-radio-button.selected .rich-radio-button-radio {
-  border-color: var(--cadence-color-label, #1a3e45);
-  background-color: var(--cadence-color-white, #ffffff);
+.rich-checkbox.checked .rich-checkbox-box {
+  border-color: var(--cadence-color-primary, #002830);
+  background-color: var(--cadence-color-primary, #002830);
 }
 
-.rich-radio-button.disabled .rich-radio-button-radio {
+.rich-checkbox.disabled .rich-checkbox-box {
   border-color: var(--cadence-color-border-strong, #bfc9cb);
   background-color: var(--cadence-color-border, #e5e5e5);
 }
 
-/* ── Selected dot ── */
-.rich-radio-button-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: var(--cadence-color-label, #1a3e45);
-  flex-shrink: 0;
+/* ── Coche blanche ── */
+.rich-checkbox-tick {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 4px;
+  border-left: 1.5px solid var(--cadence-color-white, #ffffff);
+  border-bottom: 1.5px solid var(--cadence-color-white, #ffffff);
+  transform: translate(-50%, -60%) rotate(-45deg);
+  pointer-events: none;
 }
 
 /* ── Avec description — padding latéral renforcé ── */
-.rich-radio-button--with-description {
+.rich-checkbox--with-description {
   padding-left: 16px;
   padding-right: 12px;
 }
 
-.rich-radio-button--large.rich-radio-button--with-description {
+.rich-checkbox--large.rich-checkbox--with-description {
   padding-left: 20px;
   padding-right: 16px;
 }
 
 /* ── Fluid — remplit la largeur de son conteneur ── */
-.rich-radio-button--fluid {
+.rich-checkbox--fluid {
   flex: 1;
   min-width: 0;
   width: 100%;
 }
 
 /* ── Large size variant ── */
-.rich-radio-button--large {
+.rich-checkbox--large {
   gap: 12px;
   padding: 12px 12px 13px 16px;
   border-radius: 16px;
@@ -176,25 +176,28 @@
   align-items: center;
 }
 
-.rich-radio-button--large .rich-radio-button-icon {
+.rich-checkbox--large .rich-checkbox-icon {
   width: 24px;
   height: 24px;
 }
 
-.rich-radio-button--large .rich-radio-button-label {
+.rich-checkbox--large .rich-checkbox-label {
   font-size: 16px;
 }
 
-.rich-radio-button--large .rich-radio-button-description {
+.rich-checkbox--large .rich-checkbox-description {
   font-size: 13px;
 }
 
-.rich-radio-button--large .rich-radio-button-radio {
+.rich-checkbox--large .rich-checkbox-box {
   width: 24px;
   height: 24px;
+  border-radius: 6px;
 }
 
-.rich-radio-button--large .rich-radio-button-dot {
-  width: 13px;
-  height: 13px;
+.rich-checkbox--large .rich-checkbox-tick {
+  width: 11px;
+  height: 5px;
+  border-left-width: 2px;
+  border-bottom-width: 2px;
 }

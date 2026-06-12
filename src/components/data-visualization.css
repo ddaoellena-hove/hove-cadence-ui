@@ -4,8 +4,8 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  background: #ffffff;
-  font-family: "Spline Sans Mono", monospace;
+  background: var(--cadence-color-white, #ffffff);
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
   width: 100%;
 
   /* ── Palette de séries ── */
@@ -27,21 +27,21 @@
 
 /* Grid lines */
 .dv__grid-line {
-  stroke: #f1f3f5;
+  stroke: var(--cadence-color-surface-alt, #eef1f4);
   stroke-width: 1;
   stroke-dasharray: 4 3;
 }
 
 /* Axis lines (baseline + y-axis rule) */
 .dv__axis-line {
-  stroke: #e9ecef;
+  stroke: var(--cadence-color-border, #e5e5e5);
   stroke-width: 1;
 }
 
 /* Axis tick labels */
 .dv__axis-label {
-  fill: #adb5bd;
-  font-family: "Spline Sans Mono", monospace;
+  fill: var(--cadence-color-border-strong, #bfc9cb);
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
   font-size: 11px;
   font-weight: 400;
 }
@@ -56,8 +56,8 @@
 
 /* Value labels inside bars */
 .dv__value-label {
-  fill: #ffffff;
-  font-family: "Spline Sans Mono", monospace;
+  fill: var(--cadence-color-white, #ffffff);
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
   font-size: 10px;
   font-weight: 600;
   pointer-events: none;
@@ -69,8 +69,8 @@
   position: absolute;
   pointer-events: none;
   z-index: 100;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06);
   min-width: 160px;
@@ -85,19 +85,19 @@
   justify-content: space-between;
   gap: 24px;
   padding: 8px 12px;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--cadence-color-divider, #f0f0f0);
 }
 
 .dv__tooltip-category-label {
-  font-family: "Inter", Helvetica, sans-serif;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   font-size: 12px;
   font-weight: 400;
-  color: #9ca3af;
+  color: var(--cadence-color-placeholder, #737373);
   white-space: nowrap;
 }
 
 .dv__tooltip-category-value {
-  font-family: "Spline Sans Mono", monospace;
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
   font-size: 12px;
   font-weight: 600;
   color: #1a1a2e;
@@ -111,7 +111,7 @@
   justify-content: space-between;
   gap: 16px;
   padding: 8px 12px;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--cadence-color-divider, #f0f0f0);
 }
 
 .dv__tooltip-row:last-child {
@@ -127,16 +127,16 @@
 
 .dv__tooltip-label {
   flex: 1;
-  font-family: "Inter", Helvetica, sans-serif;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   font-size: 12px;
   font-weight: 400;
-  color: #6b7280;
+  color: var(--cadence-color-icon-muted, #69797d);
   white-space: nowrap;
   display: none; /* masqué — le dot suffit à identifier la série */
 }
 
 .dv__tooltip-value {
-  font-family: "Spline Sans Mono", monospace;
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
   font-size: 12px;
   font-weight: 600;
   color: #1a1a2e;
@@ -166,8 +166,8 @@
 }
 
 .dv__legend-label {
-  color: #495057;
-  font-family: "Spline Sans Mono", monospace;
+  color: var(--cadence-color-label, #1a3e45);
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
   font-size: 11px;
   font-weight: 500;
   line-height: 1;

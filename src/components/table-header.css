@@ -1,0 +1,50 @@
+/* ── TableHeader ─────────────────────────────────────────────────────────── */
+.table-header {
+  display: flex;
+  width: 100%;
+}
+
+/* ── Cell ────────────────────────────────────────────────────────────────── */
+.table-header__cell {
+  align-items: center;
+  color: var(--cadence-color-icon-muted, #69797d);
+  display: flex;
+  flex-shrink: 0;
+  gap: 5px;
+  padding: 0 16px 8px 16px;
+}
+
+.table-header__cell--sortable {
+  cursor: pointer;
+  transition: color 120ms ease;
+}
+
+.table-header__cell--sortable:hover {
+  color: var(--cadence-color-primary, #002830);
+}
+
+.table-header__cell--active {
+  color: var(--cadence-color-primary, #002830);
+}
+
+/* ── Label ───────────────────────────────────────────────────────────────── */
+.table-header__label {
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ── Sort icon ───────────────────────────────────────────────────────────── */
+.table-header__sort-icon {
+  display: block;
+  flex-shrink: 0;
+  transition: opacity 120ms ease;
+}
+
+.table-header__cell--sortable:hover .table-header__sort-icon path {
+  transition: fill 120ms ease;
+}

@@ -1,7 +1,7 @@
 /* ── Tooltip base ─────────────────────────────────────────────── */
 .tooltip {
-  --_bg: #ffffff;
-  --_color: #163535;
+  --_bg: var(--cadence-color-white, #ffffff);
+  --_color: var(--cadence-color-primary, #002830);
   --_arrow-size: 10px;
 
   /* Outer shell: no own background — drop-shadow sees inner + arrow together */
@@ -10,11 +10,11 @@
   overflow: visible;
   white-space: nowrap;
   box-sizing: border-box;
-  font-family: "Inter", Helvetica, sans-serif;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0px;
-  line-height: 1.2;
+  line-height: 1.5;
   color: var(--_color);
 }
 
@@ -32,16 +32,16 @@
 
 /* ── Light theme ──────────────────────────────────────────────── */
 .tooltip--light {
-  --_bg: #ffffff;
-  --_color: #163535;
+  --_bg: var(--cadence-color-white, #ffffff);
+  --_color: var(--cadence-color-primary, #002830);
   filter: drop-shadow(0 1px 8px rgba(0, 0, 0, 0.1))
     drop-shadow(0 0 1px rgba(0, 0, 0, 0.25));
 }
 
 /* ── Dark theme ───────────────────────────────────────────────── */
 .tooltip--dark {
-  --_bg: #163535;
-  --_color: #ffffff;
+  --_bg: var(--cadence-color-primary, #002830);
+  --_color: var(--cadence-color-white, #ffffff);
 }
 
 /* ── Label ────────────────────────────────────────────────────── */

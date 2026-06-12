@@ -1,7 +1,7 @@
 /* ── Sliding pill ────────────────────────────────────────────────────────── */
 .alternative__pill {
-  background-color: #ffffff;
-  border: 1px solid #bfbfbf;
+  background-color: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border-strong, #bfc9cb);
   border-radius: 8px;
   box-shadow:
     inset 0px 2px 0px rgba(255, 255, 255, 0.25),
@@ -18,8 +18,8 @@
 }
 
 .alternative--disabled .alternative__pill {
-  background-color: #e5e5e5;
-  border-color: #bfbfbf;
+  background-color: var(--cadence-color-border, #e5e5e5);
+  border-color: var(--cadence-color-border-strong, #bfc9cb);
   box-shadow: none;
 }
 
@@ -48,10 +48,10 @@
   background: transparent;
   border: none;
   border-radius: 8px;
-  color: #737373;
+  color: var(--cadence-color-icon-neutral, #737373);
   cursor: pointer;
   display: flex;
-  font-family: "Inter", Helvetica;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 13px;
   font-weight: 500;
   justify-content: center;
@@ -76,12 +76,12 @@
 /* Inactive hover */
 .alternative__tab:not(.alternative__tab--active):hover:not(:disabled) {
   background-color: rgba(255, 255, 255, 0.45);
-  color: #4a4a4a;
+  color: var(--cadence-color-label, #1a3e45);
 }
 
 /* Disabled inactive */
 .alternative--disabled .alternative__tab {
-  color: #a8b8bf;
+  color: var(--cadence-color-border-strong, #bfc9cb);
   cursor: not-allowed;
 }
 
@@ -95,5 +95,5 @@
 
 /* Active tab in a disabled group */
 .alternative--disabled .alternative__tab--active {
-  color: #808080;
+  color: var(--cadence-color-text-disabled, #808080);
 }

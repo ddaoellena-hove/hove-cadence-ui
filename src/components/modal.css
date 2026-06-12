@@ -1,0 +1,101 @@
+/* ── Overlay ─────────────────────────────────────────────────────────────── */
+.modal-overlay {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 24px;
+  position: fixed;
+  z-index: 1000;
+}
+
+/* ── Frame (#002830) ─────────────────────────────────────────────────────── */
+.modal {
+  background-color: var(--cadence-color-primary, #002830);
+  border-radius: 12px;
+  box-shadow:
+    0px 20px 60px rgba(0, 0, 0, 0.2),
+    0px 4px 16px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 48px);
+  padding: 2px;
+  width: 100%;
+}
+
+.modal--small  { max-width: 400px; }
+.modal--medium { max-width: 560px; }
+.modal--large  { max-width: 800px; }
+
+/* ── Header — transparent, texte blanc sur fond #002830 ──────────────────── */
+.modal__header {
+  align-items: center;
+  background: transparent;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  padding: 9px 12px 9px 24px;
+}
+
+.modal__title {
+  color: var(--cadence-color-white, #ffffff);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: normal;
+  margin: 0;
+}
+
+.modal__close {
+  align-items: center;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  height: 28px;
+  justify-content: center;
+  padding: 0;
+  transition: color 120ms ease, background-color 120ms ease;
+  width: 28px;
+}
+
+.modal__close:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--cadence-color-white, #ffffff);
+}
+
+/* ── Inner — fond blanc, border-radius 9px ───────────────────────────────── */
+.modal__inner {
+  background-color: var(--cadence-color-white, #ffffff);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ── Body ────────────────────────────────────────────────────────────────── */
+.modal__body {
+  color: var(--cadence-color-primary, #002830);
+  flex: 1;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.6;
+  overflow-y: auto;
+  padding: 24px;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+.modal__footer {
+  border-top: 1px solid var(--cadence-color-divider, #f0f0f0);
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding: 16px 24px;
+}

@@ -1,11 +1,9 @@
 .link {
-  font-family: "Inter", Helvetica, sans-serif;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   font-weight: 400;
-  text-decoration: underline;
+  text-decoration: none;
   cursor: pointer;
-  transition:
-    color 0.15s ease,
-    text-decoration-color 0.15s ease;
+  transition: color 0.15s ease;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -15,7 +13,7 @@
 }
 
 .link:hover {
-  text-decoration-color: transparent;
+  text-decoration: underline;
 }
 
 .link__arrow {
@@ -53,19 +51,11 @@
 
 /* Variants */
 .link--primary {
-  color: #69797d;
-}
-
-.link--primary:hover {
-  color: #002830;
+  color: #0f62fe;
 }
 
 .link--secondary {
-  color: #6b7280;
-}
-
-.link--secondary:hover {
-  color: #374151;
+  color: #0f62fe;
 }
 
 .link--destructive {
@@ -77,9 +67,9 @@
 }
 
 .link--inverse {
-  color: #ffffff;
+  color: var(--cadence-color-white, #ffffff);
 }
 
 .link--inverse:hover {
-  color: #e5e7eb;
+  color: var(--cadence-color-border, #e5e5e5);
 }

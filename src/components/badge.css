@@ -1,0 +1,68 @@
+/* ── Badge ───────────────────────────────────────────────────────────────── */
+.badge {
+  align-items: center;
+  background-color: var(--cadence-color-surface-alt, #eef1f4);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: 6px;
+  color: var(--cadence-color-label, #1a3e45);
+  display: inline-flex;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
+  font-size: 12px;
+  font-weight: 500;
+  gap: 5px;
+  line-height: 1;
+  padding: 5px 8px;
+  user-select: none;
+}
+
+/* ── Variante mono ───────────────────────────────────────────────────────── */
+.badge--mono .badge__label {
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+}
+
+/* ── Variante draggable ──────────────────────────────────────────────────── */
+.badge--draggable {
+  cursor: grab;
+}
+
+.badge--draggable:active {
+  cursor: grabbing;
+}
+
+/* ── Drag handle ─────────────────────────────────────────────────────────── */
+.badge__drag-handle {
+  align-items: center;
+  color: var(--cadence-color-placeholder, #737373);
+  display: flex;
+  flex-shrink: 0;
+  transition: color 120ms ease;
+}
+
+.badge--draggable:hover .badge__drag-handle {
+  color: var(--cadence-color-icon-muted, #69797d);
+}
+
+/* ── Label ───────────────────────────────────────────────────────────────── */
+.badge__label {
+  /* Hérite de .badge */
+}
+
+/* ── Dismiss button ──────────────────────────────────────────────────────── */
+.badge__dismiss {
+  align-items: center;
+  background: none;
+  border: none;
+  border-radius: 3px;
+  color: var(--cadence-color-placeholder, #737373);
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  padding: 1px;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.badge__dismiss:hover {
+  background-color: rgba(0, 40, 48, 0.08);
+  color: var(--cadence-color-primary, #002830);
+}

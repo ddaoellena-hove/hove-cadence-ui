@@ -8,19 +8,19 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  font-family: "Inter", Helvetica, sans-serif;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #9ca3af;
+  color: var(--cadence-color-placeholder, #737373);
   transition: color 0.15s ease;
   white-space: nowrap;
   outline: none;
 }
 
 .tab:hover:not(.tab--disabled) {
-  color: #6b7280;
+  color: var(--cadence-color-icon-muted, #69797d);
 }
 
 .tab:focus-visible {
@@ -31,11 +31,11 @@
 
 /* ── Active ── */
 .tab--active {
-  color: #002830;
+  color: var(--cadence-color-primary, #002830);
 }
 
 .tab--active:hover:not(.tab--disabled) {
-  color: #002830;
+  color: var(--cadence-color-primary, #002830);
 }
 
 /* ── Underline bar ── */
@@ -46,7 +46,7 @@
   right: 0;
   height: 3.5px;
   border-radius: 2px 2px 0 0;
-  background: #002830;
+  background: var(--cadence-color-primary, #002830);
 }
 
 /* ── Disabled ── */

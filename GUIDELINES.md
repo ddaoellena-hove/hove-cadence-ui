@@ -29,12 +29,32 @@ Règles impératives pour générer du code avec ce design system :
 2. **Ne jamais recréer un composant qui existe.** Avant de coder un bouton, un champ, une carte ou un badge custom, vérifier la table [Intention → composant](#intention--composant).
 3. **Couleurs : uniquement les tokens.** Écrire `var(--cadence-color-primary)`, jamais de hex en dur. Les couleurs absentes des tokens (bleus, violets…) sont réservées aux composants internes — ne pas les réutiliser.
 4. **Les règles ❌ sont bloquantes.** Ce ne sont pas des suggestions : un code qui viole un ❌ est incorrect.
-5. **`Checkbox`, `Toggle` et `RadioButton` se pilotent par la prop `state`**, pas par une prop `checked` — elle n'existe pas. Exemple : `<Checkbox state={isChecked ? "checked" : "unchecked"} onChange={setIsChecked} />`.
+5. **`Checkbox`, `Toggle`, `RadioButton`, `RichCheckbox` et `RichRadioButton` se pilotent par la prop `state`**, pas par une prop `checked` — elle n'existe pas. Exemple : `<Checkbox state={isChecked ? "checked" : "unchecked"} onChange={setIsChecked} />`.
 6. **Le CSS custom est limité au layout.** `display: flex`, `gap`, `padding`, `margin`, largeurs : OK en style inline. Couleurs, polices, bordures, ombres custom : interdit — les composants et tokens couvrent ces besoins.
 7. **Partir des [recettes](#recettes-de-pages-complètes)** pour toute page nouvelle, puis adapter. Ne pas réinventer la structure.
 8. **Un seul `PrimaryButton` rempli par vue.** Plusieurs `SecondaryButton` sont autorisés.
 9. **Toujours passer `label`** sur les champs de formulaire (`TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `CounterInput`).
 10. **Imports** : composants depuis `@ddaoellena/cadence-ui`, styles via un unique `import "@ddaoellena/cadence-ui/style.css"`, polices via les `<link>` de la section [Installation](#installation--setup).
+11. **Libellés en français correct, accents UTF-8 obligatoires.** Tout texte visible (labels, titres, boutons, placeholders, messages) s'écrit avec ses accents — jamais de français « aplati » en ASCII. Les fichiers source sont en UTF-8 : `é è ê à ç û É À` s'écrivent tels quels, sans entité HTML ni échappement unicode.
+
+### Rédaction des libellés français
+
+| ❌ Incorrect (ASCII aplati) | ✅ Correct |
+|---|---|
+| `Creer un scenario` | `Créer un scénario` |
+| `Severite` | `Sévérité` |
+| `A venir` | `À venir` |
+| `Passees` | `Passées` |
+| `Tout deselectionner` | `Tout désélectionner` |
+| `Reinitialiser` | `Réinitialiser` |
+| `Derniere mise a jour` | `Dernière mise à jour` |
+| `Evenement` | `Événement` |
+
+- ✅ Les majuscules prennent aussi leurs accents : `À venir`, `Événement`, `État`.
+- ✅ Apostrophe typographique `'` dans les libellés (`Points d'intérêt`) ; l'apostrophe droite `'` reste acceptable dans le code.
+- ✅ En JSX, l'apostrophe dans un texte se met dans une expression si besoin : `{"Points d'intérêt"}` ou via guillemets doubles.
+- ❌ Jamais d'entités HTML (`&eacute;`) ni d'échappements (`é`) — écrire le caractère directement.
+- ❌ Ne pas mélanger français et anglais dans une même interface (`Delete` à côté de « Supprimer »).
 
 ---
 
@@ -86,7 +106,7 @@ Les couleurs, polices et rayons sont centralisés dans des variables CSS (`token
 | `--cadence-color-label` | `#1a3e45` | Labels de formulaire, badges |
 | `--cadence-color-text-muted` | `#809397` | Texte secondaire (heures, descriptions) |
 | `--cadence-color-text-disabled` | `#808080` | Texte des états désactivés |
-| `--cadence-color-placeholder` | `#9ca3af` | Placeholders des champs |
+| `--cadence-color-placeholder` | `#737373` | Placeholders des champs |
 | `--cadence-color-icon-muted` | `#69797d` | Icônes d'action discrètes |
 | `--cadence-color-icon-neutral` | `#737373` | Icônes neutres (pictos métier) |
 | `--cadence-color-danger` | `#da1e28` | Actions destructives, erreurs |
@@ -161,7 +181,8 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Option booléenne dans un formulaire (validée à la soumission) | `Checkbox` | `Toggle` |
 | Activation/désactivation à effet immédiat | `Toggle` | `Checkbox` |
 | Choix exclusif 2-5 options courtes | `RadioButton` | — |
-| Choix exclusif avec icône + description | `RichRadioButton` | — |
+| Choix exclusif avec icône + description | `RichRadioButton` | `RichCheckbox` (sélection multiple) |
+| Sélection multiple avec icône + description | `RichCheckbox` | `RichRadioButton` (choix exclusif) |
 | Étiquette d'information neutre (catégorie, tag, code) | `Badge` | `Indicator` (qui porte un état) |
 | État ou statut avec picto + couleur sémantique | `Indicator` | `Badge` (purement informatif) |
 | Élément de liste structuré (header + colonnes) | `TableCard` | un `<table>` HTML custom |
@@ -432,6 +453,7 @@ De gauche à droite, engagement croissant : `Link` (tertiaire) → bouton `outli
 | `Checkbox` | Option booléenne indépendante, ou sélection multiple. |
 | `RadioButton` | Sélection exclusive parmi 2 à 5 options courtes. |
 | `RichRadioButton` | Sélection exclusive avec description par option. |
+| `RichCheckbox` | Sélection multiple avec description par option. |
 | `Toggle` | Activation/désactivation à effet immédiat (hors soumission). |
 
 ### Règles
@@ -1032,15 +1054,27 @@ API identique pour les deux :
 | `state` | `"default" \| "hover" \| "selected" \| "disabled"` | `"default"` | ⚠️ Pas de prop `checked` |
 | `onChange` | `() => void` | — | — |
 
+### RichCheckbox
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `label` | `string` | `"Choice"` | Texte principal |
+| `description` | `string` | — | Texte secondaire |
+| `state` | `"unchecked" \| "hover" \| "checked" \| "disabled"` | `"unchecked"` | ⚠️ Pas de prop `checked` — piloter via `state` |
+| `size` | `"medium" \| "large"` | `"medium"` | — |
+| `onChange` | `(nextChecked: boolean) => void` | — | Bascule, comme `Checkbox` |
+
+Carte cliquable avec icône + label + description + carré de coche. Sélection **multiple** — pour un choix exclusif, utiliser `RichRadioButton`.
+
 ### RichRadioButton
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `label` | `string` | — | Texte principal |
+| `label` | `string` | `"Choice"` | Texte principal |
 | `description` | `string` | — | Texte secondaire |
-| `state` | `"default" \| "hover" \| "selected" \| "disabled"` | `"default"` | — |
+| `state` | `"default" \| "hover" \| "selected" \| "disabled"` | `"default"` | ⚠️ Pas de prop `checked` — piloter via `state` |
 | `size` | `"medium" \| "large"` | `"medium"` | — |
-| `onChange` | `() => void` | — | — |
+| `onChange` | `() => void` | — | Clic (le parent gère l'exclusivité) |
 
 ### SegmentedControl / SegmentedControlAlt
 

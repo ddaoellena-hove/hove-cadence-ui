@@ -28,6 +28,9 @@ export interface SecondaryButtonProps {
   /** Icon name to display (used when withIcon is not "no"). */
   icon?: IconsProps["icon"];
 
+  /** Button size. Defaults to "medium". */
+  size?: "medium" | "large";
+
   /** Optional extra class name for custom styling. */
   className?: string;
 
@@ -54,6 +57,7 @@ export const SecondaryButton = React.forwardRef<
       destructive = false,
       label = "Label",
       icon = "map-01",
+      size = "medium",
       className,
       onClick,
       disabled = false,
@@ -93,6 +97,7 @@ export const SecondaryButton = React.forwardRef<
       withIcon,
       `outline-${outline}`,
       `destructive-${destructive}`,
+      `size-${size}`,
       className,
     ]
       .filter(Boolean)

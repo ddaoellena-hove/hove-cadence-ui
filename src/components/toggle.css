@@ -24,7 +24,7 @@
 
 /* ── Thumb (knob) ── */
 .toggle-thumb {
-  background-color: #ffffff;
+  background-color: var(--cadence-color-white, #ffffff);
   border-radius: 50%;
   box-shadow: 0px 1px 3px #0000004d;
   flex-shrink: 0;
@@ -36,8 +36,8 @@
 
 /* ── Default ── */
 .toggle.default {
-  background-color: #bfc9cb;
-  border-color: #bfc9cb;
+  background-color: var(--cadence-color-border-strong, #bfc9cb);
+  border-color: var(--cadence-color-border-strong, #bfc9cb);
   box-shadow:
     inset 0px -2px 0px #0000000d,
     inset 0px -2px 8px #0000000d,
@@ -51,8 +51,8 @@
 
 /* ── Hover ── */
 .toggle.hover {
-  background-color: #bfc9cb;
-  border-color: #bfc9cb;
+  background-color: var(--cadence-color-border-strong, #bfc9cb);
+  border-color: var(--cadence-color-border-strong, #bfc9cb);
   box-shadow:
     inset 0px -2px 0px #0000000d,
     inset 0px -2px 8px #0000000d,
@@ -68,8 +68,8 @@
 
 /* ── Active (on) ── */
 .toggle.active {
-  background-color: #1a3e45;
-  border-color: #002830;
+  background-color: var(--cadence-color-label, #1a3e45);
+  border-color: var(--cadence-color-primary, #002830);
   box-shadow:
     inset 0px 2px 0px #ffffff40,
     inset 0px -1px 12px #0000001a,
@@ -83,8 +83,8 @@
 
 /* ── Disabled ── */
 .toggle.disabled {
-  background-color: #808080;
-  border-color: #bfbfbf;
+  background-color: var(--cadence-color-text-disabled, #808080);
+  border-color: var(--cadence-color-border-strong, #bfc9cb);
   box-shadow:
     inset 0px 1px 2px #00000040,
     inset 0px -2px 8px #0000001a;

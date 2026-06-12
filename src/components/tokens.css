@@ -1,0 +1,42 @@
+/* ════════════════════════════════════════════════════════════════════════
+   Cadence UI — Design tokens
+   Source de vérité des couleurs, polices et rayons du design system.
+   Chaque composant utilise var(--cadence-*, <fallback>) : les fallbacks
+   garantissent un rendu correct même si ce fichier n'est pas chargé.
+   ════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Couleurs — encre & texte ──────────────────────────────────────────── */
+  --cadence-color-primary: #002830;        /* Encre principale — texte fort, boutons, modale */
+  --cadence-color-label: #1a3e45;          /* Labels de formulaire, badges */
+  --cadence-color-text-muted: #809397;     /* Texte secondaire (heures, descriptions) */
+  --cadence-color-text-disabled: #808080;  /* Texte des états désactivés */
+  --cadence-color-placeholder: #737373;    /* Placeholders des champs */
+
+  /* ── Couleurs — icônes ─────────────────────────────────────────────────── */
+  --cadence-color-icon-muted: #69797d;     /* Icônes d'action discrètes (TableCardAction, TableHeader) */
+  --cadence-color-icon-neutral: #737373;   /* Icônes neutres (pictos métier) */
+
+  /* ── Couleurs — états ──────────────────────────────────────────────────── */
+  --cadence-color-danger: #da1e28;         /* Actions destructives, erreurs */
+  --cadence-color-success: #24a148;        /* Confirmations, états valides */
+
+  /* ── Couleurs — surfaces & bordures ────────────────────────────────────── */
+  --cadence-color-white: #ffffff;          /* Surfaces de premier plan */
+  --cadence-color-surface-alt: #eef1f4;    /* Fonds de wrapper (TableCard, Badge) */
+  --cadence-color-border: #e5e5e5;         /* Bordures par défaut */
+  --cadence-color-border-strong: #bfc9cb;  /* Bordures appuyées, états disabled */
+  --cadence-color-divider: #f0f0f0;        /* Séparateurs internes (colonnes, footers) */
+
+  /* ── Typographie ───────────────────────────────────────────────────────── */
+  --cadence-font-sans: "Inter", Helvetica, sans-serif;
+  --cadence-font-display: "Uxum Grotesque", "Space Grotesk", "Georgia", sans-serif;
+  --cadence-font-mono: "Spline Sans Mono", monospace;
+
+  /* ── Rayons ────────────────────────────────────────────────────────────── */
+  /* Référence pour les nouveaux composants — les existants migrent au fil de l'eau. */
+  --cadence-radius-sm: 6px;    /* Petits éléments : badges, boutons d'icône */
+  --cadence-radius-md: 8px;    /* Contenus internes : body de TableCard */
+  --cadence-radius-lg: 10px;   /* Champs et wrappers : inputs, cards */
+  --cadence-radius-xl: 12px;   /* Conteneurs : modale, counter-input */
+}

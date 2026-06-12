@@ -17,18 +17,18 @@
   border: none;
   background: transparent;
   cursor: pointer;
-  color: #7A8A96;
+  color: var(--cadence-color-text-muted, #809397);
   border-radius: 50%;
   transition: color 0.15s ease;
 }
 
 .tooltip-trigger__icon:focus-visible {
-  outline: 2px solid #0d2b35;
+  outline: 2px solid var(--cadence-color-primary, #002830);
   outline-offset: 2px;
 }
 
 .tooltip-trigger--hovered .tooltip-trigger__icon {
-  color: #0d2b35;
+  color: var(--cadence-color-primary, #002830);
 }
 
 /* ── Positioned bubble wrapper ────────────────────────────────── */
