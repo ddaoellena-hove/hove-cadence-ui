@@ -1,0 +1,257 @@
+/* ── Root ────────────────────────────────────────────────────────────────── */
+.autocomplete {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+}
+
+/* ── Label (style + gap identiques à TextInput) ──────────────────────────── */
+.autocomplete__label {
+  color: var(--cadence-color-label, #1a3e45);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: normal;
+  padding: 0 0 10px 8px;
+}
+
+/* ── Field wrapper ───────────────────────────────────────────────────────── */
+.autocomplete__field {
+  align-items: center;
+  background-color: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: 10px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.06), 0px 1px 2px rgba(0, 0, 0, 0.04);
+  cursor: text;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 16px;
+  transition: border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+}
+
+.autocomplete__field:hover {
+  box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.08), 0px 0px 2px rgba(0, 0, 0, 0.25);
+}
+
+.autocomplete--open .autocomplete__field {
+  border: 1.5px solid #2d5f6b;
+  box-shadow: 0 0 0 4px rgba(45, 95, 107, 0.12);
+}
+
+/* Padding vertical en mode multiple (les chips peuvent passer à la ligne) */
+.autocomplete--multiple .autocomplete__field {
+  padding: 5px 16px;
+}
+
+/* ── Disabled ────────────────────────────────────────────────────────────── */
+.autocomplete--disabled .autocomplete__field {
+  background-color: var(--cadence-color-border, #e5e5e5);
+  border-color: var(--cadence-color-border-strong, #bfc9cb);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.autocomplete--disabled .autocomplete__input {
+  cursor: not-allowed;
+}
+
+/* ── Input ───────────────────────────────────────────────────────────────── */
+.autocomplete__input {
+  flex: 1;
+  min-width: 80px;
+  height: 38px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cadence-color-primary, #002830);
+  line-height: normal;
+}
+
+.autocomplete__input::placeholder {
+  color: var(--cadence-color-border-strong, #bfc9cb);
+  font-weight: 400;
+}
+
+/* ── Icône de la valeur sélectionnée (mode simple) ───────────────────────── */
+.autocomplete__value-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  color: var(--cadence-color-icon-muted, #69797d);
+}
+
+/* ── Chevron ─────────────────────────────────────────────────────────────── */
+.autocomplete__chevron {
+  flex-shrink: 0;
+  color: var(--cadence-color-icon-muted, #69797d);
+  margin-left: auto;
+  align-self: center;
+}
+
+/* ── Menu ────────────────────────────────────────────────────────────────── */
+.autocomplete__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 200;
+  width: 100%;
+  max-height: 280px;
+  overflow-y: auto;
+  /* Réserve une gouttière pour la scrollbar → elle ne se superpose plus au contenu */
+  scrollbar-gutter: stable;
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Scrollbar fine et en flux (non-overlay) — WebKit/Chrome/Safari */
+.autocomplete__menu::-webkit-scrollbar {
+  width: 8px;
+}
+.autocomplete__menu::-webkit-scrollbar-thumb {
+  background: var(--cadence-color-border-strong, #bfc9cb);
+  border-radius: 4px;
+  border: 2px solid var(--cadence-color-white, #ffffff);
+  background-clip: padding-box;
+}
+.autocomplete__menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ── Group label ─────────────────────────────────────────────────────────── */
+.autocomplete__group-label {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--cadence-color-text-muted, #809397);
+  color: var(--cadence-color-white, #ffffff);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 6px 12px;
+}
+
+/* ── Option ──────────────────────────────────────────────────────────────── */
+.autocomplete__option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--cadence-color-primary, #002830);
+  line-height: 1.4;
+  transition: background 0.1s;
+}
+
+.autocomplete__option--highlighted:not(:disabled) {
+  background: var(--cadence-color-divider, #f0f0f0);
+}
+
+.autocomplete__option--selected {
+  color: #1b6cff;
+  font-weight: 500;
+}
+
+.autocomplete__option--selected.autocomplete__option--highlighted {
+  background: #eff6ff;
+}
+
+.autocomplete__option--disabled {
+  color: var(--cadence-color-placeholder, #737373);
+  cursor: not-allowed;
+}
+
+/* ── Option icon ─────────────────────────────────────────────────────────── */
+.autocomplete__option-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  color: var(--cadence-color-icon-neutral, #737373);
+}
+
+/* Icône alignée en haut quand l'option a une ligne secondaire / du contenu */
+.autocomplete__option:has(.autocomplete__option-body) .autocomplete__option-icon {
+  align-self: flex-start;
+  margin-top: 1px;
+}
+
+/* ── Option body (label + description + content empilés) ─────────────────── */
+.autocomplete__option-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ── Option label ────────────────────────────────────────────────────────── */
+.autocomplete__option-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* Dans une option simple (sans body), le libellé garde le poids normal */
+.autocomplete__option > .autocomplete__option-label {
+  font-weight: 400;
+}
+
+/* ── Option description (ligne secondaire) ───────────────────────────────── */
+.autocomplete__option-description {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--cadence-color-text-muted, #809397);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Option content (badges, etc.) ───────────────────────────────────────── */
+.autocomplete__option-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+/* ── Check mark ──────────────────────────────────────────────────────────── */
+.autocomplete__option-check {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  color: #1b6cff;
+  margin-left: auto;
+}
+
+/* ── Empty state ─────────────────────────────────────────────────────────── */
+.autocomplete__empty {
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--cadence-color-text-muted, #809397);
+  text-align: center;
+}

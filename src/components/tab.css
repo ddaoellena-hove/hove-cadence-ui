@@ -10,17 +10,17 @@
   cursor: pointer;
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--cadence-color-placeholder, #737373);
+  color: var(--cadence-color-icon-muted, #69797d);
   transition: color 0.15s ease;
   white-space: nowrap;
   outline: none;
 }
 
 .tab:hover:not(.tab--disabled) {
-  color: var(--cadence-color-icon-muted, #69797d);
+  color: var(--cadence-color-primary, #002830);
 }
 
 .tab:focus-visible {
@@ -32,6 +32,7 @@
 /* ── Active ── */
 .tab--active {
   color: var(--cadence-color-primary, #002830);
+  font-weight: 600;
 }
 
 .tab--active:hover:not(.tab--disabled) {
@@ -39,13 +40,15 @@
 }
 
 /* ── Underline bar ── */
+/* Capsule : les 4 coins arrondis → bouts ronds visibles.
+   bottom: 0 pour que la hauteur entière (et donc la rondeur basse) reste visible. */
 .tab__underline {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
   height: 3.5px;
-  border-radius: 2px 2px 0 0;
+  border-radius: 999px;
   background: var(--cadence-color-primary, #002830);
 }
 

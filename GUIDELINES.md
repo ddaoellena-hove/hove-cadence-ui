@@ -173,7 +173,8 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Saisie de texte libre (1 ligne) | `TextInput` | — |
 | Saisie de texte long (multi-lignes) | `TextArea` | — |
 | Valeur numérique avec +/− | `CounterInput` | `TextInput type="number"` (interdit) |
-| Choix dans une liste (≥ 3 options) | `Dropdown` | `NavigationDropdown` (réservé navigation) |
+| Choix dans une liste courte (≥ 3 options, sans recherche) | `Dropdown` | `Autocomplete` (longue liste à filtrer) |
+| Choix dans une longue liste avec recherche au clavier | `Autocomplete` | `Dropdown` (liste courte) |
 | Choix exclusif 2-4 options **dans un formulaire** | `SegmentedControlAlt` | `SegmentedControl` (réservé navigation) |
 | Bascule entre vues / modes d'affichage | `SegmentedControl` | `Tab` (navigation de page) |
 | Navigation entre vues d'une même page | `Tab` | `SegmentedControl` |
@@ -227,8 +228,28 @@ const HEADER_HEIGHT = 56;   // hauteur du Header
 ### Règles
 
 - ✅ Le layout (flex, grid, gap, margins) se fait en style inline ou CSS applicatif — c'est le seul CSS custom autorisé.
-- ✅ Largeurs de contenu : les formulaires sont limités à `max-width: 640px` ; les listes prennent toute la largeur.
+- ✅ Largeurs de contenu : les formulaires sont limités à `max-width: 720px` ; les listes prennent toute la largeur.
 - ❌ Ne pas inventer de valeurs d'espacement hors échelle (pas de `gap: 7px` ou `padding: 13px`).
+
+### Composition des panneaux sur une page formulaire
+
+Une page de saisie se lit et se remplit en **largeur pleine et lecture descendante**. Placer un panneau de synthèse à droite du formulaire réduit mécaniquement la largeur des champs, casse l'alignement des lignes à 2 colonnes et dégrade la lisibilité des libellés longs — l'espace gagné par la synthèse est pris au cœur de la tâche principale.
+
+La règle sépare deux niveaux de mise en page :
+
+1. **Niveau page** — les grands panneaux fonctionnels (panneau de formulaire, panneau de synthèse / preview / vérification) s'empilent verticalement. Le formulaire occupe sa largeur de lecture optimale ; la synthèse vient en dessous, une fois la saisie posée.
+2. **Niveau section** — à l'intérieur d'une section de formulaire, le multi-colonnes est non seulement permis mais recommandé pour les champs courts et liés (dates début/fin, type/cause, compteurs, sélecteurs).
+
+Le multi-colonnes est un outil de **densité locale**, pas un outil de **découpage de page**.
+
+**Panneaux de page — empilement vertical**
+
+- ✅ Sur une page orientée formulaire, les **panneaux de premier niveau** (formulaire, synthèse / preview / vérification) s'empilent **verticalement**, sur une seule colonne.
+- ✅ Le **multi-colonnes reste autorisé à l'intérieur** d'une section de formulaire : lignes de champs sur 2 colonnes, groupes de cards, compteurs, sélecteurs.
+- ❌ Ne jamais placer deux panneaux de premier niveau **côte à côte** (formulaire à gauche, synthèse à droite) — cela ampute la largeur utile du formulaire.
+- ❌ Ne pas transformer un panneau de synthèse en colonne latérale (`sidebar` de droite) sur une page de saisie.
+
+**Test pour distinguer panneau et sous-bloc :** un bloc qui possède son propre titre de niveau page/section **et** sa propre finalité (saisir / vérifier) est un *panneau de premier niveau* → il s'empile. Un bloc qui n'est qu'un regroupement de champs *à l'intérieur* d'une section est un *sous-bloc* → il peut passer en colonnes. Critère mécanique : le conteneur de page est `flexDirection: "column"` ; le seul `flexDirection: "row"` autorisé est **à l'intérieur** d'une `<section>`.
 
 ---
 
@@ -447,7 +468,8 @@ De gauche à droite, engagement croissant : `Link` (tertiaire) → bouton `outli
 | `TextInput` | Texte libre — nom, description, recherche. |
 | `TextArea` | Texte long multi-lignes — descriptions, commentaires. |
 | `CounterInput` | Valeur numérique bornée avec +/−. |
-| `Dropdown` | Choix parmi une liste fixe (3 options ou plus). |
+| `Dropdown` | Choix parmi une liste fixe et courte (3 à ~10 options). |
+| `Autocomplete` | Choix dans une longue liste, avec recherche au clavier. Sélection simple ou multiple (`multiple`). |
 | `SegmentedControlAlt` | 2 à 4 options mutuellement exclusives. **À privilégier dans les formulaires.** |
 | `DatePicker` | Sélection d'une date (option heure avec `withTime`). |
 | `Checkbox` | Option booléenne indépendante, ou sélection multiple. |
@@ -782,24 +804,27 @@ export const ScenarioListPage = () => {
 
 ### Recette 3 — Page formulaire
 
-Formulaire en sections, largeur contenue, soumission en bas à droite.
+Formulaire en sections, largeur contenue, soumission en bas à droite. Les **panneaux de premier niveau** (formulaire puis synthèse) s'empilent verticalement ; le multi-colonnes n'apparaît qu'**à l'intérieur** des sections. Voir [Composition des panneaux](#composition-des-panneaux-sur-une-page-formulaire).
 
 ```tsx
-import { TextInput, TextArea, Dropdown, DatePicker, CounterInput, SegmentedControlAlt, PrimaryButton, Link } from "@ddaoellena/cadence-ui";
+import { TextInput, TextArea, Dropdown, DatePicker, CounterInput, SegmentedControlAlt, TableCard, PrimaryButton, Link } from "@ddaoellena/cadence-ui";
 
 export const ScenarioFormPage = () => (
-  <div style={{ maxWidth: 640 }}>
-    <h1 style={{ fontFamily: "var(--cadence-font-display)", fontSize: 28, fontWeight: 500, color: "var(--cadence-color-primary)" }}>
+  // Conteneur de page : flexDirection "column" → les panneaux de premier niveau s'empilent
+  <div style={{ display: "flex", flexDirection: "column", gap: 32, maxWidth: 720 }}>
+    <h1 style={{ fontFamily: "var(--cadence-font-display)", fontSize: 28, fontWeight: 500, color: "var(--cadence-color-primary)", margin: 0 }}>
       Créer un scénario
     </h1>
 
-    <div style={{ display: "flex", flexDirection: "column", gap: 32, marginTop: 24 }}>
-      {/* ── Section 1 ── */}
+    {/* ══ PANNEAU 1 — Formulaire ══ */}
+    <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+      {/* ── Section : informations générales ── */}
       <section style={{ display: "flex", flexDirection: "column", gap: 20 }}>
         <h2 style={{ fontFamily: "var(--cadence-font-sans)", fontSize: 16, fontWeight: 600, color: "var(--cadence-color-primary)", margin: 0 }}>
           Informations générales
         </h2>
         <TextInput label="Titre" placeholder="Ex : Tronçon Melun – Montereau" value={title} onChange={(e) => setTitle(e.target.value)} />
+        {/* ✅ multi-colonnes AUTORISÉ à l'intérieur d'une section */}
         <div style={{ display: "flex", gap: 12 }}>
           <div style={{ flex: 1 }}>
             <Dropdown label="Type" options={typeOptions} value={type} onChange={setType} placeholder="Sélectionner" />
@@ -816,7 +841,7 @@ export const ScenarioFormPage = () => (
         />
       </section>
 
-      {/* ── Section 2 ── */}
+      {/* ── Section : période ── */}
       <section style={{ display: "flex", flexDirection: "column", gap: 20 }}>
         <h2 style={{ fontFamily: "var(--cadence-font-sans)", fontSize: 16, fontWeight: 600, color: "var(--cadence-color-primary)", margin: 0 }}>
           Période
@@ -832,13 +857,28 @@ export const ScenarioFormPage = () => (
         <CounterInput label="Durée estimée" min={0} max={480} step={15} unit="min" value={duration} onChange={setDuration} />
         <TextArea label="Description" placeholder="Impacts attendus, mesures prises…" rows={4} value={desc} onChange={(e) => setDesc(e.target.value)} />
       </section>
+    </div>
 
-      {/* ── Soumission ── */}
-      <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end" }}>
-        <Link variant="secondary" hideArrow onClick={onSaveDraft}>Enregistrer comme brouillon</Link>
-        <PrimaryButton size="large" outline label="Réinitialiser" onClick={onReset} />
-        <PrimaryButton size="large" label="Créer le scénario" onClick={onSubmit} />
-      </div>
+    {/* ══ PANNEAU 2 — Synthèse / vérification ══ */}
+    {/* ❌ JAMAIS à droite du formulaire — toujours EN DESSOUS */}
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <h2 style={{ fontFamily: "var(--cadence-font-sans)", fontSize: 16, fontWeight: 600, color: "var(--cadence-color-primary)", margin: 0 }}>
+        Récapitulatif
+      </h2>
+      <TableCard
+        title="Scénario à créer"
+        columns={[
+          { key: "type", content: <span>{type} · {cause}</span>, flex: 1 },
+          { key: "periode", content: <span>{start} → {end}</span>, width: 220 },
+        ]}
+      />
+    </div>
+
+    {/* ══ Soumission ══ */}
+    <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end" }}>
+      <Link variant="secondary" hideArrow onClick={onSaveDraft}>Enregistrer comme brouillon</Link>
+      <PrimaryButton size="large" outline label="Réinitialiser" onClick={onReset} />
+      <PrimaryButton size="large" label="Créer le scénario" onClick={onSubmit} />
     </div>
   </div>
 );
@@ -873,6 +913,26 @@ export const ScenarioFormPage = () => (
 | `dismissible` | `boolean` | auto `true` si `actions` | Affiche le bouton × |
 | `onDismiss` | `() => void` | — | Clic sur ×. ⚠️ Pas de prop `onClose`. |
 | `className`, `style` | — | — | Échappatoires |
+
+### Autocomplete
+
+Champ de recherche qui filtre une liste statique en interne. Choix **strict** dans la liste (le texte non validé est réinitialisé à la fermeture). Simple ou multiple via `multiple`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `options` | `AutocompleteOption[]` | **requis** | `{ id, label, description?, group?, icon?, content?, disabled? }` |
+| `label` | `string` | — | Label au-dessus du champ |
+| `placeholder` | `string` | `"Rechercher…"` | — |
+| `multiple` | `boolean` | `false` | `true` → sélection multiple, chips `Badge` supprimables dans le champ |
+| `value` | `string \| string[]` | — | ⚠️ `string` (id) si simple, `string[]` (ids) si `multiple` |
+| `onChange` | `(value: string \| string[] \| null) => void` | — | ⚠️ `id \| null` si simple, `ids[]` si `multiple` |
+| `disabled` | `boolean` | `false` | — |
+| `defaultOpen` | `boolean` | `false` | Ouvre le menu au montage (afficher favoris / historique au focus) |
+| `noResultsLabel` | `string` | `"Aucun résultat"` | Message si le filtre ne renvoie rien |
+
+**Options groupées et enrichies** — chaque `AutocompleteOption` accepte : `description` (ligne secondaire grise, ex. adresse), `group` (catégorie → en-tête de groupe ; l'ordre des groupes suit leur 1re apparition), `content` (ReactNode libre sous le libellé, ex. badges de lignes). Voir la story *With Categories*.
+
+Clavier : ↑/↓ pour naviguer, Entrée pour sélectionner l'option surlignée, Échap pour fermer, Retour arrière (champ vide, mode multiple) pour retirer le dernier chip.
 
 ### Avatar
 
