@@ -98,7 +98,7 @@ Voir la [recette Layout d'application](#recette-1--layout-dapplication) — tout
 
 ## Design tokens
 
-Les couleurs, polices et rayons sont centralisés dans des variables CSS (`tokens.css`, chargé automatiquement avec la lib). Chaque usage interne garde un fallback en dur : le rendu reste correct même sans le fichier de tokens.
+Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dans des variables CSS (`tokens.css`, chargé automatiquement avec la lib). Chaque usage interne garde un fallback en dur : le rendu reste correct même sans le fichier de tokens.
 
 | Token | Valeur | Usage |
 |---|---|---|
@@ -111,6 +111,10 @@ Les couleurs, polices et rayons sont centralisés dans des variables CSS (`token
 | `--cadence-color-icon-neutral` | `#737373` | Icônes neutres (pictos métier) |
 | `--cadence-color-danger` | `#da1e28` | Actions destructives, erreurs |
 | `--cadence-color-success` | `#24a148` | Confirmations, états valides |
+| `--cadence-color-info` | `#0f62fe` | Accent « information » d'`AlertToast` |
+| `--cadence-color-warning` | `#f1c21b` | Accent « avertissement » d'`AlertToast`. ⚠️ 1,7:1 sur blanc : jamais en couleur de texte |
+| `--cadence-color-accent` | `#1b6cff` | Élément actif / sélectionné (Sidebar, options de menu, `SecondaryButton` rempli) |
+| `--cadence-color-accent-subtle` | `#f0f6ff` | Survol d'un élément actif (Sidebar) |
 | `--cadence-color-white` | `#ffffff` | Surfaces de premier plan |
 | `--cadence-color-surface-alt` | `#eef1f4` | Fonds de wrapper (TableCard, Badge) |
 | `--cadence-color-border` | `#e5e5e5` | Bordures par défaut |
@@ -124,9 +128,45 @@ Les couleurs, polices et rayons sont centralisés dans des variables CSS (`token
 | `--cadence-radius-lg` | `10px` | Champs et cards |
 | `--cadence-radius-xl` | `12px` | Conteneurs : modale |
 
+**Statuts** — les 8 variantes d'`Indicator`, une paire texte (`-fg`) / fond (`-bg`) par variante :
+
+| Token | fg | bg | Sens |
+|---|---|---|---|
+| `--cadence-status-active-*` | `#007a65` | `#e0f4f1` | En cours |
+| `--cadence-status-upcoming-*` | `#6d28d9` | `#ede9fe` | À venir |
+| `--cadence-status-completed-*` | `#15803d` | `#dcfce7` | Passée / terminée |
+| `--cadence-status-draft-*` | `#475569` | `#eef1f4` (= `surface-alt`) | Brouillon |
+| `--cadence-status-warning-*` | `#c2410c` | `#fff7ed` | Ralenti / avertissement |
+| `--cadence-status-info-*` | `#1d4ed8` | `#eff6ff` | Information |
+| `--cadence-status-critical-*` | `#b91c1c` | `#fee2e2` | Critique |
+| `--cadence-status-nominal-*` | `#166534` | `#f0fdf4` | Normal / RAS |
+
+**Thèmes produits, élévation, focus et couches :**
+
+| Token | Valeur | Usage |
+|---|---|---|
+| `--cadence-product-datahub` | `#004650` | Fond de `Sidebar product="datahub"` |
+| `--cadence-product-traffic-report` | `#2f2f3b` | Fond de `Sidebar product="traffic-report"` |
+| `--cadence-product-insights` | `#3b2f2f` | Fond de `Sidebar product="insights"` |
+| `--cadence-shadow-sm` | ombre 1–3px | Champs au repos |
+| `--cadence-shadow-md` | ombre diffuse 12px | Champs au survol |
+| `--cadence-shadow-lg` | ombre portée 10–15px | Menus déroulants |
+| `--cadence-shadow-overlay` | ombre 20–60px | Modale |
+| `--cadence-focus-color` | `#1a3e45` | Couleur de l'anneau de focus (proposé, pas encore appliqué) |
+| `--cadence-focus-ring` | liseré blanc 2px + anneau 2px | Anneau de focus `box-shadow` (proposé, pas encore appliqué) |
+| `--cadence-z-sticky` | `100` | Sidebar et Header fixes |
+| `--cadence-z-popover` | `100` | Popovers et bulles ancrés (DatePicker, tooltips) |
+| `--cadence-z-dropdown` | `200` | Menus déroulants |
+| `--cadence-z-modal` | `1000` | Modale et son voile |
+| `--cadence-z-toast` | `1100` | Toasts en overlay |
+
+La story **Foundation/Tokens** affiche tous ces tokens à partir des variables CSS.
+
 ### Règles
 
 - ✅ Dans du code applicatif, référencer les tokens (`color: var(--cadence-color-primary)`) plutôt que les hex en dur.
+- ✅ Statut dans du code applicatif → `--cadence-status-*` ; jamais un hex.
+- ✅ Couches : `zIndex: "var(--cadence-z-toast)"` pour un toast, `var(--cadence-z-sticky)` pour la Sidebar/Header — pas de valeur inventée.
 - ✅ Pour créer un nouveau composant, piocher dans `tokens.css` ; n'ajouter un token que si la valeur a vocation à être partagée.
 - ❌ Ne pas redéfinir les `--cadence-*` au niveau d'un composant — ce sont des valeurs globales du thème.
 
@@ -906,8 +946,8 @@ export const ScenarioFormPage = () => (
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
 | `type` | `"information" \| "success" \| "warning" \| "error"` | `"information"` | Couleur d'accent + icône de statut. ⚠️ Pas de prop `variant`. |
-| `title` | `string` | label du type | Titre en gras |
-| `description` | `string` | — | Texte secondaire |
+| `title` | `string` | label du type : `Information`, `Succès`, `Avertissement`, `Erreur` | Titre en gras |
+| `description` | `string` | — | Texte secondaire. Sans valeur, la ligne n'est pas rendue |
 | `progress` | `number` (0-100) | — | Barre de progression (masquée si absent) |
 | `actions` | `[AlertToastAction]` ou `[AlertToastAction, AlertToastAction]` | — | 1 à 2 boutons (`{ label, onClick?, outline? }`) |
 | `dismissible` | `boolean` | auto `true` si `actions` | Affiche le bouton × |
@@ -1004,12 +1044,14 @@ Clavier : ↑/↓ pour naviguer, Entrée pour sélectionner l'option surlignée,
 | `value` | `Date \| null` | — | Date sélectionnée |
 | `onChange` | `(date: Date) => void` | — | — |
 | `label` | `string` | — | Label au-dessus |
-| `placeholder` | `string` | — | — |
+| `placeholder` | `string` | `"JJ/MM/AAAA"` (`"JJ/MM/AAAA HH:mm"` avec `withTime`) | — |
 | `disabled` | `boolean` | `false` | — |
-| `minDate`, `maxDate` | `Date` | — | Bornes |
-| `withTime` | `boolean` | `false` | Heures/minutes + bouton Valider |
-| `labelConfirm` | `string` | — | Label du bouton Valider |
+| `minDate`, `maxDate` | `Date` | — | Bornes (jours hors bornes désactivés) |
+| `withTime` | `boolean` | `false` | Heures/minutes + bouton de validation |
+| `labelConfirm` | `string` | `"Valider"` | Libellé du bouton de validation (`withTime`) |
 | `segmentedOptions` | `{ value, label }[]` | — | SegmentedControlAlt dans le popover (contrôlé via `segmentedValue` + `onSegmentChange`) |
+
+Affichage en français : format `JJ/MM/AAAA` (`JJ/MM/AAAA HH:mm` avec `withTime`), mois en toutes lettres (« Octobre 2026 »), semaine commençant le **lundi** (`Lu Ma Me Je Ve Sa Di`). ⚠️ Pas de prop `locale`.
 
 ### Dropdown
 
