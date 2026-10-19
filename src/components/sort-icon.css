@@ -1,0 +1,8 @@
+/* ── SortIcon (interne) ──────────────────────────────────────────────────── */
+.sort-icon__arrow {
+  fill: var(--cadence-color-icon-disabled, #c5cfd3);
+}
+
+.sort-icon__arrow--active {
+  fill: var(--cadence-color-primary, #002830);
+}

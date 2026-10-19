@@ -1,29 +1,6 @@
 import React from "react";
 import "./table-header.css";
-
-// ── Sort icon ──────────────────────────────────────────────────────────────
-
-const SortIcon = ({ direction }: { direction: "asc" | "desc" | "none" }) => (
-  <svg
-    className="table-header__sort-icon"
-    width="10"
-    height="14"
-    viewBox="0 0 10 14"
-    fill="none"
-    aria-hidden="true"
-  >
-    {/* Arrow up */}
-    <path
-      d="M5 1L1.5 5.5H8.5L5 1Z"
-      fill={direction === "asc" ? "#002830" : "#c5cfd3"}
-    />
-    {/* Arrow down */}
-    <path
-      d="M5 13L8.5 8.5H1.5L5 13Z"
-      fill={direction === "desc" ? "#002830" : "#c5cfd3"}
-    />
-  </svg>
-);
+import { SortIcon } from "./SortIcon";
 
 // ── Column definition ──────────────────────────────────────────────────────
 
@@ -92,7 +69,7 @@ export const TableHeader = ({ columns, className }: TableHeaderProps) => {
           >
             <span className="table-header__label">{col.label}</span>
             {col.sortable && (
-              <SortIcon direction={col.sortDirection ?? "none"} />
+              <SortIcon direction={col.sortDirection ?? "none"} className="table-header__sort-icon" />
             )}
           </div>
         );

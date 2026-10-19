@@ -109,6 +109,7 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-color-placeholder` | `#737373` | Placeholders des champs |
 | `--cadence-color-icon-muted` | `#69797d` | Icônes d'action discrètes |
 | `--cadence-color-icon-neutral` | `#737373` | Icônes neutres (pictos métier) |
+| `--cadence-color-icon-disabled` | `#c5cfd3` | Pictos inactifs : flèches de tri non actives (`TableHeader`, `DataTable`) |
 | `--cadence-color-danger` | `#da1e28` | Actions destructives, erreurs |
 | `--cadence-color-success` | `#24a148` | Confirmations, états valides |
 | `--cadence-color-info` | `#0f62fe` | Accent « information » d'`AlertToast` |
