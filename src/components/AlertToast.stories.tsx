@@ -31,35 +31,35 @@ type Story = StoryObj<typeof AlertToast>;
 export const Information: Story = {
   args: {
     type: "information",
-    description: "Lorem ipsum dolor sit amet consectetur. Enim mauris pretium est est ut aliquam dolor egestas non.",
+    description: "Les horaires de la ligne A ont été mis à jour.",
   },
 };
 
 export const Success: Story = {
   args: {
     type: "success",
-    description: "Your changes have been saved successfully.",
+    description: "Vos modifications ont été enregistrées.",
   },
 };
 
 export const Warning: Story = {
   args: {
     type: "warning",
-    description: "Your session is about to expire. Please save your work.",
+    description: "Votre session va bientôt expirer. Pensez à enregistrer votre travail.",
   },
 };
 
 export const Error: Story = {
   args: {
     type: "error",
-    description: "Something went wrong. Please try again or contact support.",
+    description: "Une erreur est survenue. Réessayez ou contactez le support.",
   },
 };
 
 export const WithProgress: Story = {
   args: {
     type: "information",
-    description: "Uploading file, please wait\u2026",
+    description: "Import du fichier en cours…",
     progress: 45,
   },
 };
@@ -67,8 +67,8 @@ export const WithProgress: Story = {
 export const ProgressComplete: Story = {
   args: {
     type: "success",
-    title: "Upload complete",
-    description: "Your file has been uploaded successfully.",
+    title: "Import terminé",
+    description: "Votre fichier a bien été importé.",
     progress: 100,
   },
 };
@@ -76,7 +76,7 @@ export const ProgressComplete: Story = {
 export const Dismissible: Story = {
   args: {
     type: "warning",
-    description: "This banner can be dismissed by the user.",
+    description: "Cette notification peut être fermée par l'utilisateur.",
     dismissible: true,
   },
 };
@@ -84,10 +84,10 @@ export const Dismissible: Story = {
 export const WithActions: Story = {
   args: {
     type: "information",
-    description: "A new version of the application is available.",
+    description: "Une nouvelle version de l'application est disponible.",
     actions: [
-      { label: "DISMISS", outline: true },
-      { label: "UPDATE NOW", outline: false },
+      { label: "Ignorer", outline: true },
+      { label: "Mettre à jour", outline: false },
     ],
   },
 };
@@ -95,11 +95,11 @@ export const WithActions: Story = {
 export const ErrorWithActions: Story = {
   args: {
     type: "error",
-    title: "Action required",
-    description: "Your payment method has expired. Update it to continue.",
+    title: "Action requise",
+    description: "Le flux GTFS a expiré. Mettez-le à jour pour continuer.",
     actions: [
-      { label: "CANCEL", outline: true },
-      { label: "UPDATE CARD", outline: false },
+      { label: "Annuler", outline: true },
+      { label: "Mettre à jour le flux", outline: false },
     ],
   },
 };
@@ -107,8 +107,17 @@ export const ErrorWithActions: Story = {
 export const CustomTitle: Story = {
   args: {
     type: "success",
-    title: "Payment received",
-    description: "We&#39;ve received your payment of $99.00.",
+    title: "Scénario publié",
+    description: "Le scénario « Travaux ligne 13 » est maintenant visible des voyageurs.",
+    dismissible: true,
+  },
+};
+
+/** Sans `description` : seul le titre est rendu. */
+export const TitleOnly: Story = {
+  args: {
+    type: "success",
+    title: "Scénario créé",
     dismissible: true,
   },
 };

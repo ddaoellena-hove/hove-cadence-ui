@@ -78,9 +78,9 @@ const STATE_ICON: Record<
 
 const DEFAULT_TITLE: Record<AlertToastType, string> = {
   information: "Information",
-  success: "Success",
-  warning: "Warning",
-  error: "Error",
+  success: "Succès",
+  warning: "Avertissement",
+  error: "Erreur",
 };
 
 /**
@@ -91,7 +91,7 @@ const DEFAULT_TITLE: Record<AlertToastType, string> = {
 export const AlertToast = ({
   type = "information",
   title,
-  description = "Lorem ipsum dolor sit amet consectetur. Enim mauris pretium est est ut aliquam dolor egestas non.",
+  description,
   progress,
   actions,
   dismissible = false,
@@ -156,7 +156,7 @@ export const AlertToast = ({
           <button
             className="alert-toast__close-btn"
             onClick={onDismiss}
-            aria-label="Dismiss notification"
+            aria-label="Fermer la notification"
             type="button"
           >
             <XClose className="alert-toast__close-icon" size={16} aria-hidden="true" />
