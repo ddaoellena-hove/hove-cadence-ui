@@ -47,6 +47,20 @@
   height: 20px;
 }
 
+/* Couleur de l'icône d'état par type (suit currentColor) */
+.alert-toast--information .alert-toast__state-icon {
+  color: #0f62fe;
+}
+.alert-toast--success .alert-toast__state-icon {
+  color: var(--cadence-color-success, #24a148);
+}
+.alert-toast--warning .alert-toast__state-icon {
+  color: #f1c21b;
+}
+.alert-toast--error .alert-toast__state-icon {
+  color: var(--cadence-color-danger, #da1e28);
+}
+
 /* ── Body ── */
 .alert-toast__body {
   flex: 1;

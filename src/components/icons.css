@@ -1,5 +1,8 @@
+/* La taille est pilotée par la prop `size` du composant Icons (défaut 24px).
+   On ne fixe donc plus width/height ici, pour ne pas écraser la prop via la
+   cascade CSS. Les composants qui imposent une taille (boutons, TableCard)
+   le font via leurs propres sélecteurs. */
 .icons {
-  height: 24px;
   position: relative;
-  width: 24px;
+  flex-shrink: 0;
 }

@@ -5,6 +5,11 @@
  * types with an optional progress bar, close button, and action buttons.
  */
 import React from "react";
+import { InfoCircle } from "@untitledui/icons/InfoCircle";
+import { CheckCircle } from "@untitledui/icons/CheckCircle";
+import { AlertTriangle } from "@untitledui/icons/AlertTriangle";
+import { AlertCircle } from "@untitledui/icons/AlertCircle";
+import { XClose } from "@untitledui/icons/XClose";
 import { SecondaryButton } from "./SecondaryButton";
 import "./alert-toast.css";
 
@@ -60,11 +65,15 @@ export interface AlertToastProps {
   style?: React.CSSProperties;
 }
 
-const STATE_ICON_SRC: Record<AlertToastType, string> = {
-  information: "https://c.animaapp.com/moikuwj0tZN1W0/img/state-information--size-medium.svg",
-  success: "https://c.animaapp.com/moikuwj0tZN1W0/img/state-success--size-medium.svg",
-  warning: "https://c.animaapp.com/moikuwj0tZN1W0/img/state-warning--size-medium.svg",
-  error: "https://c.animaapp.com/moikuwj0tZN1W0/img/state-indicator.svg",
+/** Icône d'état par type — SVG inline (couleur pilotée par le CSS, via currentColor). */
+const STATE_ICON: Record<
+  AlertToastType,
+  React.FC<React.SVGProps<SVGSVGElement> & { size?: number }>
+> = {
+  information: InfoCircle,
+  success: CheckCircle,
+  warning: AlertTriangle,
+  error: AlertCircle,
 };
 
 const DEFAULT_TITLE: Record<AlertToastType, string> = {
@@ -93,6 +102,7 @@ export const AlertToast = ({
   const showDismiss = dismissible || Boolean(actions?.length);
   const resolvedTitle = title ?? DEFAULT_TITLE[type];
   const showProgress = typeof progress === "number";
+  const StateIcon = STATE_ICON[type];
 
   const rootClass = [
     "alert-toast",
@@ -109,11 +119,7 @@ export const AlertToast = ({
 
       {/* Status icon */}
       <div className="alert-toast__icon-col">
-        <img
-          className="alert-toast__state-icon"
-          src={STATE_ICON_SRC[type]}
-          alt={`${type} icon`}
-        />
+        <StateIcon className="alert-toast__state-icon" size={20} aria-hidden="true" />
       </div>
 
       {/* Main body */}
@@ -153,12 +159,7 @@ export const AlertToast = ({
             aria-label="Dismiss notification"
             type="button"
           >
-            <img
-              className="alert-toast__close-icon"
-              src="https://c.animaapp.com/moikuwj0tZN1W0/img/x-close.svg"
-              alt=""
-              aria-hidden="true"
-            />
+            <XClose className="alert-toast__close-icon" size={16} aria-hidden="true" />
           </button>
         </div>
       )}

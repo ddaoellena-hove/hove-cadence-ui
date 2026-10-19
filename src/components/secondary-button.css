@@ -58,13 +58,15 @@
   height: 12px !important;
   width: 12px !important;
   flex-shrink: 0;
+  /* Les icônes suivent currentColor — foncé par défaut (bouton outline) */
+  color: var(--cadence-color-primary, #002830);
 }
 
-/* White icons on filled (dark-background) buttons */
+/* Icônes blanches sur bouton rempli (fond foncé) */
 .secondary-button.outline-false.left .sb-icons-instance,
 .secondary-button.outline-false.right .sb-icons-instance,
 .secondary-button.outline-false.only .sb-icons-instance {
-  filter: brightness(0) invert(1);
+  color: var(--cadence-color-white, #ffffff);
 }
 
 /* ── Label text ── */

@@ -1,134 +1,108 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Icons } from "./Icons";
+import { ICONS, type IconName } from "./icon-registry";
+
+const ALL_ICONS = Object.keys(ICONS) as IconName[];
 
 const meta: Meta<typeof Icons> = {
   title: "Components/Icons",
   component: Icons,
   tags: ["autodocs"],
-
   argTypes: {
     icon: {
-      options: [
-        "alert-triangle",
-        "annotation-info",
-        "announcement-01",
-        "arrow-down",
-        "arrow-left",
-        "arrow-narrow-down-right",
-        "arrow-narrow-up-right",
-        "arrow-right",
-        "arrow-up",
-        "bank",
-        "bell-01",
-        "briefcase-01",
-        "building-07",
-        "calendar",
-        "check",
-        "check-circle",
-        "chevron-down",
-        "chevron-left",
-        "chevron-right",
-        "chevron-up",
-        "clock",
-        "clock-rewind",
-        "code-snippet-02",
-        "copy-01",
-        "dots-grid",
-        "dots-horizontal",
-        "download-02",
-        "drag-drop",
-        "edit-02",
-        "expand-02",
-        "eye",
-        "eye-off",
-        "file-05",
-        "file-attachment-02",
-        "filter-lines",
-        "flag-01",
-        "folder",
-        "headphones-01",
-        "heart",
-        "help-circle",
-        "home",
-        "home-03",
-        "icon-90",
-        "info-circle",
-        "laptop-01",
-        "link-01",
-        "list",
-        "lock-01",
-        "log-in-02",
-        "log-out-02",
-        "luggage-02",
-        "mail-01",
-        "map-01",
-        "mark",
-        "marker-pin-01",
-        "marker-pin-06",
-        "menu-01",
-        "microphone-01",
-        "microphone-off-01",
-        "minus",
-        "monitor-04",
-        "navigation-pointer-01",
-        "phone-02",
-        "pin-02",
-        "play",
-        "plus",
-        "power-01",
-        "recording-01",
-        "refresh-ccw-05",
-        "route",
-        "rss-01",
-        "save-01",
-        "search-md",
-        "send-01",
-        "settings-01",
-        "settings-04",
-        "share-07",
-        "star-01",
-        "switch-horizontal-01",
-        "switch-vertical-01",
-        "terminal",
-        "trash",
-        "upload-02",
-        "user-01",
-        "users-01",
-        "volume-max",
-        "volume-min",
-        "volume-x",
-        "x-close",
-      ],
+      options: ALL_ICONS,
       control: { type: "select" },
     },
-    iconMap: { control: { type: "text" } },
+    size: { control: { type: "number" } },
+    color: { control: { type: "color" } },
+    title: { control: { type: "text" } },
   },
 };
 
 export default meta;
-
 type Story = StoryObj<typeof Icons>;
 
-export const Default: Story = {
+/** Un seul icône, pilotable via les contrôles (icon, size, color). */
+export const Playground: Story = {
   args: {
     icon: "search-md",
-    className: "",
-    iconMap: "https://c.animaapp.com/moieyt2ccA1Ry9/img/icon-map-01-1_1.svg",
+    size: 24,
+    color: "currentColor",
   },
 };
 
-export const IconAlertTriangle: Story = {
-  args: {
-    icon: "alert-triangle",
-    className: "",
-    iconMap: "https://c.animaapp.com/moieyt2ccA1Ry9/img/icon-map-01-1_1.svg",
-  },
+/** La couleur suit `currentColor` : l'icône hérite de la couleur du texte parent. */
+export const InheritsColor: Story = {
+  render: () => (
+    <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
+      <span style={{ color: "var(--cadence-color-primary, #002830)", display: "inline-flex" }}>
+        <Icons icon="route" />
+      </span>
+      <span style={{ color: "var(--cadence-color-danger, #da1e28)", display: "inline-flex" }}>
+        <Icons icon="trash" />
+      </span>
+      <span style={{ color: "var(--cadence-color-icon-muted, #69797d)", display: "inline-flex" }}>
+        <Icons icon="settings-01" />
+      </span>
+      <Icons icon="heart" color="#e91e63" />
+    </div>
+  ),
 };
 
-export const IconAnnotationInfo: Story = {
-  args: {
-    icon: "annotation-info",
-    className: "",
-    iconMap: "https://c.animaapp.com/moieyt2ccA1Ry9/img/icon-map-01-1_1.svg",
-  },
+/** Plusieurs tailles via la prop `size`. */
+export const Sizes: Story = {
+  render: () => (
+    <div style={{ display: "flex", gap: 16, alignItems: "center", color: "var(--cadence-color-primary, #002830)" }}>
+      {[16, 20, 24, 32, 48].map((s) => (
+        <div key={s} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+          <Icons icon="calendar" size={s} />
+          <span style={{ fontFamily: "Inter, sans-serif", fontSize: 11, color: "var(--cadence-color-text-muted, #809397)" }}>
+            {s}px
+          </span>
+        </div>
+      ))}
+    </div>
+  ),
+};
+
+/** Galerie complète — toutes les icônes du registre avec leur nom. */
+export const AllIcons: Story = {
+  render: () => (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+        gap: 8,
+        color: "var(--cadence-color-primary, #002830)",
+      }}
+    >
+      {ALL_ICONS.map((name) => (
+        <div
+          key={name}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 8,
+            padding: "14px 8px",
+            border: "1px solid var(--cadence-color-border, #e5e5e5)",
+            borderRadius: 8,
+          }}
+        >
+          <Icons icon={name} size={24} />
+          <span
+            style={{
+              fontFamily: "Inter, sans-serif",
+              fontSize: 11,
+              color: "var(--cadence-color-text-muted, #809397)",
+              textAlign: "center",
+              wordBreak: "break-word",
+            }}
+          >
+            {name}
+          </span>
+        </div>
+      ))}
+    </div>
+  ),
 };

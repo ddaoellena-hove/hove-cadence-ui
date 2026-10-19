@@ -1035,14 +1035,22 @@ Clavier : ↑/↓ pour naviguer, Entrée pour sélectionner l'option surlignée,
 
 ### Icons
 
+SVG inline issu de `@untitledui/icons` — aucune requête réseau. L'icône suit `currentColor` : par défaut elle prend la couleur du texte parent.
+
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `icon` | nom d'icône (90+ valeurs) | `"search-md"` | Ex : `"trash"`, `"copy-01"`, `"edit-02"`, `"plus"`, `"calendar"`, `"chevron-down"`, `"switch-vertical-01"`… |
-| `className` | `string` | **requis** ⚠️ | Passer `""` si inutile |
-| `iconMap` | `string` | **requis** ⚠️ | Passer `""` (legacy) |
+| `icon` | `IconName` (≈ 89 valeurs) | `"search-md"` | Ex : `"trash"`, `"copy-01"`, `"edit-02"`, `"plus"`, `"calendar"`, `"chevron-down"`, `"switch-vertical-01"`… |
+| `size` | `number` | `24` | Taille en px (largeur = hauteur) |
+| `color` | `string` | `"currentColor"` | Couleur du trait. Laisser à `currentColor` pour piloter la couleur en CSS |
+| `title` | `string` | — | Si fourni → `role="img"` + `aria-label` ; sinon l'icône est `aria-hidden` |
+| `className` | `string` | — | Classe CSS additionnelle (optionnelle) |
+| `iconMap` | `string` | — | @deprecated — ignoré (compat ascendante) |
 
 ```tsx
-<Icons icon="trash" className="" iconMap="" />
+<Icons icon="trash" />                       {/* 24px, suit la couleur du texte */}
+<Icons icon="trash" size={16} />             {/* taille custom */}
+<Icons icon="trash" color="#da1e28" />       {/* couleur explicite */}
+<span style={{ color: "var(--cadence-color-danger)" }}><Icons icon="trash" /></span>  {/* via currentColor */}
 ```
 
 ### Indicator
