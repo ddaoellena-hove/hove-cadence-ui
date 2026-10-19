@@ -261,7 +261,7 @@ Toutes les distances utilisent cette échelle (px) : **4, 8, 12, 16, 20, 24, 32,
 ### Constantes de layout
 
 ```tsx
-const SIDEBAR_WIDTH = 240;  // largeur de la Sidebar
+const SIDEBAR_WIDTH = 280;  // largeur de la Sidebar (fixée par sidebar.css)
 const HEADER_HEIGHT = 56;   // hauteur du Header
 ```
 
@@ -682,7 +682,7 @@ Toute page de l'app vit dans ce squelette. `Sidebar` et `Header` n'ont pas de pr
 ```tsx
 import { Sidebar, Header, Breadcrumbs, Dropdown, Avatar } from "@ddaoellena/cadence-ui";
 
-const SIDEBAR_WIDTH = 240;
+const SIDEBAR_WIDTH = 280; // = largeur de .sidebar dans sidebar.css
 const HEADER_HEIGHT = 56;
 
 export const AppLayout = ({ children }: { children: React.ReactNode }) => (
