@@ -9,6 +9,8 @@ export interface CheckboxProps {
   innerClassName?: string;
   /** Callback fired when the user clicks the checkbox (only when not disabled). */
   onChange?: (nextChecked: boolean) => void;
+  /** Nom accessible (ex. « Sélectionner la ligne »). Recommandé quand aucun texte n'accompagne la case. */
+  "aria-label"?: string;
 }
 
 /**
@@ -21,6 +23,7 @@ export const Checkbox = ({
   className,
   innerClassName,
   onChange,
+  "aria-label": ariaLabel,
 }: CheckboxProps) => {
   const isChecked = state === "checked" || state === "disabled-checked";
   const isIndeterminate = state === "indeterminate";
@@ -41,6 +44,7 @@ export const Checkbox = ({
       role="checkbox"
       aria-checked={isIndeterminate ? "mixed" : isChecked}
       aria-disabled={isDisabled}
+      aria-label={ariaLabel}
       tabIndex={isDisabled ? -1 : 0}
       onClick={handleClick}
       onKeyDown={(e) => {

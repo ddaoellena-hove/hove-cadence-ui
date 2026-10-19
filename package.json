@@ -30,6 +30,8 @@
     "build": "tsc -b && vite build",
     "build:lib": "vite build --config vite.config.lib.ts && tsc --project tsconfig.lib.json",
     "lint": "eslint .",
+    "test": "vitest run",
+    "test:unit": "vitest run --project unit",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
@@ -41,6 +43,8 @@
     "react-dom": "^18 || ^19"
   },
   "dependencies": {
+    "@tanstack/react-table": "9.2.6",
+    "@tanstack/react-virtual": "3.14.13",
     "@tpitre/story-ui": "^4.16.12",
     "@untitledui/icons": "0.0.23",
     "react": "^18 || ^19",

@@ -1,0 +1,88 @@
+/* ── Pagination ──────────────────────────────────────────────────────────── */
+.pagination {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  gap: 12px 16px;
+  justify-content: space-between;
+}
+
+/* ── Taille de page + plage ──────────────────────────────────────────────── */
+.pagination__summary {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+}
+
+.pagination__size .dropdown__trigger {
+  min-width: 140px;
+}
+
+.pagination__range {
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ── Pages ───────────────────────────────────────────────────────────────── */
+.pagination__pages {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pagination__button {
+  align-items: center;
+  background: transparent;
+  border: none;
+  border-radius: var(--cadence-radius-sm, 6px);
+  color: var(--cadence-color-primary, #002830);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: inherit;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  height: 32px;
+  justify-content: center;
+  min-width: 32px;
+  padding: 0 8px;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.pagination__button:hover:not(:disabled):not(.pagination__button--current) {
+  background: var(--cadence-color-surface-alt, #eef1f4);
+}
+
+.pagination__button:focus-visible {
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+  outline: none;
+}
+
+.pagination__button--current {
+  background: var(--cadence-color-primary, #002830);
+  color: var(--cadence-color-white, #ffffff);
+  cursor: default;
+}
+
+.pagination__button:disabled {
+  color: var(--cadence-color-border-strong, #bfc9cb);
+  cursor: not-allowed;
+}
+
+.pagination__button--nav {
+  padding: 0;
+}
+
+.pagination__ellipsis {
+  color: var(--cadence-color-icon-muted, #69797d);
+  font-size: 13px;
+  min-width: 24px;
+  text-align: center;
+}

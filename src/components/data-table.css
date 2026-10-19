@@ -1,0 +1,211 @@
+/* ── DataTable ───────────────────────────────────────────────────────────── */
+/* Lignes en CSS Grid (même grille pour l'en-tête et le corps) : un seul
+   chemin de rendu, virtualisé ou non. Les rôles ARIA explicites du TSX
+   conservent la sémantique de tableau. */
+.data-table {
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-lg, 10px);
+  color: var(--cadence-color-primary, #002830);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  overflow: auto;
+  position: relative;
+}
+
+.data-table__table {
+  border-collapse: collapse;
+  display: block;
+  width: 100%;
+}
+
+.data-table__head,
+.data-table__body {
+  display: block;
+}
+
+/* ── En-tête collant ─────────────────────────────────────────────────────── */
+.data-table__head {
+  background: var(--cadence-color-white, #ffffff);
+  position: sticky;
+  top: 0;
+  z-index: 1; /* empilement interne : au-dessus des lignes qui défilent */
+}
+
+/* ── Lignes ──────────────────────────────────────────────────────────────── */
+.data-table__row {
+  border-bottom: 1px solid var(--cadence-color-divider, #f0f0f0);
+  box-sizing: border-box;
+  display: grid;
+  width: 100%;
+}
+
+.data-table__row--header {
+  border-bottom-color: var(--cadence-color-border, #e5e5e5);
+  height: 40px;
+}
+
+.data-table__body .data-table__row:hover {
+  background: var(--cadence-color-surface-alt, #eef1f4);
+}
+
+.data-table__row--selected,
+.data-table__body .data-table__row--selected:hover {
+  background: var(--cadence-color-accent-subtle, #f0f6ff);
+}
+
+.data-table__row--clickable {
+  cursor: pointer;
+}
+
+.data-table__row--clickable:focus-visible {
+  outline: 2px solid var(--cadence-focus-color, #1a3e45);
+  outline-offset: -2px;
+}
+
+.data-table__row--empty,
+.data-table__body .data-table__row--empty:hover {
+  background: transparent;
+  border-bottom: none;
+}
+
+.data-table--busy .data-table__body {
+  opacity: 0.6;
+  transition: opacity 120ms ease;
+}
+
+/* ── Cellules ────────────────────────────────────────────────────────────── */
+.data-table__cell {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  font-size: 13px;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0 16px;
+}
+
+.data-table--compact .data-table__cell {
+  padding: 0 12px;
+}
+
+.data-table__cell--left {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.data-table__cell--right {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.data-table__cell--center {
+  justify-content: center;
+  text-align: center;
+}
+
+.data-table__cell--numeric {
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-variant-numeric: tabular-nums;
+}
+
+.data-table__cell--select {
+  justify-content: center;
+  padding: 0;
+}
+
+.data-table__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── En-têtes de colonnes (style de TableHeader) ─────────────────────────── */
+.data-table__header {
+  color: var(--cadence-color-icon-muted, #69797d);
+  font-weight: normal;
+}
+
+.data-table__header--active {
+  color: var(--cadence-color-primary, #002830);
+}
+
+.data-table__label {
+  font-family: var(--cadence-font-sans, "Inter", Helvetica);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.data-table__sort {
+  align-items: center;
+  background: none;
+  border: none;
+  border-radius: var(--cadence-radius-sm, 6px);
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  gap: 5px;
+  margin: 0 -4px;
+  min-width: 0;
+  padding: 4px;
+  transition: color 120ms ease;
+}
+
+.data-table__cell--right .data-table__sort {
+  flex-direction: row-reverse;
+}
+
+.data-table__sort:hover {
+  color: var(--cadence-color-primary, #002830);
+}
+
+.data-table__sort:focus-visible {
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+  outline: none;
+}
+
+.data-table__sort .sort-icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+.data-table__sort-index {
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* ── États : chargement et vide ──────────────────────────────────────────── */
+.data-table__skeleton {
+  animation: data-table-pulse 1.2s ease-in-out infinite;
+  background: var(--cadence-color-surface-alt, #eef1f4);
+  border-radius: var(--cadence-radius-sm, 6px);
+  display: block;
+  height: 12px;
+  width: 70%;
+}
+
+@keyframes data-table-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .data-table__skeleton {
+    animation: none;
+  }
+}
+
+.data-table__empty {
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 14px;
+  grid-column: 1 / -1;
+  padding: 48px 16px;
+  text-align: center;
+}

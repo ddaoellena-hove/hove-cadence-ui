@@ -1,0 +1,60 @@
+/* ── FilterBar ───────────────────────────────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  gap: 12px;
+}
+
+/* ── Ligne 1 : recherche · filtres rapides · actions ─────────────────────── */
+.filter-bar__main {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+
+.filter-bar__search {
+  flex: 0 1 320px;
+  min-width: 200px;
+}
+
+.filter-bar__quick {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-bar__actions {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+/* ── Ligne 2 : filtres actifs · compteur ─────────────────────────────────── */
+.filter-bar__secondary {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+
+.filter-bar__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.filter-bar__count {
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  margin-left: auto;
+  white-space: nowrap;
+}

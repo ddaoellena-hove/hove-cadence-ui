@@ -109,12 +109,13 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-color-placeholder` | `#737373` | Placeholders des champs |
 | `--cadence-color-icon-muted` | `#69797d` | Icônes d'action discrètes |
 | `--cadence-color-icon-neutral` | `#737373` | Icônes neutres (pictos métier) |
+| `--cadence-color-icon-disabled` | `#c5cfd3` | Pictos inactifs : flèches de tri non actives (`TableHeader`, `DataTable`) |
 | `--cadence-color-danger` | `#da1e28` | Actions destructives, erreurs |
 | `--cadence-color-success` | `#24a148` | Confirmations, états valides |
 | `--cadence-color-info` | `#0f62fe` | Accent « information » d'`AlertToast` |
 | `--cadence-color-warning` | `#f1c21b` | Accent « avertissement » d'`AlertToast`. ⚠️ 1,7:1 sur blanc : jamais en couleur de texte |
 | `--cadence-color-accent` | `#1b6cff` | Élément actif / sélectionné (Sidebar, options de menu, `SecondaryButton` rempli) |
-| `--cadence-color-accent-subtle` | `#f0f6ff` | Survol d'un élément actif (Sidebar) |
+| `--cadence-color-accent-subtle` | `#f0f6ff` | Survol d'un élément actif (Sidebar), ligne sélectionnée (`DataTable`) |
 | `--cadence-color-white` | `#ffffff` | Surfaces de premier plan |
 | `--cadence-color-surface-alt` | `#eef1f4` | Fonds de wrapper (TableCard, Badge) |
 | `--cadence-color-border` | `#e5e5e5` | Bordures par défaut |
@@ -226,8 +227,11 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Sélection multiple avec icône + description | `RichCheckbox` | `RichRadioButton` (choix exclusif) |
 | Étiquette d'information neutre (catégorie, tag, code) | `Badge` | `Indicator` (qui porte un état) |
 | État ou statut avec picto + couleur sémantique | `Indicator` | `Badge` (purement informatif) |
-| Élément de liste structuré (header + colonnes) | `TableCard` | un `<table>` HTML custom |
-| Ligne d'en-têtes de colonnes avec tri | `TableHeader` | — |
+| Liste de gros volume (> 50 lignes, colonnes de données) | `DataTable` | `TableCard` (liste de cartes riches, peu nombreuses) |
+| Élément de liste riche, peu nombreux (header + colonnes) | `TableCard` | `DataTable` (gros volumes) ; un `<table>` HTML custom |
+| Ligne d'en-têtes de colonnes avec tri (au-dessus de `TableCard`) | `TableHeader` | en-têtes de `DataTable` (intégrés) |
+| Navigation dans un résultat paginé | `Pagination` | — |
+| Recherche + filtres rapides + filtres actifs au-dessus d'une liste | `FilterBar` | un `TextInput` + `Badge` assemblés à la main |
 | Dialogue bloquant (confirmation, formulaire court) | `Modal` | `AlertToast` (non bloquant) |
 | Notification temporaire non bloquante | `AlertToast` | `Modal` |
 | Info contextuelle au survol | `Tooltip` / `TooltipTrigger` | `Modal` |
@@ -571,7 +575,40 @@ Le code complet du layout est dans la [recette 1](#recette-1--layout-dapplicatio
 
 ## Listes & tableaux
 
-Une liste structurée se compose de trois briques :
+### Choisir : `DataTable` ou `TableCard`
+
+| | `DataTable` | `TableCard` + `TableHeader` |
+|---|---|---|
+| **Volume** | Des centaines à des dizaines de milliers de lignes | Quelques dizaines de cartes |
+| **Contenu d'une ligne** | Valeurs de colonnes (texte, nombres, `Badge`, `Indicator`) | Carte riche : titre, icône, actions par ligne, contenu libre |
+| **Exemples** | Arrêts, courses, perturbations, véhicules | Scénarios, rapports, configurations |
+| **Tri, sélection** | Intégrés (Maj+clic : multi-tri, plage) | À câbler (`TableHeader` + `checkboxState`) |
+
+- ✅ Au-delà de ~50 lignes de données comparables → `DataTable`.
+- ✅ Au-dessus d'une liste filtrable → `FilterBar` ; en dessous d'une liste paginée → `Pagination`.
+- ❌ Ne pas utiliser `TableCard` pour des milliers de lignes (pas de virtualisation, une carte par ligne).
+- ❌ Ne pas recréer un `<table>` HTML custom — `DataTable` couvre le besoin.
+
+### Pagination ou virtualisation
+
+| Situation | Choix |
+|---|---|
+| Données paginées par l'API (cas courant en supervision) | `DataTable manualSorting manualPagination` + `Pagination` |
+| Quelques milliers de lignes en mémoire, lecture page par page | `DataTable page pageSize` + `Pagination` (le tri porte sur toutes les lignes, puis la page est découpée) |
+| Parcours continu d'un grand volume en mémoire (journal, flux de courses) | `DataTable virtualized maxHeight` — sans `Pagination` |
+
+- ✅ `virtualized` est **explicite** : il impose une hauteur bornée (`maxHeight`, défaut 560px) et des lignes de hauteur fixe ; Ctrl+F et l'impression ne voient que les lignes montées.
+- ✅ Le contenu des cellules tient sur une ligne (texte tronqué avec ellipse) : la hauteur de ligne est celle de la densité.
+- ❌ Ne pas combiner `virtualized` et `Pagination`.
+
+### Densité
+
+- `comfortable` (48px, défaut) : listes consultées, lignes avec `Badge` / `Indicator`.
+- `compact` (36px) : supervision dense, écrans de contrôle, tableaux virtualisés.
+
+### Composition `TableCard`
+
+Une liste de cartes se compose de trois briques :
 
 1. **`TableHeader`** — la ligne d'en-têtes de colonnes (labels uppercase + flèches de tri).
 2. **`TableCard`** — une ligne de la liste : header (checkbox + icône + titre + actions) et body en colonnes.
@@ -588,10 +625,10 @@ Une liste structurée se compose de trois briques :
 - ✅ Gap de `8` entre les cards.
 - ✅ État sélectionné : `state="selected"` + `checkboxState="checked"` ensemble.
 - ✅ Sans titre ni actions, le header de la card disparaît automatiquement (variante contenu seul).
-- ❌ Ne pas mettre de `<table>` HTML — la composition `TableHeader` + `TableCard` couvre le besoin.
+- ❌ Ne pas mettre de `<table>` HTML custom — `TableHeader` + `TableCard` (peu de lignes) ou `DataTable` (gros volume) couvrent le besoin.
 - ❌ Ne pas mettre plus de 4 `TableCardAction` par ligne — au-delà, regrouper dans un menu.
 
-Le code complet est dans la [recette 2](#recette-2--page-liste-avec-sélection-multiple).
+Le code complet est dans la [recette 2](#recette-2--page-liste-avec-sélection-multiple) (`TableCard`) et la [recette 5](#recette-5--page-de-supervision) (`DataTable`).
 
 ---
 
@@ -935,6 +972,108 @@ export const ScenarioFormPage = () => (
 </div>
 ```
 
+### Recette 5 — Page de supervision
+
+Liste de gros volume paginée par l'API : `FilterBar` au-dessus, `DataTable` (tri et pagination côté serveur, sélection), barre de sélection, `Pagination` en dessous. Story complète : *Recettes / Liste de perturbations* (variante en mémoire).
+
+```tsx
+import { useEffect, useState } from "react";
+import {
+  FilterBar, DataTable, Pagination, Dropdown, Checkbox, Link,
+  SecondaryButton, PrimaryButton, Badge, Indicator,
+  type DataTableColumn, type DataTableSort,
+} from "@ddaoellena/cadence-ui";
+
+// Colonnes au niveau module : référence stable
+const COLUMNS: DataTableColumn<Disruption>[] = [
+  { id: "title", header: "Perturbation", accessor: (d) => d.title, minWidth: 260, sortable: true },
+  { id: "line", header: "Ligne", accessor: (d) => d.line, width: 120, sortable: true, cell: (d) => <Badge label={d.line} /> },
+  { id: "start", header: "Début", accessor: (d) => d.start, width: 150, sortable: true },
+  { id: "impactedStops", header: "Arrêts impactés", accessor: (d) => d.impactedStops, numeric: true, width: 160, sortable: true },
+  { id: "severity", header: "Sévérité", accessor: (d) => d.severity, width: 160, sortable: true,
+    cell: (d) => <Indicator variant={d.severity} /> },
+];
+const EMPTY: Disruption[] = [];
+
+export const SupervisionPage = () => {
+  const [query, setQuery] = useState("");
+  const [line, setLine] = useState("all");
+  const [sort, setSort] = useState<DataTableSort[]>([{ id: "start", desc: true }]);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(50);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [result, setResult] = useState<{ items: Disruption[]; total: number } | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Toute modification de requête ramène en page 1
+  const update = (apply: () => void) => { apply(); setPage(1); setLoading(true); };
+
+  useEffect(() => {
+    let cancelled = false;
+    api.disruptions({ query, line, sort, page, pageSize }).then((r) => {
+      if (!cancelled) { setResult(r); setLoading(false); }
+    });
+    return () => { cancelled = true; };
+  }, [query, line, sort, page, pageSize]);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <FilterBar
+        search={{ value: query, onChange: (v) => update(() => setQuery(v)), placeholder: "Rechercher une perturbation…" }}
+        quickFilters={<Dropdown options={lineOptions} value={line} onChange={(id) => update(() => setLine(id))} />}
+        activeFilters={line !== "all" ? [{ id: "line", label: line }] : []}
+        onRemoveFilter={() => update(() => setLine("all"))}
+        resultCount={result?.total}
+        actions={<SecondaryButton outline withIcon="left" icon="download-02" label="Exporter" />}
+      />
+
+      {selectedIds.length > 0 && (
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <Checkbox aria-label="Tout désélectionner" state="checked" onChange={() => setSelectedIds([])} />
+            <Link hideArrow onClick={() => setSelectedIds([])}>Tout désélectionner</Link>
+          </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <SecondaryButton withIcon="left" icon="copy-01" label="Dupliquer" />
+            <PrimaryButton withIcon="left" icon="trash" label="Clôturer" destructive onClick={onConfirm} />
+          </div>
+        </div>
+      )}
+
+      <DataTable
+        aria-label="Perturbations"
+        columns={COLUMNS}
+        data={result?.items ?? EMPTY}
+        getRowId={(d) => d.id}
+        manualSorting
+        manualPagination
+        sort={sort}
+        onSortChange={(next) => update(() => setSort(next))}
+        loading={loading}
+        selectable
+        selectedIds={selectedIds}
+        onSelectionChange={setSelectedIds}
+        onRowClick={(d) => navigate(`/perturbations/${d.id}`)}
+        maxHeight="calc(100vh - 320px)"
+        emptyState="Aucune perturbation ne correspond à ces filtres."
+      />
+
+      <Pagination
+        page={page}
+        pageSize={pageSize}
+        totalItems={result?.total ?? 0}
+        onPageChange={(p) => { setPage(p); setLoading(true); }}
+        onPageSizeChange={(size) => update(() => setPageSize(size))}
+      />
+    </div>
+  );
+};
+```
+
+- ✅ `data` de repli stable (`EMPTY` au niveau module), jamais `?? []` dans le rendu.
+- ✅ La sélection est conservée par ids entre les pages ; la case d'en-tête ne porte que sur la page affichée.
+- ✅ En mode serveur, `loading` garde les lignes affichées (atténuées) pendant le rechargement : pas de saut de mise en page.
+
 ---
 
 ## Référence API des composants
@@ -1011,6 +1150,7 @@ Clavier : ↑/↓ pour naviguer, Entrée pour sélectionner l'option surlignée,
 |---|---|---|---|
 | `state` | `"unchecked" \| "hover" \| "checked" \| "indeterminate" \| "disabled" \| "disabled-checked"` | `"unchecked"` | ⚠️ Pas de prop `checked` — piloter via `state`. |
 | `onChange` | `(nextChecked: boolean) => void` | — | Clic (sauf disabled) |
+| `aria-label` | `string` | — | Nom accessible. ⚠️ Obligatoire en pratique quand aucun texte n'accompagne la case (ligne de tableau, « Tout sélectionner ») |
 
 ### CounterInput
 
@@ -1023,6 +1163,53 @@ Clavier : ↑/↓ pour naviguer, Entrée pour sélectionner l'option surlignée,
 | `label` | `string` | — | Label au-dessus |
 | `disabled` | `boolean` | `false` | — |
 | `onChange` | `(value: number) => void` | — | — |
+
+### DataTable
+
+Tableau dense pour les gros volumes. Vrai `<table>` (rôles ARIA explicites), en-tête collant, tri, sélection, navigation clavier, virtualisation optionnelle. Générique : `DataTable<T>`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `columns` | `DataTableColumn<T>[]` | **requis** | Voir ci-dessous. ⚠️ Définir au niveau module ou via `useMemo` (une nouvelle référence recalcule le tri) |
+| `data` | `T[]` | **requis** | Lignes. En mode serveur : la page courante, déjà triée |
+| `getRowId` | `(row: T) => string` | **requis** | Identifiant unique et stable |
+| `aria-label` | `string` | **requis** | Nom accessible du tableau |
+| `density` | `"compact" \| "comfortable"` | `"comfortable"` | 36px / 48px par ligne |
+| `hiddenColumnIds` | `string[]` | `[]` | Colonnes masquées (le menu de colonnes est fourni par l'app) |
+| `sort` | `{ id, desc }[]` | — | Tri contrôlé. Sans `sort` : géré en interne |
+| `defaultSort` | `{ id, desc }[]` | `[]` | Tri initial en mode non contrôlé |
+| `onSortChange` | `(sort) => void` | — | Clic : asc → desc → aucun ; Maj+clic : multi-colonnes |
+| `manualSorting` | `boolean` | `false` | Mode serveur : `data` arrive trié, pas de tri en mémoire |
+| `page`, `pageSize` | `number` | — | Mode client : découpe la page **après** le tri (`page` 1-based) |
+| `manualPagination` | `boolean` | `false` | Mode serveur : `data` est déjà la page, aucun découpage |
+| `selectable` | `boolean` | `false` | Colonne de `Checkbox` + case d'en-tête à trois états |
+| `selectedIds` | `string[]` | `[]` | Sélection contrôlée. ⚠️ Pas de mode non contrôlé |
+| `onSelectionChange` | `(ids: string[]) => void` | — | Maj+clic sur une case : sélection de plage |
+| `onRowClick` | `(row: T) => void` | — | Clic ou Entrée sur une ligne ; active ↑/↓, Début/Fin, Page préc./suiv. entre lignes, Espace pour sélectionner |
+| `loading` | `boolean` | `false` | Sans données : lignes squelettes ; avec données : lignes atténuées + `aria-busy` |
+| `emptyState` | `ReactNode` | `"Aucun résultat."` | Contenu sans résultat |
+| `maxHeight` | `number \| string` | — | Zone scrollable, en-tête collant |
+| `virtualized` | `boolean` | `false` | Seules les lignes visibles sont montées. ⚠️ Hauteur bornée (`maxHeight`, défaut 560px) |
+| `className` | `string` | — | — |
+
+**`DataTableColumn<T>`**
+
+| Clé | Type | Défaut | Description |
+|---|---|---|---|
+| `id` | `string` | **requis** | Clé de tri et de masquage |
+| `header` | `string` | **requis** | Libellé FR (affiché en majuscules) |
+| `accessor` | `(row: T) => string \| number \| Date \| boolean \| null \| undefined` | **requis** | Valeur brute : tri et rendu par défaut |
+| `cell` | `(row: T) => ReactNode` | — | Rendu custom (`Badge`, `Indicator`…) |
+| `align` | `"left" \| "right" \| "center"` | `"left"` (`"right"` si `numeric`) | — |
+| `numeric` | `boolean` | `false` | Police mono + alignement à droite |
+| `width` | `number` | — | Largeur fixe (px). Sans `width` : partage de l'espace restant |
+| `minWidth` | `number` | `80` | Largeur minimale des colonnes sans `width` |
+| `sortable` | `boolean` | `false` | — |
+
+- Tri en mémoire : chaînes à la française (« Ligne 2 » avant « Ligne 10 », sans casse ni accents), nombres, dates ; valeurs vides toujours en dernier.
+- Rendu par défaut : nombres `Intl.NumberFormat("fr-FR")`, dates `JJ/MM/AAAA HH:mm`, booléens « Oui » / « Non », vide « — ».
+- ⚠️ La case d'en-tête sélectionne les lignes **affichées** (la page). « Sélectionner les N résultats » se fait dans la barre de sélection de l'app.
+- ⚠️ Pas de `hideable`, de filtre de colonne ni de redimensionnement en v1.
 
 ### DataVisualization
 
@@ -1063,6 +1250,23 @@ Affichage en français : format `JJ/MM/AAAA` (`JJ/MM/AAAA HH:mm` avec `withTime`
 | `placeholder` | `string` | — | — |
 | `disabled` | `boolean` | `false` | — |
 | `onChange` | `(id: string) => void` | — | — |
+
+### FilterBar
+
+Barre au-dessus d'une liste : ligne 1 = recherche · filtres rapides · actions (à droite) ; ligne 2 = filtres actifs · « Tout effacer » · nombre de résultats.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `search` | `{ value, onChange, placeholder?, "aria-label"? }` | — | `TextInput` de recherche. `onChange` est appelé 300 ms après la dernière frappe (ou sur Entrée) ; `value` reste contrôlée. Défauts : `"Rechercher…"` / `"Rechercher"` |
+| `quickFilters` | `ReactNode` | — | Slot : `Dropdown`, `SegmentedControl`… |
+| `activeFilters` | `{ id, label }[]` | `[]` | Affichés en `Badge dismissible` |
+| `onRemoveFilter` | `(id: string) => void` | — | Croix d'un badge. Sans callback, les badges ne sont pas supprimables |
+| `onClearAll` | `() => void` | — | « Tout effacer » (`Link hideArrow`), affiché à partir de **2** filtres actifs |
+| `resultCount` | `number` | — | « 12 430 résultats » / « 1 résultat » / « Aucun résultat » (annoncé aux lecteurs d'écran) |
+| `actions` | `ReactNode` | — | Slot à droite : export, menu de colonnes… |
+| `className` | `string` | — | — |
+
+⚠️ Pas d'icône loupe : `TextInput` n'accepte pas d'icône.
 
 ### Header
 
@@ -1140,6 +1344,23 @@ Comportements intégrés : fermeture sur Échap, scroll du body verrouillé, foo
 | `align` | `"left" \| "right"` | `"left"` | Alignement du menu |
 | `disabled` | `boolean` | `false` | — |
 | `onSelect` | `(id: string) => void` | — | — |
+
+### Pagination
+
+Navigation dans un résultat paginé. Composant contrôlé.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `page` | `number` | **requis** | Page courante, **1-based** |
+| `pageSize` | `number` | **requis** | Éléments par page |
+| `totalItems` | `number` | **requis** | Total toutes pages confondues |
+| `onPageChange` | `(page: number) => void` | **requis** | — |
+| `pageSizeOptions` | `number[]` | `[25, 50, 100]` | Tailles proposées |
+| `onPageSizeChange` | `(size: number) => void` | — | Sans callback, le sélecteur « 50 par page » n'est pas affiché. ⚠️ Remettre `page` à 1 côté app |
+| `aria-label` | `string` | `"Pagination"` | Nom de la `nav` |
+| `className` | `string` | — | — |
+
+Affiche « 1–50 sur 12 430 » (`Intl.NumberFormat("fr-FR")`), précédent / suivant, et les pages avec ellipses (`1 … 4 5 6 … 249`, 7 positions fixes). ⚠️ Le menu de taille s'ouvre vers le bas : prévoir de l'espace sous la pagination.
 
 ### PrimaryButton / SecondaryButton
 
