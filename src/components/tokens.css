@@ -65,4 +65,9 @@
   --cadence-status-critical-bg: #fee2e2;   /* Critique — fond */
   --cadence-status-nominal-fg: #166534;    /* Normal / RAS — texte et picto (vert foncé) */
   --cadence-status-nominal-bg: #f0fdf4;    /* Normal / RAS — fond */
+
+  /* ── Thèmes produits ───────────────────────────────────────────────────── */
+  --cadence-product-datahub: #004650;         /* Fond de la Sidebar — Datahub (pétrole) */
+  --cadence-product-traffic-report: #2f2f3b;  /* Fond de la Sidebar — Traffic Report (ardoise) */
+  --cadence-product-insights: #3b2f2f;        /* Fond de la Sidebar — Insights (brun) */
 }
