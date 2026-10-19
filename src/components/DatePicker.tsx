@@ -1,5 +1,7 @@
-import { useState, useRef, useEffect, useLayoutEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect, useId, type KeyboardEvent } from "react";
 import { SecondaryButton } from "./SecondaryButton";
+import { CalendarMonth } from "./CalendarMonth";
+import { dayKey, formatDate, getKeyboardTarget, isOutsideBounds, isSameDay } from "./date-utils";
 import "./date-picker.css";
 
 export interface DatePickerSegmentedOption {
@@ -29,79 +31,6 @@ export interface DatePickerProps {
   segmentedValue?: string;
   /** Called when the user switches segment. */
   onSegmentChange?: (value: string) => void;
-}
-
-// Semaine française : commence le lundi
-const WEEKDAYS = ["Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di"];
-const MONTHS = [
-  "janvier",
-  "février",
-  "mars",
-  "avril",
-  "mai",
-  "juin",
-  "juillet",
-  "août",
-  "septembre",
-  "octobre",
-  "novembre",
-  "décembre",
-];
-
-/** Majuscule initiale pour l'affichage (« janvier » → « Janvier »). */
-function capitalize(text: string): string {
-  return text.charAt(0).toUpperCase() + text.slice(1);
-}
-
-function isSameDay(a: Date, b: Date): boolean {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  );
-}
-
-function isToday(date: Date): boolean {
-  return isSameDay(date, new Date());
-}
-
-/** Format français : JJ/MM/AAAA (+ HH:mm si withTime). */
-function formatDate(date: Date, withTime = false): string {
-  const dd = String(date.getDate()).padStart(2, "0");
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  const yyyy = date.getFullYear();
-  if (withTime) {
-    const hh = String(date.getHours()).padStart(2, "0");
-    const min = String(date.getMinutes()).padStart(2, "0");
-    return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
-  }
-  return `${dd}/${mm}/${yyyy}`;
-}
-
-function buildWeeks(year: number, month: number): (Date | null)[][] {
-  // getDay() renvoie 0 pour dimanche : on décale pour une semaine qui commence le lundi
-  const firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const cells: (Date | null)[] = [];
-
-  for (let i = 0; i < firstDay; i++) {
-    cells.push(new Date(year, month, -firstDay + 1 + i));
-  }
-  for (let d = 1; d <= daysInMonth; d++) {
-    cells.push(new Date(year, month, d));
-  }
-  const remaining = 7 - (cells.length % 7);
-  if (remaining < 7) {
-    for (let d = 1; d <= remaining; d++) {
-      cells.push(new Date(year, month + 1, d));
-    }
-  }
-
-  const weeks: (Date | null)[][] = [];
-  for (let i = 0; i < cells.length; i += 7) {
-    weeks.push(cells.slice(i, i + 7));
-  }
-  return weeks;
 }
 
 /** Minimal inline SegmentedControlAlt used only inside the popover */
@@ -184,6 +113,12 @@ export const DatePicker = ({
   const [hour, setHour] = useState<number>(value ? value.getHours() : 9);
   const [minute, setMinute] = useState<number>(value ? value.getMinutes() : 0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const triggerId = useId();
+  // Jour qui porte le focus clavier dans la grille
+  const [focusedDate, setFocusedDate] = useState<Date>(value ?? today);
+  // Après une navigation clavier, le focus suit le jour ciblé
+  const keyboardNavRef = useRef(false);
 
   useEffect(() => {
     if (!open) return;
@@ -199,17 +134,21 @@ export const DatePicker = ({
     return () => document.removeEventListener("mousedown", handleClick);
   }, [open]);
 
-  useEffect(() => {
+  // Nouvelle valeur reçue : on recale le mois affiché, la date en attente et l'heure
+  const [syncedValue, setSyncedValue] = useState(value);
+  if (value !== syncedValue) {
+    setSyncedValue(value);
     if (value) {
       setViewYear(value.getFullYear());
       setViewMonth(value.getMonth());
       setPendingDate(value);
+      setFocusedDate(value);
       if (withTime) {
         setHour(value.getHours());
         setMinute(value.getMinutes());
       }
     }
-  }, [value, withTime]);
+  }
 
   const handlePrevMonth = () => {
     if (viewMonth === 0) {
@@ -225,27 +164,38 @@ export const DatePicker = ({
     } else setViewMonth((m) => m + 1);
   };
 
-  const isDisabledDay = (date: Date): boolean => {
-    if (
-      minDate &&
-      date <
-        new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate())
-    )
-      return true;
-    if (
-      maxDate &&
-      date >
-        new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate())
-    )
-      return true;
-    return false;
+  const isDisabledDay = (date: Date): boolean => isOutsideBounds(date, minDate, maxDate);
+
+  // Le jour focalisable reste dans le mois affiché
+  const focusInView =
+    focusedDate.getMonth() === viewMonth && focusedDate.getFullYear() === viewYear
+      ? focusedDate
+      : new Date(viewYear, viewMonth, 1);
+
+  useEffect(() => {
+    if (!keyboardNavRef.current) return;
+    keyboardNavRef.current = false;
+    containerRef.current?.querySelector<HTMLElement>(`[data-day="${dayKey(focusInView)}"]`)?.focus();
+  });
+
+  const close = () => {
+    setOpen(false);
+    triggerRef.current?.focus();
   };
 
-  const isOutsideMonth = (date: Date): boolean =>
-    date.getMonth() !== viewMonth || date.getFullYear() !== viewYear;
+  const handleDayKeyDown = (e: KeyboardEvent<HTMLButtonElement>, date: Date) => {
+    const target = getKeyboardTarget(date, e.key);
+    if (!target) return;
+    e.preventDefault();
+    keyboardNavRef.current = true;
+    setFocusedDate(target);
+    setViewYear(target.getFullYear());
+    setViewMonth(target.getMonth());
+  };
 
   const handleDayClick = (date: Date) => {
     if (isDisabledDay(date)) return;
+    setFocusedDate(date);
     if (withTime) {
       setPendingDate(date);
     } else {
@@ -269,15 +219,26 @@ export const DatePicker = ({
   // Effective selected date for display in trigger
   const displayValue = withTime ? (value ?? null) : value;
 
-  const weeks = buildWeeks(viewYear, viewMonth);
-
   return (
     <div
       className={`date-picker${disabled ? " date-picker--disabled" : ""}`}
       ref={containerRef}
+      onKeyDown={(e) => {
+        // Échap : ferme sans valider et rend le focus au déclencheur
+        if (e.key === "Escape" && open) {
+          e.stopPropagation();
+          close();
+        }
+      }}
     >
-      {label && <span className="date-picker__label">{label}</span>}
+      {label && (
+        <label className="date-picker__label" htmlFor={triggerId}>
+          {label}
+        </label>
+      )}
       <button
+        ref={triggerRef}
+        id={triggerId}
         type="button"
         className={`date-picker__trigger${open ? " date-picker__trigger--open" : ""}`}
         onClick={() => !disabled && setOpen((o) => !o)}
@@ -338,118 +299,27 @@ export const DatePicker = ({
               </div>
             )}
 
-          {/* ── Header ── */}
-          <div className="date-picker__header">
-            <button
-              type="button"
-              className="date-picker__nav-btn"
-              onClick={handlePrevMonth}
-              aria-label="Mois précédent"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  d="M10 12L6 8l4-4"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-            <span className="date-picker__month-label">
-              {capitalize(MONTHS[viewMonth])} {viewYear}
-            </span>
-            <button
-              type="button"
-              className="date-picker__nav-btn"
-              onClick={handleNextMonth}
-              aria-label="Mois suivant"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <path
-                  d="M6 4l4 4-4 4"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-          </div>
-
-          {/* ── Calendar grid ── */}
-          <div className="date-picker__grid">
-            <div className="date-picker__weekdays">
-              {WEEKDAYS.map((day) => (
-                <span key={day} className="date-picker__weekday">
-                  {day}
-                </span>
-              ))}
-            </div>
-            <div className="date-picker__weeks">
-              {weeks.map((week, wi) => (
-                <div key={wi} className="date-picker__week">
-                  {week.map((date, di) => {
-                    if (!date)
-                      return (
-                        <span
-                          key={di}
-                          className="date-picker__day date-picker__day--empty"
-                        />
-                      );
-                    const outside = isOutsideMonth(date);
-                    const disabled_ = isDisabledDay(date);
-                    const selected = withTime
-                      ? pendingDate
-                        ? isSameDay(date, pendingDate)
-                        : false
-                      : value
-                        ? isSameDay(date, value)
-                        : false;
-                    const today_ = isToday(date);
-                    const classes = [
-                      "date-picker__day",
-                      outside ? "date-picker__day--outside" : "",
-                      disabled_ ? "date-picker__day--disabled" : "",
-                      selected ? "date-picker__day--selected" : "",
-                      today_ && !selected ? "date-picker__day--today" : "",
-                    ]
-                      .filter(Boolean)
-                      .join(" ");
-
-                    return (
-                      <button
-                        key={di}
-                        type="button"
-                        className={classes}
-                        onClick={() => handleDayClick(date)}
-                        disabled={disabled_}
-                        tabIndex={outside ? -1 : 0}
-                        aria-pressed={selected}
-                        aria-label={formatDate(date)}
-                      >
-                        {date.getDate()}
-                      </button>
-                    );
-                  })}
-                </div>
-              ))}
-            </div>
-          </div>
+          {/* ── Mois (calendrier partagé) ── */}
+          <CalendarMonth
+            year={viewYear}
+            month={viewMonth}
+            onPrevMonth={handlePrevMonth}
+            onNextMonth={handleNextMonth}
+            today={today}
+            focusedDate={focusInView}
+            onSelect={handleDayClick}
+            onKeyDown={handleDayKeyDown}
+            getDayState={(date) => ({
+              disabled: isDisabledDay(date),
+              selected: withTime
+                ? pendingDate
+                  ? isSameDay(date, pendingDate)
+                  : false
+                : value
+                  ? isSameDay(date, value)
+                  : false,
+            })}
+          />
 
           {/* ── Time picker (only when withTime) ── */}
           {withTime && (
