@@ -87,7 +87,7 @@
   /* Anneau de focus unique PROPOSÉ (phase 3, docs/proposals/tokens-v2.md).
      Pas encore appliqué : les composants gardent leurs styles :focus-visible
      actuels jusqu'à validation. */
-  /* Couleur de l'anneau — 11,5:1 sur blanc, 10,1:1 sur --cadence-color-surface-alt */
+  /* Couleur de l'anneau — 11,6:1 sur blanc, 10,2:1 sur --cadence-color-surface-alt */
   --cadence-focus-color: #1a3e45;
   /* Anneau box-shadow : liseré blanc de 2px puis anneau plein de 2px (visible aussi sur fond sombre) */
   --cadence-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45;

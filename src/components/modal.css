@@ -10,7 +10,7 @@
   z-index: var(--cadence-z-modal, 1000);
 }
 
-/* ── Frame (#002830) ─────────────────────────────────────────────────────── */
+/* ── Frame (fond --cadence-color-primary) ─────────────────────────────────── */
 .modal {
   background-color: var(--cadence-color-primary, #002830);
   border-radius: 12px;
@@ -26,7 +26,7 @@
 .modal--medium { max-width: 560px; }
 .modal--large  { max-width: 800px; }
 
-/* ── Header — transparent, texte blanc sur fond #002830 ──────────────────── */
+/* ── Header — transparent, texte blanc sur fond primary ──────────────────── */
 .modal__header {
   align-items: center;
   background: transparent;
