@@ -20,6 +20,8 @@
   /* ── Couleurs — états ──────────────────────────────────────────────────── */
   --cadence-color-danger: #da1e28;         /* Actions destructives, erreurs */
   --cadence-color-success: #24a148;        /* Confirmations, états valides */
+  --cadence-color-info: #0f62fe;           /* Accent « information » d'AlertToast (barre, icône, progression) */
+  --cadence-color-warning: #f1c21b;        /* Accent « avertissement » d'AlertToast — ⚠️ 1,7:1 sur blanc : jamais en couleur de texte */
 
   /* ── Couleurs — surfaces & bordures ────────────────────────────────────── */
   --cadence-color-white: #ffffff;          /* Surfaces de premier plan */
