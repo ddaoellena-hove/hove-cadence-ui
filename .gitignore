@@ -38,3 +38,5 @@ storybook-package/tsconfig*.json
 storybook-package/vite.config.ts
 storybook-package/story-ui.config.js
 storybook-package/node_modules
+.vercel
+.env*
