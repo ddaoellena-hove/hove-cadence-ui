@@ -15,6 +15,7 @@ export * from './DataVisualization';
 export * from './DatePicker';
 export * from './Icons';
 export * from './Indicator';
+export * from './Pagination';
 export * from './NavigationDropdown';
 export * from './PrimaryButton';
 export * from './RadioButton';
