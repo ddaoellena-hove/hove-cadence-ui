@@ -12,6 +12,7 @@ export * from './Header';
 export * from './Link';
 export * from './Modal';
 export * from './Checkbox';
+export * from './DataTable';
 export * from './DataVisualization';
 export * from './DatePicker';
 export * from './Icons';
