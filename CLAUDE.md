@@ -35,5 +35,5 @@ React 19 · TypeScript ~6 (strict) · Vite 8 · Storybook 10 (`@storybook/react-
 ## Pièges connus
 - `npm install` exige `--legacy-peer-deps` (conflit préexistant sur `@storybook/addon-a11y`).
 - `@untitledui/icons` doit rester externe au bundle (configuré dans `vite.config.lib.ts`).
-- Double lockfile : npm en local (`package-lock.json`) mais `vercel.json` utilise `pnpm` et `pnpm-lock.yaml` est périmé.
-- L'intégration Git Vercel est actuellement déconnectée : un push ne déclenche aucun déploiement tant qu'elle n'est pas reconnectée.
+- Double lockfile : npm en local (`package-lock.json`) mais `vercel.json` utilise `pnpm`. ⚠️ Toute modif de dépendance dans `package.json` doit aussi être reportée dans `pnpm-lock.yaml` (`pnpm install`), sinon le déploiement Vercel échoue (lockfile figé).
+- L'intégration Git Vercel est connectée : chaque push sur une branche avec PR déclenche un déploiement preview (Storybook).
