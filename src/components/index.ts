@@ -15,6 +15,7 @@ export * from './Checkbox';
 export * from './DataTable';
 export * from './DataVisualization';
 export * from './DatePicker';
+export * from './DateRangePicker';
 export * from './Icons';
 export * from './Indicator';
 export * from './KpiCard';

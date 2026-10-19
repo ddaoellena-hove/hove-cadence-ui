@@ -1,0 +1,172 @@
+/* ── DateRangePicker ─────────────────────────────────────────────────────── */
+/* Déclencheur aligné sur DatePicker ; la grille des mois vient de
+   calendar-month.css (CalendarMonth). */
+.date-range-picker {
+  display: inline-block;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  position: relative;
+}
+
+.date-range-picker--disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ── Label (style + gap identiques à TextInput) ──────────────────────────── */
+.date-range-picker__label {
+  color: var(--cadence-color-label, #1a3e45);
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: normal;
+  padding: 0 0 10px 8px;
+}
+
+/* ── Déclencheur ─────────────────────────────────────────────────────────── */
+.date-range-picker__trigger {
+  align-items: center;
+  background-color: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-lg, 10px);
+  box-shadow: var(--cadence-shadow-sm, 0px 1px 3px rgba(0, 0, 0, 0.06), 0px 1px 2px rgba(0, 0, 0, 0.04));
+  box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  height: 40px;
+  justify-content: space-between;
+  min-width: 260px;
+  padding: 0 20px;
+  transition: box-shadow 120ms ease, border-color 120ms ease;
+}
+
+.date-range-picker__trigger:hover:not(:disabled) {
+  box-shadow: var(--cadence-shadow-md, 0px 0px 12px rgba(0, 0, 0, 0.08), 0px 0px 2px rgba(0, 0, 0, 0.25));
+}
+
+.date-range-picker__trigger:focus-visible {
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+  outline: none;
+}
+
+.date-range-picker__trigger--open {
+  border-color: var(--cadence-color-label, #1a3e45);
+}
+
+.date-range-picker__trigger-text {
+  color: var(--cadence-color-primary, #002830);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.date-range-picker__trigger-text--placeholder {
+  color: var(--cadence-color-placeholder, #737373);
+  font-weight: 400;
+}
+
+.date-range-picker__icon {
+  color: var(--cadence-color-icon-muted, #69797d);
+  display: flex;
+  flex-shrink: 0;
+}
+
+/* ── Popover : préréglages | mois + pied ─────────────────────────────────── */
+.date-range-picker__popover {
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-xl, 12px);
+  box-shadow: var(--cadence-shadow-lg, 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1));
+  display: flex;
+  left: 0;
+  position: absolute;
+  top: calc(100% + 6px);
+  z-index: var(--cadence-z-popover, 100);
+}
+
+.date-range-picker__presets {
+  border-right: 1px solid var(--cadence-color-divider, #f0f0f0);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  list-style: none;
+  margin: 0;
+  min-width: 160px;
+  padding: 16px 8px;
+}
+
+.date-range-picker__preset {
+  background: transparent;
+  border: none;
+  border-radius: var(--cadence-radius-sm, 6px);
+  color: var(--cadence-color-primary, #002830);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 12px;
+  text-align: left;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.date-range-picker__preset:hover {
+  background: var(--cadence-color-surface-alt, #eef1f4);
+}
+
+.date-range-picker__preset:focus-visible {
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+  outline: none;
+}
+
+.date-range-picker__preset--active {
+  background: var(--cadence-color-surface-alt, #eef1f4);
+  font-weight: 600;
+}
+
+.date-range-picker__main {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.date-range-picker__months {
+  display: flex;
+  gap: 24px;
+}
+
+.date-range-picker__months .calendar-month {
+  width: 248px;
+}
+
+/* ── Pied : état de la sélection + actions ───────────────────────────────── */
+.date-range-picker__footer {
+  align-items: center;
+  border-top: 1px solid var(--cadence-color-divider, #f0f0f0);
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 12px;
+}
+
+.date-range-picker__status {
+  color: var(--cadence-color-label, #1a3e45);
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  gap: 2px;
+}
+
+.date-range-picker__hint {
+  color: var(--cadence-color-icon-muted, #69797d);
+}
+
+.date-range-picker__actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 8px;
+}

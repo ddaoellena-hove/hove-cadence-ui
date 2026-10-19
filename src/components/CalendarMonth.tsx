@@ -33,6 +33,8 @@ export interface CalendarMonthProps {
   onKeyDown: (e: KeyboardEvent<HTMLButtonElement>, date: Date) => void;
   /** Survol d'un jour (aperçu de plage). */
   onHoverDay?: (date: Date | null) => void;
+  /** Affiche les jours des mois voisins. Défaut true (false à deux mois : pas de doublon). */
+  showOutsideDays?: boolean;
 }
 
 const NavIcon = ({ direction }: { direction: "prev" | "next" }) => (
@@ -58,6 +60,7 @@ export const CalendarMonth = ({
   onSelect,
   onKeyDown,
   onHoverDay,
+  showOutsideDays = true,
 }: CalendarMonthProps) => {
   const weeks = buildWeeks(year, month);
 
@@ -107,8 +110,11 @@ export const CalendarMonth = ({
           {weeks.map((week, wi) => (
             <div key={wi} className="date-picker__week">
               {week.map((date) => {
-                const state = getDayState(date);
                 const outside = date.getMonth() !== month;
+                if (outside && !showOutsideDays) {
+                  return <span key={dayKey(date)} className="date-picker__day date-picker__day--empty" />;
+                }
+                const state = getDayState(date);
                 const isRangeEdge = state.rangeStart || state.rangeEnd;
                 const selected = Boolean(state.selected || isRangeEdge);
                 const focusable = focusedDate !== null && isSameDay(date, focusedDate);
