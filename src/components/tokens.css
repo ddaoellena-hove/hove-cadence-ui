@@ -20,6 +20,12 @@
   /* ── Couleurs — états ──────────────────────────────────────────────────── */
   --cadence-color-danger: #da1e28;         /* Actions destructives, erreurs */
   --cadence-color-success: #24a148;        /* Confirmations, états valides */
+  --cadence-color-info: #0f62fe;           /* Accent « information » d'AlertToast (barre, icône, progression) */
+  --cadence-color-warning: #f1c21b;        /* Accent « avertissement » d'AlertToast — ⚠️ 1,7:1 sur blanc : jamais en couleur de texte */
+
+  /* ── Couleurs — accent interactif (sélection) ──────────────────────────── */
+  --cadence-color-accent: #1b6cff;         /* Élément actif / sélectionné : Sidebar, options de menu, SecondaryButton rempli */
+  --cadence-color-accent-subtle: #f0f6ff;  /* Fond de survol d'un élément actif (Sidebar) */
 
   /* ── Couleurs — surfaces & bordures ────────────────────────────────────── */
   --cadence-color-white: #ffffff;          /* Surfaces de premier plan */
@@ -39,4 +45,59 @@
   --cadence-radius-md: 8px;    /* Contenus internes : body de TableCard */
   --cadence-radius-lg: 10px;   /* Champs et wrappers : inputs, cards */
   --cadence-radius-xl: 12px;   /* Conteneurs : modale, counter-input */
+
+  /* ── Statuts (Indicator) ───────────────────────────────────────────────── */
+  /* Paires texte/fond des 8 variantes d'Indicator. Dans du code applicatif,
+     un statut passe toujours par ces tokens, jamais par un hex. */
+  --cadence-status-active-fg: #007a65;     /* En cours — texte et picto (teal) */
+  --cadence-status-active-bg: #e0f4f1;     /* En cours — fond */
+  --cadence-status-upcoming-fg: #6d28d9;   /* À venir — texte et picto (violet) */
+  --cadence-status-upcoming-bg: #ede9fe;   /* À venir — fond */
+  --cadence-status-completed-fg: #15803d;  /* Passée / terminée — texte et picto (vert) */
+  --cadence-status-completed-bg: #dcfce7;  /* Passée / terminée — fond */
+  --cadence-status-draft-fg: #475569;      /* Brouillon — texte et picto (ardoise) */
+  --cadence-status-draft-bg: var(--cadence-color-surface-alt, #eef1f4); /* Brouillon — fond (suit la surface alternative) */
+  --cadence-status-warning-fg: #c2410c;    /* Ralenti / avertissement — texte et picto (orange) */
+  --cadence-status-warning-bg: #fff7ed;    /* Ralenti / avertissement — fond */
+  --cadence-status-info-fg: #1d4ed8;       /* Information — texte et picto (bleu) */
+  --cadence-status-info-bg: #eff6ff;       /* Information — fond */
+  --cadence-status-critical-fg: #b91c1c;   /* Critique — texte et picto (rouge) */
+  --cadence-status-critical-bg: #fee2e2;   /* Critique — fond */
+  --cadence-status-nominal-fg: #166534;    /* Normal / RAS — texte et picto (vert foncé) */
+  --cadence-status-nominal-bg: #f0fdf4;    /* Normal / RAS — fond */
+
+  /* ── Thèmes produits ───────────────────────────────────────────────────── */
+  --cadence-product-datahub: #004650;         /* Fond de la Sidebar — Datahub (pétrole) */
+  --cadence-product-traffic-report: #2f2f3b;  /* Fond de la Sidebar — Traffic Report (ardoise) */
+  --cadence-product-insights: #3b2f2f;        /* Fond de la Sidebar — Insights (brun) */
+
+  /* ── Élévation ─────────────────────────────────────────────────────────── */
+  /* Ombres portées partagées. Les reliefs internes (inset) des boutons, du
+     Toggle et du CounterInput restent propres à chaque composant. */
+  /* Champs au repos (TextInput, TextArea, Dropdown, Autocomplete, CounterInput) */
+  --cadence-shadow-sm: 0px 1px 3px rgba(0, 0, 0, 0.06), 0px 1px 2px rgba(0, 0, 0, 0.04);
+  /* Champs au survol */
+  --cadence-shadow-md: 0px 0px 12px rgba(0, 0, 0, 0.08), 0px 0px 2px rgba(0, 0, 0, 0.25);
+  /* Menus déroulants (Dropdown, Autocomplete) */
+  --cadence-shadow-lg: 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  /* Dialogues au-dessus d'un voile (Modal) */
+  --cadence-shadow-overlay: 0px 20px 60px rgba(0, 0, 0, 0.2), 0px 4px 16px rgba(0, 0, 0, 0.1);
+
+  /* ── Focus ─────────────────────────────────────────────────────────────── */
+  /* Anneau de focus unique PROPOSÉ (phase 3, docs/proposals/tokens-v2.md).
+     Pas encore appliqué : les composants gardent leurs styles :focus-visible
+     actuels jusqu'à validation. */
+  /* Couleur de l'anneau — 11,6:1 sur blanc, 10,2:1 sur --cadence-color-surface-alt */
+  --cadence-focus-color: #1a3e45;
+  /* Anneau box-shadow : liseré blanc de 2px puis anneau plein de 2px (visible aussi sur fond sombre) */
+  --cadence-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45;
+
+  /* ── Z-index ───────────────────────────────────────────────────────────── */
+  /* Couches globales. Les valeurs locales 0/1/2 (empilement interne d'un
+     composant) restent en dur. */
+  --cadence-z-sticky: 100;     /* Éléments fixes de l'app (Sidebar, Header — recette 1) */
+  --cadence-z-popover: 100;    /* Popovers et bulles ancrés : DatePicker, tooltips, DataVisualization */
+  --cadence-z-dropdown: 200;   /* Menus déroulants (Dropdown, Autocomplete) */
+  --cadence-z-modal: 1000;     /* Voile et dialogue de Modal */
+  --cadence-z-toast: 1100;     /* Toasts en overlay, au-dessus des modales (recette 2) */
 }

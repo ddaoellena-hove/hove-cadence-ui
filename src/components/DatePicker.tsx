@@ -31,21 +31,27 @@ export interface DatePickerProps {
   onSegmentChange?: (value: string) => void;
 }
 
-const WEEKDAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+// Semaine française : commence le lundi
+const WEEKDAYS = ["Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di"];
 const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  "janvier",
+  "février",
+  "mars",
+  "avril",
+  "mai",
+  "juin",
+  "juillet",
+  "août",
+  "septembre",
+  "octobre",
+  "novembre",
+  "décembre",
 ];
+
+/** Majuscule initiale pour l'affichage (« janvier » → « Janvier »). */
+function capitalize(text: string): string {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
 
 function isSameDay(a: Date, b: Date): boolean {
   return (
@@ -59,20 +65,22 @@ function isToday(date: Date): boolean {
   return isSameDay(date, new Date());
 }
 
+/** Format français : JJ/MM/AAAA (+ HH:mm si withTime). */
 function formatDate(date: Date, withTime = false): string {
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
   const dd = String(date.getDate()).padStart(2, "0");
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
   const yyyy = date.getFullYear();
   if (withTime) {
     const hh = String(date.getHours()).padStart(2, "0");
     const min = String(date.getMinutes()).padStart(2, "0");
-    return `${mm}/${dd}/${yyyy} ${hh}:${min}`;
+    return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
   }
-  return `${mm}/${dd}/${yyyy}`;
+  return `${dd}/${mm}/${yyyy}`;
 }
 
 function buildWeeks(year: number, month: number): (Date | null)[][] {
-  const firstDay = new Date(year, month, 1).getDay();
+  // getDay() renvoie 0 pour dimanche : on décale pour une semaine qui commence le lundi
+  const firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const cells: (Date | null)[] = [];
 
@@ -120,7 +128,7 @@ function InternalSegmented({
   }, [valueProp, options]);
 
   return (
-    <div className="dp-segmented" role="group" aria-label="Tab group">
+    <div className="dp-segmented" role="group" aria-label="Groupe d'onglets">
       <span
         className="dp-segmented__pill"
         style={{ left: pillStyle.left, width: pillStyle.width }}
@@ -152,7 +160,7 @@ export const DatePicker = ({
   value = null,
   onChange,
   label,
-  placeholder = "MM/DD/YYYY",
+  placeholder,
   disabled = false,
   minDate,
   maxDate,
@@ -163,6 +171,8 @@ export const DatePicker = ({
   onSegmentChange,
 }: DatePickerProps) => {
   const today = new Date();
+  const resolvedPlaceholder =
+    placeholder ?? (withTime ? "JJ/MM/AAAA HH:mm" : "JJ/MM/AAAA");
   const [open, setOpen] = useState(false);
   const [viewYear, setViewYear] = useState(
     value ? value.getFullYear() : today.getFullYear(),
@@ -278,7 +288,7 @@ export const DatePicker = ({
         <span
           className={`date-picker__trigger-text${!displayValue ? " date-picker__trigger-text--placeholder" : ""}`}
         >
-          {displayValue ? formatDate(displayValue, withTime) : placeholder}
+          {displayValue ? formatDate(displayValue, withTime) : resolvedPlaceholder}
         </span>
         <svg
           className="date-picker__icon"
@@ -312,7 +322,7 @@ export const DatePicker = ({
         <div
           className="date-picker__popover"
           role="dialog"
-          aria-label="Calendar"
+          aria-label="Calendrier"
         >
           {/* ── Segmented control (optional) ── */}
           {segmentedOptions &&
@@ -334,7 +344,7 @@ export const DatePicker = ({
               type="button"
               className="date-picker__nav-btn"
               onClick={handlePrevMonth}
-              aria-label="Previous month"
+              aria-label="Mois précédent"
             >
               <svg
                 width="16"
@@ -354,13 +364,13 @@ export const DatePicker = ({
               </svg>
             </button>
             <span className="date-picker__month-label">
-              {MONTHS[viewMonth]} {viewYear}
+              {capitalize(MONTHS[viewMonth])} {viewYear}
             </span>
             <button
               type="button"
               className="date-picker__nav-btn"
               onClick={handleNextMonth}
-              aria-label="Next month"
+              aria-label="Mois suivant"
             >
               <svg
                 width="16"
@@ -450,7 +460,7 @@ export const DatePicker = ({
                     type="button"
                     className="date-picker__time-arrow"
                     onClick={() => cycleHour(1)}
-                    aria-label="Increase hour"
+                    aria-label="Augmenter l'heure"
                   >
                     ▲
                   </button>
@@ -461,7 +471,7 @@ export const DatePicker = ({
                     type="button"
                     className="date-picker__time-arrow"
                     onClick={() => cycleHour(-1)}
-                    aria-label="Decrease hour"
+                    aria-label="Diminuer l'heure"
                   >
                     ▼
                   </button>
@@ -472,7 +482,7 @@ export const DatePicker = ({
                     type="button"
                     className="date-picker__time-arrow"
                     onClick={() => cycleMinute(15)}
-                    aria-label="Increase minute"
+                    aria-label="Augmenter les minutes"
                   >
                     ▲
                   </button>
@@ -483,7 +493,7 @@ export const DatePicker = ({
                     type="button"
                     className="date-picker__time-arrow"
                     onClick={() => cycleMinute(-15)}
-                    aria-label="Decrease minute"
+                    aria-label="Diminuer les minutes"
                   >
                     ▼
                   </button>

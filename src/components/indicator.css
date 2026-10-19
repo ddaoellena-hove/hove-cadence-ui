@@ -25,48 +25,48 @@
 
 /* ── active — teal (en cours) ────────────────────────────────────────────── */
 .indicator--active {
-  background-color: #e0f4f1;
-  color: #007a65;
+  background-color: var(--cadence-status-active-bg, #e0f4f1);
+  color: var(--cadence-status-active-fg, #007a65);
 }
 
 /* ── upcoming — violet (à venir) ─────────────────────────────────────────── */
 .indicator--upcoming {
-  background-color: #ede9fe;
-  color: #6d28d9;
+  background-color: var(--cadence-status-upcoming-bg, #ede9fe);
+  color: var(--cadence-status-upcoming-fg, #6d28d9);
 }
 
 /* ── completed — vert (passée) ───────────────────────────────────────────── */
 .indicator--completed {
-  background-color: #dcfce7;
-  color: #15803d;
+  background-color: var(--cadence-status-completed-bg, #dcfce7);
+  color: var(--cadence-status-completed-fg, #15803d);
 }
 
 /* ── draft — gris (brouillon) ────────────────────────────────────────────── */
 .indicator--draft {
-  background-color: var(--cadence-color-surface-alt, #eef1f4);
-  color: #475569;
+  background-color: var(--cadence-status-draft-bg, #eef1f4);
+  color: var(--cadence-status-draft-fg, #475569);
 }
 
 /* ── warning — orange (ralenti) ──────────────────────────────────────────── */
 .indicator--warning {
-  background-color: #fff7ed;
-  color: #c2410c;
+  background-color: var(--cadence-status-warning-bg, #fff7ed);
+  color: var(--cadence-status-warning-fg, #c2410c);
 }
 
 /* ── info — bleu (information) ───────────────────────────────────────────── */
 .indicator--info {
-  background-color: #eff6ff;
-  color: #1d4ed8;
+  background-color: var(--cadence-status-info-bg, #eff6ff);
+  color: var(--cadence-status-info-fg, #1d4ed8);
 }
 
 /* ── critical — rouge (critique) ─────────────────────────────────────────── */
 .indicator--critical {
-  background-color: #fee2e2;
-  color: #b91c1c;
+  background-color: var(--cadence-status-critical-bg, #fee2e2);
+  color: var(--cadence-status-critical-fg, #b91c1c);
 }
 
 /* ── nominal — vert doux (normal) ────────────────────────────────────────── */
 .indicator--nominal {
-  background-color: #f0fdf4;
-  color: #166534;
+  background-color: var(--cadence-status-nominal-bg, #f0fdf4);
+  color: var(--cadence-status-nominal-fg, #166534);
 }

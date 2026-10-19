@@ -1,0 +1,183 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import { useEffect, useRef, useState } from "react";
+import { Indicator } from "../components/Indicator";
+
+<Meta title="Foundation/Tokens" />
+
+{/* Toutes les valeurs affichées sont lues dans les variables CSS de tokens.css
+    (getComputedStyle) : aucune valeur n'est recopiée ici. */}
+
+export const useTokenValue = (name) => {
+  const ref = useRef(null);
+  const [value, setValue] = useState("");
+  useEffect(() => {
+    const el = ref.current ?? document.documentElement;
+    setValue(getComputedStyle(el).getPropertyValue(name).trim());
+  }, [name]);
+  return [ref, value];
+};
+
+export const TokenValue = ({ name }) => {
+  const [ref, value] = useTokenValue(name);
+  return (
+    <span ref={ref} className="tk-value">
+      {value || "—"}
+    </span>
+  );
+};
+
+export const TokenName = ({ name }) => <code className="tk-name">{name}</code>;
+
+export const StatusRow = ({ variant, usage }) => (
+  <tr>
+    <td><Indicator variant={variant} /></td>
+    <td>
+      <div className="tk-pair">
+        <span className="tk-chip" style={{ background: `var(--cadence-status-${variant}-fg)` }} />
+        <div><TokenName name={`--cadence-status-${variant}-fg`} /><TokenValue name={`--cadence-status-${variant}-fg`} /></div>
+      </div>
+    </td>
+    <td>
+      <div className="tk-pair">
+        <span className="tk-chip" style={{ background: `var(--cadence-status-${variant}-bg)` }} />
+        <div><TokenName name={`--cadence-status-${variant}-bg`} /><TokenValue name={`--cadence-status-${variant}-bg`} /></div>
+      </div>
+    </td>
+    <td>{usage}</td>
+  </tr>
+);
+
+export const ColorCard = ({ name, usage, dark }) => (
+  <div className="tk-card">
+    <div className="tk-swatch" style={{ background: `var(${name})` }}>
+      {dark && <span className="tk-swatch__label">Aa</span>}
+    </div>
+    <TokenName name={name} />
+    <TokenValue name={name} />
+    <span className="tk-usage">{usage}</span>
+  </div>
+);
+
+export const ShadowCard = ({ name, usage }) => (
+  <div className="tk-card">
+    <div className="tk-elevation" style={{ boxShadow: `var(${name})` }} />
+    <TokenName name={name} />
+    <span className="tk-usage">{usage}</span>
+    <TokenValue name={name} />
+  </div>
+);
+
+export const ZRow = ({ name, usage }) => (
+  <tr>
+    <td><TokenName name={name} /></td>
+    <td><TokenValue name={name} /></td>
+    <td>{usage}</td>
+  </tr>
+);
+
+<style>{`
+  .tk { font-family: var(--cadence-font-sans); max-width: 960px; color: var(--cadence-color-primary); }
+  .tk h1 { font-family: var(--cadence-font-display); font-size: 40px; font-weight: 500; margin: 0 0 8px; }
+  .tk h2 { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--cadence-color-text-muted); border-bottom: 1px solid var(--cadence-color-divider); padding-bottom: 8px; margin: 48px 0 20px; }
+  .tk p { font-size: 14px; line-height: 1.6; color: var(--cadence-color-label); margin: 0 0 12px; }
+  .tk table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  .tk th { text-align: left; padding: 8px 12px; background: var(--cadence-color-surface-alt); font-weight: 600; border: 1px solid var(--cadence-color-border); }
+  .tk td { padding: 8px 12px; border: 1px solid var(--cadence-color-border); vertical-align: middle; }
+  .tk-name { font-family: var(--cadence-font-mono); font-size: 11px; display: block; }
+  .tk-value { font-family: var(--cadence-font-mono); font-size: 11px; color: var(--cadence-color-icon-muted); display: block; word-break: break-word; }
+  .tk-usage { font-size: 12px; color: var(--cadence-color-label); line-height: 1.4; }
+  .tk-pair { display: flex; align-items: center; gap: 8px; }
+  .tk-chip { width: 20px; height: 20px; border-radius: var(--cadence-radius-sm); border: 1px solid var(--cadence-color-border); flex-shrink: 0; }
+  .tk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 24px; }
+  .tk-card { display: flex; flex-direction: column; gap: 6px; }
+  .tk-swatch { height: 96px; border-radius: var(--cadence-radius-md); border: 1px solid var(--cadence-color-border); display: flex; align-items: flex-end; padding: 10px 12px; }
+  .tk-swatch__label { color: var(--cadence-color-white); font-weight: 600; font-size: 18px; }
+  .tk-elevation { height: 96px; border-radius: var(--cadence-radius-lg); background: var(--cadence-color-white); margin: 12px 12px 16px; }
+  .tk-shadows { background: var(--cadence-color-surface-alt); border-radius: var(--cadence-radius-xl); padding: 24px; }
+`}</style>
+
+<div className="tk">
+
+# Tokens
+
+Statuts, accents, thèmes produits, élévations, focus et couches. Les tokens de couleur de base (encre, surfaces, bordures) sont sur la page [Couleurs](?path=/docs/foundation-couleurs--docs).
+
+<p>Chaque valeur est lue en direct dans <code>tokens.css</code> : si un token change, cette page suit.</p>
+
+## Statuts
+
+<p>Les 8 variantes d'<code>Indicator</code>. Dans du code applicatif, un statut passe toujours par <code>--cadence-status-*</code>, jamais par un hex.</p>
+
+<table>
+  <thead><tr><th>Indicator</th><th>Texte et picto (fg)</th><th>Fond (bg)</th><th>Sens</th></tr></thead>
+  <tbody>
+    <StatusRow variant="active" usage="En cours" />
+    <StatusRow variant="upcoming" usage="À venir" />
+    <StatusRow variant="completed" usage="Passée / terminée" />
+    <StatusRow variant="draft" usage="Brouillon" />
+    <StatusRow variant="warning" usage="Ralenti / avertissement" />
+    <StatusRow variant="info" usage="Information" />
+    <StatusRow variant="critical" usage="Critique" />
+    <StatusRow variant="nominal" usage="Normal / RAS" />
+  </tbody>
+</table>
+
+## Accents et toasts
+
+<div className="tk-grid">
+  <ColorCard name="--cadence-color-accent" usage="Élément actif ou sélectionné : Sidebar, options de menu, SecondaryButton rempli" dark />
+  <ColorCard name="--cadence-color-accent-subtle" usage="Survol d'un élément actif (Sidebar)" />
+  <ColorCard name="--cadence-color-info" usage="Accent « information » d'AlertToast" dark />
+  <ColorCard name="--cadence-color-warning" usage="Accent « avertissement » d'AlertToast — jamais en couleur de texte" />
+</div>
+
+## Thèmes produits
+
+<p>Fond de la <code>Sidebar</code> selon la prop <code>product</code>.</p>
+
+<div className="tk-grid">
+  <ColorCard name="--cadence-product-datahub" usage={'Datahub — product="datahub"'} dark />
+  <ColorCard name="--cadence-product-traffic-report" usage={'Traffic Report — product="traffic-report"'} dark />
+  <ColorCard name="--cadence-product-insights" usage={'Insights — product="insights"'} dark />
+</div>
+
+## Élévation
+
+<div className="tk-shadows">
+  <div className="tk-grid">
+    <ShadowCard name="--cadence-shadow-sm" usage="Champs au repos" />
+    <ShadowCard name="--cadence-shadow-md" usage="Champs au survol" />
+    <ShadowCard name="--cadence-shadow-lg" usage="Menus déroulants" />
+    <ShadowCard name="--cadence-shadow-overlay" usage="Modal" />
+  </div>
+</div>
+
+## Focus
+
+<p>Anneau de focus unique <strong>proposé</strong> — pas encore appliqué aux composants (voir <code>docs/proposals/tokens-v2.md</code>).</p>
+
+<div className="tk-shadows">
+  <div className="tk-grid">
+    <div className="tk-card">
+      <div className="tk-elevation" style={{ boxShadow: "var(--cadence-focus-ring)" }} />
+      <TokenName name="--cadence-focus-ring" />
+      <TokenValue name="--cadence-focus-ring" />
+    </div>
+    <ColorCard name="--cadence-focus-color" usage="Couleur de l'anneau" dark />
+  </div>
+</div>
+
+## Couches (z-index)
+
+<table>
+  <thead><tr><th>Token</th><th>Valeur</th><th>Usage</th></tr></thead>
+  <tbody>
+    <ZRow name="--cadence-z-sticky" usage="Éléments fixes de l'app (Sidebar, Header)" />
+    <ZRow name="--cadence-z-popover" usage="Popovers et bulles ancrés (DatePicker, tooltips, DataVisualization)" />
+    <ZRow name="--cadence-z-dropdown" usage="Menus déroulants (Dropdown, Autocomplete)" />
+    <ZRow name="--cadence-z-modal" usage="Voile et dialogue de Modal" />
+    <ZRow name="--cadence-z-toast" usage="Toasts en overlay, au-dessus des modales" />
+  </tbody>
+</table>
+
+</div>

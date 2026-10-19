@@ -27,12 +27,12 @@ import { Meta } from "@storybook/addon-docs/blocks";
     <tr><th>Situation</th><th>Composant</th></tr>
   </thead>
   <tbody>
-    <tr><td>Confirmation d'une action (sauvegarde, export réussi)</td><td><code>AlertToast</code> variant <code>success</code></td></tr>
-    <tr><td>Erreur système ou action échouée</td><td><code>AlertToast</code> variant <code>error</code></td></tr>
-    <tr><td>Avertissement non bloquant</td><td><code>AlertToast</code> variant <code>warning</code></td></tr>
+    <tr><td>Confirmation d'une action (sauvegarde, export réussi)</td><td><code>AlertToast</code> type <code>success</code></td></tr>
+    <tr><td>Erreur système ou action échouée</td><td><code>AlertToast</code> type <code>error</code></td></tr>
+    <tr><td>Avertissement non bloquant</td><td><code>AlertToast</code> type <code>warning</code></td></tr>
     <tr><td>Information contextuelle sur un élément UI</td><td><code>Tooltip</code> via <code>TooltipTrigger</code></td></tr>
     <tr><td>Explication d'un bouton désactivé</td><td><code>Tooltip</code> sur le bouton <code>disabled</code></td></tr>
-    <tr><td>Erreur de validation d'un champ</td><td><code>TextInput state="error"</code> + prop <code>helper</code></td></tr>
+    <tr><td>Erreur de validation d'un champ</td><td><code>TextInput state="error"</code> + prop <code>helperText</code></td></tr>
   </tbody>
 </table>
 
@@ -41,28 +41,32 @@ import { Meta } from "@storybook/addon-docs/blocks";
 ```tsx
 // ✅ Usage — afficher en overlay, coin supérieur droit
 <AlertToast
-  variant="success"
+  type="success"
   title="Scénario créé"
   description="Le scénario a été enregistré avec succès."
-  onClose={() => setVisible(false)}
+  dismissible
+  onDismiss={() => setVisible(false)}
 />
 
 // ✅ Durée recommandée : auto-dismiss après 4s pour success/info,
-//    persistant (onClose manuel) pour error/warning
+//    persistant (onDismiss manuel) pour error/warning
 ```
 
 <div className="g h2">Tooltip</div>
 
 ```tsx
 // ✅ Informer sur un élément sans surcharger l'interface
-<TooltipTrigger tooltip={<Tooltip label="Exporter en CSV" arrowPosition="bottom" />}>
+//    TooltipTrigger rend sa propre icône ⓘ : on l'accole à l'élément
+<div style={{ display: "flex", alignItems: "center", gap: 8 }}>
   <SecondaryButton label="Exporter" />
-</TooltipTrigger>
+  <TooltipTrigger label="Exporter en CSV" position="top" />
+</div>
 
 // ✅ Expliquer un bouton désactivé
-<TooltipTrigger tooltip={<Tooltip label="Sélectionne un réseau d'abord" arrowPosition="bottom" />}>
+<div style={{ display: "flex", alignItems: "center", gap: 8 }}>
   <PrimaryButton label="Analyser" disabled />
-</TooltipTrigger>
+  <TooltipTrigger label="Sélectionne un réseau d'abord" position="top" />
+</div>
 ```
 
 <div className="g h2">Règles</div>

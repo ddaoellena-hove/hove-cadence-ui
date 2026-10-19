@@ -54,7 +54,7 @@ import { Meta, Canvas } from "@storybook/addon-docs/blocks";
 
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Un seul <code>PrimaryButton</code> par zone d'action — il représente l'intention principale.</span></div>
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Placer le bouton principal à droite quand il est aligné avec un bouton secondaire.</span></div>
-<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Utiliser le variant <code>danger</code> de <code>Link</code> pour les actions destructives (suppression).</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Utiliser le variant <code>destructive</code> de <code>Link</code> pour les actions destructives (suppression).</span></div>
 <div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas utiliser <code>PrimaryButton</code> pour des actions de navigation — préférer <code>Link</code>.</span></div>
 <div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas empiler deux <code>PrimaryButton</code> côte à côte.</span></div>
 <div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas désactiver un bouton sans expliquer pourquoi via un <code>Tooltip</code>.</span></div>
@@ -81,13 +81,16 @@ Le `PrimaryButton` est utilisé comme **action principale de la page** — typiq
 // ✅ Action principale dans un dashboard
 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
   <div style={{ display: "flex", gap: 4 }}>
-    <Tab label="En cours" active />
+    <Tab label="En cours" variant="active" />
     <Tab label="À venir" />
     <Tab label="Passées" />
     <Tab label="Brouillon" />
   </div>
   <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-    <Toggle label="Affichage cartographique" />
+    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <Toggle state={mapView ? "active" : "default"} onChange={setMapView} />
+      <span>Affichage cartographique</span>
+    </div>
     <PrimaryButton label="Créer un scénario de mobilité" onClick={onCreate} />
   </div>
 </div>

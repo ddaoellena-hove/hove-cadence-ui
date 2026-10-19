@@ -49,9 +49,9 @@
 }
 
 /* ── Product themes ── */
-.sidebar--datahub        { background: #004650; }
-.sidebar--traffic-report { background: #2F2F3B; }
-.sidebar--insights       { background: #3B2F2F; }
+.sidebar--datahub        { background: var(--cadence-product-datahub, #004650); }
+.sidebar--traffic-report { background: var(--cadence-product-traffic-report, #2f2f3b); }
+.sidebar--insights       { background: var(--cadence-product-insights, #3b2f2f); }
 
 /* ── Header ── */
 .sidebar__header {
@@ -182,14 +182,14 @@
   bottom: 5px;
   width: 3.5px;
   border-radius: 2px;
-  background: #1b6cff;
+  background: var(--cadence-color-accent, #1b6cff);
 }
 .sidebar__section-btn--active:hover {
-  background: #f0f6ff;
+  background: var(--cadence-color-accent-subtle, #f0f6ff);
 }
 .sidebar__section-btn--active .sidebar__section-label,
 .sidebar__section-btn--active .sidebar__section-icon {
-  color: #1b6cff;
+  color: var(--cadence-color-accent, #1b6cff);
   opacity: 1;
 }
 
@@ -333,7 +333,7 @@
 /* ── Active sub-item ── */
 .sidebar__item--active {
   background: var(--cadence-color-white, #ffffff);
-  color: #1b6cff;
+  color: var(--cadence-color-accent, #1b6cff);
   font-weight: 600;
 }
 .sidebar__item--active::before {
@@ -344,11 +344,11 @@
   bottom: 5px;
   width: 3.5px;
   border-radius: 2px;
-  background: #1b6cff;
+  background: var(--cadence-color-accent, #1b6cff);
 }
 .sidebar__item--active:hover {
-  background: #f0f6ff;
-  color: #1b6cff;
+  background: var(--cadence-color-accent-subtle, #f0f6ff);
+  color: var(--cadence-color-accent, #1b6cff);
 }
 
 /* ── Footer ── */

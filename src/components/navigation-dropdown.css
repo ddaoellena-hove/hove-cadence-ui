@@ -10,7 +10,7 @@
   align-items: center;
   gap: 4px;
   padding: 8px 12px;
-  background: #fff;
+  background: var(--cadence-color-white, #fff);
   border: 1px solid var(--cadence-color-text-muted, #809397);
   border-radius: 8px;
   cursor: pointer;
@@ -33,7 +33,7 @@
 
 .navigation-dropdown-trigger:hover,
 .navigation-dropdown.open .navigation-dropdown-trigger {
-  background: #fff;
+  background: var(--cadence-color-white, #fff);
   color: var(--cadence-color-primary, #002830);
   box-shadow:
     0 0 2px 0 rgba(0, 0, 0, 0.25),
@@ -70,7 +70,7 @@
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
-  z-index: 1000;
+  z-index: 1000; /* ⚠️ niveau modale pour un menu : à aligner sur --cadence-z-dropdown (phase 3) */
   min-width: 180px;
   background: var(--cadence-color-white, #ffffff);
   border: 1px solid var(--cadence-color-border, #e5e5e5);
