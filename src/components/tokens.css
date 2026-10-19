@@ -39,4 +39,24 @@
   --cadence-radius-md: 8px;    /* Contenus internes : body de TableCard */
   --cadence-radius-lg: 10px;   /* Champs et wrappers : inputs, cards */
   --cadence-radius-xl: 12px;   /* Conteneurs : modale, counter-input */
+
+  /* ── Statuts (Indicator) ───────────────────────────────────────────────── */
+  /* Paires texte/fond des 8 variantes d'Indicator. Dans du code applicatif,
+     un statut passe toujours par ces tokens, jamais par un hex. */
+  --cadence-status-active-fg: #007a65;     /* En cours — texte et picto (teal) */
+  --cadence-status-active-bg: #e0f4f1;     /* En cours — fond */
+  --cadence-status-upcoming-fg: #6d28d9;   /* À venir — texte et picto (violet) */
+  --cadence-status-upcoming-bg: #ede9fe;   /* À venir — fond */
+  --cadence-status-completed-fg: #15803d;  /* Passée / terminée — texte et picto (vert) */
+  --cadence-status-completed-bg: #dcfce7;  /* Passée / terminée — fond */
+  --cadence-status-draft-fg: #475569;      /* Brouillon — texte et picto (ardoise) */
+  --cadence-status-draft-bg: var(--cadence-color-surface-alt, #eef1f4); /* Brouillon — fond (suit la surface alternative) */
+  --cadence-status-warning-fg: #c2410c;    /* Ralenti / avertissement — texte et picto (orange) */
+  --cadence-status-warning-bg: #fff7ed;    /* Ralenti / avertissement — fond */
+  --cadence-status-info-fg: #1d4ed8;       /* Information — texte et picto (bleu) */
+  --cadence-status-info-bg: #eff6ff;       /* Information — fond */
+  --cadence-status-critical-fg: #b91c1c;   /* Critique — texte et picto (rouge) */
+  --cadence-status-critical-bg: #fee2e2;   /* Critique — fond */
+  --cadence-status-nominal-fg: #166534;    /* Normal / RAS — texte et picto (vert foncé) */
+  --cadence-status-nominal-bg: #f0fdf4;    /* Normal / RAS — fond */
 }
