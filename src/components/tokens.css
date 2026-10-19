@@ -23,6 +23,10 @@
   --cadence-color-info: #0f62fe;           /* Accent « information » d'AlertToast (barre, icône, progression) */
   --cadence-color-warning: #f1c21b;        /* Accent « avertissement » d'AlertToast — ⚠️ 1,7:1 sur blanc : jamais en couleur de texte */
 
+  /* ── Couleurs — accent interactif (sélection) ──────────────────────────── */
+  --cadence-color-accent: #1b6cff;         /* Élément actif / sélectionné : Sidebar, options de menu, SecondaryButton rempli */
+  --cadence-color-accent-subtle: #f0f6ff;  /* Fond de survol d'un élément actif (Sidebar) */
+
   /* ── Couleurs — surfaces & bordures ────────────────────────────────────── */
   --cadence-color-white: #ffffff;          /* Surfaces de premier plan */
   --cadence-color-surface-alt: #eef1f4;    /* Fonds de wrapper (TableCard, Badge) */
