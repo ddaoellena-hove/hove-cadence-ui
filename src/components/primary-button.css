@@ -50,13 +50,15 @@
 .primary-button .icons-instance {
   height: 16px !important;
   width: 16px !important;
+  /* Les icônes suivent currentColor — foncé par défaut (bouton outline) */
+  color: var(--cadence-color-primary, #002830);
 }
 
-/* White icons on filled (dark-background) buttons for left / right / only variants */
+/* Icônes blanches sur bouton rempli (fond foncé) — variantes left / right / only */
 .primary-button.outline-false.left .icons-instance,
 .primary-button.outline-false.right .icons-instance,
 .primary-button.outline-false.only .icons-instance {
-  filter: brightness(0) invert(1);
+  color: var(--cadence-color-white, #ffffff);
 }
 
 .primary-button .label-2 {

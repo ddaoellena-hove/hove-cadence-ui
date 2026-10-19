@@ -104,7 +104,7 @@ export const SecondaryButton = React.forwardRef<
       .join(" ");
 
     const iconEl = (
-      <Icons className="sb-icons-instance" icon={icon} iconMap="https://c.animaapp.com/moieyt2ccA1Ry9/img/icon-map-01-1_1.svg" />
+      <Icons className="sb-icons-instance" icon={icon} />
     );
 
     let content: React.ReactNode;
