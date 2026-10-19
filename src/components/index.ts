@@ -7,6 +7,7 @@ export * from './Avatar';
 export * from './Breadcrumbs';
 export * from './CounterInput';
 export * from './Dropdown';
+export * from './FilterBar';
 export * from './Header';
 export * from './Link';
 export * from './Modal';
