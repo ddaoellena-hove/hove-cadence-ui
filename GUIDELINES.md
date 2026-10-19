@@ -1011,6 +1011,7 @@ Clavier : ↑/↓ pour naviguer, Entrée pour sélectionner l'option surlignée,
 |---|---|---|---|
 | `state` | `"unchecked" \| "hover" \| "checked" \| "indeterminate" \| "disabled" \| "disabled-checked"` | `"unchecked"` | ⚠️ Pas de prop `checked` — piloter via `state`. |
 | `onChange` | `(nextChecked: boolean) => void` | — | Clic (sauf disabled) |
+| `aria-label` | `string` | — | Nom accessible. ⚠️ Obligatoire en pratique quand aucun texte n'accompagne la case (ligne de tableau, « Tout sélectionner ») |
 
 ### CounterInput
 
