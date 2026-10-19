@@ -98,7 +98,7 @@ export const WithDateAndTime: Story = {
           <label
             style={{ fontSize: "13px", fontWeight: 500, color: "#374151" }}
           >
-            Schedule date &amp; time
+            Date et heure de programmation
           </label>
           <DatePicker
             value={value}
@@ -116,13 +116,13 @@ export const WithDateAndTime: Story = {
                 margin: "8px 0 0",
               }}
             >
-              ✓ Scheduled for{" "}
-              {value.toLocaleDateString("en-US", {
-                month: "long",
+              ✓ Programmé le{" "}
+              {value.toLocaleDateString("fr-FR", {
                 day: "numeric",
+                month: "long",
                 year: "numeric",
               })}{" "}
-              at {String(value.getHours()).padStart(2, "0")}:
+              à {String(value.getHours()).padStart(2, "0")}:
               {String(value.getMinutes()).padStart(2, "0")}
             </p>
           )}
