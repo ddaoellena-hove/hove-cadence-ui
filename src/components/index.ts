@@ -17,6 +17,7 @@ export * from './DataVisualization';
 export * from './DatePicker';
 export * from './Icons';
 export * from './Indicator';
+export * from './KpiCard';
 export * from './Pagination';
 export * from './NavigationDropdown';
 export * from './PrimaryButton';
