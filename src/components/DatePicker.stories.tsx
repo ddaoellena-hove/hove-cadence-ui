@@ -38,7 +38,7 @@ const ControlledTemplate = (args: ComponentProps<typeof DatePicker>) => {
 export const Default: Story = {
   render: (args) => <ControlledTemplate {...args} />,
   args: {
-    placeholder: "MM/DD/YYYY",
+    placeholder: "JJ/MM/AAAA",
     disabled: false,
   },
 };
@@ -47,7 +47,7 @@ export const WithValue: Story = {
   render: (args) => <ControlledTemplate {...args} />,
   args: {
     value: new Date(2026, 4, 6),
-    placeholder: "MM/DD/YYYY",
+    placeholder: "JJ/MM/AAAA",
     disabled: false,
   },
 };
@@ -60,7 +60,7 @@ export const Disabled: Story = {
   ),
   args: {
     value: new Date(2026, 4, 6),
-    placeholder: "MM/DD/YYYY",
+    placeholder: "JJ/MM/AAAA",
     disabled: true,
   },
 };
@@ -68,7 +68,7 @@ export const Disabled: Story = {
 export const WithMinMax: Story = {
   render: (args) => <ControlledTemplate {...args} />,
   args: {
-    placeholder: "MM/DD/YYYY",
+    placeholder: "JJ/MM/AAAA",
     disabled: false,
     minDate: new Date(2026, 4, 5),
     maxDate: new Date(2026, 4, 20),
@@ -103,7 +103,7 @@ export const WithDateAndTime: Story = {
           <DatePicker
             value={value}
             onChange={setValue}
-            placeholder="MM/DD/YYYY HH:MM"
+            placeholder="JJ/MM/AAAA HH:mm"
             withTime
             labelConfirm="Valider"
           />
@@ -156,7 +156,7 @@ export const WithSegmentedControl: Story = {
         <DatePicker
           value={tab === "depart" ? depart : arrival}
           onChange={handleChange}
-          placeholder="MM/DD/YYYY HH:MM"
+          placeholder="JJ/MM/AAAA HH:mm"
           withTime
           labelConfirm="Valider"
           segmentedOptions={[
@@ -199,7 +199,7 @@ export const WithLabel: Story = {
   },
   args: {
     label: "Date de début",
-    placeholder: "MM/DD/YYYY",
+    placeholder: "JJ/MM/AAAA",
     disabled: false,
   },
 };
