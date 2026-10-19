@@ -24,7 +24,7 @@
   background-color: var(--cadence-color-white, #ffffff);
   border: 1px solid var(--cadence-color-border, #e5e5e5);
   border-radius: 10px;
-  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.06), 0px 1px 2px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--cadence-shadow-sm, 0px 1px 3px rgba(0, 0, 0, 0.06), 0px 1px 2px rgba(0, 0, 0, 0.04));
   cursor: text;
   display: flex;
   flex-wrap: wrap;
@@ -35,7 +35,7 @@
 }
 
 .autocomplete__field:hover {
-  box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.08), 0px 0px 2px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--cadence-shadow-md, 0px 0px 12px rgba(0, 0, 0, 0.08), 0px 0px 2px rgba(0, 0, 0, 0.25));
 }
 
 .autocomplete--open .autocomplete__field {
@@ -113,7 +113,7 @@
   background: var(--cadence-color-white, #ffffff);
   border: 1px solid var(--cadence-color-border, #e5e5e5);
   border-radius: 10px;
-  box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--cadence-shadow-lg, 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1));
 }
 
 /* Scrollbar fine et en flux (non-overlay) — WebKit/Chrome/Safari */

@@ -195,9 +195,7 @@
 
 .date-picker__trigger:hover:not(:disabled) {
   border-color: var(--cadence-color-border, #e5e5e5);
-  box-shadow:
-    0px 0px 12px rgba(0, 0, 0, 0.08),
-    0px 0px 2px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--cadence-shadow-md, 0px 0px 12px rgba(0, 0, 0, 0.08), 0px 0px 2px rgba(0, 0, 0, 0.25));
 }
 
 .date-picker__trigger--open {

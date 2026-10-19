@@ -70,4 +70,16 @@
   --cadence-product-datahub: #004650;         /* Fond de la Sidebar — Datahub (pétrole) */
   --cadence-product-traffic-report: #2f2f3b;  /* Fond de la Sidebar — Traffic Report (ardoise) */
   --cadence-product-insights: #3b2f2f;        /* Fond de la Sidebar — Insights (brun) */
+
+  /* ── Élévation ─────────────────────────────────────────────────────────── */
+  /* Ombres portées partagées. Les reliefs internes (inset) des boutons, du
+     Toggle et du CounterInput restent propres à chaque composant. */
+  /* Champs au repos (TextInput, TextArea, Dropdown, Autocomplete, CounterInput) */
+  --cadence-shadow-sm: 0px 1px 3px rgba(0, 0, 0, 0.06), 0px 1px 2px rgba(0, 0, 0, 0.04);
+  /* Champs au survol */
+  --cadence-shadow-md: 0px 0px 12px rgba(0, 0, 0, 0.08), 0px 0px 2px rgba(0, 0, 0, 0.25);
+  /* Menus déroulants (Dropdown, Autocomplete) */
+  --cadence-shadow-lg: 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  /* Dialogues au-dessus d'un voile (Modal) */
+  --cadence-shadow-overlay: 0px 20px 60px rgba(0, 0, 0, 0.2), 0px 4px 16px rgba(0, 0, 0, 0.1);
 }
