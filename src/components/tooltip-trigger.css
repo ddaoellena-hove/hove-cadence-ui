@@ -39,7 +39,7 @@
  */
 .tooltip-trigger__bubble {
   position: absolute;
-  z-index: 100;
+  z-index: var(--cadence-z-popover, 100);
   display: flex;
   align-items: center;
   justify-content: center;

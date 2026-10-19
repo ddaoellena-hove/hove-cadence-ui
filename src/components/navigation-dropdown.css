@@ -70,7 +70,7 @@
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
-  z-index: 1000;
+  z-index: 1000; /* ⚠️ niveau modale pour un menu : à aligner sur --cadence-z-dropdown (phase 3) */
   min-width: 180px;
   background: var(--cadence-color-white, #ffffff);
   border: 1px solid var(--cadence-color-border, #e5e5e5);

@@ -68,7 +68,7 @@
 .dv__tooltip {
   position: absolute;
   pointer-events: none;
-  z-index: 100;
+  z-index: var(--cadence-z-popover, 100);
   background: var(--cadence-color-white, #ffffff);
   border: 1px solid var(--cadence-color-border, #e5e5e5);
   border-radius: 8px;

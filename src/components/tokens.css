@@ -91,4 +91,13 @@
   --cadence-focus-color: #1a3e45;
   /* Anneau box-shadow : liseré blanc de 2px puis anneau plein de 2px (visible aussi sur fond sombre) */
   --cadence-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45;
+
+  /* ── Z-index ───────────────────────────────────────────────────────────── */
+  /* Couches globales. Les valeurs locales 0/1/2 (empilement interne d'un
+     composant) restent en dur. */
+  --cadence-z-sticky: 100;     /* Éléments fixes de l'app (Sidebar, Header — recette 1) */
+  --cadence-z-popover: 100;    /* Popovers et bulles ancrés : DatePicker, tooltips, DataVisualization */
+  --cadence-z-dropdown: 200;   /* Menus déroulants (Dropdown, Autocomplete) */
+  --cadence-z-modal: 1000;     /* Voile et dialogue de Modal */
+  --cadence-z-toast: 1100;     /* Toasts en overlay, au-dessus des modales (recette 2) */
 }

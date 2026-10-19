@@ -122,7 +122,7 @@
   top: calc(100% + 6px);
   transform: translateX(-50%);
   white-space: nowrap;
-  z-index: 100;
+  z-index: var(--cadence-z-popover, 100);
 }
 
 /* ── Content (body) ──────────────────────────────────────────────────────── */
