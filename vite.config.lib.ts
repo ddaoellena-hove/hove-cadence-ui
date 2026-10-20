@@ -15,6 +15,8 @@ export default defineConfig({
       { find: /^src\//, replacement: path.resolve(dirname, './src/') },
     ],
   },
+  // Le dossier public (favicon, icônes de l'app démo) n'a rien à faire dans le paquet npm
+  publicDir: false,
   build: {
     lib: {
       entry: path.resolve(dirname, 'src/components/index.ts'),
