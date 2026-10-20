@@ -1,5 +1,5 @@
 {
-  "installCommand": "pnpm install",
-  "buildCommand": "pnpm build-storybook",
+  "installCommand": "npm ci --legacy-peer-deps",
+  "buildCommand": "npm run build-storybook",
   "outputDirectory": "storybook-static"
 }
