@@ -33,7 +33,7 @@ Règles impératives pour générer du code avec ce design system :
 6. **Le CSS custom est limité au layout.** `display: flex`, `gap`, `padding`, `margin`, largeurs : OK en style inline. Couleurs, polices, bordures, ombres custom : interdit — les composants et tokens couvrent ces besoins.
 7. **Partir des [recettes](#recettes-de-pages-complètes)** pour toute page nouvelle, puis adapter. Ne pas réinventer la structure.
 8. **Un seul `PrimaryButton` rempli par vue.** Plusieurs `SecondaryButton` sont autorisés.
-9. **Toujours passer `label`** sur les champs de formulaire (`TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `CounterInput`).
+9. **Toujours passer `label`** sur les champs de formulaire (`TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker`, `CounterInput`).
 10. **Imports** : composants depuis `@ddaoellena/cadence-ui`, styles via un unique `import "@ddaoellena/cadence-ui/style.css"`, polices via les `<link>` de la section [Installation](#installation--setup).
 11. **Libellés en français correct, accents UTF-8 obligatoires.** Tout texte visible (labels, titres, boutons, placeholders, messages) s'écrit avec ses accents — jamais de français « aplati » en ASCII. Les fichiers source sont en UTF-8 : `é è ê à ç û É À` s'écrivent tels quels, sans entité HTML ni échappement unicode.
 
@@ -117,7 +117,7 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-color-accent` | `#1b6cff` | Élément actif / sélectionné (Sidebar, options de menu, `SecondaryButton` rempli) |
 | `--cadence-color-accent-subtle` | `#f0f6ff` | Survol d'un élément actif (Sidebar), ligne sélectionnée (`DataTable`) |
 | `--cadence-color-white` | `#ffffff` | Surfaces de premier plan |
-| `--cadence-color-surface-alt` | `#eef1f4` | Fonds de wrapper (TableCard, Badge) |
+| `--cadence-color-surface-alt` | `#eef1f4` | Fonds de wrapper (TableCard, Badge), jours d'une période (`DateRangePicker`) |
 | `--cadence-color-border` | `#e5e5e5` | Bordures par défaut |
 | `--cadence-color-border-strong` | `#bfc9cb` | Bordures appuyées, états disabled |
 | `--cadence-color-divider` | `#f0f0f0` | Séparateurs internes |
@@ -220,6 +220,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Bascule entre vues / modes d'affichage | `SegmentedControl` | `Tab` (navigation de page) |
 | Navigation entre vues d'une même page | `Tab` | `SegmentedControl` |
 | Date (avec ou sans heure) | `DatePicker` | — |
+| Période (début → fin), avec préréglages | `DateRangePicker` | deux `DatePicker` côte à côte |
 | Option booléenne dans un formulaire (validée à la soumission) | `Checkbox` | `Toggle` |
 | Activation/désactivation à effet immédiat | `Toggle` | `Checkbox` |
 | Choix exclusif 2-5 options courtes | `RadioButton` | — |
@@ -227,6 +228,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Sélection multiple avec icône + description | `RichCheckbox` | `RichRadioButton` (choix exclusif) |
 | Étiquette d'information neutre (catégorie, tag, code) | `Badge` | `Indicator` (qui porte un état) |
 | État ou statut avec picto + couleur sémantique | `Indicator` | `Badge` (purement informatif) |
+| Indicateur chiffré + évolution (haut de tableau de bord) | `KpiCard` | `Indicator` (statut sans valeur) |
 | Liste de gros volume (> 50 lignes, colonnes de données) | `DataTable` | `TableCard` (liste de cartes riches, peu nombreuses) |
 | Élément de liste riche, peu nombreux (header + colonnes) | `TableCard` | `DataTable` (gros volumes) ; un `<table>` HTML custom |
 | Ligne d'en-têtes de colonnes avec tri (au-dessus de `TableCard`) | `TableHeader` | en-têtes de `DataTable` (intégrés) |
@@ -516,6 +518,7 @@ De gauche à droite, engagement croissant : `Link` (tertiaire) → bouton `outli
 | `Autocomplete` | Choix dans une longue liste, avec recherche au clavier. Sélection simple ou multiple (`multiple`). |
 | `SegmentedControlAlt` | 2 à 4 options mutuellement exclusives. **À privilégier dans les formulaires.** |
 | `DatePicker` | Sélection d'une date (option heure avec `withTime`). |
+| `DateRangePicker` | Sélection d'une période (début → fin) avec préréglages ; jours entiers. |
 | `Checkbox` | Option booléenne indépendante, ou sélection multiple. |
 | `RadioButton` | Sélection exclusive parmi 2 à 5 options courtes. |
 | `RichRadioButton` | Sélection exclusive avec description par option. |
@@ -524,7 +527,8 @@ De gauche à droite, engagement croissant : `Link` (tertiaire) → bouton `outli
 
 ### Règles
 
-- ✅ Toujours passer la prop `label` sur `TextInput`, `TextArea`, `Dropdown`, `DatePicker` et `CounterInput` — c'est le seul moyen de garantir la cohérence visuelle.
+- ✅ Toujours passer la prop `label` sur `TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker` et `CounterInput` — c'est le seul moyen de garantir la cohérence visuelle. Exception : `DateRangePicker` en filtre rapide d'une `FilterBar` prend `aria-label` à la place.
+- ✅ Une période → un seul `DateRangePicker`, jamais deux `DatePicker` « Début » / « Fin » (sauf saisie avec heures, non gérée par `DateRangePicker` en v1).
 - ✅ Utiliser la prop `helperText` de `TextInput`/`TextArea` pour les instructions.
 - ✅ Afficher les erreurs avec `state="error"` + message dans `helperText`.
 - ✅ Grouper les champs connexes avec un titre de section.
@@ -662,6 +666,16 @@ Deux composants proches mais distincts :
 - ✅ `Indicator` peut surcharger son libellé par défaut via `label`.
 - ❌ Ne pas utiliser `Badge` pour un état (utiliser `Indicator`).
 - ❌ Ne pas créer de nouvelles couleurs de statut — les 8 variantes couvrent les cas.
+
+### Indicateurs chiffrés : `KpiCard`
+
+Une `KpiCard` porte une **valeur** et son **évolution** ; un `Indicator` porte un **état**. Une carte peut contenir un `Indicator` (`status`) quand la valeur franchit un seuil.
+
+- ✅ Toujours préciser `goodDirection` quand une hausse n'est pas favorable : `"down"` pour un retard, des suppressions, des perturbations ; `"neutral"` pour un volume sans jugement.
+- ✅ La variation est un nombre signé (`-12` → « −12 % ») ; `unit: "pt"` pour une variation de taux en points (`94,8 %` → `94,2 %` = « −0,6 pt »).
+- ✅ Mettre les cartes dans une grille : `gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))"`, `gap: 16`.
+- ❌ Ne pas colorer une variation à la main (vert / rouge) : la couleur vient de `goodDirection`.
+- ❌ Pas plus de 4 à 6 cartes par ligne de tableau de bord.
 
 ```tsx
 <Badge label="Transilien" />
@@ -1074,6 +1088,49 @@ export const SupervisionPage = () => {
 - ✅ La sélection est conservée par ids entre les pages ; la case d'en-tête ne porte que sur la page affichée.
 - ✅ En mode serveur, `loading` garde les lignes affichées (atténuées) pendant le rechargement : pas de saut de mise en page.
 
+### Recette 6 — Tableau de bord de supervision
+
+Haut d'écran : période d'analyse, grille de `KpiCard` cliquables qui mènent à la liste filtrée, puis la liste (recette 5) filtrée par la même période.
+
+```tsx
+import { useState } from "react";
+import { DateRangePicker, KpiCard, type DateRange } from "@ddaoellena/cadence-ui";
+
+export const SupervisionDashboard = () => {
+  const [period, setPeriod] = useState<DateRange>(last7Days());
+  const stats = useStats(period); // { trips, punctuality, delay, disruptions, … } calculés côté API
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
+        <h1 style={{ fontFamily: "var(--cadence-font-display)", fontSize: 28, fontWeight: 500, color: "var(--cadence-color-primary)", margin: 0 }}>
+          Supervision
+        </h1>
+        <DateRangePicker label="Période" value={period} onChange={setPeriod} maxDate={new Date()} maxDays={92} />
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16 }}>
+        <KpiCard label="Courses réalisées" value={stats.trips} delta={{ value: stats.tripsDelta, label: "vs période précédente" }}
+          loading={stats.loading} />
+        <KpiCard label="Ponctualité" value={stats.punctuality} unit="%" delta={{ value: stats.punctualityDelta, unit: "pt" }}
+          trend={stats.punctualityTrend} loading={stats.loading} />
+        <KpiCard label="Retard moyen" value={stats.delay} unit="min" goodDirection="down"
+          delta={{ value: stats.delayDelta, label: "vs période précédente" }} loading={stats.loading} />
+        <KpiCard label="Perturbations actives" value={stats.disruptions} goodDirection="down"
+          status={stats.disruptions > 20 ? "critical" : undefined} statusLabel="Seuil dépassé"
+          onClick={() => navigate("/perturbations?etat=actives")} loading={stats.loading} />
+      </div>
+
+      {/* Liste filtrée par la même période : voir la recette 5 */}
+    </div>
+  );
+};
+```
+
+- ✅ La période vit au niveau de la page : elle filtre à la fois les indicateurs et la liste.
+- ✅ `loading` sur chaque carte pendant le rechargement : la grille garde sa taille.
+- ✅ Une carte cliquable ouvre la liste déjà filtrée (`onClick`) — pas de bouton « Voir » en plus.
+
 ---
 
 ## Référence API des composants
@@ -1240,6 +1297,30 @@ Tableau dense pour les gros volumes. Vrai `<table>` (rôles ARIA explicites), en
 
 Affichage en français : format `JJ/MM/AAAA` (`JJ/MM/AAAA HH:mm` avec `withTime`), mois en toutes lettres (« Octobre 2026 »), semaine commençant le **lundi** (`Lu Ma Me Je Ve Sa Di`). ⚠️ Pas de prop `locale`.
 
+Clavier : un seul jour dans l'ordre de tabulation ; ←/→ (jour), ↑/↓ (semaine), Début/Fin (lundi/dimanche), Page préc./suiv. (mois), Entrée pour choisir, Échap pour fermer (le focus revient au déclencheur). Les jours sont annoncés en toutes lettres (« lundi 19 octobre 2026 »).
+
+### DateRangePicker
+
+Sélection d'une période. Même déclencheur et même calendrier que `DatePicker`. Sélection en deux clics (la fin peut précéder le début : les dates sont inversées), validée par « Appliquer » ; un clic sur un préréglage applique directement.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `value` | `{ start: Date \| null, end: Date \| null }` | — | Période (contrôlée) |
+| `onChange` | `(range: { start: Date, end: Date }) => void` | — | Appelé sur « Appliquer » ou un préréglage. ⚠️ Jours entiers : `start` à 00:00, `end` à 23:59:59.999 |
+| `label` | `string` | — | Label au-dessus du déclencheur |
+| `aria-label` | `string` | — | Nom accessible sans `label` visible (filtre rapide d'une `FilterBar`) |
+| `placeholder` | `string` | `"JJ/MM/AAAA – JJ/MM/AAAA"` | — |
+| `disabled` | `boolean` | `false` | — |
+| `minDate`, `maxDate` | `Date` | — | Bornes (jours hors bornes désactivés) |
+| `maxDays` | `number` | — | Durée maximale, bornes incluses ; rappelée sous le calendrier (« 92 jours maximum ») |
+| `presets` | `{ id, label, getRange: (reference) => { start, end } }[]` | Aujourd'hui, Hier, 7 derniers jours, 30 derniers jours, Ce mois-ci, Mois dernier | `[]` pour masquer la colonne |
+| `referenceDate` | `Date` | maintenant | Base des préréglages et repère « aujourd'hui » |
+| `months` | `1 \| 2` | `2` | Mois affichés côte à côte (`1` dans une `FilterBar` ou un panneau étroit) |
+
+- Le déclencheur affiche le libellé du préréglage si la période correspond exactement (« 7 derniers jours »), sinon « 01/10/2026 – 19/10/2026 ».
+- Clavier : comme `DatePicker` ; Échap ferme **sans appliquer**.
+- ⚠️ Pas d'heures en v1, et pas de mode non contrôlé.
+
 ### Dropdown
 
 | Prop | Type | Défaut | Description |
@@ -1305,6 +1386,26 @@ SVG inline issu de `@untitledui/icons` — aucune requête réseau. L'icône sui
 |---|---|---|---|
 | `variant` | `"active" \| "upcoming" \| "completed" \| "draft" \| "warning" \| "info" \| "critical" \| "nominal"` | **requis** | Statut sémantique (picto + couleurs) |
 | `label` | `string` | label de la variante | Surcharge du libellé |
+
+### KpiCard
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `label` | `string` | **requis** | Libellé de l'indicateur |
+| `value` | `number \| string` | **requis** | Nombre formaté en fr-FR (police mono) ; chaîne affichée telle quelle (`"N/D"`) |
+| `unit` | `string` | — | Unité accolée (`"min"`, `"%"`) |
+| `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | Ex. `{ notation: "compact" }` → « 1,2 M » |
+| `delta` | `{ value: number, unit?: "%" \| "pt" \| "", label?: string }` | — | Variation signée (« +1,8 % », « −0,6 pt ») ; `label` : « vs hier ». Défaut d'unité `"%"` |
+| `goodDirection` | `"up" \| "down" \| "neutral"` | `"up"` | Sens favorable : colore la variation (vert / rouge / gris). ⚠️ `"down"` pour un retard |
+| `status` | `IndicatorVariant` | — | `Indicator` dans l'en-tête (seuil dépassé…) |
+| `statusLabel` | `string` | label de la variante | — |
+| `trend` | `number[]` | — | Mini-courbe (2 points minimum), de la plus ancienne à la plus récente |
+| `description` | `string` | — | Texte secondaire sous la valeur |
+| `loading` | `boolean` | `false` | Squelettes à la place de la valeur et de la variation |
+| `onClick` | `() => void` | — | Toute la carte devient cliquable (bouton nommé par `label`) |
+| `className` | `string` | — | — |
+
+La variation est aussi annoncée en phrase complète aux lecteurs d'écran : « en baisse de 12 % vs hier, favorable ».
 
 ### Link
 

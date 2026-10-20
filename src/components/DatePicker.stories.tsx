@@ -1,5 +1,6 @@
 import { useState, type ComponentProps } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, userEvent, within } from "storybook/test";
 import { DatePicker } from "./DatePicker";
 
 const meta: Meta<typeof DatePicker> = {
@@ -201,5 +202,46 @@ export const WithLabel: Story = {
     label: "Date de début",
     placeholder: "JJ/MM/AAAA",
     disabled: false,
+  },
+};
+
+/**
+ * Navigation au clavier : flèches (jour / semaine), Début / Fin (semaine),
+ * Page préc. / suiv. (mois), Entrée pour choisir, Échap pour fermer.
+ */
+export const Clavier: Story = {
+  render: (args) => <ControlledTemplate {...args} />,
+  args: {
+    label: "Date de début",
+    value: new Date(2026, 9, 19),
+  },
+  parameters: { a11y: { test: "error" } },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const user = userEvent.setup();
+    const trigger = canvas.getByRole("button", { name: /Date de début/ });
+
+    await user.click(trigger);
+    // Un seul jour dans l'ordre de tabulation : le jour sélectionné
+    const selected = canvas.getByRole("button", { name: /lundi 19 octobre 2026/ });
+    await expect(selected).toHaveAttribute("tabindex", "0");
+    selected.focus();
+
+    // → puis ↓ : mardi 20, puis mardi 27
+    await user.keyboard("{ArrowRight}{ArrowDown}");
+    await expect(canvas.getByRole("button", { name: /mardi 27 octobre 2026/ })).toHaveFocus();
+
+    // Page suiv. : même jour du mois suivant
+    await user.keyboard("{PageDown}");
+    await expect(canvas.getByRole("button", { name: /vendredi 27 novembre 2026/ })).toHaveFocus();
+
+    await user.keyboard("{Enter}");
+    await expect(trigger).toHaveTextContent("27/11/2026");
+
+    // Échap ferme sans valider et rend le focus au déclencheur
+    await user.click(trigger);
+    await user.keyboard("{Escape}");
+    await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+    await expect(trigger).toHaveFocus();
   },
 };
