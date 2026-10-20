@@ -36,4 +36,4 @@ React 19 · TypeScript ~6 (strict) · Vite 8 · Storybook 10 (`@storybook/react-
 - `npm install` exige `--legacy-peer-deps` (conflit préexistant sur `@storybook/addon-a11y`).
 - `@untitledui/icons` doit rester externe au bundle (configuré dans `vite.config.lib.ts`).
 - Un seul gestionnaire : npm (`package-lock.json`), en local comme sur Vercel (`npm ci --legacy-peer-deps`). ⚠️ `npm ci` échoue si `package-lock.json` n'est pas synchronisé avec `package.json` : toujours commiter les deux ensemble. Pas de `pnpm-lock.yaml`.
-- L'intégration Git Vercel est connectée : chaque push sur une branche avec PR déclenche un déploiement preview (Storybook).
+- Vercel : un seul projet, `hove-cadence-ui` (lié localement via `.vercel/repo.json`). Chaque push sur une branche avec PR déclenche un déploiement preview du Storybook ; chaque push sur `main`, la production (https://hove-cadence-ui.vercel.app). `hove-cadence-ui-test` est déconnecté de Git.
