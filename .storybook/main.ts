@@ -14,6 +14,8 @@ const config: StorybookConfig = {
     "@storybook/addon-mcp"
   ],
   "framework": "@storybook/react-vite",
+  // Dossier statique : Storybook y reprend automatiquement favicon.svg (logo Hove)
+  staticDirs: ["../public"],
   viteFinal: async (config) => {
     // Story UI: Exclude from dependency optimization to handle CSS imports correctly
     config.optimizeDeps = {
