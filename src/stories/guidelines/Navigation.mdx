@@ -28,8 +28,8 @@ import { Meta } from "@storybook/addon-docs/blocks";
     <tr><th>Composant</th><th>Rôle</th><th>Position</th></tr>
   </thead>
   <tbody>
-    <tr><td><code>Sidebar</code></td><td>Navigation principale entre les grandes sections de l'app.</td><td>Gauche, pleine hauteur</td></tr>
-    <tr><td><code>Header</code></td><td>Contexte global : sélecteur de périmètre (réseau) + profil utilisateur.</td><td>Haut, pleine largeur</td></tr>
+    <tr><td><code>AppLayout</code></td><td>Squelette : Sidebar à gauche, contenu de page dans un conteneur blanc arrondi, bordé d'un liseré.</td><td>Plein écran</td></tr>
+    <tr><td><code>Sidebar</code></td><td>Navigation principale entre les grandes sections de l'app ; en pied, sélecteur de périmètre (<code>scope</code>) et utilisateur connecté (<code>user</code>).</td><td>Gauche, pleine hauteur</td></tr>
     <tr><td><code>Breadcrumbs</code></td><td>Localisation dans l'arborescence + navigation ascendante.</td><td>Au-dessus du titre de page</td></tr>
     <tr><td><code>NavigationDropdown</code></td><td>Sélecteur de contexte dans le breadcrumb (ex : choix du produit).</td><td>Dans le breadcrumb</td></tr>
     <tr><td><code>Tab</code></td><td>Navigation entre vues au sein d'une même page.</td><td>Sous le titre de page</td></tr>
@@ -40,49 +40,44 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 ```tsx
 // ✅ Structure de page standard
-<div style={{ display: "flex", height: "100vh" }}>
-
-  {/* Navigation principale */}
-  <Sidebar product="datahub" clientName="Bordeaux Métropole" sections={[…]} />
-
-  <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-
-    {/* Contexte global */}
-    <Header
-      leftContent={<Dropdown options={reseaux} value={reseau} onChange={setReseau} />}
-      rightContent={<Avatar name="Hector Malot" email="hector.malot@hove.com" showIcon showProfile size="sm" color="gray" />}
+<AppLayout
+  sidebar={
+    <Sidebar
+      product="datahub"
+      clientName="Bordeaux Métropole"
+      sections={[…]}
+      scope={{ options: reseaux, value: reseau, onChange: setReseau }}
+      user={{ name: "Hector Malot", email: "hector.malot@hove.com" }}
     />
+  }
+>
+  {/* Localisation */}
+  <Breadcrumbs items={[
+    { id: "home", label: "Accueil", href: "#" },
+    { id: "section", label: "Perturbations", href: "#" },
+    { id: "current", label: "Vue détaillée" },
+  ]} />
 
-    <main style={{ flex: 1, overflow: "auto", padding: "24px 32px" }}>
+  {/* Titre de page */}
+  <h1 style={{ fontFamily: "var(--cadence-font-display)", fontSize: 28, fontWeight: 500, color: "var(--cadence-color-primary)" }}>
+    Perturbations non planifiées
+  </h1>
 
-      {/* Localisation */}
-      <Breadcrumbs items={[
-        { id: "home", label: "Accueil", href: "#" },
-        { id: "section", label: "Perturbations", href: "#" },
-        { id: "current", label: "Vue détaillée" },
-      ]} />
-
-      {/* Titre de page */}
-      <h1 style={{ fontFamily: "Uxum Grotesque", fontSize: 28, fontWeight: 500, color: "#002830" }}>
-        Perturbations non planifiées
-      </h1>
-
-      {/* Navigation intra-page */}
-      <div style={{ display: "flex", gap: 4, marginTop: 16 }}>
-        <Tab label="En cours" variant="active" />
-        <Tab label="Historique" />
-        <Tab label="Statistiques" />
-      </div>
-
-      {/* Contenu */}
-    </main>
+  {/* Navigation intra-page */}
+  <div style={{ display: "flex", gap: 4, marginTop: 16 }}>
+    <Tab label="En cours" variant="active" />
+    <Tab label="Historique" />
+    <Tab label="Statistiques" />
   </div>
-</div>
+
+  {/* Contenu */}
+</AppLayout>
 ```
 
 <div className="g h2">Règles</div>
 
-<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">La <code>Sidebar</code> est toujours collée au bord gauche et occupe toute la hauteur de la page (<code>height: 100vh</code> sur le conteneur racine).</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Toute page vit dans <code>AppLayout</code> : la <code>Sidebar</code> se fond dans le fond de l'app et le contenu est dans un conteneur arrondi qui suit sa largeur (dépliée ou repliée).</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Périmètre et profil utilisateur vont en pied de <code>Sidebar</code> (<code>scope</code>, <code>user</code>) : il n'y a plus de <code>Header</code>.</span></div>
 <div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne jamais décaler ou centrer la <code>Sidebar</code> — elle est toujours ancrée au bord gauche de la fenêtre.</span></div>
 <div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne jamais tronquer la hauteur de la <code>Sidebar</code> — elle doit aller du haut au bas de l'écran.</span></div>
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Toujours afficher un <code>Breadcrumbs</code> dès que l'utilisateur est à plus d'un niveau de profondeur.</span></div>

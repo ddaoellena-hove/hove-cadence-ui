@@ -313,6 +313,35 @@ export const Datahub: Story = {
   },
 };
 
+const RESEAUX = [
+  { id: "rennes", label: "Rennes — STAR" },
+  { id: "bordeaux", label: "Bordeaux — TBM" },
+  { id: "lyon", label: "Lyon — TCL" },
+];
+
+/** Pied de Sidebar : sélecteur de périmètre et utilisateur connecté (ex-Header). */
+export const PerimetreEtUtilisateur: Story = {
+  name: "Périmètre et utilisateur",
+  render: () => {
+    const [activeId, setActiveId] = useState("geo-datasets");
+    const [reseau, setReseau] = useState("rennes");
+    return (
+      <SidebarWrapper>
+        <Sidebar
+          product="datahub"
+          clientName="Rennes"
+          sections={DATAHUB_SECTIONS}
+          activeId={activeId}
+          onItemClick={setActiveId}
+          scope={{ options: RESEAUX, value: reseau, onChange: setReseau }}
+          user={{ name: "Hector Malot", email: "hector.malot@hove.com" }}
+          onLogout={() => alert("Déconnexion")}
+        />
+      </SidebarWrapper>
+    );
+  },
+};
+
 export const TrafficReport: Story = {
   name: "Traffic Report",
   render: () => {

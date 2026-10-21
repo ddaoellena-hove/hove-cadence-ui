@@ -92,7 +92,7 @@ import { PrimaryButton, GhostButton, TextInput, TableCard, Modal } from "@ddaoel
 
 ### 4. Squelette d'application minimal
 
-Voir la [recette Layout d'application](#recette-1--layout-dapplication) — toute app commence par ce squelette : Sidebar fixe et repliable (280 px dépliée, 80 px repliée), Header fixe et zone de contenu qui suivent la **largeur courante** de la Sidebar.
+Voir la [recette Layout d'application](#recette-1--layout-dapplication) — toute app commence par ce squelette : `AppLayout`, avec la `Sidebar` repliable (280 px dépliée, 80 px repliée) à gauche et le contenu de la page dans un conteneur blanc arrondi qui suit sa largeur.
 
 ---
 
@@ -166,7 +166,7 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-shadow-overlay` | ombre 20–60px | Modale |
 | `--cadence-focus-color` | `#1a3e45` | Couleur de l'anneau de focus (appliqué aux boutons, `Link`, `DataTable`, calendriers) |
 | `--cadence-focus-ring` | liseré blanc 2px + anneau 2px | Anneau de focus `box-shadow` (`:focus-visible`) — appliqué aux nouveaux composants et aux boutons |
-| `--cadence-z-sticky` | `100` | Sidebar et Header fixes |
+| `--cadence-z-sticky` | `100` | Éléments collants (`position: sticky`) dans le contenu |
 | `--cadence-z-popover` | `100` | Popovers et bulles ancrés (DatePicker, tooltips) |
 | `--cadence-z-dropdown` | `200` | Menus déroulants |
 | `--cadence-z-modal` | `1000` | Modale et son voile |
@@ -178,7 +178,7 @@ La story **Foundation/Tokens** affiche tous ces tokens à partir des variables C
 
 - ✅ Dans du code applicatif, référencer les tokens (`color: var(--cadence-color-primary)`) plutôt que les hex en dur.
 - ✅ Statut dans du code applicatif → `--cadence-status-*` ; jamais un hex.
-- ✅ Couches : `zIndex: "var(--cadence-z-toast)"` pour un toast, `var(--cadence-z-sticky)` pour la Sidebar/Header — pas de valeur inventée.
+- ✅ Couches : `zIndex: "var(--cadence-z-toast)"` pour un toast, `var(--cadence-z-sticky)` pour un élément collant — pas de valeur inventée.
 - ✅ Pour créer un nouveau composant, piocher dans `tokens.css` ; n'ajouter un token que si la valeur a vocation à être partagée.
 - ❌ Ne pas redéfinir les `--cadence-*` au niveau d'un composant — ce sont des valeurs globales du thème.
 
@@ -250,8 +250,9 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Dialogue bloquant (confirmation, formulaire court) | `Modal` | `AlertToast` (non bloquant) |
 | Notification temporaire non bloquante | `AlertToast` | `Modal` |
 | Info contextuelle au survol | `Tooltip` / `TooltipTrigger` | `Modal` |
+| Squelette d'application (navigation + contenu de page) | `AppLayout` | — |
 | Navigation principale (sections de l'app) | `Sidebar` | — |
-| Barre supérieure (périmètre + profil) | `Header` | — |
+| Sélecteur de périmètre + profil utilisateur | `Sidebar` (`scope`, `user`) | — |
 | Fil d'Ariane | `Breadcrumbs` | — |
 | Sélecteur de contexte dans le breadcrumb | `NavigationDropdown` | `Dropdown` (formulaires) |
 | Identité utilisateur (initiales / photo) | `Avatar` | — |
@@ -274,7 +275,7 @@ Toutes les distances utilisent cette échelle (px) : **4, 8, 12, 16, 20, 24, 32,
 | Gap entre champs d'un formulaire | `20` |
 | Gap entre champs côte à côte (même ligne) | `12` |
 | Gap entre sections d'un formulaire | `32` |
-| Padding de page (zone de contenu) | `24px 32px` |
+| Padding de page (zone de contenu) | `24px 32px` (appliqué par `AppLayout`) |
 | Padding interne des cellules de colonnes | `16` |
 
 ### Constantes de layout
@@ -282,15 +283,14 @@ Toutes les distances utilisent cette échelle (px) : **4, 8, 12, 16, 20, 24, 32,
 ```tsx
 const SIDEBAR_WIDTH = 280;            // largeur de la Sidebar dépliée (fixée par sidebar.css)
 const SIDEBAR_WIDTH_COLLAPSED = 80;   // largeur de la Sidebar repliée (fixée par sidebar.css)
-const HEADER_HEIGHT = 56;             // hauteur du Header
 ```
 
-⚠️ `SIDEBAR_WIDTH` est la largeur de la Sidebar **dépliée**, pas le décalage à appliquer au Header et au contenu. La Sidebar se replie en interne (280 px → 80 px, transition de 250 ms) : le décalage à appliquer est sa **largeur courante**, mesurée sur son wrapper (voir [Navigation](#navigation) et la [recette 1](#recette-1--layout-dapplication)). Ces valeurs ne sont pas des tokens CSS : ce sont les largeurs fixées par `sidebar.css`.
+Ces valeurs ne sont pas des tokens CSS : ce sont les largeurs fixées par `sidebar.css`. `AppLayout` en tient compte tout seul (Sidebar et contenu dans la même ligne flex) : aucun décalage à calculer côté app.
 
 ### Règles
 
 - ✅ Le layout (flex, grid, gap, margins) se fait en style inline ou CSS applicatif — c'est le seul CSS custom autorisé.
-- ✅ La zone de contenu n'a pas de `max-width` : elle occupe toute la largeur disponible à droite de la Sidebar.
+- ✅ La zone de contenu n'a pas de `max-width` : elle occupe toute la largeur du conteneur d'`AppLayout`.
 - ✅ Largeurs de contenu : les formulaires sont limités à `max-width: 720px` (à l'intérieur de la zone de contenu) ; les listes, tableaux et tableaux de bord prennent toute la largeur.
 - ❌ Pas de largeur fixe en px sur les conteneurs de page (grille de `KpiCard`, `DataVisualization`, `TableCard`, `DataTable`) : ils doivent s'étendre quand la Sidebar se replie.
 - ❌ Ne pas inventer de valeurs d'espacement hors échelle (pas de `gap: 7px` ou `padding: 13px`).
@@ -571,25 +571,24 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 
 | Composant | Rôle | Position |
 |---|---|---|
-| `Sidebar` | Navigation principale entre les grandes sections. | Gauche, pleine hauteur, `fixed` |
-| `Header` | Sélecteur de périmètre + profil utilisateur. | Haut, pleine largeur moins la sidebar, `fixed` |
+| `AppLayout` | Squelette : Sidebar à gauche, contenu de page dans un conteneur blanc arrondi bordé d'un liseré. | Plein écran (`100vh`) |
+| `Sidebar` | Navigation principale entre les grandes sections ; en pied, sélecteur de périmètre (`scope`) et utilisateur connecté (`user`). | Gauche, pleine hauteur, dans `AppLayout` |
 | `Breadcrumbs` | Localisation dans l'arborescence + navigation ascendante. | Au-dessus du titre |
 | `NavigationDropdown` | Sélecteur de contexte dans le breadcrumb. | Dans le breadcrumb |
 | `Tab` | Navigation entre vues au sein d'une même page. | Sous le titre de page |
 
 ### Règles
 
-- ✅ La `Sidebar` occupe toute la hauteur, ancrée à gauche : wrapper `<div>` en `position: fixed`, `top: 0`, `left: 0`, `height: 100vh` (le composant n'a pas de prop `style`), **sans largeur imposée** — le wrapper prend la largeur réelle de la Sidebar (280 px dépliée, 80 px repliée).
-- ✅ Le `Header` est en `position: fixed`, `top: 0`, `right: 0`, avec `left` égal à la **largeur courante** de la Sidebar.
-- ✅ Le contenu principal compense avec `marginLeft` égal à la **largeur courante** de la Sidebar (et non `SIDEBAR_WIDTH`), plus `paddingTop: HEADER_HEIGHT`. Il n'a pas de `max-width`.
-- ✅ Transition de 250 ms — la durée du repli de la Sidebar — sur `margin-left` (contenu) et `left` (Header).
-- ✅ La largeur courante se lit en mesurant le wrapper de la Sidebar (`ResizeObserver`, hook `useElementWidth` de la [recette 1](#recette-1--layout-dapplication)). Ne pas se fier au seul `onCollapse` : il signale le clic, pas l'état.
+- ✅ Toute page vit dans `AppLayout`, qui reçoit la `Sidebar` (prop `sidebar`) et le contenu de la page (`children`).
+- ✅ Le fond de l'app prend la couleur produit de la Sidebar : la Sidebar s'y fond, sans arrondi ni ombre. Seul le conteneur blanc défile.
+- ✅ Quand la Sidebar se replie (280 px → 80 px), le conteneur s'élargit tout seul : pas de mesure de largeur, pas de `position: fixed`, pas de `marginLeft`.
+- ✅ Périmètre (réseau, client) et utilisateur connecté vont en pied de Sidebar (`scope`, `user`). Il n'y a plus de `Header`.
 - ✅ Afficher `Breadcrumbs` dès que l'utilisateur est à plus d'un niveau de profondeur.
 - ✅ Le dernier item du breadcrumb est la page courante — sans `href`.
 - ✅ L'onglet actif se marque avec `variant="active"` sur `Tab`.
 - ❌ Ne jamais décaler ou centrer la `Sidebar` — toujours ancrée au bord gauche, jamais tronquée en hauteur.
-- ❌ Ne pas positionner `Sidebar` ou `Header` en `relative` ou `absolute` — ils restent visibles au scroll.
-- ❌ Ne pas imposer `width: SIDEBAR_WIDTH` au wrapper de la Sidebar, ni `left` / `marginLeft` fixes à `SIDEBAR_WIDTH` : une fois la Sidebar repliée, 200 px resteraient vides.
+- ❌ Ne pas recréer le squelette à la main (Sidebar en `position: fixed`, contenu décalé par `marginLeft`) : utiliser `AppLayout`.
+- ❌ Ne pas ajouter de barre supérieure au-dessus du conteneur : le titre de la page est la première ligne du contenu.
 - ❌ Ne pas imbriquer une `Sidebar` dans une `Sidebar`.
 - ❌ Ne pas utiliser `Tab` pour de la navigation entre pages différentes.
 
@@ -759,91 +758,49 @@ Blocs prêts à copier. **Partir d'une recette puis adapter** — ne pas réinve
 
 ### Recette 1 — Layout d'application
 
-Toute page de l'app vit dans ce squelette. `Sidebar` et `Header` n'ont pas de prop `style` : on les enveloppe dans des `<div>` positionnés.
-
-La Sidebar se replie en interne (280 px → 80 px). Le wrapper de la Sidebar n'a donc **pas de largeur imposée**, et le Header et le contenu suivent sa **largeur courante**, mesurée par `useElementWidth`.
+Toute page de l'app vit dans `AppLayout`. Il place la `Sidebar` à gauche, fondue dans le fond de l'app, et le contenu de la page dans un conteneur blanc arrondi, bordé d'un liseré, avec un padding de `24px 32px`. Le sélecteur de périmètre et le profil utilisateur sont en pied de Sidebar.
 
 ```tsx
-// useElementWidth.ts — largeur courante d'un élément, suivie par ResizeObserver
-import { useLayoutEffect, useState, type RefObject } from "react";
+// AppShell.tsx
+import { useState, type ReactNode } from "react";
+import { AppLayout, Sidebar, Icons } from "@ddaoellena/cadence-ui";
 
-export const useElementWidth = (ref: RefObject<HTMLElement | null>, initial = 0) => {
-  const [width, setWidth] = useState(initial);
-  useLayoutEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-    const observer = new ResizeObserver(([entry]) => setWidth(entry.borderBoxSize[0].inlineSize));
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, [ref]);
-  return width;
-};
-```
-
-```tsx
-// AppLayout.tsx
-import { useRef, type ReactNode } from "react";
-import { Sidebar, Header, Dropdown, Avatar } from "@ddaoellena/cadence-ui";
-import { useElementWidth } from "./useElementWidth";
-
-const SIDEBAR_WIDTH = 280;               // Sidebar dépliée : valeur avant la première mesure
-const HEADER_HEIGHT = 56;
-const LAYOUT_TRANSITION = "250ms ease";  // = durée du repli de la Sidebar (sidebar.css)
-
-export const AppLayout = ({ children }: { children: ReactNode }) => {
-  const sidebarRef = useRef<HTMLDivElement>(null);
-  // 280 px dépliée, 80 px repliée : c'est le décalage du Header et du contenu
-  const sidebarWidth = useElementWidth(sidebarRef, SIDEBAR_WIDTH);
+export const AppShell = ({ children }: { children: ReactNode }) => {
+  const [reseauId, setReseauId] = useState("bordeaux");
 
   return (
-    <>
-      {/* Wrapper sans largeur imposée : il prend la largeur réelle de la Sidebar */}
-      <div ref={sidebarRef} style={{ position: "fixed", top: 0, left: 0, height: "100vh", zIndex: 100 }}>
+    <AppLayout
+      sidebar={
         <Sidebar
           product="datahub"
           clientName="Bordeaux Métropole"
           activeId="scenarios"
           onItemClick={(id) => navigate(id)}
           sections={[
-            { id: "home", label: "Accueil", icon: <HomeIcon /> },
+            { id: "home", label: "Accueil", icon: <Icons icon="home" size={20} /> },
             {
-              id: "disruptions", label: "Perturbations", icon: <DisruptionIcon />,
+              id: "disruptions", label: "Perturbations", icon: <Icons icon="alert-triangle" size={20} />,
               items: [
                 { id: "scenarios", label: "Scénarios" },
                 { id: "history", label: "Historique" },
               ],
             },
           ]}
+          scope={{ options: reseaux, value: reseauId, onChange: setReseauId }}
+          user={{ name: "Hector Malot", email: "hector.malot@hove.com" }}
+          onLogout={logout}
         />
-      </div>
-
-      <div style={{
-        position: "fixed", top: 0, right: 0, left: sidebarWidth, zIndex: 90,
-        transition: `left ${LAYOUT_TRANSITION}`,
-      }}>
-        <Header
-          leftContent={<Dropdown options={reseaux} value={reseauId} onChange={setReseauId} />}
-          rightContent={<Avatar name="Hector Malot" showIcon showProfile size="sm" color="gray" />}
-        />
-      </div>
-
-      {/* Pas de max-width : le contenu occupe toute la largeur libérée par la Sidebar */}
-      <main style={{
-        marginLeft: sidebarWidth,
-        paddingTop: HEADER_HEIGHT,
-        minHeight: "100vh",
-        boxSizing: "border-box",
-        transition: `margin-left ${LAYOUT_TRANSITION}`,
-      }}>
-        <div style={{ padding: "24px 32px" }}>{children}</div>
-      </main>
-    </>
+      }
+    >
+      {children}
+    </AppLayout>
   );
 };
 ```
 
-- ✅ La largeur est mesurée, jamais déduite de `onCollapse` : le Header et le contenu restent justes même si la Sidebar change de largeur pour une autre raison.
-- ❌ Pas de `width: SIDEBAR_WIDTH` sur le wrapper, ni de `left: SIDEBAR_WIDTH` / `marginLeft: SIDEBAR_WIDTH` en dur.
+- ✅ Le contenu commence directement par le titre de la page (`<h1>`) : pas de padding à ajouter, `AppLayout` le fournit.
+- ✅ Le repli de la Sidebar élargit le conteneur sans code applicatif.
+- ❌ Pas de `Header` (supprimé en 0.4.0) ni de wrapper `position: fixed`.
 
 ### Recette 2 — Page liste avec sélection multiple
 
@@ -1222,6 +1179,20 @@ Carte d'action : titre, description et un bouton `PrimaryButton outline size="sm
 ⚠️ Le style du bouton est fixe (`outline`, `sm`) : pas de prop pour le changer.
 ⚠️ `illustration` est décorative et masquée aux lecteurs d'écran : jamais d'information utile dedans, jamais d'URL distante (fichier local ou SVG inline).
 
+### AppLayout
+
+Squelette d'application : la `Sidebar` à gauche et le contenu de la page dans un conteneur blanc arrondi (`--cadence-radius-xl`), bordé d'un liseré (`--cadence-color-border`), avec un padding de `24px 32px`. Plein écran (`100vh`) : seul le conteneur défile.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `sidebar` | `ReactNode` | **requis** | La `Sidebar` de l'app |
+| `children` | `ReactNode` | **requis** | Contenu de la page |
+| `contentLabel` | `string` | `"Contenu principal"` | Nom accessible de la zone `<main>` |
+| `className` | `string` | — | — |
+
+⚠️ Le fond de l'app reprend la couleur produit de la `Sidebar` passée dans `sidebar` (datahub par défaut). Il est lu par CSS (`:has()`) : pas de prop `product` à dupliquer.
+⚠️ Le conteneur suit la largeur courante de la Sidebar (dépliée ou repliée) sans mesure : ne pas ajouter de `marginLeft` ni de `position: fixed`.
+
 ### AlertToast
 
 | Prop | Type | Défaut | Description |
@@ -1434,17 +1405,6 @@ Barre au-dessus d'une liste : ligne 1 = recherche · filtres rapides · actions 
 
 ⚠️ Pas d'icône loupe : `TextInput` n'accepte pas d'icône.
 
-### Header
-
-| Prop | Type | Défaut | Description |
-|---|---|---|---|
-| `leftContent` | `ReactNode` | — | Contenu gauche (ex : Dropdown) — prioritaire sur `logo` |
-| `logo` | `string` | — | Nom de marque (si pas de `leftContent`) |
-| `navItems` | `{ label, active?, onClick? }[]` | — | Nav centrale |
-| `rightContent` | `ReactNode` | — | Contenu droit (ex : Avatar) |
-
-⚠️ Pas de prop `style` — positionner via un wrapper : `<div style={{ position: "fixed", top: 0, right: 0, left: sidebarWidth, transition: "left 250ms ease" }}>`, où `sidebarWidth` est la **largeur courante** de la Sidebar (280 px dépliée, 80 px repliée), mesurée avec `useElementWidth` ([recette 1](#recette-1--layout-dapplication)). ❌ Jamais `left: SIDEBAR_WIDTH` fixe.
-
 ### Icons
 
 SVG inline issu de `@untitledui/icons` — aucune requête réseau. L'icône suit `currentColor` : par défaut elle prend la couleur du texte parent.
@@ -1630,25 +1590,28 @@ API identique pour les deux (`SegmentedControl` = navigation, `SegmentedControlA
 | `onItemClick` | `(id: string) => void` | — | — |
 | `onCollapse` | `() => void` | — | Clic sur le bouton replier / déplier. ⚠️ N'indique pas l'état (replié ou non) : mesurer la largeur pour le connaître |
 | `onLogout` | `() => void` | — | Bouton déconnexion |
+| `scope` | `SidebarScope` | — | Sélecteur de périmètre en pied : `{ options, value?, onChange?, placeholder? }` (options au format `Dropdown`, ⚠️ clé `id`). Masqué quand la Sidebar est repliée ; le menu s'ouvre vers le haut |
+| `user` | `SidebarUser` | — | Utilisateur connecté en pied : `{ name, email?, avatarSrc? }`. Avatar seul quand la Sidebar est repliée |
 
-**Repli** — géré en interne : le bouton « » fait passer la Sidebar de **280 px** (dépliée) à **80 px** (repliée), avec une transition de 250 ms. Il n'y a pas de prop pour piloter ou lire cet état. Conséquences pour le layout :
-- le wrapper de la Sidebar n'a **pas de largeur imposée** : il prend la largeur réelle de la Sidebar ;
-- le Header (`left`) et le contenu (`marginLeft`) suivent la **largeur courante**, mesurée sur ce wrapper ;
-- `SIDEBAR_WIDTH` (280) est la largeur dépliée, pas le décalage à appliquer.
+**Repli** — géré en interne : le bouton « » fait passer la Sidebar de **280 px** (dépliée) à **80 px** (repliée), avec une transition de 250 ms. Il n'y a pas de prop pour piloter ou lire cet état. Dans `AppLayout`, le conteneur de la page suit cette largeur tout seul.
 
 ```tsx
-const sidebarRef = useRef<HTMLDivElement>(null);
-const sidebarWidth = useElementWidth(sidebarRef, SIDEBAR_WIDTH); // hook de la recette 1
-
-<div ref={sidebarRef} style={{ position: "fixed", top: 0, left: 0, height: "100vh" }}>
-  <Sidebar product="datahub" clientName="Bordeaux Métropole" sections={sections} />
-</div>
-<main style={{ marginLeft: sidebarWidth, paddingTop: HEADER_HEIGHT, transition: "margin-left 250ms ease" }}>
+<AppLayout
+  sidebar={
+    <Sidebar
+      product="datahub"
+      clientName="Bordeaux Métropole"
+      sections={sections}
+      scope={{ options: reseaux, value: reseauId, onChange: setReseauId }}
+      user={{ name: "Hector Malot", email: "hector.malot@hove.com" }}
+    />
+  }
+>
   {children}
-</main>
+</AppLayout>
 ```
 
-⚠️ Pas de prop `style` — positionner via un wrapper (sans largeur imposée).
+⚠️ Pas de prop `style`. Sans arrondi ni ombre : elle est faite pour se fondre dans le fond d'`AppLayout`.
 
 ### Tab
 

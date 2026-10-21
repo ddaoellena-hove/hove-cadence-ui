@@ -1,6 +1,7 @@
 import './tokens.css';
 
 export * from './ActionCard';
+export * from './AppLayout';
 export * from './AlertToast';
 export * from './Autocomplete';
 export * from './Badge';
@@ -10,7 +11,6 @@ export * from './CounterInput';
 export * from './Dropdown';
 export * from './FilterBar';
 export * from './GhostButton';
-export * from './Header';
 export * from './Link';
 export * from './Modal';
 export * from './Checkbox';

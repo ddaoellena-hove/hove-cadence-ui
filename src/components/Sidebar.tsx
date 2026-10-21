@@ -1,4 +1,6 @@
 import { useState, type ReactNode } from "react";
+import { Avatar } from "./Avatar";
+import { Dropdown, type DropdownOption } from "./Dropdown";
 import "./sidebar.css";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -26,6 +28,28 @@ export interface SidebarNavSection {
   notification?: boolean;
 }
 
+/** Sélecteur de périmètre (réseau, client…) affiché en pied de Sidebar. */
+export interface SidebarScope {
+  /** Périmètres proposés. ⚠️ Clé `id`, pas `value` (comme `Dropdown`). */
+  options: DropdownOption[];
+  /** `id` du périmètre sélectionné. */
+  value?: string;
+  /** Changement de périmètre. */
+  onChange?: (id: string) => void;
+  /** Texte affiché sans sélection. */
+  placeholder?: string;
+}
+
+/** Utilisateur connecté, affiché en pied de Sidebar. */
+export interface SidebarUser {
+  /** Nom affiché ; les initiales de l'avatar en sont tirées. */
+  name: string;
+  /** Sous-titre sous le nom (email, rôle…). */
+  email?: string;
+  /** Photo de l'avatar (sinon initiales). */
+  avatarSrc?: string;
+}
+
 export interface SidebarProps {
   /** Sets the background colour theme. */
   product: SidebarProduct;
@@ -41,6 +65,10 @@ export interface SidebarProps {
   onCollapse?: () => void;
   /** Called when the logout button is clicked. */
   onLogout?: () => void;
+  /** Sélecteur de périmètre en pied de Sidebar (masqué quand elle est repliée). */
+  scope?: SidebarScope;
+  /** Utilisateur connecté en pied de Sidebar (avatar seul quand elle est repliée). */
+  user?: SidebarUser;
   /** Additional class name. */
   className?: string;
 }
@@ -222,6 +250,8 @@ export const Sidebar = ({
   onItemClick,
   onCollapse,
   onLogout,
+  scope,
+  user,
   className,
 }: SidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -355,6 +385,26 @@ export const Sidebar = ({
 
       {/* ── Footer ── */}
       <div className="sidebar__footer">
+        {/* Périmètre : trop étroit une fois repliée, on le masque */}
+        {scope && !isCollapsed && (
+          <div className="sidebar__scope" role="group" aria-label="Périmètre">
+            <Dropdown
+              options={scope.options}
+              value={scope.value}
+              onChange={scope.onChange}
+              placeholder={scope.placeholder}
+            />
+          </div>
+        )}
+        {user && (
+          <div className="sidebar__user" title={isCollapsed ? user.name : undefined}>
+            <Avatar name={user.name} src={user.avatarSrc} alt={user.avatarSrc ? user.name : undefined} size="sm" />
+            <span className="sidebar__user-text">
+              <span className="sidebar__user-name">{user.name}</span>
+              {user.email && <span className="sidebar__user-email">{user.email}</span>}
+            </span>
+          </div>
+        )}
         <button type="button" className="sidebar__logout" onClick={onLogout} title={isCollapsed ? "Se déconnecter" : undefined}>
           <LogoutIcon />
           <span className="sidebar__logout-label">SE DÉCONNECTER</span>
