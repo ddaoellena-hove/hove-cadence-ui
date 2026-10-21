@@ -594,7 +594,7 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 | `AppLayout` | Squelette : Sidebar à gauche, contenu de page dans un conteneur blanc arrondi bordé d'un liseré. | Plein écran (`100vh`) |
 | `Sidebar` | Navigation principale entre les grandes sections ; en pied, sélecteur de périmètre (`scope`) et utilisateur connecté (`user`). | Gauche, pleine hauteur, dans `AppLayout` |
 | `Breadcrumbs` | Localisation dans l'arborescence + navigation ascendante. | Au-dessus du titre |
-| `Dropdown` `variant="button"` | Sélecteur de contexte dans le breadcrumb (produit/module). | Dans le breadcrumb |
+| `Dropdown` `variant="button"` | Sélecteur de contexte dans le breadcrumb (produit/module), passé en `content` d'un item. | Dans le breadcrumb |
 | `TabList` + `Tab` | Navigation entre vues au sein d'une même page. `TabList` porte `role="tablist"` et le clavier (←/→, Début / Fin). | Sous le titre de page |
 | `TabList level="secondary"` + `SecondaryTab` | Sous-navigation (filtres/statuts, avec compteurs) à l'intérieur d'une vue ouverte via un `Tab`. | Sous la rangée de `Tab` |
 
@@ -606,6 +606,21 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 - ✅ Périmètre (réseau, client) et utilisateur connecté vont en pied de Sidebar (`scope`, `user`). Il n'y a plus de `Header`.
 - ✅ Afficher `Breadcrumbs` dès que l'utilisateur est à plus d'un niveau de profondeur.
 - ✅ Le dernier item du breadcrumb est la page courante — sans `href`.
+- ✅ Sélecteur de contexte dans le fil d'Ariane : `content` sur l'item (le `<li>` et les séparateurs sont conservés, `label` nomme l'élément). Jamais de fil reconstruit à la main avec les classes internes `breadcrumbs__*`.
+
+```tsx
+<Breadcrumbs
+  items={[
+    { id: "home", label: "Accueil", href: "/" },
+    {
+      id: "product",
+      label: "Produit",
+      content: <Dropdown variant="button" aria-label="Produit" options={produits} value={produit} onChange={setProduit} />,
+    },
+    { id: "current", label: "Perturbations non planifiées" },
+  ]}
+/>
+```
 - ✅ Une rangée d'onglets est **toujours** dans un `TabList` nommé (`aria-label`) : un `role="tab"` hors d'un `role="tablist"` est invalide, et c'est `TabList` qui gère le clavier (seul l'onglet actif est tabulable, ←/→ et Début / Fin pour changer d'onglet). Un `Tab` seul émet un avertissement en développement.
 - ✅ Relier chaque onglet à son panneau : `id` + `controls` sur le `Tab`, et côté panneau `role="tabpanel"`, `id`, `aria-labelledby` (id de l'onglet), `tabIndex={0}`.
 - ✅ L'onglet actif se marque avec `variant="active"` sur `Tab`.
@@ -1286,9 +1301,12 @@ Clavier : ↑/↓ pour naviguer, Entrée pour sélectionner l'option surlignée,
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `items` | `BreadcrumbItem[]` | **requis** | `{ id, label, icon?, href?, onClick? }` — le dernier = page courante |
+| `items` | `BreadcrumbItem[]` | **requis** | `{ id, label, icon?, href?, onClick?, content? }` — le dernier = page courante |
 | `separator` | `ReactNode` | chevron | Séparateur custom |
 | `onNavigate` | `(id: string) => void` | — | Clic sur un item |
+| `className` | `string` | — | — |
+
+`BreadcrumbItem.content` (`ReactNode`) remplace le rendu du libellé — typiquement `<Dropdown variant="button" aria-label="…" />` comme sélecteur de contexte. Le `<li>` et les séparateurs sont conservés ; `label` reste requis et nomme l'élément (`role="group"`) ; `href`, `onClick` et `icon` sont ignorés. ⚠️ Le type de `label` ne change pas : toujours une `string`.
 
 ### Checkbox
 
