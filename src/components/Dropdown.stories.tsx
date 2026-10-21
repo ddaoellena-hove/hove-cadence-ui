@@ -165,7 +165,7 @@ export const VarianteBouton: Story = {
 
 /**
  * Options groupées : `groupLabel` (en-tête de section) + `divider`.
- * Couvre le cas de l'ancien `NavigationDropdown` (sélecteur de contexte).
+ * Couvre le sélecteur de contexte du fil d'Ariane (`Breadcrumbs` item `content`).
  */
 /**
  * Groupes : chaque `groupLabel` ouvre un `role="group"` nommé par son en-tête.
