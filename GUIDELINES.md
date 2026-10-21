@@ -1419,6 +1419,8 @@ Sélection d'une période. Même déclencheur et même calendrier que `DatePicke
 
 ⚠️ En variante bouton, l'icône de l'option sélectionnée (`icon`) s'affiche avant le libellé, ramenée à 12px.
 
+Menu : même gabarit que les préréglages du `DateRangePicker` — options de 13px arrondies à 8px (`--cadence-radius-md`), fond `--cadence-color-surface-alt` au survol et à la sélection, option sélectionnée en gras avec une coche en pastille encre.
+
 ### FilterBar
 
 Barre au-dessus d'une liste : ligne 1 = recherche · filtres rapides · actions (à droite) ; ligne 2 = filtres actifs · « Tout effacer » · nombre de résultats.

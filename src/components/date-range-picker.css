@@ -100,7 +100,7 @@
 .date-range-picker__preset {
   background: transparent;
   border: none;
-  border-radius: var(--cadence-radius-sm, 6px);
+  border-radius: var(--cadence-radius-md, 8px);
   color: var(--cadence-color-primary, #002830);
   cursor: pointer;
   font-family: inherit;

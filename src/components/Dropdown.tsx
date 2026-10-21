@@ -56,9 +56,16 @@ const ChevronIcon = ({ open }: { open: boolean }) => (
   </svg>
 );
 
+// Coche de l'option sélectionnée : pastille pleine (currentColor) et coche blanche
 const CheckIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-    <path d="M2.5 7l3.5 3.5 5.5-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+    <circle cx="6" cy="6" r="6" fill="currentColor" />
+    <path
+      className="dropdown__option-check-mark"
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M9.19256 3.54074C9.33575 3.68394 9.33575 3.9161 9.19256 4.05929L5.15922 8.09262C5.01603 8.23581 4.78387 8.23581 4.64068 8.09262L2.80735 6.25929C2.66415 6.1161 2.66415 5.88394 2.80735 5.74074C2.95054 5.59755 3.1827 5.59755 3.32589 5.74074L4.89995 7.3148L8.67401 3.54074C8.8172 3.39755 9.04936 3.39755 9.19256 3.54074Z"
+    />
   </svg>
 );
 
