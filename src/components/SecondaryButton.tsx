@@ -1,150 +1,31 @@
 /**
- * SecondaryButton component.
- *
- * A smaller, versatile button supporting filled and outline variants, destructive actions,
- * and optional icon placement (left, right, or icon-only). Shares the same design language
- * as PrimaryButton but uses a compact 11 px / 6 px-radius style from the reference.
+ * @deprecated SecondaryButton disparaît en 1.0.0 : le bleu plein n'est plus
+ * utilisé pour les actions. Correspondance 0.3.0 :
+ * - `outline` → `<PrimaryButton outline size="sm" />` (rendu conservé), ou `GhostButton size="sm"` hors dashboard
+ * - plein → `<PrimaryButton size="sm" />` (ou `GhostButton size="sm"` selon le rôle réel)
+ * - `size="large"` → `size="md"`
+ * Le codemod `scripts/codemods/buttons-v2.mjs` fait la migration.
  */
-import React, { useState, useEffect } from "react";
-import { Icons, type IconsProps } from "./Icons";
-import "./secondary-button.css";
+import { forwardRef } from "react";
+import { PrimaryButton } from "./PrimaryButton";
+import type { ActionButtonProps } from "./action-button-types";
+import { resolveButtonProps, warnDeprecated, warnOnce, type CompatButtonProps } from "./button-compat";
 
-export interface SecondaryButtonProps {
-  /** Visual interaction state. Hover/clicked states are also managed internally via DOM events. */
-  state?: "clicked" | "disabled" | "enabled" | "hover";
+/** @deprecated Utiliser `PrimaryButtonProps` / `GhostButtonProps`. */
+export type SecondaryButtonProps = CompatButtonProps;
 
-  /** Icon placement relative to the label. */
-  withIcon?: "left" | "no" | "only" | "right";
-
-  /** Render as an outline (ghost) button. */
-  outline?: boolean;
-
-  /** Apply destructive (danger) styling. */
-  destructive?: boolean;
-
-  /** Button label text shown when withIcon is not "only". */
-  label?: string;
-
-  /** Icon name to display (used when withIcon is not "no"). */
-  icon?: IconsProps["icon"];
-
-  /** Button size. Defaults to "medium". */
-  size?: "medium" | "large";
-
-  /** Optional extra class name for custom styling. */
-  className?: string;
-
-  /** Click handler. */
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
-
-  /** Native disabled attribute — also sets state to "disabled". */
-  disabled?: boolean;
-}
-
-/**
- * SecondaryButton renders a compact styled button element with support for
- * filled/outline, destructive variants, and optional icon placement.
- */
-export const SecondaryButton = React.forwardRef<
-  HTMLButtonElement,
-  SecondaryButtonProps
->(
-  (
-    {
-      state: stateProp = "enabled",
-      withIcon = "no",
-      outline = false,
-      destructive = false,
-      label = "Label",
-      icon = "map-01",
-      size = "medium",
-      className,
-      onClick,
-      disabled = false,
-    },
-    ref
-  ) => {
-    const isDisabled = disabled || stateProp === "disabled";
-
-    const [internalState, setInternalState] = useState<string>(
-      isDisabled ? "disabled" : (stateProp ?? "enabled")
-    );
-
-    useEffect(() => {
-      setInternalState(isDisabled ? "disabled" : (stateProp ?? "enabled"));
-    }, [stateProp, isDisabled]);
-
-    const handleMouseEnter = () => {
-      if (internalState !== "disabled") setInternalState("hover");
-    };
-
-    const handleMouseLeave = () => {
-      if (internalState !== "disabled")
-        setInternalState(isDisabled ? "disabled" : (stateProp ?? "enabled"));
-    };
-
-    const handleMouseDown = () => {
-      if (internalState !== "disabled") setInternalState("clicked");
-    };
-
-    const handleMouseUp = () => {
-      if (internalState !== "disabled") setInternalState("hover");
-    };
-
-    const rootClass = [
-      "secondary-button",
-      internalState,
-      withIcon,
-      `outline-${outline}`,
-      `destructive-${destructive}`,
-      `size-${size}`,
-      className,
-    ]
-      .filter(Boolean)
-      .join(" ");
-
-    const iconEl = (
-      <Icons className="sb-icons-instance" icon={icon} />
-    );
-
-    let content: React.ReactNode;
-    if (withIcon === "only") {
-      content = <span className="sb-label">{iconEl}</span>;
-    } else if (withIcon === "left") {
-      content = (
-        <span className="sb-label">
-          {iconEl}
-          <span className="sb-text">{label}</span>
-        </span>
-      );
-    } else if (withIcon === "right") {
-      content = (
-        <span className="sb-label">
-          <span className="sb-text">{label}</span>
-          {iconEl}
-        </span>
-      );
-    } else {
-      content = <span className="sb-label">{label}</span>;
-    }
-
-    return (
-      <button
-        ref={ref}
-        className={rootClass}
-        disabled={isDisabled}
-        onClick={onClick}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        aria-disabled={isDisabled}
-        type="button"
-      >
-        {content}
-      </button>
-    );
-  }
-);
+/** @deprecated Utiliser `PrimaryButton outline size="sm"` / `GhostButton size="sm"` (outline) ou `PrimaryButton size="sm"` (plein). */
+export const SecondaryButton = forwardRef<HTMLButtonElement, SecondaryButtonProps>((props, ref) => {
+  const { variant, props: resolved, deprecated } = resolveButtonProps(props, "SecondaryButton");
+  warnOnce(
+    "SecondaryButton",
+    "component",
+    'composant déprécié : utilisez `PrimaryButton size="sm"` (`outline` pour la variante contour) ou `GhostButton size="sm"`.',
+  );
+  warnDeprecated("SecondaryButton", deprecated);
+  // Props déjà normalisées : libellé ou icône seule + aria-label
+  const normalized = resolved as ActionButtonProps;
+  return <PrimaryButton ref={ref} outline={variant === "outline"} {...normalized} />;
+});
 
 SecondaryButton.displayName = "SecondaryButton";

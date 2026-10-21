@@ -143,7 +143,7 @@ La synthèse (récapitulatif, vérification, prévisualisation) vient **sous** l
 
 <div className="spec">
   Position : en bas du formulaire, alignées à droite<br/>
-  Boutons : <code>PrimaryButton size="large"</code> — <code>outline</code> à gauche, rempli à droite<br/>
+  Boutons : <code>GhostButton</code> à gauche, <code>PrimaryButton</code> à droite (option : <code>Link hideArrow</code> en 3e action)<br/>
   3e action éventuelle : <code>Link hideArrow</code>, à gauche du groupe
 </div>
 
@@ -153,8 +153,8 @@ La synthèse (récapitulatif, vérification, prévisualisation) vient **sous** l
   <Link variant="secondary" hideArrow onClick={onSaveDraft}>
     Enregistrer comme brouillon
   </Link>
-  <PrimaryButton size="large" outline label="Réinitialiser" onClick={onReset} />
-  <PrimaryButton size="large" label="Créer le scénario" onClick={onSubmit} />
+  <GhostButton label="Réinitialiser" onClick={onReset} />
+  <PrimaryButton label="Créer le scénario" onClick={onSubmit} />
 </div>
 ```
 

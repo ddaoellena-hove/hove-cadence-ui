@@ -1,6 +1,6 @@
 {
   "name": "@ddaoellena/cadence-ui",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "repository": {
     "type": "git",
@@ -23,7 +23,9 @@
   },
   "files": [
     "dist",
-    "GUIDELINES.md"
+    "GUIDELINES.md",
+    "CHANGELOG.md",
+    "scripts/codemods/buttons-v2.mjs"
   ],
   "scripts": {
     "dev": "vite",

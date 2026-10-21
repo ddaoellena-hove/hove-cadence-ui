@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useLayoutEffect, useId, type KeyboardEvent } from "react";
-import { SecondaryButton } from "./SecondaryButton";
+import { PrimaryButton } from "./PrimaryButton";
 import { CalendarMonth } from "./CalendarMonth";
 import { dayKey, formatDate, getKeyboardTarget, isOutsideBounds, isSameDay } from "./date-utils";
 import "./date-picker.css";
@@ -371,12 +371,13 @@ export const DatePicker = ({
               </div>
 
               <div className="date-picker__footer">
-                <SecondaryButton
+                {/* Seule action du popover : elle valide la saisie */}
+                <PrimaryButton
+                  size="sm"
+                  fullWidth
                   label={labelConfirm}
-                  state={pendingDate ? "enabled" : "disabled"}
                   disabled={!pendingDate}
                   onClick={handleConfirm}
-                  className="date-picker__confirm-btn"
                 />
               </div>
             </>

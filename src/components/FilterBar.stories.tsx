@@ -4,7 +4,7 @@ import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import { FilterBar, type FilterBarActiveFilter } from "./FilterBar";
 import { Dropdown } from "./Dropdown";
 import { SegmentedControl } from "./SegmentedControl";
-import { SecondaryButton } from "./SecondaryButton";
+import { GhostButton } from "./GhostButton";
 
 const meta: Meta<typeof FilterBar> = {
   title: "Components/FilterBar",
@@ -127,7 +127,7 @@ const FullBar = () => {
         setQuery("");
       }}
       resultCount={12430}
-      actions={<SecondaryButton outline withIcon="left" icon="download-02" label="Exporter" />}
+      actions={<GhostButton size="sm" iconStart="download-02" label="Exporter" />}
     />
   );
 };

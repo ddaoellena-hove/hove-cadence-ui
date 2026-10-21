@@ -8,7 +8,8 @@
 :root {
   /* ── Couleurs — encre & texte ──────────────────────────────────────────── */
   --cadence-color-primary: #002830;        /* Encre principale — texte fort, boutons, modale */
-  --cadence-color-label: #1a3e45;          /* Labels de formulaire, badges */
+  --cadence-color-label: #1a3e45;          /* Labels de formulaire, badges ; fond de PrimaryButton au repos */
+  --cadence-color-primary-hover: #10353d;  /* Survol d'un PrimaryButton : un cran plus foncé que le repos (13,1:1 avec texte blanc) */
   --cadence-color-text-muted: #809397;     /* Texte secondaire (heures, descriptions) */
   --cadence-color-text-disabled: #808080;  /* Texte des états désactivés */
   --cadence-color-placeholder: #737373;    /* Placeholders des champs */
@@ -23,6 +24,20 @@
   --cadence-color-success: #24a148;        /* Confirmations, états valides */
   --cadence-color-info: #0f62fe;           /* Accent « information » d'AlertToast (barre, icône, progression) */
   --cadence-color-warning: #f1c21b;        /* Accent « avertissement » d'AlertToast — ⚠️ 1,7:1 sur blanc : jamais en couleur de texte */
+  --cadence-color-danger-hover: #c91720;   /* Survol d'un PrimaryButton tone="danger" (5,8:1 avec texte blanc) */
+  --cadence-color-danger-active: #b91c1c;  /* Appui d'un PrimaryButton tone="danger" (6,5:1 avec texte blanc) */
+  --cadence-color-danger-text: #b91c1c;    /* Texte danger sur fond clair : GhostButton danger, Link destructive (AA sur blanc et surface-alt) */
+  --cadence-color-danger-border: #ed8e93;  /* Bordure d'un PrimaryButton outline tone="danger" (le texte porte le contraste) */
+
+  /* ── Couleurs — liens ──────────────────────────────────────────────────── */
+  --cadence-color-link: #1d4ed8;           /* Texte de Link (6,7:1 sur blanc, 5,9:1 sur surface-alt) — l'accent reste aux états */
+
+  /* ── Voiles d'interaction (éléments sans fond) ─────────────────────────── */
+  /* Translucides : ils foncent d'un cran n'importe quel fond (blanc ou surface-alt). */
+  --cadence-color-hover-overlay: rgba(0, 40, 48, 0.06);          /* Survol d'un GhostButton */
+  --cadence-color-active-overlay: rgba(0, 40, 48, 0.12);         /* Appui d'un GhostButton */
+  --cadence-color-danger-hover-overlay: rgba(218, 30, 40, 0.06);  /* Survol d'un GhostButton danger */
+  --cadence-color-danger-active-overlay: rgba(218, 30, 40, 0.12); /* Appui d'un GhostButton danger */
 
   /* ── Couleurs — accent interactif (sélection) ──────────────────────────── */
   --cadence-color-accent: #1b6cff;         /* Élément actif / sélectionné : Sidebar, options de menu, SecondaryButton rempli */
@@ -32,7 +47,7 @@
   --cadence-color-white: #ffffff;          /* Surfaces de premier plan */
   --cadence-color-surface-alt: #eef1f4;    /* Fonds de wrapper (TableCard, Badge) */
   --cadence-color-border: #e5e5e5;         /* Bordures par défaut */
-  --cadence-color-border-strong: #bfc9cb;  /* Bordures appuyées, états disabled */
+  --cadence-color-border-strong: #bfc9cb;  /* Bordures appuyées, états disabled, contour de PrimaryButton outline */
   --cadence-color-divider: #f0f0f0;        /* Séparateurs internes (colonnes, footers) */
 
   /* ── Typographie ───────────────────────────────────────────────────────── */
