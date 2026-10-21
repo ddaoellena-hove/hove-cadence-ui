@@ -76,8 +76,8 @@ import { Link } from "../../components/Link";
     <PrimaryButton tone="danger" label="Supprimer" />
   </div>
   <div style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "flex-end", padding: 24, background: "var(--cadence-color-white)", borderTop: "1px solid var(--cadence-color-border)" }}>
-    <PrimaryButton outline iconStart="download-02" label="Exporter" />
-    <PrimaryButton outline iconEnd="chevron-down" label="Filtres" />
+    <PrimaryButton size="sm" outline iconStart="download-02" label="Exporter" />
+    <PrimaryButton size="sm" outline iconEnd="chevron-down" label="Filtres" />
     <PrimaryButton iconStart="plus" label="Créer un scénario" />
   </div>
 </div>
@@ -87,7 +87,7 @@ import { Link } from "../../components/Link";
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Un seul <code>PrimaryButton</code> plein par vue ; plusieurs <code>GhostButton</code> (ou <code>PrimaryButton outline</code> en dashboard) sont autorisés.</span></div>
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text"><code>GhostButton</code> par défaut ; <code>PrimaryButton outline</code> pour les actions secondaires d'un dashboard. Pas de mélange des deux dans un groupe.</span></div>
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Ghost à gauche, Primary à droite ; la 3e action est un <code>Link hideArrow</code>, à gauche du groupe.</span></div>
-<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Les boutons d'un même groupe ont la même <code>size</code>.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Les boutons d'un même groupe ont la même <code>size</code> — sauf en tête de dashboard : actions de dashboard en <code>sm</code>, action principale en <code>md</code>.</span></div>
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Un <code>GhostButton</code> isolé porte une icône (<code>iconStart</code>) ou se trouve à côté d'un <code>PrimaryButton</code>.</span></div>
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Icône seule : <code>icon</code> + <code>aria-label</code> (obligatoire).</span></div>
 <div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas utiliser <code>PrimaryButton</code> pour de la navigation — préférer <code>Link href</code>.</span></div>
@@ -102,8 +102,8 @@ import { Link } from "../../components/Link";
     <tr><th><code>size</code></th><th>Hauteur</th><th>Texte</th><th>Contextes</th></tr>
   </thead>
   <tbody>
-    <tr><td><code>sm</code></td><td>29px</td><td>11px</td><td>Tableau, barre d'outils, barre de sélection, popover, toast, <code>FilterBar</code></td></tr>
-    <tr><td><code>md</code> (défaut)</td><td>34px</td><td>12px</td><td>Tout le reste : modale, formulaire, en-tête de dashboard, empty state</td></tr>
+    <tr><td><code>md</code> (défaut)</td><td>34px</td><td>12px</td><td><strong>Actions principales</strong> : en début de page (création) et en fin de formulaire. Aussi : modale, empty state</td></tr>
+    <tr><td><code>sm</code></td><td>29px</td><td>11px</td><td><strong>Actions plus discrètes</strong> : actions de dashboard (<code>PrimaryButton outline</code>), tableau, barre d'outils, barre de sélection, popover, toast, <code>FilterBar</code></td></tr>
   </tbody>
 </table>
 
