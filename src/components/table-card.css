@@ -73,58 +73,6 @@
   gap: 8px;
 }
 
-/* ── TableCardAction ─────────────────────────────────────────────────────── */
-.table-card-action {
-  position: relative;
-}
-
-.table-card-action__btn {
-  align-items: center;
-  background: transparent;
-  border: none;
-  border-radius: 6px;
-  color: var(--cadence-color-icon-muted, #69797d);
-  cursor: pointer;
-  display: flex;
-  height: 24px;
-  justify-content: center;
-  padding: 0;
-  transition: background-color 120ms ease, color 120ms ease;
-  width: 24px;
-}
-
-.table-card-action__btn:hover {
-  background-color: rgba(0, 40, 48, 0.06);
-  color: var(--cadence-color-primary, #002830);
-}
-
-/* Icône <img> rendu par Icons — 14 × 14 px */
-.table-card-action__icon {
-  height: 14px !important;
-  pointer-events: none;
-  width: 14px !important;
-}
-
-.table-card-action__btn--destructive {
-  color: var(--cadence-color-danger, #da1e28);
-}
-
-.table-card-action__btn--destructive:hover {
-  background-color: rgba(0, 40, 48, 0.06);
-  color: var(--cadence-color-primary, #002830);
-}
-
-/* Tooltip positionné en bas du bouton */
-.table-card-action__tooltip {
-  left: 50%;
-  pointer-events: none;
-  position: absolute;
-  top: calc(100% + 6px);
-  transform: translateX(-50%);
-  white-space: nowrap;
-  z-index: var(--cadence-z-popover, 100);
-}
-
 /* ── Content (body) ──────────────────────────────────────────────────────── */
 .table-card__body {
   background-color: var(--cadence-color-white, #ffffff);
