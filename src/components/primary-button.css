@@ -2,8 +2,10 @@
 /* Gabarit commun dans base-button.css. Repos --cadence-color-label, survol un
    cran plus foncé (--cadence-color-primary-hover), appui --cadence-color-primary.
    Relief subtil (rgba, propre au composant) : reflet clair en haut, liseré
-   et ombre douce en bas, ombre portée de 1px ; à l'appui, le bouton
-   s'enfonce. */
+   et ombre douce en bas, ombre portée de 1px (--_drop) ; au survol, l'ombre
+   portée s'élargit (le bouton se soulève) ; à l'appui, le bouton s'enfonce.
+   Le survol ne change que --_drop : focus, appui, outline et désactivé
+   gardent leurs propres ombres. */
 .primary-button {
   background-color: var(--cadence-color-label, rgb(26, 62, 69));
   border-color: var(--cadence-color-primary, rgb(0, 40, 48));
@@ -11,12 +13,13 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.1),
     inset 0 -1px 0 rgba(0, 0, 0, 0.14),
     inset 0 -8px 10px -8px rgba(0, 0, 0, 0.12),
-    0 1px 1px rgba(0, 40, 48, 0.08);
+    var(--_drop, 0 1px 1px rgba(0, 40, 48, 0.08));
   color: var(--cadence-color-white, rgb(255, 255, 255));
 }
 
 .primary-button:hover:not(:disabled) {
   background-color: var(--cadence-color-primary-hover, rgb(16, 53, 61));
+  --_drop: 0 4px 10px -2px rgba(0, 40, 48, 0.22), 0 1px 2px rgba(0, 40, 48, 0.08);
 }
 
 .primary-button:active:not(:disabled) {
@@ -33,12 +36,14 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.14),
     inset 0 -1px 0 rgba(0, 0, 0, 0.1),
     inset 0 -8px 10px -8px rgba(0, 0, 0, 0.1),
-    0 1px 1px rgba(0, 40, 48, 0.08);
+    var(--_drop, 0 1px 1px rgba(0, 40, 48, 0.08));
 }
 
 .primary-button--danger:hover:not(:disabled) {
   background-color: var(--cadence-color-danger-hover, rgb(201, 23, 32));
   border-color: var(--cadence-color-danger-hover, rgb(201, 23, 32));
+  /* Ombre teintée de rouge */
+  --_drop: 0 4px 10px -2px rgba(218, 30, 40, 0.28), 0 1px 2px rgba(0, 40, 48, 0.08);
 }
 
 .primary-button--danger:active:not(:disabled) {

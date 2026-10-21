@@ -1570,7 +1570,7 @@ API identique pour les deux ; seul le rendu change (`PrimaryButton` plein ou con
 | `ref` | `Ref<HTMLButtonElement>` | — | `forwardRef` vers le `<button>` |
 
 - Contenu : le typage impose `label`, ou `icon` + `aria-label`, pour l'API v2 des deux composants. Il ne peut pas l'imposer aux appels qui utilisent encore les anciennes props de `PrimaryButton` (`withIcon`…) : l'API 0.2 rendait `label` et `icon` facultatifs (libellé « Label » et icône par défaut), les rendre obligatoires casserait la compilation de code existant. Ces appels sont couverts à l'exécution par la même erreur de développement.
-- Survol, appui et focus sont gérés en CSS (`:hover`, `:active`, `:focus-visible` avec `--cadence-focus-ring`). Au survol, la couleur fonce d'un cran (plein : `--cadence-color-primary-hover` ; `outline` : voile d'encre sur le blanc ; danger : `--cadence-color-danger-hover`), sans ombre portée. ⚠️ Pas de prop `state`.
+- Survol, appui et focus sont gérés en CSS (`:hover`, `:active`, `:focus-visible` avec `--cadence-focus-ring`). Au survol, la couleur fonce d'un cran (plein : `--cadence-color-primary-hover` ; `outline` : voile d'encre sur le blanc ; danger : `--cadence-color-danger-hover`). Le bouton plein (default et danger) se soulève aussi d'une ombre portée douce, teintée de rouge en danger ; l'`outline` n'en a pas. ⚠️ Pas de prop `state`.
 - Anciennes props de `PrimaryButton` (`withIcon`, `destructive`, `size="medium" | "large"`, `state`) : acceptées en 0.3.0 avec un avertissement en développement, supprimées en 1.0.0 (voir [Migration depuis la 0.2](#migration-depuis-la-02)). `outline` n'est **pas** déprécié. `GhostButton` n'accepte que l'API ci-dessus (ni `outline`, ni les anciennes props).
 
 ### SecondaryButton (déprécié)
