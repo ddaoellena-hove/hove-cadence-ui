@@ -227,7 +227,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Saisie de texte long (multi-lignes) | `TextArea` | — |
 | Valeur numérique avec +/− | `CounterInput` | `TextInput type="number"` (interdit) |
 | Choix dans une liste courte (≥ 3 options, sans recherche) | `Dropdown` | `Autocomplete` (longue liste à filtrer) |
-| Période, date ou choix dans l'en-tête d'un dashboard | `DateRangePicker` / `DatePicker` / `Dropdown` avec `variant="button"` | `PrimaryButton outline` (action, pas de valeur) |
+| Période, date ou choix dans un dashboard | `DateRangePicker` / `DatePicker` / `Dropdown` avec `variant="button"` (à privilégier) | Variante champ (formulaire, `FilterBar`), `PrimaryButton outline` (action, pas de valeur) |
 | Choix dans une longue liste avec recherche au clavier | `Autocomplete` | `Dropdown` (liste courte) |
 | Choix exclusif 2-4 options **dans un formulaire** | `SegmentedControlAlt` | `SegmentedControl` (réservé navigation) |
 | Bascule entre vues / modes d'affichage | `SegmentedControl` | `Tab` (navigation de page) |
@@ -403,6 +403,7 @@ Une période, une date ou un choix dans une liste se placent dans l'en-tête ave
 </div>
 ```
 
+- ✅ **Dans un dashboard, privilégier la variante bouton** pour tout sélecteur de valeur (période, date, choix dans une liste) : il s'aligne sur les boutons `sm` de l'en-tête et se lit comme une commande de la vue, pas comme un champ à remplir.
 - ✅ Variante bouton : sans `label` visible, toujours un `aria-label` (« Période », « Devise ») ; le nom annoncé devient « Période : 7 derniers jours ».
 - ❌ Pas de variante bouton dans un formulaire : le champ (`variant="field"`, défaut) avec son `label` reste la règle.
 
@@ -492,6 +493,7 @@ Au-dessus d'une liste filtrable, utiliser `FilterBar` (recherche, filtres rapide
 |---|---|---|
 | Dashboard — création | En haut à droite, à côté des onglets | `PrimaryButton size="sm"` |
 | Dashboard — actions de dashboard | À gauche de la création | `PrimaryButton outline size="sm"` |
+| Dashboard — sélecteurs (période, date, liste) | En haut à droite, avant les actions | `DateRangePicker` / `DatePicker` / `Dropdown` en `variant="button"` |
 | Page liste — création | En haut à droite, à côté des onglets | `PrimaryButton` (`md`) |
 | Formulaire — soumission | En bas à droite | `Link` (option) + `GhostButton` + `PrimaryButton`, en `md` |
 | Modale — validation | Pied (via `primaryAction` / `secondaryAction`) | géré par `Modal` |
@@ -1142,11 +1144,12 @@ export const SupervisionDashboard = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <h1 style={{ fontFamily: "var(--cadence-font-display)", fontSize: 28, fontWeight: 500, color: "var(--cadence-color-primary)", margin: 0 }}>
           Supervision
         </h1>
-        <DateRangePicker label="Période" value={period} onChange={setPeriod} maxDate={new Date()} maxDays={92} />
+        {/* Dashboard : sélecteur en variante bouton, nommé par aria-label */}
+        <DateRangePicker variant="button" aria-label="Période" value={period} onChange={setPeriod} maxDate={new Date()} maxDays={92} />
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16 }}>
@@ -1366,7 +1369,7 @@ Tableau dense pour les gros volumes. Vrai `<table>` (rôles ARIA explicites), en
 | `withTime` | `boolean` | `false` | Heures/minutes + bouton de validation |
 | `labelConfirm` | `string` | `"Valider"` | Libellé du bouton de validation (`withTime`) |
 | `segmentedOptions` | `{ value, label }[]` | — | SegmentedControlAlt dans le popover (contrôlé via `segmentedValue` + `onSegmentChange`) |
-| `variant` | `"field" \| "button"` | `"field"` | `"button"` : déclencheur en `PrimaryButton outline size="sm"` (icône, valeur, chevron), pour l'en-tête d'un dashboard |
+| `variant` | `"field" \| "button"` | `"field"` | `"button"` : déclencheur en `PrimaryButton outline size="sm"` (icône, valeur, chevron). **À privilégier dans un dashboard** ; `"field"` dans un formulaire |
 | `aria-label` | `string` | — | Nom accessible sans `label` visible (variante bouton) : « Date » → annoncé « Date : 20/10/2026 » |
 
 Affichage en français : format `JJ/MM/AAAA` (`JJ/MM/AAAA HH:mm` avec `withTime`), mois en toutes lettres (« Octobre 2026 »), semaine commençant le **lundi** (`Lu Ma Me Je Ve Sa Di`). ⚠️ Pas de prop `locale`.
@@ -1390,7 +1393,7 @@ Sélection d'une période. Même déclencheur et même calendrier que `DatePicke
 | `presets` | `{ id, label, getRange: (reference) => { start, end } }[]` | Aujourd'hui, Hier, 7 derniers jours, 30 derniers jours, Ce mois-ci, Mois dernier | `[]` pour masquer la colonne |
 | `referenceDate` | `Date` | maintenant | Base des préréglages et repère « aujourd'hui » |
 | `months` | `1 \| 2` | `2` | Mois affichés côte à côte (`1` dans une `FilterBar` ou un panneau étroit) |
-| `variant` | `"field" \| "button"` | `"field"` | `"button"` : déclencheur en `PrimaryButton outline size="sm"` (icône, valeur, chevron), pour l'en-tête d'un dashboard |
+| `variant` | `"field" \| "button"` | `"field"` | `"button"` : déclencheur en `PrimaryButton outline size="sm"` (icône, valeur, chevron). **À privilégier dans un dashboard** ; `"field"` dans un formulaire |
 
 - Le déclencheur affiche le libellé du préréglage si la période correspond exactement (« 7 derniers jours »), sinon « 01/10/2026 – 19/10/2026 ».
 - Clavier : comme `DatePicker` ; Échap ferme **sans appliquer**.
@@ -1406,7 +1409,7 @@ Sélection d'une période. Même déclencheur et même calendrier que `DatePicke
 | `placeholder` | `string` | — | — |
 | `disabled` | `boolean` | `false` | — |
 | `onChange` | `(id: string) => void` | — | — |
-| `variant` | `"field" \| "button"` | `"field"` | `"button"` : déclencheur en `PrimaryButton outline size="sm"` (icône, valeur, chevron), pour l'en-tête d'un dashboard |
+| `variant` | `"field" \| "button"` | `"field"` | `"button"` : déclencheur en `PrimaryButton outline size="sm"` (icône, valeur, chevron). **À privilégier dans un dashboard** ; `"field"` dans un formulaire |
 | `aria-label` | `string` | — | Nom accessible sans `label` visible (variante bouton) : « Devise » → annoncé « Devise : EUR € » |
 
 ⚠️ En variante bouton, l'icône de l'option sélectionnée (`icon`) s'affiche avant le libellé, ramenée à 12px.
