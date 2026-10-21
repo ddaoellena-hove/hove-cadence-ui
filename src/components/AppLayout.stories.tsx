@@ -5,7 +5,7 @@ import { AppLayout } from "./AppLayout";
 import { Sidebar, type SidebarNavSection, type SidebarProduct } from "./Sidebar";
 import { Icons } from "./Icons";
 import { PrimaryButton } from "./PrimaryButton";
-import { ActionCard } from "./ActionCard";
+import { Card } from "./Card";
 
 const meta: Meta<typeof AppLayout> = {
   title: "Components/AppLayout",
@@ -77,19 +77,19 @@ const PageContent = () => (
       <PrimaryButton iconStart="plus" label="Créer un scénario" />
     </div>
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16 }}>
-      <ActionCard headingLevel={2}
+      <Card headingLevel={2}
         title="Importer un réseau GTFS"
         description="Chargez les horaires théoriques d'un réseau pour préparer vos scénarios de perturbation."
         actionLabel="Importer"
         actionIcon="download-02"
       />
-      <ActionCard headingLevel={2}
+      <Card headingLevel={2}
         title="Créer un scénario"
         description="Simulez une fermeture de station ou un détournement de ligne."
         actionLabel="Commencer"
         actionIcon="plus"
       />
-      <ActionCard headingLevel={2} title="Inviter un collaborateur" actionLabel="Inviter" />
+      <Card headingLevel={2} title="Inviter un collaborateur" actionLabel="Inviter" />
     </div>
   </div>
 );
@@ -129,7 +129,7 @@ export const ContenuLong: Story = {
     <AppLayout sidebar={<AppSidebar />}>
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {Array.from({ length: 12 }, (_, i) => (
-          <ActionCard headingLevel={2} key={i} title={`Carte ${i + 1}`} description="Contenu de démonstration." actionLabel="Ouvrir" />
+          <Card headingLevel={2} key={i} title={`Carte ${i + 1}`} description="Contenu de démonstration." actionLabel="Ouvrir" />
         ))}
       </div>
     </AppLayout>

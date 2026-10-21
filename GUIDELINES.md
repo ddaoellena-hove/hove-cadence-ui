@@ -163,7 +163,7 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-shadow-sm` | ombre 1–3px | Champs au repos |
 | `--cadence-shadow-md` | ombre diffuse 12px | Champs au survol |
 | `--cadence-shadow-lg` | ombre portée 10–15px | Menus déroulants |
-| `--cadence-shadow-raised` | ombre portée 16–32px, vers le bas | Carte soulevée au survol (`ActionCard`) |
+| `--cadence-shadow-raised` | ombre portée 16–32px, vers le bas | Carte interactive soulevée au survol (`Card`) |
 | `--cadence-shadow-overlay` | ombre 20–60px | Modale |
 | `--cadence-focus-color` | `#1a3e45` | Couleur de l'anneau de focus (appliqué aux boutons, `Link`, `DataTable`, calendriers) |
 | `--cadence-focus-ring` | liseré blanc 2px + anneau 2px | Anneau de focus `box-shadow` (`:focus-visible`) — appliqué aux nouveaux composants et aux boutons |
@@ -243,8 +243,8 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Étiquette d'information neutre (catégorie, tag, code) | `Badge` | `Indicator` (qui porte un état) |
 | État ou statut avec picto + couleur sémantique | `Indicator` | `Badge` (purement informatif) |
 | En-tête de page (titre, sous-titre, actions), collé en haut au défilement | `PageHeader` | `<h1>` à la main |
-| Indicateur chiffré + évolution (haut de tableau de bord) | `KpiCard` | `Indicator` (statut sans valeur) |
-| Proposer une action dans une carte (titre + description + bouton) | `ActionCard` | `KpiCard` (indicateur chiffré), `TableCard` (élément de liste) |
+| Indicateur chiffré + évolution (haut de tableau de bord) | `Card` (`value`, `delta`, `trend`) | `Indicator` (statut sans valeur) |
+| Proposer une action dans une carte (titre + description + bouton) | `Card` (`actionLabel`, `onAction`) | `TableCard` (élément de liste) |
 | Liste de gros volume (> 50 lignes, colonnes de données) | `DataTable` | `TableCard` (liste de cartes riches, peu nombreuses) |
 | Élément de liste riche, peu nombreux (header + colonnes) | `TableCard` | `DataTable` (gros volumes) ; un `<table>` HTML custom |
 | Ligne d'en-têtes de colonnes avec tri (au-dessus de `TableCard`) | `TableHeader` | en-têtes de `DataTable` (intégrés) |
@@ -295,7 +295,7 @@ Ces valeurs ne sont pas des tokens CSS : ce sont les largeurs fixées par `sideb
 - ✅ Le layout (flex, grid, gap, margins) se fait en style inline ou CSS applicatif — c'est le seul CSS custom autorisé.
 - ✅ La zone de contenu n'a pas de `max-width` : elle occupe toute la largeur du conteneur d'`AppLayout`.
 - ✅ Largeurs de contenu : les formulaires sont limités à `max-width: 720px` (à l'intérieur de la zone de contenu) ; les listes, tableaux et tableaux de bord prennent toute la largeur.
-- ❌ Pas de largeur fixe en px sur les conteneurs de page (grille de `KpiCard`, `DataVisualization`, `TableCard`, `DataTable`) : ils doivent s'étendre quand la Sidebar se replie.
+- ❌ Pas de largeur fixe en px sur les conteneurs de page (grille de `Card`, `DataVisualization`, `TableCard`, `DataTable`) : ils doivent s'étendre quand la Sidebar se replie.
 - ❌ Ne pas inventer de valeurs d'espacement hors échelle (pas de `gap: 7px` ou `padding: 13px`).
 
 ### Composition des panneaux sur une page formulaire
@@ -708,25 +708,22 @@ Deux composants proches mais distincts :
 - ❌ Ne pas utiliser `Badge` pour un état (utiliser `Indicator`).
 - ❌ Ne pas créer de nouvelles couleurs de statut — les 8 variantes couvrent les cas.
 
-### Cartes d'action : `ActionCard`
+### Cartes : `Card`
 
-Une `ActionCard` présente une action à lancer : un titre, une description courte et un bouton (`PrimaryButton outline size="sm"`). Au survol, la carte se soulève de 4px (`transform`) avec une ombre portée large (`--cadence-shadow-raised`). Avec `prefers-reduced-motion`, seule l'ombre apparaît.
+Une `Card` réunit tout ce qu'une carte de tableau de bord peut porter ; seul le titre est obligatoire :
+- **indicateur** : `value` et son évolution (`delta`), mini-courbe (`trend`), statut (`status`, un `Indicator` quand la valeur franchit un seuil) ;
+- **action** : un bouton `PrimaryButton outline size="sm"` (`actionLabel`, `onAction`, `actionIcon`) et une `illustration` décorative en bas à droite ;
+- **texte** : `description`, sous la valeur ou directement sous le titre.
 
-- ✅ Seul le bouton est cliquable : le libellé dit l'action (« Importer », « Configurer »), le titre dit ce que l'on obtient.
-- ✅ En grille : `gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))"`, `gap: 16`. Les cartes prennent la même hauteur et les boutons s'alignent en bas.
-- ✅ `illustration` (facultative) apporte du cachet : SVG inline ou `<img alt="">` local, 64 à 96px de haut, placé en bas à droite et collé au coin. Décorative : masquée aux lecteurs d'écran, elle ne porte aucune information.
-- ✅ `headingLevel` suit la hiérarchie de la page (h3 par défaut, sous un h2 de section).
-- ❌ Une seule action par carte : pour plusieurs actions, utiliser une liste (`TableCard` + `GhostButton` icône seule).
-- ❌ Ne pas recréer une carte cliquable dans son ensemble avec `ActionCard` : pour un indicateur qui mène à une liste, `KpiCard onClick`.
-
-### Indicateurs chiffrés : `KpiCard`
-
-Une `KpiCard` porte une **valeur** et son **évolution** ; un `Indicator` porte un **état**. Une carte peut contenir un `Indicator` (`status`) quand la valeur franchit un seuil.
+Une `Card` est **interactive** soit par `onClick` (toute la carte mène à la liste détaillée), soit par son bouton d'action — jamais les deux (le typage l'interdit). Interactive, elle se soulève de 4px au survol avec l'ombre `--cadence-shadow-raised` (ombre seule avec `prefers-reduced-motion`) ; informative, elle ne bouge pas.
 
 - ✅ Toujours préciser `goodDirection` quand une hausse n'est pas favorable : `"down"` pour un retard, des suppressions, des perturbations ; `"neutral"` pour un volume sans jugement.
 - ✅ La variation est un nombre signé (`-12` → « −12 % ») ; `unit: "pt"` pour une variation de taux en points (`94,8 %` → `94,2 %` = « −0,6 pt »).
-- ✅ Mettre les cartes dans une grille : `gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))"`, `gap: 16`.
+- ✅ Bouton d'action : le libellé dit l'action (« Importer », « Configurer »), le titre dit ce que l'on obtient.
+- ✅ En grille : `gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))"`, `gap: 16`. Les cartes d'une ligne prennent la même hauteur et les boutons s'alignent en bas.
+- ✅ `headingLevel` suit la hiérarchie de la page (h3 par défaut, sous un h2 de section ; h2 directement sous le `PageHeader`).
 - ❌ Ne pas colorer une variation à la main (vert / rouge) : la couleur vient de `goodDirection`.
+- ❌ Une seule action par carte : pour plusieurs actions, utiliser une liste (`TableCard` + `GhostButton` icône seule).
 - ❌ Pas plus de 4 à 6 cartes par ligne de tableau de bord.
 
 ```tsx
@@ -1134,11 +1131,11 @@ export const SupervisionPage = () => {
 
 ### Recette 6 — Tableau de bord de supervision
 
-Haut d'écran : période d'analyse, grille de `KpiCard` cliquables qui mènent à la liste filtrée, puis la liste (recette 5) filtrée par la même période.
+Haut d'écran : période d'analyse, grille de `Card` indicateurs (cliquables par `onClick`) qui mènent à la liste filtrée, puis la liste (recette 5) filtrée par la même période.
 
 ```tsx
 import { useState } from "react";
-import { DateRangePicker, KpiCard, PageHeader, type DateRange } from "@ddaoellena/cadence-ui";
+import { Card, DateRangePicker, PageHeader, type DateRange } from "@ddaoellena/cadence-ui";
 
 export const SupervisionDashboard = () => {
   const [period, setPeriod] = useState<DateRange>(last7Days());
@@ -1156,13 +1153,13 @@ export const SupervisionDashboard = () => {
       />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16 }}>
-        <KpiCard label="Courses réalisées" value={stats.trips} delta={{ value: stats.tripsDelta, label: "vs période précédente" }}
+        <Card headingLevel={2} title="Courses réalisées" value={stats.trips} delta={{ value: stats.tripsDelta, label: "vs période précédente" }}
           loading={stats.loading} />
-        <KpiCard label="Ponctualité" value={stats.punctuality} unit="%" delta={{ value: stats.punctualityDelta, unit: "pt" }}
+        <Card headingLevel={2} title="Ponctualité" value={stats.punctuality} unit="%" delta={{ value: stats.punctualityDelta, unit: "pt" }}
           trend={stats.punctualityTrend} loading={stats.loading} />
-        <KpiCard label="Retard moyen" value={stats.delay} unit="min" goodDirection="down"
+        <Card headingLevel={2} title="Retard moyen" value={stats.delay} unit="min" goodDirection="down"
           delta={{ value: stats.delayDelta, label: "vs période précédente" }} loading={stats.loading} />
-        <KpiCard label="Perturbations actives" value={stats.disruptions} goodDirection="down"
+        <Card headingLevel={2} title="Perturbations actives" value={stats.disruptions} goodDirection="down"
           status={stats.disruptions > 20 ? "critical" : undefined} statusLabel="Seuil dépassé"
           onClick={() => navigate("/perturbations?etat=actives")} loading={stats.loading} />
       </div>
@@ -1183,23 +1180,34 @@ export const SupervisionDashboard = () => {
 
 **Source de vérité des props.** Si une prop n'est pas listée ici, elle n'existe pas — ne pas en inventer. Convention : les props sans défaut indiqué sont `undefined` ; ⚠️ signale les pièges courants.
 
-### ActionCard
+### Card
 
-Carte d'action : titre, description et un bouton `PrimaryButton outline size="sm"`. Au survol (et quand le bouton a le focus clavier), elle se soulève de 4px avec l'ombre `--cadence-shadow-raised`. Seul le bouton est cliquable.
+Carte de tableau de bord : titre (obligatoire), statut, valeur et évolution, mini-courbe, description, bouton d'action, illustration. Remplace `KpiCard` et `ActionCard` (supprimés en 0.4.0).
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `title` | `string` | **requis** | Titre de la carte |
-| `description` | `string` | — | Texte d'explication sous le titre |
-| `actionLabel` | `string` | **requis** | Libellé du bouton |
-| `onAction` | `() => void` | — | Clic sur le bouton |
+| `title` | `string` | **requis** | Titre de la carte (rendu en `<hN>`) |
+| `headingLevel` | `2 \| 3 \| 4` | `3` | Niveau de titre |
+| `description` | `string` | — | Texte secondaire : sous la valeur, ou sous le titre si la carte n'a pas de valeur |
+| `value` | `number \| string` | — | Nombre formaté en fr-FR (police mono) ; chaîne affichée telle quelle (`"N/D"`) |
+| `unit` | `string` | — | Unité accolée (`"min"`, `"%"`) |
+| `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | Ex. `{ notation: "compact" }` → « 1,2 M » |
+| `delta` | `{ value: number, unit?: "%" \| "pt" \| "", label?: string }` | — | Variation signée (« +1,8 % », « −0,6 pt ») ; `label` : « vs hier ». Défaut d'unité `"%"` |
+| `goodDirection` | `"up" \| "down" \| "neutral"` | `"up"` | Sens favorable : colore la variation (vert / rouge / gris). ⚠️ `"down"` pour un retard |
+| `status` | `IndicatorVariant` | — | `Indicator` à droite du titre (seuil dépassé…) |
+| `statusLabel` | `string` | label de la variante | — |
+| `trend` | `number[]` | — | Mini-courbe (2 points minimum), de la plus ancienne à la plus récente |
+| `loading` | `boolean` | `false` | Squelettes à la place de la valeur et de la variation |
+| `onClick` | `() => void` | — | Toute la carte devient cliquable (bouton nommé par `title`). ⚠️ Exclusif avec `actionLabel` |
+| `actionLabel` | `string` | — | Bouton `PrimaryButton outline size="sm"` en bas à gauche ; seul lui est cliquable. ⚠️ Exclusif avec `onClick` |
+| `onAction` | `() => void` | — | Clic sur le bouton d'action (exige `actionLabel`) |
 | `actionIcon` | nom d'icône `Icons` | — | Icône avant le libellé du bouton |
 | `illustration` | `ReactNode` | — | Illustration décorative en bas à droite (`aria-hidden`), hauteur max 96px, largeur max 50 % |
-| `headingLevel` | `2 \| 3 \| 4` | `3` | Niveau de titre (`<h2>`, `<h3>`, `<h4>`) |
 | `className` | `string` | — | — |
 
-⚠️ Le style du bouton est fixe (`outline`, `sm`) : pas de prop pour le changer.
-⚠️ `illustration` est décorative et masquée aux lecteurs d'écran : jamais d'information utile dedans, jamais d'URL distante (fichier local ou SVG inline).
+- La variation est aussi annoncée en phrase complète aux lecteurs d'écran : « en baisse de 12 % vs hier, favorable ».
+- ⚠️ Le style du bouton d'action est fixe (`outline`, `sm`) : pas de prop pour le changer.
+- ⚠️ `illustration` est décorative et masquée aux lecteurs d'écran : jamais d'information utile dedans, jamais d'URL distante (fichier local ou SVG inline).
 
 ### AppLayout
 
@@ -1464,26 +1472,6 @@ SVG inline issu de `@untitledui/icons` — aucune requête réseau. L'icône sui
 |---|---|---|---|
 | `variant` | `"active" \| "upcoming" \| "completed" \| "draft" \| "warning" \| "info" \| "critical" \| "nominal"` | **requis** | Statut sémantique (picto + couleurs) |
 | `label` | `string` | label de la variante | Surcharge du libellé |
-
-### KpiCard
-
-| Prop | Type | Défaut | Description |
-|---|---|---|---|
-| `label` | `string` | **requis** | Libellé de l'indicateur |
-| `value` | `number \| string` | **requis** | Nombre formaté en fr-FR (police mono) ; chaîne affichée telle quelle (`"N/D"`) |
-| `unit` | `string` | — | Unité accolée (`"min"`, `"%"`) |
-| `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | Ex. `{ notation: "compact" }` → « 1,2 M » |
-| `delta` | `{ value: number, unit?: "%" \| "pt" \| "", label?: string }` | — | Variation signée (« +1,8 % », « −0,6 pt ») ; `label` : « vs hier ». Défaut d'unité `"%"` |
-| `goodDirection` | `"up" \| "down" \| "neutral"` | `"up"` | Sens favorable : colore la variation (vert / rouge / gris). ⚠️ `"down"` pour un retard |
-| `status` | `IndicatorVariant` | — | `Indicator` dans l'en-tête (seuil dépassé…) |
-| `statusLabel` | `string` | label de la variante | — |
-| `trend` | `number[]` | — | Mini-courbe (2 points minimum), de la plus ancienne à la plus récente |
-| `description` | `string` | — | Texte secondaire sous la valeur |
-| `loading` | `boolean` | `false` | Squelettes à la place de la valeur et de la variation |
-| `onClick` | `() => void` | — | Toute la carte devient cliquable (bouton nommé par `label`) |
-| `className` | `string` | — | — |
-
-La variation est aussi annoncée en phrase complète aux lecteurs d'écran : « en baisse de 12 % vs hier, favorable ».
 
 ### Link
 

@@ -8,7 +8,7 @@ import { Icons } from "./Icons";
 import { DateRangePicker, type DateRange } from "./DateRangePicker";
 import { Dropdown } from "./Dropdown";
 import { PrimaryButton } from "./PrimaryButton";
-import { KpiCard } from "./KpiCard";
+import { Card } from "./Card";
 import { Breadcrumbs } from "./Breadcrumbs";
 
 // Date de référence fixe : les stories et leurs tests ne dépendent pas du jour d'exécution
@@ -74,8 +74,8 @@ const DashboardPage = () => (
     />
     <div style={{ display: "flex", flexDirection: "column", gap: 24, paddingTop: 8 }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16 }}>
-        <KpiCard label="Jeux de données publiés" value={4} delta={{ value: 1, label: "vs semaine précédente" }} />
-        <KpiCard label="Disponibilité du temps réel" value={98.7} unit="%" delta={{ value: -0.4, unit: "pt" }} />
+        <Card headingLevel={2} title="Jeux de données publiés" value={4} delta={{ value: 1, label: "vs semaine précédente" }} />
+        <Card headingLevel={2} title="Disponibilité du temps réel" value={98.7} unit="%" delta={{ value: -0.4, unit: "pt" }} />
       </div>
       {Array.from({ length: 8 }, (_, i) => (
         <div
