@@ -158,3 +158,29 @@ export const VarianteBouton: Story = {
     await expect(canvas.getByRole("listbox")).toBeInTheDocument();
   },
 };
+
+/**
+ * Options groupées : `groupLabel` (en-tête de section) + `divider`.
+ * Couvre le cas de l'ancien `NavigationDropdown` (sélecteur de contexte).
+ */
+export const WithGroups: Story = {
+  name: "With groups (groupLabel + divider)",
+  render: () => {
+    const [value, setValue] = useState("traffic");
+    const options: DropdownOption[] = [
+      { id: "datahub", label: "Datahub", groupLabel: "Produits" },
+      { id: "traffic", label: "Traffic Report" },
+      { id: "insights", label: "Insights" },
+      { id: "settings", label: "Paramètres", groupLabel: "Autre", divider: true },
+    ];
+    return (
+      <Dropdown
+        variant="button"
+        aria-label="Produit"
+        options={options}
+        value={value}
+        onChange={setValue}
+      />
+    );
+  },
+};

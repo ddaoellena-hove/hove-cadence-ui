@@ -256,7 +256,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Navigation principale (sections de l'app) | `Sidebar` | — |
 | Sélecteur de périmètre + profil utilisateur | `Sidebar` (`scope`, `user`) | — |
 | Fil d'Ariane | `Breadcrumbs` | — |
-| Sélecteur de contexte dans le breadcrumb | `NavigationDropdown` | `Dropdown` (formulaires) |
+| Sélecteur de contexte dans le breadcrumb (produit/module) | `Dropdown` `variant="button"` | `Dropdown` `variant="field"` (formulaires) |
 | Identité utilisateur (initiales / photo) | `Avatar` | — |
 | Graphique en barres | `DataVisualization` | — |
 | Icône seule | `Icons` | — |
@@ -593,7 +593,7 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 | `AppLayout` | Squelette : Sidebar à gauche, contenu de page dans un conteneur blanc arrondi bordé d'un liseré. | Plein écran (`100vh`) |
 | `Sidebar` | Navigation principale entre les grandes sections ; en pied, sélecteur de périmètre (`scope`) et utilisateur connecté (`user`). | Gauche, pleine hauteur, dans `AppLayout` |
 | `Breadcrumbs` | Localisation dans l'arborescence + navigation ascendante. | Au-dessus du titre |
-| `NavigationDropdown` | Sélecteur de contexte dans le breadcrumb. | Dans le breadcrumb |
+| `Dropdown` `variant="button"` | Sélecteur de contexte dans le breadcrumb (produit/module). | Dans le breadcrumb |
 | `Tab` | Navigation entre vues au sein d'une même page. | Sous le titre de page |
 | `SecondaryTab` | Sous-navigation (filtres/statuts, avec compteurs) à l'intérieur d'une vue ouverte via un `Tab`. | Sous la rangée de `Tab` |
 
@@ -1408,7 +1408,7 @@ Sélection d'une période. Même déclencheur et même calendrier que `DatePicke
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `options` | `DropdownOption[]` | **requis** | `{ id, label, icon?, disabled?, divider? }` — ⚠️ clé `id`, pas `value` |
+| `options` | `DropdownOption[]` | **requis** | `{ id, label, icon?, disabled?, divider?, groupLabel? }` — ⚠️ clé `id`, pas `value`. `divider` = trait au-dessus de l'option ; `groupLabel` = en-tête de section au-dessus de l'option |
 | `label` | `string` | — | Label au-dessus |
 | `value` | `string` | — | `id` de l'option sélectionnée |
 | `placeholder` | `string` | — | — |
@@ -1511,16 +1511,6 @@ La variation est aussi annoncée en phrase complète aux lecteurs d'écran : « 
 | `hideCloseButton` | `boolean` | `false` | — |
 
 Comportements intégrés : fermeture sur Échap, scroll du body verrouillé, footer fixe quand le corps scrolle.
-
-### NavigationDropdown
-
-| Prop | Type | Défaut | Description |
-|---|---|---|---|
-| `label` | `string` | **requis** | Texte du trigger |
-| `items` | `NavigationDropdownItem[]` | — | `{ id, label, icon?, active?, disabled?, dividerAbove?, groupLabel?, onClick? }` |
-| `align` | `"left" \| "right"` | `"left"` | Alignement du menu |
-| `disabled` | `boolean` | `false` | — |
-| `onSelect` | `(id: string) => void` | — | — |
 
 ### Pagination
 

@@ -31,7 +31,7 @@ import { Meta } from "@storybook/addon-docs/blocks";
     <tr><td><code>AppLayout</code></td><td>Squelette : Sidebar à gauche, contenu de page dans un conteneur blanc arrondi, bordé d'un liseré.</td><td>Plein écran</td></tr>
     <tr><td><code>Sidebar</code></td><td>Navigation principale entre les grandes sections de l'app ; en pied, sélecteur de périmètre (<code>scope</code>) et utilisateur connecté (<code>user</code>).</td><td>Gauche, pleine hauteur</td></tr>
     <tr><td><code>Breadcrumbs</code></td><td>Localisation dans l'arborescence + navigation ascendante.</td><td>Au-dessus du titre de page</td></tr>
-    <tr><td><code>NavigationDropdown</code></td><td>Sélecteur de contexte dans le breadcrumb (ex : choix du produit).</td><td>Dans le breadcrumb</td></tr>
+    <tr><td><code>Dropdown</code> <code>variant="button"</code></td><td>Sélecteur de contexte dans le breadcrumb (ex : choix du produit).</td><td>Dans le breadcrumb</td></tr>
     <tr><td><code>Tab</code></td><td>Navigation entre vues au sein d'une même page.</td><td>Sous le titre de page</td></tr>
   </tbody>
 </table>
@@ -82,7 +82,7 @@ import { Meta } from "@storybook/addon-docs/blocks";
 <div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne jamais tronquer la hauteur de la <code>Sidebar</code> — elle doit aller du haut au bas de l'écran.</span></div>
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Toujours afficher un <code>Breadcrumbs</code> dès que l'utilisateur est à plus d'un niveau de profondeur.</span></div>
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Le dernier item du <code>Breadcrumbs</code> est la page courante — sans <code>href</code>, souligné.</span></div>
-<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Utiliser <code>NavigationDropdown</code> dans le breadcrumb pour les sélecteurs de produit/module.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Utiliser <code>Dropdown</code> <code>variant="button"</code> dans le breadcrumb pour les sélecteurs de produit/module.</span></div>
 <div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas imbriquer <code>Sidebar</code> dans <code>Sidebar</code> — un seul niveau de navigation principale.</span></div>
 <div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas utiliser <code>Tab</code> pour de la navigation entre pages — uniquement pour des vues au sein d'une même URL.</span></div>
 

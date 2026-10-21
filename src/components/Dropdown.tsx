@@ -12,6 +12,8 @@ export interface DropdownOption {
   disabled?: boolean;
   /** Affiche un séparateur au-dessus de cette option. */
   divider?: boolean;
+  /** Libellé de groupe affiché au-dessus de cette option (en-tête de section). */
+  groupLabel?: string;
 }
 
 export interface DropdownProps {
@@ -151,6 +153,11 @@ export const Dropdown = ({
           {options.map((option) => (
             <li key={option.id} role="presentation">
               {option.divider && <div className="dropdown__divider" aria-hidden="true" />}
+              {option.groupLabel && (
+                <div className="dropdown__group-label" aria-hidden="true">
+                  {option.groupLabel}
+                </div>
+              )}
               <button
                 type="button"
                 role="option"
