@@ -240,3 +240,53 @@ export const EnTeteDeDashboard: Story = {
     );
   },
 };
+
+/**
+ * Déclencheur au bord droit d'un conteneur qui défile : le popover se décale
+ * vers la gauche et reste dans la zone visible, bordures et barre de
+ * défilement permanente exclues.
+ */
+export const AuBordDroit: Story = {
+  name: "Au bord droit",
+  render: () => {
+    const [range, setRange] = useState<DateRange>({ start: null, end: null });
+    return (
+      <div
+        className="story-scroll-box"
+        style={{
+          width: 380,
+          height: 420,
+          overflow: "auto",
+          border: "1px solid var(--cadence-color-border)",
+          // Bordure épaisse : simule une barre de défilement permanente, que le
+          // navigateur de test (headless) masque toujours
+          borderRight: "16px solid var(--cadence-color-surface-alt)",
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "flex-end", padding: 8, height: 800 }}>
+          <DateRangePicker
+            variant="button"
+            aria-label="Période"
+            referenceDate={REFERENCE}
+            presets={[]}
+            months={1}
+            value={range}
+            onChange={setRange}
+          />
+        </div>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const box = canvasElement.querySelector(".story-scroll-box") as HTMLElement;
+    await userEvent.click(canvas.getByRole("button", { name: /^Période : / }));
+    const popover = canvas.getByRole("dialog", { name: "Choisir une période" });
+    const boxRect = box.getBoundingClientRect();
+    const visibleLeft = boxRect.left + box.clientLeft;
+    const visibleRight = visibleLeft + box.clientWidth;
+    const rect = popover.getBoundingClientRect();
+    await expect(rect.right).toBeLessThanOrEqual(visibleRight);
+    await expect(rect.left).toBeGreaterThanOrEqual(visibleLeft);
+  },
+};

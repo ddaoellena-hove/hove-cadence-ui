@@ -14,9 +14,12 @@ const getBounds = (el: HTMLElement) => {
   let right = document.documentElement.clientWidth;
   for (let node = el.parentElement; node; node = node.parentElement) {
     if (getComputedStyle(node).overflowX !== "visible") {
+      // Zone de contenu visible : sans les bordures ni la barre de défilement
+      // verticale (permanente sur certains systèmes, ex. macOS « Toujours »)
       const rect = node.getBoundingClientRect();
-      left = Math.max(left, rect.left);
-      right = Math.min(right, rect.right);
+      const innerLeft = rect.left + node.clientLeft;
+      left = Math.max(left, innerLeft);
+      right = Math.min(right, innerLeft + node.clientWidth);
       break;
     }
   }
