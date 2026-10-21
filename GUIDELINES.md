@@ -973,7 +973,7 @@ export const ScenarioFormPage = () => (
 
     {/* ══ Soumission ══ */}
     <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end" }}>
-      <Link variant="secondary" hideArrow onClick={onSaveDraft}>Enregistrer comme brouillon</Link>
+      <Link hideArrow onClick={onSaveDraft}>Enregistrer comme brouillon</Link>
       <GhostButton label="Réinitialiser" onClick={onReset} />
       <PrimaryButton label="Créer le scénario" onClick={onSubmit} />
     </div>
