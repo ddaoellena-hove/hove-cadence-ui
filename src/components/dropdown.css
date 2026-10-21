@@ -97,6 +97,9 @@
 }
 
 /* ── Menu ── */
+/* Menu et options alignés sur les préréglages du DateRangePicker : options
+   arrondies (8px), fond gris au survol et à la sélection, sélection en gras
+   avec une coche en pastille. */
 .dropdown__menu {
   position: absolute;
   top: calc(100% + 6px);
@@ -105,26 +108,29 @@
   translate: var(--_popover-shift, 0px) 0;
   z-index: var(--cadence-z-dropdown, 200);
   min-width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   list-style: none;
   margin: 0;
-  padding: 4px 0;
+  padding: 8px;
   background: var(--cadence-color-white, #ffffff);
   border: 1px solid var(--cadence-color-border, #e5e5e5);
-  border-radius: 10px;
+  border-radius: var(--cadence-radius-xl, 12px);
   box-shadow: var(--cadence-shadow-lg, 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1));
-  overflow: hidden;
 }
 
 /* ── Divider ── */
 .dropdown__divider {
   height: 1px;
   background: var(--cadence-color-divider, #f0f0f0);
-  margin: 4px 0;
+  margin: 4px 4px 6px;
 }
 
 /* ── Libellé de groupe (en-tête de section) ── */
 .dropdown__group-label {
-  padding: 6px 16px 2px;
+  padding: 8px 12px 4px;
   font-size: 11px;
   font-weight: 600;
   line-height: 12px;
@@ -134,7 +140,7 @@
   user-select: none;
 }
 
-/* ── Option ── */
+/* ── Option (même gabarit que .date-range-picker__preset) ── */
 .dropdown__option {
   width: 100%;
   display: flex;
@@ -143,33 +149,31 @@
   padding: 8px 12px;
   background: transparent;
   border: none;
+  border-radius: var(--cadence-radius-md, 8px);
   cursor: pointer;
   text-align: left;
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--cadence-color-primary, #002830);
   line-height: 1.4;
-  transition: background 0.1s;
+  white-space: nowrap;
+  transition: background-color 0.1s;
 }
 
 .dropdown__option:hover:not(:disabled) {
-  background: var(--cadence-color-divider, #f0f0f0);
+  background: var(--cadence-color-surface-alt, #eef1f4);
 }
 
 .dropdown__option:focus-visible {
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
   outline: none;
-  background: #eff6ff;
 }
 
 /* ── Selected option ── */
 .dropdown__option--selected {
-  color: var(--cadence-color-accent, #1b6cff);
-  font-weight: 500;
-}
-
-.dropdown__option--selected:hover:not(:disabled) {
-  background: #eff6ff;
+  background: var(--cadence-color-surface-alt, #eef1f4);
+  font-weight: 600;
 }
 
 /* ── Disabled option ── */
@@ -195,11 +199,15 @@
   white-space: nowrap;
 }
 
-/* ── Check mark ── */
+/* ── Coche (pastille encre, coche blanche) ── */
 .dropdown__option-check {
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  color: var(--cadence-color-accent, #1b6cff);
+  color: var(--cadence-color-primary, #002830);
   margin-left: auto;
+}
+
+.dropdown__option-check-mark {
+  fill: var(--cadence-color-white, #ffffff);
 }
