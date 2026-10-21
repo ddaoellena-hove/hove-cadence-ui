@@ -14,6 +14,7 @@ import {
   normalizeRange,
   type DateRangePreset,
 } from "./date-range-utils";
+import { usePopoverFit } from "./use-popover-fit";
 import "./date-range-picker.css";
 
 export type { DateRangePreset };
@@ -122,6 +123,10 @@ export const DateRangePicker = ({
     setFocusedDate(start ?? reference);
     setOpen(true);
   };
+
+  // Le popover reste dans la zone visible (ex. déclencheur au bord droit d'un en-tête)
+  const popoverRef = useRef<HTMLDivElement>(null);
+  usePopoverFit(popoverRef, open);
 
   const close = (restoreFocus = true) => {
     setOpen(false);
@@ -290,7 +295,7 @@ export const DateRangePicker = ({
       </button>
 
       {open && (
-        <div className="date-range-picker__popover" role="dialog" aria-label="Choisir une période">
+        <div ref={popoverRef} className="date-range-picker__popover" role="dialog" aria-label="Choisir une période">
           {presets.length > 0 && (
             <ul className="date-range-picker__presets" aria-label="Préréglages">
               {presets.map((preset) => (

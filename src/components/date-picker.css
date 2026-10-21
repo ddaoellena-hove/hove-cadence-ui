@@ -215,6 +215,8 @@
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
+  /* Décalage calculé par usePopoverFit pour rester dans la zone visible */
+  translate: var(--_popover-shift, 0px) 0;
   z-index: var(--cadence-z-popover, 100);
   background: var(--cadence-color-white, #ffffff);
   border: 1px solid var(--cadence-color-border, #e5e5e5);
