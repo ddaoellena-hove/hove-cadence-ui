@@ -5,6 +5,9 @@ import { createContext, useContext } from "react";
 
 export const TabListContext = createContext(false);
 
+// Remplacé par le bundler de l'app (comme dans button-compat.ts)
+declare const process: { env: { NODE_ENV?: string } };
+
 const warned = new Set<string>();
 
 /** Vrai dans un TabList ; sinon avertit une fois par composant, en développement. */

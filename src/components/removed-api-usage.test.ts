@@ -51,4 +51,11 @@ describe("API supprimées en 0.4.0", () => {
     }
     expect(offenders).toEqual([]);
   });
+
+  it("le CHANGELOG, en liste blanche, documente bien chaque suppression", () => {
+    const changelog = readFileSync(join(root, "CHANGELOG.md"), "utf8");
+    for (const name of ["Header", "TableCardAction", "NavigationDropdown"]) {
+      expect(changelog, name).toMatch(new RegExp(`\\*\\*\`${name}\` est supprimé`));
+    }
+  });
 });
