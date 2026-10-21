@@ -1,5 +1,6 @@
 import './tokens.css';
 
+export * from './ActionCard';
 export * from './AlertToast';
 export * from './Autocomplete';
 export * from './Badge';

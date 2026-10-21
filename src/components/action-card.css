@@ -1,0 +1,82 @@
+/* ── ActionCard ──────────────────────────────────────────────────────────── */
+/* Carte blanche à bordure fine ; ombre portée au survol (et quand le bouton
+   a le focus clavier). Seul le bouton est cliquable. */
+.action-card {
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-lg, 10px);
+  box-sizing: border-box;
+  color: var(--cadence-color-primary, #002830);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  gap: 16px;
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
+  padding: 16px 20px;
+  transition: box-shadow 120ms ease;
+}
+
+.action-card:hover,
+.action-card:focus-within {
+  box-shadow: var(--cadence-shadow-md, 0px 0px 12px rgba(0, 0, 0, 0.08), 0px 0px 2px rgba(0, 0, 0, 0.25));
+}
+
+/* ── Titre et description ────────────────────────────────────────────────── */
+.action-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.action-card__title {
+  color: var(--cadence-color-primary, #002830);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.action-card__description {
+  color: var(--cadence-color-icon-muted, #69797d);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── Pied : bouton en bas à gauche (cartes de même hauteur dans une grille),
+      illustration éventuelle collée au coin bas-droit ── */
+.action-card__footer {
+  align-items: flex-end;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.action-card__actions {
+  display: flex;
+  flex-shrink: 0;
+}
+
+/* Les marges négatives annulent le padding de la carte : l'illustration
+   touche le coin, rogné par l'arrondi (overflow: hidden). */
+.action-card__illustration {
+  display: flex;
+  flex-shrink: 1;
+  justify-content: flex-end;
+  margin: 0 -20px -16px 0;
+  max-width: 50%;
+  min-width: 0;
+  pointer-events: none;
+}
+
+.action-card__illustration > img,
+.action-card__illustration > svg {
+  display: block;
+  height: auto;
+  max-height: 96px;
+  max-width: 100%;
+}
