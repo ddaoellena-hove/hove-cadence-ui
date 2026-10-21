@@ -116,19 +116,7 @@
   box-shadow: var(--cadence-shadow-lg, 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1));
 }
 
-/* Scrollbar fine et en flux (non-overlay) — WebKit/Chrome/Safari */
-.autocomplete__menu::-webkit-scrollbar {
-  width: 8px;
-}
-.autocomplete__menu::-webkit-scrollbar-thumb {
-  background: var(--cadence-color-border-strong, #bfc9cb);
-  border-radius: 4px;
-  border: 2px solid var(--cadence-color-white, #ffffff);
-  background-clip: padding-box;
-}
-.autocomplete__menu::-webkit-scrollbar-track {
-  background: transparent;
-}
+/* Barre de défilement : classe partagée cadence-scrollbar (scrollbar.css) */
 
 /* ── Group label ─────────────────────────────────────────────────────────── */
 .autocomplete__group-label {

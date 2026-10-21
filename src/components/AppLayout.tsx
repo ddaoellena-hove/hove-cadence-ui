@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import "./app-layout.css";
+import "./scrollbar.css";
 
 export interface AppLayoutProps {
   /** La `Sidebar` de l'app. Sa couleur produit devient le fond de l'app. */
@@ -29,7 +30,7 @@ export const AppLayout = ({ sidebar, children, contentLabel = "Contenu principal
         {/* Cadre arrondi (coupe ce qui dépasse) + zone qui défile : les barres de
             scroll restent dans l'arrondi */}
         <div className="app-layout__container">
-          <div className="app-layout__scroll">{children}</div>
+          <div className="app-layout__scroll cadence-scrollbar">{children}</div>
         </div>
       </main>
     </div>

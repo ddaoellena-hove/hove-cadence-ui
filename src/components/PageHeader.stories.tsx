@@ -100,12 +100,12 @@ export const Defaut: Story = {
     const scroller = canvasElement.querySelector(".app-layout__scroll") as HTMLElement;
     await expect(canvas.getByRole("heading", { level: 1, name: "Pilotage des données" })).toBeInTheDocument();
 
-    // Le popover de période ne dépasse pas du conteneur
+    // Le popover de période tient dans la zone visible du conteneur (barre de
+    // défilement exclue ; cas du bord droit testé par DateRangePicker / Au bord droit)
     await userEvent.click(canvas.getByRole("button", { name: /^Période : / }));
     const popover = canvas.getByRole("dialog", { name: "Choisir une période" });
-    await waitFor(() =>
-      expect(popover.getBoundingClientRect().right).toBeLessThanOrEqual(scroller.getBoundingClientRect().right),
-    );
+    const visibleRight = () => scroller.getBoundingClientRect().left + scroller.clientLeft + scroller.clientWidth;
+    await waitFor(() => expect(popover.getBoundingClientRect().right).toBeLessThanOrEqual(visibleRight()));
     await userEvent.keyboard("{Escape}");
 
     // Au défilement, l'en-tête reste en haut et prend son liseré

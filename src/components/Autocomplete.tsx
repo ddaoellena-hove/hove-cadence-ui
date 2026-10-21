@@ -8,6 +8,7 @@ import {
 } from "react";
 import { Badge } from "./Badge";
 import "./autocomplete.css";
+import "./scrollbar.css";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -266,7 +267,7 @@ export const Autocomplete = ({
 
       {isOpen && (
         <ul
-          className="autocomplete__menu"
+          className="autocomplete__menu cadence-scrollbar"
           id={`${fieldId}-listbox`}
           role="listbox"
           aria-label={label ?? "Options"}

@@ -1,0 +1,42 @@
+/* ── Barre de défilement Cadence ─────────────────────────────────────────── */
+/* Classe partagée `cadence-scrollbar`, posée sur chaque zone qui défile
+   (AppLayout, DataTable, Modal, Autocomplete…) et utilisable par les apps.
+   Barre fine sans fond, curseur arrondi en retrait qui fonce au survol.
+   Chrome / Edge / Safari : pseudo-éléments ::-webkit-scrollbar (ils priment
+   tant que scrollbar-color n'est pas déclaré) ; Firefox : propriétés standard. */
+.cadence-scrollbar::-webkit-scrollbar {
+  height: 12px;
+  width: 12px;
+}
+
+.cadence-scrollbar::-webkit-scrollbar-track,
+.cadence-scrollbar::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Piste en retrait des extrémités : le curseur ne touche pas les coins arrondis */
+.cadence-scrollbar::-webkit-scrollbar-track {
+  margin: 6px;
+}
+
+/* Bordure transparente + background-clip : le curseur garde 3px de retrait */
+.cadence-scrollbar::-webkit-scrollbar-thumb {
+  background-clip: padding-box;
+  background-color: var(--cadence-color-scrollbar-thumb, rgba(0, 40, 48, 0.2));
+  border: 3px solid transparent;
+  border-radius: 999px;
+  min-height: 32px;
+  min-width: 32px;
+}
+
+.cadence-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--cadence-color-scrollbar-thumb-hover, rgba(0, 40, 48, 0.36));
+}
+
+/* Firefox (pas de ::-webkit-scrollbar) */
+@supports not selector(::-webkit-scrollbar) {
+  .cadence-scrollbar {
+    scrollbar-color: var(--cadence-color-scrollbar-thumb, rgba(0, 40, 48, 0.2)) transparent;
+    scrollbar-width: thin;
+  }
+}

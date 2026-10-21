@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { GhostButton } from "./GhostButton";
 import { PrimaryButton } from "./PrimaryButton";
 import "./modal.css";
+import "./scrollbar.css";
 
 export interface ModalAction {
   /** Button label. */
@@ -119,7 +120,7 @@ export const Modal = ({
 
         {/* ── Inner — fond blanc, border-radius 9px ── */}
         <div className="modal__inner">
-          <div className="modal__body">{children}</div>
+          <div className="modal__body cadence-scrollbar">{children}</div>
 
           {showFooter && (
             <div className="modal__footer">
