@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, fn } from "storybook/test";
+import { expect, fn, userEvent } from "storybook/test";
 import { useState } from "react";
 import { CounterInput } from "./CounterInput";
 
@@ -86,5 +86,62 @@ export const IncrementDecrement: Story = {
     await dec.click();
     await dec.click();
     await expect(args.onChange).toHaveBeenCalledWith(4);
+  },
+};
+
+/** Borne non multiple du pas (max 58, pas 5) : « + » va jusqu'à 58, jamais 60. */
+export const BorneNonMultiple: Story = {
+  name: "Borne non multiple du pas",
+  args: { defaultValue: 55, step: 5, max: 58, onChange: fn() },
+  play: async ({ canvas, args }) => {
+    const inc = canvas.getByRole("button", { name: "Incrémenter" });
+    await expect(inc).toBeEnabled();
+    await userEvent.click(inc);
+    await expect(args.onChange).toHaveBeenLastCalledWith(58);
+    await expect(canvas.getByLabelText("Valeur")).toHaveValue(58);
+    // Sur la borne : désactivé
+    await expect(inc).toBeDisabled();
+  },
+};
+
+/** Pas plus grand que l'écart à la borne (valeur 5, pas 15, min 0) : « − » va jusqu'à 0. */
+export const PasPlusGrandQueLaBorne: Story = {
+  name: "Pas plus grand que l'écart à la borne",
+  args: { defaultValue: 5, step: 15, min: 0, onChange: fn() },
+  play: async ({ canvas, args }) => {
+    const dec = canvas.getByRole("button", { name: "Décrémenter" });
+    await expect(dec).toBeEnabled();
+    await userEvent.click(dec);
+    await expect(args.onChange).toHaveBeenLastCalledWith(0);
+    await expect(dec).toBeDisabled();
+  },
+};
+
+/** Saisie au clavier hors bornes : ramenée dans [min, max] à la validation. */
+export const SaisieHorsBornes: Story = {
+  name: "Saisie hors bornes",
+  args: { defaultValue: 10, min: 0, max: 120, step: 5, unit: "min", onChange: fn() },
+  play: async ({ canvas, args }) => {
+    const input = canvas.getByLabelText("Valeur");
+    await userEvent.click(input);
+    await userEvent.keyboard("999{Enter}");
+    await expect(args.onChange).toHaveBeenLastCalledWith(120);
+    await userEvent.click(input);
+    await userEvent.keyboard("-40{Enter}");
+    await expect(args.onChange).toHaveBeenLastCalledWith(0);
+  },
+};
+
+/** Pas décimal (0,5). */
+export const PasDecimal: Story = {
+  name: "Pas décimal",
+  args: { defaultValue: 1, min: 0, max: 2, step: 0.5, unit: "km", onChange: fn() },
+  play: async ({ canvas, args }) => {
+    const inc = canvas.getByRole("button", { name: "Incrémenter" });
+    await userEvent.click(inc);
+    await expect(args.onChange).toHaveBeenLastCalledWith(1.5);
+    await userEvent.click(inc);
+    await expect(args.onChange).toHaveBeenLastCalledWith(2);
+    await expect(inc).toBeDisabled();
   },
 };

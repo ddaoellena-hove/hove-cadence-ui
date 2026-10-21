@@ -1321,14 +1321,15 @@ Clavier : ↑/↓ pour naviguer, Entrée pour sélectionner l'option surlignée,
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
 | `value` | `number` | — | Mode contrôlé |
-| `defaultValue` | `number` | — | Mode non contrôlé |
-| `min`, `max`, `step` | `number` | — | Bornes et pas |
+| `defaultValue` | `number` | `0` | Mode non contrôlé |
+| `min`, `max` | `number` | — | Bornes (incluses) |
+| `step` | `number` | `1` | Pas des boutons − et + ; décimal accepté (`0.5`) |
 | `unit` | `string` | — | Unité affichée (ex : `"min"`, `"km"`) |
 | `label` | `string` | — | Label au-dessus |
 | `disabled` | `boolean` | `false` | — |
 | `onChange` | `(value: number) => void` | — | — |
 
-Champ bordé de 40px ; les boutons − et + sont des `GhostButton size="sm"` icône seule (« Décrémenter », « Incrémenter »), posés dans le cadre et désactivés aux bornes `min` / `max`. Sans infobulle : leur sens est évident (le nom reste annoncé aux lecteurs d'écran). La valeur reste saisissable au clavier (Entrée valide, Échap annule).
+Champ bordé de 40px ; les boutons − et + sont des `GhostButton size="sm"` icône seule (« Décrémenter », « Incrémenter »), posés dans le cadre et désactivés seulement quand la valeur est **déjà** sur `min` / `max` : sinon ils vont jusqu'à la borne (valeur 5, pas 15, `min` 0 → « − » donne 0). Toute valeur (bouton ou saisie) est arrondie au pas **puis** bornée : elle reste toujours dans [`min`, `max`], même si la borne n'est pas un multiple du pas (`max` 58, pas 5 → 58, jamais 60). Sans infobulle : leur sens est évident (le nom reste annoncé aux lecteurs d'écran). La valeur reste saisissable au clavier (Entrée valide, Échap annule).
 
 ### DataTable
 
