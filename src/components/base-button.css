@@ -1,0 +1,190 @@
+/* ── BaseButton (interne) : gabarit commun de PrimaryButton et GhostButton ── */
+/* Les deux composants ont exactement les mêmes dimensions : le Ghost garde
+   une bordure transparente de 1px pour s'aligner au pixel dans un groupe. */
+.base-button {
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  align-items: center;
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  font-weight: 500;
+  justify-content: center;
+  margin: 0;
+  outline: none;
+  position: relative;
+  text-decoration: none;
+  transition: background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease, color 120ms ease;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.base-button:disabled {
+  cursor: not-allowed;
+}
+
+.base-button--loading {
+  cursor: progress;
+}
+
+.base-button--full-width {
+  width: 100%;
+}
+
+.base-button__label {
+  position: relative;
+}
+
+.base-button__icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+/* ── Tailles (valeurs reprises des boutons 0.2) ──────────────────────────── */
+/* sm = ancien SecondaryButton medium */
+.base-button--sm {
+  font-size: 11px;
+  gap: 5px;
+  height: 29px;
+  letter-spacing: -0.22px;
+  line-height: 13.2px;
+  padding: 0 11px;
+}
+
+.base-button--sm.base-button--icon-start {
+  padding-left: 9px;
+  padding-right: 10px;
+}
+
+.base-button--sm.base-button--icon-end {
+  padding-right: 9px;
+}
+
+.base-button--sm.base-button--icon-end:not(.base-button--icon-start) {
+  padding-left: 10px;
+}
+
+/* md = ancien PrimaryButton medium (défaut) */
+.base-button--md {
+  font-size: 13px;
+  gap: 8px;
+  height: 34px;
+  letter-spacing: -0.13px;
+  line-height: 15.6px;
+  padding: 0 24px;
+}
+
+.base-button--md.base-button--icon-start {
+  padding-left: 18px;
+  padding-right: 20px;
+}
+
+.base-button--md.base-button--icon-end {
+  padding-right: 18px;
+}
+
+.base-button--md.base-button--icon-end:not(.base-button--icon-start) {
+  padding-left: 20px;
+}
+
+/* lg = ancien PrimaryButton large */
+.base-button--lg {
+  font-size: 15px;
+  gap: 8px;
+  height: 46px;
+  letter-spacing: -0.15px;
+  line-height: 18px;
+  padding: 0 32px;
+}
+
+.base-button--lg.base-button--icon-start {
+  padding-left: 24px;
+  padding-right: 28px;
+}
+
+.base-button--lg.base-button--icon-end {
+  padding-right: 24px;
+}
+
+.base-button--lg.base-button--icon-end:not(.base-button--icon-start) {
+  padding-left: 28px;
+}
+
+/* Icône seule : bouton carré */
+.base-button--icon-only {
+  padding: 0;
+}
+
+.base-button--sm.base-button--icon-only {
+  width: 29px;
+}
+
+.base-button--md.base-button--icon-only {
+  width: 34px;
+}
+
+.base-button--lg.base-button--icon-only {
+  width: 46px;
+}
+
+/* ── Chargement ──────────────────────────────────────────────────────────── */
+.base-button__spinner {
+  animation: base-button-spin 0.7s linear infinite;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  border-right-color: transparent;
+  box-sizing: border-box;
+  display: block;
+  flex-shrink: 0;
+}
+
+.base-button--sm .base-button__spinner {
+  border-width: 1.5px;
+  height: 12px;
+  width: 12px;
+}
+
+.base-button--md .base-button__spinner {
+  height: 16px;
+  width: 16px;
+}
+
+.base-button--lg .base-button__spinner {
+  height: 20px;
+  width: 20px;
+}
+
+/* Sans icône de début : libellé masqué (largeur conservée), spinner centré.
+   opacity et non visibility : le libellé reste le nom accessible du bouton. */
+.base-button--loading:not(.base-button--icon-start) .base-button__label,
+.base-button--loading:not(.base-button--icon-start) .base-button__icon {
+  opacity: 0;
+}
+
+.base-button__spinner-overlay {
+  align-items: center;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  position: absolute;
+}
+
+@keyframes base-button-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes base-button-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .base-button__spinner {
+    animation: base-button-pulse 1.2s ease-in-out infinite;
+  }
+}

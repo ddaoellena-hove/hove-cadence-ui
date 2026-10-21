@@ -1,4 +1,5 @@
 import React from "react";
+import { warnOnce } from "./button-compat";
 import "./link.css";
 
 export interface LinkProps {
@@ -8,7 +9,11 @@ export interface LinkProps {
   icon?: React.ReactNode;
   /** URL destination */
   href?: string;
-  /** Visual variant */
+  /**
+   * Variante : "primary" (lien, --cadence-color-link), "destructive"
+   * (--cadence-color-danger-text), "inverse" (sur fond sombre).
+   * `"secondary"` est déprécié : identique à "primary".
+   */
   variant?: "primary" | "secondary" | "destructive" | "inverse";
   /** Size of the link text */
   size?: "sm" | "md" | "lg";
@@ -39,9 +44,16 @@ export const Link = ({
   style,
   hideArrow = false,
 }: LinkProps) => {
+  // "secondary" n'a jamais différé de "primary" : alias déprécié
+  if (variant === "secondary") {
+    warnOnce("Link", "secondary", '`variant="secondary"` est déprécié : utilisez `"primary"` (rendu identique).');
+  }
+  const resolvedVariant = variant === "secondary" ? "primary" : variant;
+
   const classes = [
     "link",
-    `link--${variant}`,
+    `link--${resolvedVariant}`,
+    !href ? "link--action" : "",
     `link--${size}`,
     disabled ? "link--disabled" : "",
     className,

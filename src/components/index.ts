@@ -8,6 +8,7 @@ export * from './Breadcrumbs';
 export * from './CounterInput';
 export * from './Dropdown';
 export * from './FilterBar';
+export * from './GhostButton';
 export * from './Header';
 export * from './Link';
 export * from './Modal';

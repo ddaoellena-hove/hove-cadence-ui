@@ -1,0 +1,40 @@
+/* ── GhostButton : actions secondaires, sans fond ni bordure au repos ──────── */
+/* Gabarit commun dans base-button.css (bordure transparente de 1px conservée).
+   Survol et appui par voiles translucides : visibles sur blanc comme sur
+   --cadence-color-surface-alt. */
+.ghost-button {
+  background-color: transparent;
+  color: var(--cadence-color-primary, rgb(0, 40, 48));
+}
+
+.ghost-button:hover:not(:disabled) {
+  background-color: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
+}
+
+.ghost-button:active:not(:disabled) {
+  background-color: var(--cadence-color-active-overlay, rgba(0, 40, 48, 0.12));
+}
+
+/* ── Ton danger : texte AA sur fond clair ────────────────────────────────── */
+.ghost-button--danger {
+  color: var(--cadence-color-danger-text, rgb(185, 28, 28));
+}
+
+.ghost-button--danger:hover:not(:disabled) {
+  background-color: var(--cadence-color-danger-hover-overlay, rgba(218, 30, 40, 0.06));
+}
+
+.ghost-button--danger:active:not(:disabled) {
+  background-color: var(--cadence-color-danger-active-overlay, rgba(218, 30, 40, 0.12));
+}
+
+/* ── Focus clavier : indispensable sur un bouton sans bordure ────────────── */
+.ghost-button:focus-visible {
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px rgb(255, 255, 255), 0 0 0 4px rgb(26, 62, 69));
+}
+
+/* ── Désactivé : texte grisé, sans fond (le gabarit reste) ───────────────── */
+.ghost-button:disabled {
+  background-color: transparent;
+  color: var(--cadence-color-text-disabled, rgb(128, 128, 128));
+}

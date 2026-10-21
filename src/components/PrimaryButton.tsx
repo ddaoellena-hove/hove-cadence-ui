@@ -1,155 +1,32 @@
 /**
- * PrimaryButton component.
+ * PrimaryButton — action principale, plein. Un seul par vue.
  *
- * A versatile button supporting filled and outline variants, destructive actions,
- * and optional icon placement (left, right, or icon-only).
+ * API v2 commune avec GhostButton (tone, size, iconStart / iconEnd, icon +
+ * aria-label, loading, fullWidth, type). Les anciennes props (withIcon,
+ * destructive, outline, size medium / large, state) restent acceptées en
+ * 0.3.0, traduites par button-compat.ts ; suppression prévue en 1.0.0.
  */
-import React, { useState, useEffect } from "react";
-import { Icons, type IconsProps } from "./Icons";
+import { forwardRef } from "react";
+import { BaseButton } from "./BaseButton";
+import { resolveButtonProps, warnDeprecated, type CompatButtonProps } from "./button-compat";
 import "./primary-button.css";
 
-export interface PrimaryButtonProps {
-  /** Visual interaction state. Hover/clicked states are also managed internally via DOM events. */
-  state?: "clicked" | "disabled" | "enabled" | "hover";
+export type {
+  ActionButtonBaseProps,
+  ActionButtonContentProps,
+  ActionButtonProps,
+  ActionButtonSize,
+  ActionButtonTone,
+} from "./action-button-types";
 
-  /** Icon placement relative to the label. */
-  withIcon?: "left" | "no" | "only" | "right";
+/** Nouvelle API, plus les anciennes props tolérées (dépréciées) jusqu'à la 1.0.0. */
+export type PrimaryButtonProps = CompatButtonProps;
 
-  /** Render as an outline (ghost) button. */
-  outline?: boolean;
-
-  /** Apply destructive (danger) styling. */
-  destructive?: boolean;
-
-  /** Button label text shown when withIcon is not "only". */
-  label?: string;
-
-  /** Icon name to display (used when withIcon is not "no"). */
-  icon?: IconsProps["icon"];
-
-  /** Optional extra class name for custom styling. */
-  className?: string;
-
-  /** Click handler. */
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
-
-  /** Native disabled attribute — also sets state to "disabled". */
-  disabled?: boolean;
-
-  /** Button size. Defaults to "medium". */
-  size?: "medium" | "large";
-
-  /** @deprecated Ignoré — les icônes sont désormais des SVG inline. */
-  iconMap?: string;
-}
-
-/**
- * PrimaryButton renders a styled button element with support for filled/outline,
- * destructive variants, and optional icon placement.
- */
-export const PrimaryButton = React.forwardRef<
-  HTMLButtonElement,
-  PrimaryButtonProps
->(
-  (
-    {
-      state: stateProp = "enabled",
-      withIcon = "no",
-      outline = false,
-      destructive = false,
-      label = "Label",
-      icon = "map-01",
-      size = "medium",
-      className,
-      onClick,
-      disabled = false,
-    },
-    ref
-  ) => {
-    const isDisabled = disabled || stateProp === "disabled";
-
-    const [internalState, setInternalState] = useState<string>(
-      isDisabled ? "disabled" : (stateProp ?? "enabled")
-    );
-
-    useEffect(() => {
-      setInternalState(
-        isDisabled ? "disabled" : (stateProp ?? "enabled")
-      );
-    }, [stateProp, isDisabled]);
-
-    const handleMouseEnter = () => {
-      if (internalState !== "disabled") setInternalState("hover");
-    };
-
-    const handleMouseLeave = () => {
-      if (internalState !== "disabled")
-        setInternalState(isDisabled ? "disabled" : (stateProp ?? "enabled"));
-    };
-
-    const handleMouseDown = () => {
-      if (internalState !== "disabled") setInternalState("clicked");
-    };
-
-    const handleMouseUp = () => {
-      if (internalState !== "disabled") setInternalState("hover");
-    };
-
-    const rootClass = [
-      "primary-button",
-      internalState,
-      withIcon,
-      `outline-${outline}`,
-      `destructive-${destructive}`,
-      `size-${size}`,
-      className,
-    ]
-      .filter(Boolean)
-      .join(" ");
-
-    const iconEl = (
-      <Icons className="icons-instance" icon={icon} />
-    );
-
-    let content: React.ReactNode;
-    if (withIcon === "only") {
-      content = <span className="label">{iconEl}</span>;
-    } else if (withIcon === "left") {
-      content = (
-        <span className="label">
-          {iconEl}
-          <span className="text-wrapper-2">{label}</span>
-        </span>
-      );
-    } else if (withIcon === "right") {
-      content = (
-        <span className="label">
-          <span className="text-wrapper">{label}</span>
-          {iconEl}
-        </span>
-      );
-    } else {
-      // withIcon === "no"
-      content = <span className="label">{label}</span>;
-    }
-
-    return (
-      <button
-        ref={ref}
-        className={rootClass}
-        disabled={isDisabled}
-        onClick={onClick}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        aria-disabled={isDisabled}
-        type="button"
-      >
-        {content}
-      </button>
-    );
-  }
-);
+export const PrimaryButton = forwardRef<HTMLButtonElement, PrimaryButtonProps>((props, ref) => {
+  const { variant, props: resolved, deprecated } = resolveButtonProps(props, "PrimaryButton");
+  warnDeprecated("PrimaryButton", deprecated);
+  // Ancien `outline` : rendu en GhostButton
+  return <BaseButton ref={ref} variant={variant} {...resolved} />;
+});
 
 PrimaryButton.displayName = "PrimaryButton";
