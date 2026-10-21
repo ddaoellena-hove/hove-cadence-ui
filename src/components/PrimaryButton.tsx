@@ -8,6 +8,8 @@
  */
 import { forwardRef } from "react";
 import { BaseButton } from "./BaseButton";
+import { GhostButton } from "./GhostButton";
+import type { ActionButtonProps } from "./action-button-types";
 import { resolveButtonProps, warnDeprecated, type CompatButtonProps } from "./button-compat";
 import "./primary-button.css";
 
@@ -25,8 +27,9 @@ export type PrimaryButtonProps = CompatButtonProps;
 export const PrimaryButton = forwardRef<HTMLButtonElement, PrimaryButtonProps>((props, ref) => {
   const { variant, props: resolved, deprecated } = resolveButtonProps(props, "PrimaryButton");
   warnDeprecated("PrimaryButton", deprecated);
-  // Ancien `outline` : rendu en GhostButton
-  return <BaseButton ref={ref} variant={variant} {...resolved} />;
+  // Ancien `outline` : rendu par le vrai GhostButton (et ses styles)
+  if (variant === "ghost") return <GhostButton ref={ref} {...(resolved as ActionButtonProps)} />;
+  return <BaseButton ref={ref} variant="primary" {...resolved} />;
 });
 
 PrimaryButton.displayName = "PrimaryButton";

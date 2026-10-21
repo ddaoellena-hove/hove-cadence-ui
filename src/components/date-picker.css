@@ -65,21 +65,6 @@
   border-top: 1px solid var(--cadence-color-divider, #f0f0f0);
 }
 
-.date-picker__footer .date-picker__confirm-btn {
-  width: 100%;
-  justify-content: center;
-}
-
-/* Target the inner button for full width */
-.date-picker__footer .secondary-button {
-  width: 100%;
-}
-
-.date-picker__footer .secondary-button .sb-label {
-  width: 100%;
-  justify-content: center;
-}
-
 /* ── Segmented header inside popover ────────────────────────────────── */
 .date-picker__segmented-header {
   margin-bottom: 14px;

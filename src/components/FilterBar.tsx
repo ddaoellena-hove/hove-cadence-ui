@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { Badge } from "./Badge";
-import { Link } from "./Link";
+import { GhostButton } from "./GhostButton";
 import { TextInput } from "./TextInput";
 import { formatResultCount } from "./filter-bar-utils";
 import "./filter-bar.css";
@@ -135,9 +135,7 @@ export const FilterBar = ({
             </ul>
           )}
           {activeFilters.length >= 2 && onClearAll && (
-            <Link hideArrow size="sm" onClick={onClearAll}>
-              Tout effacer
-            </Link>
+            <GhostButton size="sm" label="Tout effacer" onClick={onClearAll} />
           )}
           {resultCount !== undefined && (
             <span className="filter-bar__count" aria-live="polite">

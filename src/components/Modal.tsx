@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { GhostButton } from "./GhostButton";
 import { PrimaryButton } from "./PrimaryButton";
 import "./modal.css";
 
@@ -22,11 +23,11 @@ export interface ModalProps {
   children: React.ReactNode;
   /**
    * Primary action (right button in footer).
-   * Uses PrimaryButton — size medium, as per guidelines.
+   * Bouton principal du pied (PrimaryButton md ; `destructive` → tone="danger").
    */
   primaryAction?: ModalAction;
   /**
-   * Secondary action (left button in footer, rendered as outline).
+   * Action secondaire (à gauche dans le pied, rendue en GhostButton).
    * Typically « Annuler » or a reversible action.
    */
   secondaryAction?: ModalAction;
@@ -123,17 +124,13 @@ export const Modal = ({
           {showFooter && (
             <div className="modal__footer">
               {secondaryAction && (
-                <PrimaryButton
-                  outline
-                  label={secondaryAction.label}
-                  onClick={secondaryAction.onClick}
-                />
+                <GhostButton label={secondaryAction.label} onClick={secondaryAction.onClick} />
               )}
               {primaryAction && (
                 <PrimaryButton
                   label={primaryAction.label}
                   onClick={primaryAction.onClick}
-                  destructive={primaryAction.destructive}
+                  tone={primaryAction.destructive ? "danger" : "default"}
                 />
               )}
             </div>

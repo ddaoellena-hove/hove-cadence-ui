@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import { CalendarMonth, type CalendarDayState } from "./CalendarMonth";
-import { SecondaryButton } from "./SecondaryButton";
+import { GhostButton } from "./GhostButton";
+import { PrimaryButton } from "./PrimaryButton";
 import { compareDays, dayKey, getKeyboardTarget, isOutsideBounds, isSameDay, formatDate } from "./date-utils";
 import {
   DEFAULT_PRESETS,
@@ -320,13 +321,8 @@ export const DateRangePicker = ({
                 {maxDays !== undefined && <span className="date-range-picker__hint">{maxDays} jours maximum</span>}
               </div>
               <div className="date-range-picker__actions">
-                <SecondaryButton outline label="Annuler" onClick={() => close()} />
-                <SecondaryButton
-                  label="Appliquer"
-                  state={draftStart && draftEnd ? "enabled" : "disabled"}
-                  disabled={!draftStart || !draftEnd}
-                  onClick={apply}
-                />
+                <GhostButton size="sm" label="Annuler" onClick={() => close()} />
+                <PrimaryButton size="sm" label="Appliquer" disabled={!draftStart || !draftEnd} onClick={apply} />
               </div>
             </div>
           </div>

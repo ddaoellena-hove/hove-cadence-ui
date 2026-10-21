@@ -10,7 +10,8 @@ import { CheckCircle } from "@untitledui/icons/CheckCircle";
 import { AlertTriangle } from "@untitledui/icons/AlertTriangle";
 import { AlertCircle } from "@untitledui/icons/AlertCircle";
 import { XClose } from "@untitledui/icons/XClose";
-import { SecondaryButton } from "./SecondaryButton";
+import { GhostButton } from "./GhostButton";
+import { PrimaryButton } from "./PrimaryButton";
 import "./alert-toast.css";
 
 /** Visual type of the toast, controls the accent color and status icon. */
@@ -22,7 +23,7 @@ export interface AlertToastAction {
   label: string;
   /** Click handler. */
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
-  /** Render the button as an outline ghost button. */
+  /** Action secondaire : rendue en GhostButton. Défaut : true pour la 1re action, false pour la 2e (PrimaryButton). */
   outline?: boolean;
 }
 
@@ -133,17 +134,14 @@ export const AlertToast = ({
 
         {actions && actions.length > 0 && (
           <div className="alert-toast__actions">
-            {actions.map((action, idx) => (
-              <SecondaryButton
-                key={idx}
-                label={action.label}
-                outline={action.outline ?? idx === 0}
-                onClick={action.onClick}
-                state="enabled"
-                withIcon="no"
-                destructive={false}
-              />
-            ))}
+            {actions.map((action, idx) =>
+              // Action secondaire (outline, ou 1re par défaut) → Ghost ; action principale → Primary
+              (action.outline ?? idx === 0) ? (
+                <GhostButton key={idx} size="sm" label={action.label} onClick={action.onClick} />
+              ) : (
+                <PrimaryButton key={idx} size="sm" label={action.label} onClick={action.onClick} />
+              ),
+            )}
           </div>
         )}
 
