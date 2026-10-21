@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
-import { DataTable, type DataTableSort } from "./DataTable";
+import { DataTable, type DataTableColumn, type DataTableSort } from "./DataTable";
 import { Pagination } from "./Pagination";
 import { compareValues } from "./data-table-utils";
 import { generateDisruptions, generateTrips, type Disruption, type Trip } from "../stories/data/transport";
@@ -267,5 +267,63 @@ export const ModeServeur: Story = {
     const canvas = within(canvasElement);
     await waitFor(() => expect(canvas.getByText("1–50 sur 12 430")).toBeInTheDocument(), { timeout: 3000 });
     await waitFor(() => expect(canvas.getByRole("table")).not.toHaveAttribute("aria-busy"), { timeout: 3000 });
+  },
+};
+
+/* ── Accents (non-régression) ── */
+
+interface AccentRow {
+  id: string;
+  stop: string;
+  start: string;
+  severity: string;
+  event: string;
+  letters: string;
+}
+
+const ACCENT_COLUMNS: DataTableColumn<AccentRow>[] = [
+  { id: "stop", header: "Arrêt", accessor: (r) => r.stop, sortable: true },
+  { id: "start", header: "Début", accessor: (r) => r.start, width: 150, sortable: true },
+  { id: "severity", header: "Sévérité", accessor: (r) => r.severity, width: 150 },
+  { id: "event", header: "Événement", accessor: (r) => r.event, minWidth: 160 },
+  { id: "letters", header: "ÀÇÉÈÊÎÔÛ", accessor: (r) => r.letters, width: 150 },
+];
+
+const ACCENT_ROWS: AccentRow[] = [
+  { id: "1", stop: "Châtelet", start: "19/10/2026", severity: "Critique", event: "Grève", letters: "Été" },
+  { id: "2", stop: "Gare de Lyon", start: "20/10/2026", severity: "Ralenti", event: "Travaux", letters: "Île" },
+];
+
+/**
+ * Les majuscules accentuées des en-têtes (« ARRÊT », « DÉBUT », « SÉVÉRITÉ »)
+ * ne doivent pas être rognées, dans les deux densités.
+ */
+export const Accents: Story = {
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      {(["compact", "comfortable"] as const).map((density) => (
+        <DataTable<AccentRow>
+          key={density}
+          aria-label={`En-têtes accentués (${density})`}
+          columns={ACCENT_COLUMNS}
+          data={ACCENT_ROWS}
+          getRowId={(r) => r.id}
+          density={density}
+        />
+      ))}
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const labels = canvasElement.querySelectorAll<HTMLElement>(".data-table__label");
+    await expect(labels.length).toBe(10);
+    for (const label of labels) {
+      const style = getComputedStyle(label);
+      // Boîte de ligne assez haute pour les accents des capitales (≥ 1,3 × la taille)
+      await expect(parseFloat(style.lineHeight)).toBeGreaterThanOrEqual(1.3 * parseFloat(style.fontSize));
+    }
+    // Hauteur de l'en-tête inchangée : 40px
+    for (const row of canvasElement.querySelectorAll<HTMLElement>(".data-table__row--header")) {
+      await expect(Math.round(row.getBoundingClientRect().height)).toBe(40);
+    }
   },
 };
