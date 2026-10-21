@@ -231,7 +231,8 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Choix dans une longue liste avec recherche au clavier | `Autocomplete` | `Dropdown` (liste courte) |
 | Choix exclusif 2-4 options **dans un formulaire** | `SegmentedControlAlt` | `SegmentedControl` (réservé navigation) |
 | Bascule entre vues / modes d'affichage | `SegmentedControl` | `Tab` (navigation de page) |
-| Navigation entre vues d'une même page | `Tab` | `SegmentedControl` |
+| Navigation entre vues d'une même page (niveau page) | `Tab` | `SegmentedControl`, `SecondaryTab` (sous-niveau) |
+| Sous-navigation dans une vue (filtres/statuts, avec compteurs) | `SecondaryTab` | `Tab` (niveau page) |
 | Date (avec ou sans heure) | `DatePicker` | — |
 | Période (début → fin), avec préréglages | `DateRangePicker` | deux `DatePicker` côte à côte |
 | Option booléenne dans un formulaire (validée à la soumission) | `Checkbox` | `Toggle` |
@@ -594,6 +595,7 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 | `Breadcrumbs` | Localisation dans l'arborescence + navigation ascendante. | Au-dessus du titre |
 | `NavigationDropdown` | Sélecteur de contexte dans le breadcrumb. | Dans le breadcrumb |
 | `Tab` | Navigation entre vues au sein d'une même page. | Sous le titre de page |
+| `SecondaryTab` | Sous-navigation (filtres/statuts, avec compteurs) à l'intérieur d'une vue ouverte via un `Tab`. | Sous la rangée de `Tab` |
 
 ### Règles
 
@@ -604,6 +606,7 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 - ✅ Afficher `Breadcrumbs` dès que l'utilisateur est à plus d'un niveau de profondeur.
 - ✅ Le dernier item du breadcrumb est la page courante — sans `href`.
 - ✅ L'onglet actif se marque avec `variant="active"` sur `Tab`.
+- ✅ Pour un second niveau de navigation (sous-filtres/statuts d'une vue), utiliser `SecondaryTab` sous la rangée de `Tab` — plus compact, avec compteur optionnel.
 - ❌ Ne jamais décaler ou centrer la `Sidebar` — toujours ancrée au bord gauche, jamais tronquée en hauteur.
 - ❌ Ne pas recréer le squelette à la main (Sidebar en `position: fixed`, contenu décalé par `marginLeft`) : utiliser `AppLayout`.
 - ❌ Ne pas ajouter de barre supérieure au-dessus du conteneur : le titre de la page est la première ligne du contenu.
@@ -1593,6 +1596,18 @@ Carte cliquable avec icône + label + description + carré de coche. Sélection 
 | `state` | `"default" \| "hover" \| "selected" \| "disabled"` | `"default"` | ⚠️ Pas de prop `checked` — piloter via `state` |
 | `size` | `"medium" \| "large"` | `"medium"` | — |
 | `onChange` | `() => void` | — | Clic (le parent gère l'exclusivité) |
+
+### SecondaryTab
+
+Onglet de sous-navigation (niveau 2), sous une rangée de `Tab`. Style ghost (pastille douce sur l'onglet actif, inactifs en gris `#69797D`), avec compteur optionnel. Item-level : un `<SecondaryTab>` par onglet.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `label` | `string` | **requis** | — |
+| `count` | `number` | — | Compteur affiché entre parenthèses après le libellé (ex. « (4) ») |
+| `variant` | `"default" \| "active"` | `"default"` | ⚠️ Pas de prop booléenne `active` |
+| `disabled` | `boolean` | `false` | — |
+| `onClick` | `() => void` | — | — |
 
 ### SegmentedControl / SegmentedControlAlt
 

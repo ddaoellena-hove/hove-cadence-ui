@@ -1,0 +1,49 @@
+/* SecondaryTab — style ghost (comme GhostButton) : pastille, sans soulignement.
+   Inactif en gris, actif = voile de fond persistant + encre + gras. */
+.secondary-tab {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  background-color: transparent;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cadence-color-icon-muted, #69797d);
+  transition: background-color 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+  outline: none;
+}
+
+.secondary-tab:hover:not(.secondary-tab--disabled) {
+  background-color: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
+  color: var(--cadence-color-primary, #002830);
+}
+
+.secondary-tab:focus-visible {
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px rgb(255, 255, 255), 0 0 0 4px rgb(26, 62, 69));
+}
+
+/* ── Actif ── */
+.secondary-tab--active {
+  background-color: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
+  color: var(--cadence-color-primary, #002830);
+  font-weight: 600;
+}
+
+.secondary-tab--active:hover:not(.secondary-tab--disabled) {
+  background-color: var(--cadence-color-active-overlay, rgba(0, 40, 48, 0.12));
+}
+
+/* ── Compteur (suit la couleur de l'onglet) ── */
+.secondary-tab__count {
+  font-weight: inherit;
+}
+
+/* ── Désactivé ── */
+.secondary-tab--disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
