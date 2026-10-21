@@ -1,4 +1,5 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, within } from "storybook/test";
 import { Link } from "./Link";
 
 const meta: Meta<typeof Link> = {
@@ -8,7 +9,7 @@ const meta: Meta<typeof Link> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["primary", "secondary", "destructive", "inverse"],
+      options: ["primary", "destructive", "inverse"],
     },
     size: {
       control: "select",
@@ -80,7 +81,6 @@ export const ExternalLink: Story = {
 export const AsButton: Story = {
   args: {
     children: "Enregistrer comme brouillon",
-    variant: "secondary",
     hideArrow: true,
     onClick: () => alert("Clicked!"),
   },
@@ -102,8 +102,28 @@ export const WithIcon: Story = {
   args: {
     children: "Retour",
     href: "#",
-    variant: "secondary",
     size: "md",
     icon: <ArrowLeft />,
+  },
+};
+
+/**
+ * ⚠️ **Dépréciée** depuis la 0.3.0, suppression en 1.0.0 : la variante
+ * `secondary` a toujours eu le même rendu que `primary`. Elle est rendue en
+ * `primary`, avec un avertissement en console (développement, une seule fois)
+ * qui invite à utiliser `primary`.
+ * Ne pas l'utiliser : écrire `<Link hideArrow onClick={…}>`.
+ */
+export const DeprecieeSecondary: Story = {
+  name: "Dépréciée — secondary",
+  args: {
+    children: "Enregistrer comme brouillon",
+    variant: "secondary",
+    hideArrow: true,
+    onClick: () => {},
+  },
+  play: async ({ canvasElement }) => {
+    // Alias de primary : même classe, même rendu
+    await expect(within(canvasElement).getByRole("button")).toHaveClass("link--primary");
   },
 };

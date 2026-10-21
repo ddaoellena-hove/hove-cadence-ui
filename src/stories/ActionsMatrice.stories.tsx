@@ -96,13 +96,13 @@ const MatriceActions = () => (
     </section>
     <section style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       <h2 style={{ fontFamily: "var(--cadence-font-sans)", fontSize: 16, fontWeight: 600, color: "var(--cadence-color-primary)", margin: 0 }}>
-        En-tête de dashboard : Outline + Primary
+        En-tête de dashboard : tous les boutons en sm (Outline + Primary)
       </h2>
       {["var(--cadence-color-white)", "var(--cadence-color-surface-alt)"].map((background) => (
         <div key={background} style={{ background, borderRadius: 10, padding: 24, display: "flex", alignItems: "center", gap: 8, justifyContent: "flex-end" }}>
-          <PrimaryButton outline iconStart="download-02" label="Exporter" />
-          <PrimaryButton outline iconEnd="chevron-down" label="Filtres" />
-          <PrimaryButton iconStart="plus" label="Créer un scénario" />
+          <PrimaryButton size="sm" outline iconStart="download-02" label="Exporter" />
+          <PrimaryButton size="sm" outline iconEnd="chevron-down" label="Filtres" />
+          <PrimaryButton size="sm" iconStart="plus" label="Créer un scénario" />
         </div>
       ))}
     </section>

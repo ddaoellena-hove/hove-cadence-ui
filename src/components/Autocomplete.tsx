@@ -143,9 +143,13 @@ export const Autocomplete = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  useEffect(() => {
+  // Nouvelle recherche ou ouverture / fermeture : on revient à la 1re option
+  const highlightKey = `${query}\u0000${isOpen}`;
+  const [lastHighlightKey, setLastHighlightKey] = useState(highlightKey);
+  if (highlightKey !== lastHighlightKey) {
+    setLastHighlightKey(highlightKey);
     setHighlight(0);
-  }, [query, isOpen]);
+  }
 
   const open = () => {
     if (!disabled) setIsOpen(true);

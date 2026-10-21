@@ -92,7 +92,7 @@ import { PrimaryButton, GhostButton, TextInput, TableCard, Modal } from "@ddaoel
 
 ### 4. Squelette d'application minimal
 
-Voir la [recette Layout d'application](#recette-1--layout-dapplication) — toute app commence par ce squelette (Sidebar fixe + Header fixe + zone de contenu).
+Voir la [recette Layout d'application](#recette-1--layout-dapplication) — toute app commence par ce squelette : Sidebar fixe et repliable (280 px dépliée, 80 px repliée), Header fixe et zone de contenu qui suivent la **largeur courante** de la Sidebar.
 
 ---
 
@@ -278,14 +278,19 @@ Toutes les distances utilisent cette échelle (px) : **4, 8, 12, 16, 20, 24, 32,
 ### Constantes de layout
 
 ```tsx
-const SIDEBAR_WIDTH = 280;  // largeur de la Sidebar (fixée par sidebar.css)
-const HEADER_HEIGHT = 56;   // hauteur du Header
+const SIDEBAR_WIDTH = 280;            // largeur de la Sidebar dépliée (fixée par sidebar.css)
+const SIDEBAR_WIDTH_COLLAPSED = 80;   // largeur de la Sidebar repliée (fixée par sidebar.css)
+const HEADER_HEIGHT = 56;             // hauteur du Header
 ```
+
+⚠️ `SIDEBAR_WIDTH` est la largeur de la Sidebar **dépliée**, pas le décalage à appliquer au Header et au contenu. La Sidebar se replie en interne (280 px → 80 px, transition de 250 ms) : le décalage à appliquer est sa **largeur courante**, mesurée sur son wrapper (voir [Navigation](#navigation) et la [recette 1](#recette-1--layout-dapplication)). Ces valeurs ne sont pas des tokens CSS : ce sont les largeurs fixées par `sidebar.css`.
 
 ### Règles
 
 - ✅ Le layout (flex, grid, gap, margins) se fait en style inline ou CSS applicatif — c'est le seul CSS custom autorisé.
-- ✅ Largeurs de contenu : les formulaires sont limités à `max-width: 720px` ; les listes prennent toute la largeur.
+- ✅ La zone de contenu n'a pas de `max-width` : elle occupe toute la largeur disponible à droite de la Sidebar.
+- ✅ Largeurs de contenu : les formulaires sont limités à `max-width: 720px` (à l'intérieur de la zone de contenu) ; les listes, tableaux et tableaux de bord prennent toute la largeur.
+- ❌ Pas de largeur fixe en px sur les conteneurs de page (grille de `KpiCard`, `DataVisualization`, `TableCard`, `DataTable`) : ils doivent s'étendre quand la Sidebar se replie.
 - ❌ Ne pas inventer de valeurs d'espacement hors échelle (pas de `gap: 7px` ou `padding: 13px`).
 
 ### Composition des panneaux sur une page formulaire
@@ -349,8 +354,8 @@ La taille ne porte **pas de sens** : elle suit le contexte, pas l'importance de 
 
 | `size` | Hauteur | Texte | Contextes |
 |---|---|---|---|
-| `sm` | 29px | 11px | Tableau, barre d'outils, barre de sélection, popover (`DatePicker`, `DateRangePicker`), toast, `FilterBar` |
-| `md` (défaut) | 34px | 12px | Tout le reste : modale, formulaire (y compris la soumission), en-tête de dashboard, empty state |
+| `md` (défaut) | 34px | 12px | **Actions principales** : en début de page (page liste, page de détail) et en fin de formulaire. Aussi : modale, empty state, action inline de formulaire |
+| `sm` | 29px | 11px | **Actions plus discrètes** : **tout l'en-tête de dashboard**, action principale comprise (`PrimaryButton size="sm"` et `PrimaryButton outline size="sm"`) ; tableau, barre d'outils, barre de sélection, popover (`DatePicker`, `DateRangePicker`), toast, `FilterBar` |
 
 Il n'y a pas de grande taille : une action importante se distingue par son niveau (`PrimaryButton`), pas par sa taille. Les textes d'action restent entre **11 et 13px** (`Link` : 11 / 12 / 13px).
 
@@ -366,7 +371,7 @@ Il n'y a pas de grande taille : une action importante se distingue par son nivea
 </div>
 ```
 
-**Dashboard — actions secondaires en `outline`, création en haut à droite**
+**Dashboard — tout l'en-tête en `sm` : actions en `outline`, action principale pleine**
 
 ```tsx
 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -374,9 +379,11 @@ Il n'y a pas de grande taille : une action importante se distingue par son nivea
     <Tab label="En cours" variant="active" />
     <Tab label="À venir" />
   </div>
-  <div style={{ display: "flex", gap: 8 }}>
-    <PrimaryButton outline iconStart="download-02" label="Exporter" onClick={onExport} />
-    <PrimaryButton iconStart="plus" label="Créer un scénario" onClick={onCreate} />
+  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+    {/* En-tête de dashboard : tous les boutons en sm, action principale comprise */}
+    <PrimaryButton size="sm" outline iconStart="download-02" label="Exporter" onClick={onExport} />
+    <PrimaryButton size="sm" outline iconEnd="chevron-down" label="Filtres" onClick={onOpenFilters} />
+    <PrimaryButton size="sm" iconStart="plus" label="Créer un scénario" onClick={onCreate} />
   </div>
 </div>
 ```
@@ -465,9 +472,10 @@ Au-dessus d'une liste filtrable, utiliser `FilterBar` (recherche, filtres rapide
 
 | Contexte | Position | Composant |
 |---|---|---|
-| Dashboard — création | En haut à droite, à côté des onglets | `PrimaryButton` |
-| Dashboard — actions secondaires | À gauche de la création | `PrimaryButton outline`, même `size` |
-| Formulaire — soumission | En bas à droite | `Link` (option) + `GhostButton` + `PrimaryButton` |
+| Dashboard — création | En haut à droite, à côté des onglets | `PrimaryButton size="sm"` |
+| Dashboard — actions de dashboard | À gauche de la création | `PrimaryButton outline size="sm"` |
+| Page liste — création | En haut à droite, à côté des onglets | `PrimaryButton` (`md`) |
+| Formulaire — soumission | En bas à droite | `Link` (option) + `GhostButton` + `PrimaryButton`, en `md` |
 | Modale — validation | Pied (via `primaryAction` / `secondaryAction`) | géré par `Modal` |
 | Liste — action par ligne | À droite du header de la ligne | `TableCardAction` |
 | Liste — sélection multiple | À droite de la barre de sélection | `GhostButton` + `PrimaryButton tone="danger"`, `size="sm"` |
@@ -569,14 +577,17 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 
 ### Règles
 
-- ✅ La `Sidebar` occupe toute la hauteur (`100vh`), ancrée à gauche, en `position: fixed` — via un wrapper `<div>` positionné (le composant n'a pas de prop `style`).
-- ✅ Le `Header` est en `fixed`, de `left: SIDEBAR_WIDTH` jusqu'au bord droit.
-- ✅ Le contenu principal compense avec `marginLeft: SIDEBAR_WIDTH` et `marginTop: HEADER_HEIGHT`.
+- ✅ La `Sidebar` occupe toute la hauteur, ancrée à gauche : wrapper `<div>` en `position: fixed`, `top: 0`, `left: 0`, `height: 100vh` (le composant n'a pas de prop `style`), **sans largeur imposée** — le wrapper prend la largeur réelle de la Sidebar (280 px dépliée, 80 px repliée).
+- ✅ Le `Header` est en `position: fixed`, `top: 0`, `right: 0`, avec `left` égal à la **largeur courante** de la Sidebar.
+- ✅ Le contenu principal compense avec `marginLeft` égal à la **largeur courante** de la Sidebar (et non `SIDEBAR_WIDTH`), plus `paddingTop: HEADER_HEIGHT`. Il n'a pas de `max-width`.
+- ✅ Transition de 250 ms — la durée du repli de la Sidebar — sur `margin-left` (contenu) et `left` (Header).
+- ✅ La largeur courante se lit en mesurant le wrapper de la Sidebar (`ResizeObserver`, hook `useElementWidth` de la [recette 1](#recette-1--layout-dapplication)). Ne pas se fier au seul `onCollapse` : il signale le clic, pas l'état.
 - ✅ Afficher `Breadcrumbs` dès que l'utilisateur est à plus d'un niveau de profondeur.
 - ✅ Le dernier item du breadcrumb est la page courante — sans `href`.
 - ✅ L'onglet actif se marque avec `variant="active"` sur `Tab`.
 - ❌ Ne jamais décaler ou centrer la `Sidebar` — toujours ancrée au bord gauche, jamais tronquée en hauteur.
 - ❌ Ne pas positionner `Sidebar` ou `Header` en `relative` ou `absolute` — ils restent visibles au scroll.
+- ❌ Ne pas imposer `width: SIDEBAR_WIDTH` au wrapper de la Sidebar, ni `left` / `marginLeft` fixes à `SIDEBAR_WIDTH` : une fois la Sidebar repliée, 200 px resteraient vides.
 - ❌ Ne pas imbriquer une `Sidebar` dans une `Sidebar`.
 - ❌ Ne pas utiliser `Tab` pour de la navigation entre pages différentes.
 
@@ -737,51 +748,89 @@ Blocs prêts à copier. **Partir d'une recette puis adapter** — ne pas réinve
 
 Toute page de l'app vit dans ce squelette. `Sidebar` et `Header` n'ont pas de prop `style` : on les enveloppe dans des `<div>` positionnés.
 
+La Sidebar se replie en interne (280 px → 80 px). Le wrapper de la Sidebar n'a donc **pas de largeur imposée**, et le Header et le contenu suivent sa **largeur courante**, mesurée par `useElementWidth`.
+
 ```tsx
-import { Sidebar, Header, Breadcrumbs, Dropdown, Avatar } from "@ddaoellena/cadence-ui";
+// useElementWidth.ts — largeur courante d'un élément, suivie par ResizeObserver
+import { useLayoutEffect, useState, type RefObject } from "react";
 
-const SIDEBAR_WIDTH = 280; // = largeur de .sidebar dans sidebar.css
-const HEADER_HEIGHT = 56;
-
-export const AppLayout = ({ children }: { children: React.ReactNode }) => (
-  <>
-    <div style={{ position: "fixed", top: 0, left: 0, width: SIDEBAR_WIDTH, height: "100vh", zIndex: 100 }}>
-      <Sidebar
-        product="datahub"
-        clientName="Bordeaux Métropole"
-        activeId="scenarios"
-        onItemClick={(id) => navigate(id)}
-        sections={[
-          { id: "home", label: "Accueil", icon: <HomeIcon /> },
-          {
-            id: "disruptions", label: "Perturbations", icon: <DisruptionIcon />,
-            items: [
-              { id: "scenarios", label: "Scénarios" },
-              { id: "history", label: "Historique" },
-            ],
-          },
-        ]}
-      />
-    </div>
-
-    <div style={{ position: "fixed", top: 0, left: SIDEBAR_WIDTH, right: 0, zIndex: 90 }}>
-      <Header
-        leftContent={<Dropdown options={reseaux} value={reseauId} onChange={setReseauId} />}
-        rightContent={<Avatar name="Hector Malot" showIcon showProfile size="sm" color="gray" />}
-      />
-    </div>
-
-    <main style={{
-      marginLeft: SIDEBAR_WIDTH,
-      marginTop: HEADER_HEIGHT,
-      padding: "24px 32px",
-      minHeight: `calc(100vh - ${HEADER_HEIGHT}px)`,
-    }}>
-      {children}
-    </main>
-  </>
-);
+export const useElementWidth = (ref: RefObject<HTMLElement | null>, initial = 0) => {
+  const [width, setWidth] = useState(initial);
+  useLayoutEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    const observer = new ResizeObserver(([entry]) => setWidth(entry.borderBoxSize[0].inlineSize));
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [ref]);
+  return width;
+};
 ```
+
+```tsx
+// AppLayout.tsx
+import { useRef, type ReactNode } from "react";
+import { Sidebar, Header, Dropdown, Avatar } from "@ddaoellena/cadence-ui";
+import { useElementWidth } from "./useElementWidth";
+
+const SIDEBAR_WIDTH = 280;               // Sidebar dépliée : valeur avant la première mesure
+const HEADER_HEIGHT = 56;
+const LAYOUT_TRANSITION = "250ms ease";  // = durée du repli de la Sidebar (sidebar.css)
+
+export const AppLayout = ({ children }: { children: ReactNode }) => {
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  // 280 px dépliée, 80 px repliée : c'est le décalage du Header et du contenu
+  const sidebarWidth = useElementWidth(sidebarRef, SIDEBAR_WIDTH);
+
+  return (
+    <>
+      {/* Wrapper sans largeur imposée : il prend la largeur réelle de la Sidebar */}
+      <div ref={sidebarRef} style={{ position: "fixed", top: 0, left: 0, height: "100vh", zIndex: 100 }}>
+        <Sidebar
+          product="datahub"
+          clientName="Bordeaux Métropole"
+          activeId="scenarios"
+          onItemClick={(id) => navigate(id)}
+          sections={[
+            { id: "home", label: "Accueil", icon: <HomeIcon /> },
+            {
+              id: "disruptions", label: "Perturbations", icon: <DisruptionIcon />,
+              items: [
+                { id: "scenarios", label: "Scénarios" },
+                { id: "history", label: "Historique" },
+              ],
+            },
+          ]}
+        />
+      </div>
+
+      <div style={{
+        position: "fixed", top: 0, right: 0, left: sidebarWidth, zIndex: 90,
+        transition: `left ${LAYOUT_TRANSITION}`,
+      }}>
+        <Header
+          leftContent={<Dropdown options={reseaux} value={reseauId} onChange={setReseauId} />}
+          rightContent={<Avatar name="Hector Malot" showIcon showProfile size="sm" color="gray" />}
+        />
+      </div>
+
+      {/* Pas de max-width : le contenu occupe toute la largeur libérée par la Sidebar */}
+      <main style={{
+        marginLeft: sidebarWidth,
+        paddingTop: HEADER_HEIGHT,
+        minHeight: "100vh",
+        boxSizing: "border-box",
+        transition: `margin-left ${LAYOUT_TRANSITION}`,
+      }}>
+        <div style={{ padding: "24px 32px" }}>{children}</div>
+      </main>
+    </>
+  );
+};
+```
+
+- ✅ La largeur est mesurée, jamais déduite de `onCollapse` : le Header et le contenu restent justes même si la Sidebar change de largeur pour une autre raison.
+- ❌ Pas de `width: SIDEBAR_WIDTH` sur le wrapper, ni de `left: SIDEBAR_WIDTH` / `marginLeft: SIDEBAR_WIDTH` en dur.
 
 ### Recette 2 — Page liste avec sélection multiple
 
@@ -973,7 +1022,7 @@ export const ScenarioFormPage = () => (
 
     {/* ══ Soumission ══ */}
     <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end" }}>
-      <Link variant="secondary" hideArrow onClick={onSaveDraft}>Enregistrer comme brouillon</Link>
+      <Link hideArrow onClick={onSaveDraft}>Enregistrer comme brouillon</Link>
       <GhostButton label="Réinitialiser" onClick={onReset} />
       <PrimaryButton label="Créer le scénario" onClick={onSubmit} />
     </div>
@@ -1363,7 +1412,7 @@ Barre au-dessus d'une liste : ligne 1 = recherche · filtres rapides · actions 
 | `navItems` | `{ label, active?, onClick? }[]` | — | Nav centrale |
 | `rightContent` | `ReactNode` | — | Contenu droit (ex : Avatar) |
 
-⚠️ Pas de prop `style` — positionner via un wrapper (`<div style={{ position: "fixed", … }}>`).
+⚠️ Pas de prop `style` — positionner via un wrapper : `<div style={{ position: "fixed", top: 0, right: 0, left: sidebarWidth, transition: "left 250ms ease" }}>`, où `sidebarWidth` est la **largeur courante** de la Sidebar (280 px dépliée, 80 px repliée), mesurée avec `useElementWidth` ([recette 1](#recette-1--layout-dapplication)). ❌ Jamais `left: SIDEBAR_WIDTH` fixe.
 
 ### Icons
 
@@ -1474,8 +1523,8 @@ API identique pour les deux ; seul le rendu change (`PrimaryButton` plein ou con
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `label` | `string` | — | Libellé. ⚠️ Exclusif avec `icon` |
-| `icon` | nom d'icône `Icons` | — | Icône seule (bouton carré). ⚠️ `aria-label` **obligatoire** (typé) |
+| `label` | `string` | **requis** (sauf icône seule) | Libellé. ⚠️ Exclusif avec `icon`. Sans `label` ni `icon`, le bouton ne rend **aucun texte de repli** et une erreur est émise en développement |
+| `icon` | nom d'icône `Icons` | — | Icône seule (bouton carré). ⚠️ `aria-label` **obligatoire** (typé) ; à défaut, le nom de l'icône sert de nom accessible avec un avertissement en développement |
 | `aria-label` | `string` | — | Nom accessible. Obligatoire avec `icon` |
 | `iconStart`, `iconEnd` | nom d'icône `Icons` | — | Icône avant / après le libellé |
 | `tone` | `"default" \| "danger"` | `"default"` | `"danger"` : action destructive (fond rouge / texte rouge) |
@@ -1489,6 +1538,7 @@ API identique pour les deux ; seul le rendu change (`PrimaryButton` plein ou con
 | `className` | `string` | — | — |
 | `ref` | `Ref<HTMLButtonElement>` | — | `forwardRef` vers le `<button>` |
 
+- Contenu : le typage impose `label`, ou `icon` + `aria-label`, pour l'API v2 des deux composants. Il ne peut pas l'imposer aux appels qui utilisent encore les anciennes props de `PrimaryButton` (`withIcon`…) : l'API 0.2 rendait `label` et `icon` facultatifs (libellé « Label » et icône par défaut), les rendre obligatoires casserait la compilation de code existant. Ces appels sont couverts à l'exécution par la même erreur de développement.
 - Survol, appui et focus sont gérés en CSS (`:hover`, `:active`, `:focus-visible` avec `--cadence-focus-ring`). Au survol, la couleur fonce d'un cran (plein : `--cadence-color-primary-hover` ; `outline` : voile d'encre sur le blanc ; danger : `--cadence-color-danger-hover`), sans ombre portée. ⚠️ Pas de prop `state`.
 - Anciennes props de `PrimaryButton` (`withIcon`, `destructive`, `size="medium" | "large"`, `state`) : acceptées en 0.3.0 avec un avertissement en développement, supprimées en 1.0.0 (voir [Migration depuis la 0.2](#migration-depuis-la-02)). `outline` n'est **pas** déprécié. `GhostButton` n'accepte que l'API ci-dessus (ni `outline`, ni les anciennes props).
 
@@ -1547,10 +1597,27 @@ API identique pour les deux (`SegmentedControl` = navigation, `SegmentedControlA
 | `sections` | `SidebarNavSection[]` | **requis** | `{ id, label, icon, items?, defaultOpen?, notification? }` — sans `items`, la section est un lien direct |
 | `activeId` | `string` | — | Item ou section actif |
 | `onItemClick` | `(id: string) => void` | — | — |
-| `onCollapse` | `() => void` | — | Bouton replier |
+| `onCollapse` | `() => void` | — | Clic sur le bouton replier / déplier. ⚠️ N'indique pas l'état (replié ou non) : mesurer la largeur pour le connaître |
 | `onLogout` | `() => void` | — | Bouton déconnexion |
 
-⚠️ Pas de prop `style` — positionner via un wrapper.
+**Repli** — géré en interne : le bouton « » fait passer la Sidebar de **280 px** (dépliée) à **80 px** (repliée), avec une transition de 250 ms. Il n'y a pas de prop pour piloter ou lire cet état. Conséquences pour le layout :
+- le wrapper de la Sidebar n'a **pas de largeur imposée** : il prend la largeur réelle de la Sidebar ;
+- le Header (`left`) et le contenu (`marginLeft`) suivent la **largeur courante**, mesurée sur ce wrapper ;
+- `SIDEBAR_WIDTH` (280) est la largeur dépliée, pas le décalage à appliquer.
+
+```tsx
+const sidebarRef = useRef<HTMLDivElement>(null);
+const sidebarWidth = useElementWidth(sidebarRef, SIDEBAR_WIDTH); // hook de la recette 1
+
+<div ref={sidebarRef} style={{ position: "fixed", top: 0, left: 0, height: "100vh" }}>
+  <Sidebar product="datahub" clientName="Bordeaux Métropole" sections={sections} />
+</div>
+<main style={{ marginLeft: sidebarWidth, paddingTop: HEADER_HEIGHT, transition: "margin-left 250ms ease" }}>
+  {children}
+</main>
+```
+
+⚠️ Pas de prop `style` — positionner via un wrapper (sans largeur imposée).
 
 ### Tab
 

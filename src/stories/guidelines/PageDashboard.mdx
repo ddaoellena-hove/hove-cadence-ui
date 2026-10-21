@@ -111,7 +111,7 @@ La rangée supérieure de la carte est divisée en deux zones : les onglets à g
   <div className="label">Actions (droite)</div>
   <code>Toggle</code> + <code>PrimaryButton</code> — séparés par <code>gap: 16px</code><br/>
   Alignés verticalement au centre de la rangée<br/>
-  Le <code>PrimaryButton</code> est toujours l'action de création principale
+  Le <code>PrimaryButton</code> est toujours l'action de création principale, en <code>size="sm"</code> comme tous les boutons de l'en-tête de dashboard
 </div>
 
 ```tsx
@@ -128,7 +128,7 @@ La rangée supérieure de la carte est divisée en deux zones : les onglets à g
       <Toggle state={mapView ? "active" : "default"} onChange={setMapView} />
       <span>Affichage cartographique</span>
     </div>
-    <PrimaryButton label="Créer un scénario de mobilité" onClick={onCreate} />
+    <PrimaryButton size="sm" label="Créer un scénario de mobilité" onClick={onCreate} />
   </div>
 </div>
 ```
