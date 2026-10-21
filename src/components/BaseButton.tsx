@@ -1,6 +1,7 @@
 import { forwardRef, type MouseEvent } from "react";
 import { Icons, type IconName } from "./Icons";
 import type { ActionButtonBaseProps, ActionButtonSize } from "./action-button-types";
+import { checkButtonContent } from "./button-compat";
 import "./base-button.css";
 
 // Composant interne (non exporté par index.ts) : gabarit, icônes, chargement
@@ -42,6 +43,12 @@ export const BaseButton = forwardRef<HTMLButtonElement, BaseButtonProps>(
     const iconOnly = icon !== undefined && !label;
     const iconSize = ICON_SIZE[size];
     const root = variant === "ghost" ? "ghost-button" : "primary-button";
+    // Même contrôle pour les deux composants : pas de texte de repli
+    const accessibleName = checkButtonContent(variant === "ghost" ? "GhostButton" : "PrimaryButton", {
+      label,
+      icon,
+      ariaLabel,
+    });
 
     const rootClass = [
       "base-button",
@@ -77,7 +84,7 @@ export const BaseButton = forwardRef<HTMLButtonElement, BaseButtonProps>(
         className={rootClass}
         disabled={disabled}
         onClick={handleClick}
-        aria-label={ariaLabel}
+        aria-label={accessibleName}
         aria-busy={loading || undefined}
         aria-disabled={loading || undefined}
       >
@@ -86,7 +93,7 @@ export const BaseButton = forwardRef<HTMLButtonElement, BaseButtonProps>(
         ) : (
           <>
             {iconStart && (loading ? <Spinner /> : renderIcon(iconStart))}
-            <span className="base-button__label">{label}</span>
+            {label && <span className="base-button__label">{label}</span>}
             {iconEnd && renderIcon(iconEnd)}
             {/* Sans icône de début : spinner centré, libellé masqué (largeur conservée) */}
             {loading && !iconStart && (

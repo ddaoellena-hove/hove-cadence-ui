@@ -77,16 +77,24 @@ describe("resolveButtonProps — cas particuliers", () => {
     expect(resolveButtonProps({ label: "A", state: "hover" }, "PrimaryButton").props.disabled).toBeUndefined();
   });
 
-  it("donne un nom accessible de repli à une ancienne icône seule sans libellé", () => {
-    const { props, deprecated } = resolveButtonProps({ withIcon: "only", icon: "copy-01" }, "PrimaryButton");
-    expect(props["aria-label"]).toBe("copy");
-    expect(deprecated).toContain("missingAriaLabel");
+  it("laisse le nom accessible d'une ancienne icône seule sans libellé à BaseButton", () => {
+    const { props } = resolveButtonProps({ withIcon: "only", icon: "copy-01" }, "PrimaryButton");
+    expect(props.icon).toBe("copy-01");
+    expect(props["aria-label"]).toBeUndefined();
   });
 
-  it("reprend l'icône et le libellé par défaut de l'ancienne API", () => {
+  it("reprend l'icône par défaut de l'ancienne API, sans libellé de repli", () => {
     const { props, deprecated } = resolveButtonProps({ withIcon: "left" }, "PrimaryButton");
-    expect(props).toMatchObject({ iconStart: "map-01", label: "Label" });
-    expect(deprecated).toEqual(expect.arrayContaining(["withIcon", "missingLabel"]));
+    expect(props.iconStart).toBe("map-01");
+    expect(props.label).toBeUndefined();
+    expect(deprecated).toEqual(["withIcon"]);
+  });
+
+  it("n'injecte jamais « Label »", () => {
+    for (const input of [{}, { withIcon: "left" }, { withIcon: "right" }, { outline: true }] as CompatButtonProps[]) {
+      expect(resolveButtonProps(input, "PrimaryButton").props.label).toBeUndefined();
+      expect(resolveButtonProps(input, "SecondaryButton").props.label).toBeUndefined();
+    }
   });
 
   it("liste les anciennes props rencontrées ; outline n'en fait pas partie", () => {

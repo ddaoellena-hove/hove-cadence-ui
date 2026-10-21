@@ -62,13 +62,13 @@ export interface ResolvedButton {
   deprecated: DeprecatedProp[];
 }
 
-export type DeprecatedProp = "withIcon" | "destructive" | "size" | "state" | "iconMap" | "missingLabel" | "missingAriaLabel";
+export type DeprecatedProp = "withIcon" | "destructive" | "size" | "state" | "iconMap";
 
 // Icône par défaut de l'ancienne API quand `withIcon` est fourni sans `icon`
 const LEGACY_DEFAULT_ICON: IconName = "map-01";
 
 /** « arrow-narrow-up-right » → « arrow narrow up right » : nom accessible de repli. */
-const humanizeIcon = (icon: IconName): string => icon.replace(/-\d+$/, "").replace(/-/g, " ");
+export const humanizeIcon = (icon: IconName): string => icon.replace(/-\d+$/, "").replace(/-/g, " ");
 
 /**
  * Traduit des props (nouvelles ou anciennes) en props v2.
@@ -125,22 +125,22 @@ export const resolveButtonProps = (
     const legacyIcon = icon ?? LEGACY_DEFAULT_ICON;
     if (withIcon === "only") {
       props.icon = legacyIcon;
-      props["aria-label"] = ariaLabel ?? label ?? humanizeIcon(legacyIcon);
-      if (!ariaLabel && !label) deprecated.push("missingAriaLabel");
+      // L'ancien libellé devient le nom accessible ; sans lui, BaseButton
+      // déduit ce nom de l'icône (checkButtonContent)
+      props["aria-label"] = ariaLabel ?? label;
     } else {
       if (withIcon === "left") props.iconStart = props.iconStart ?? legacyIcon;
       if (withIcon === "right") props.iconEnd = props.iconEnd ?? legacyIcon;
-      props.label = label ?? "Label";
+      props.label = label;
       props["aria-label"] = ariaLabel;
-      if (label === undefined) deprecated.push("missingLabel");
     }
   } else if (icon !== undefined && label === undefined) {
     props.icon = icon;
     props["aria-label"] = ariaLabel;
   } else {
-    props.label = label ?? "Label";
+    // Pas de libellé de repli : un bouton vide est signalé par checkButtonContent
+    props.label = label;
     props["aria-label"] = ariaLabel;
-    if (label === undefined) deprecated.push("missingLabel");
   }
 
   return { variant: outline ? "outline" : "primary", props, deprecated };
@@ -157,19 +157,53 @@ const MESSAGES: Record<DeprecatedProp, string> = {
   size: '`size="medium" | "large"` est déprécié : utilisez `"sm"` ou `"md"` (plus de grande taille).',
   state: '`state` est ignoré : survol et appui sont gérés en CSS (utilisez `disabled`).',
   iconMap: "`iconMap` est ignoré.",
-  missingLabel: "`label` manquant : le libellé « Label » est affiché par défaut.",
-  missingAriaLabel: "icône seule sans `aria-label` : le nom de l'icône sert de libellé accessible.",
 };
 
 const warned = new Set<string>();
 
-/** Avertit une seule fois par composant et par prop, hors production. */
-export const warnOnce = (component: string, key: string, message: string): void => {
+/**
+ * Avertit une seule fois par composant et par clé, hors production.
+ * `deprecation` : ajoute l'annonce de suppression en 1.0.0.
+ */
+export const warnOnce = (component: string, key: string, message: string, deprecation = true): void => {
   if (process.env.NODE_ENV === "production") return;
   const id = `${component}:${key}`;
   if (warned.has(id)) return;
   warned.add(id);
-  console.warn(`[cadence-ui] ${component} : ${message} Suppression prévue en 1.0.0.`);
+  console.warn(`[cadence-ui] ${component} : ${message}${deprecation ? " Suppression prévue en 1.0.0." : ""}`);
+};
+
+const errored = new Set<string>();
+
+/** Erreur de développement, une seule fois par composant et par clé, hors production. */
+export const errorOnce = (component: string, key: string, message: string): void => {
+  if (process.env.NODE_ENV === "production") return;
+  const id = `${component}:${key}`;
+  if (errored.has(id)) return;
+  errored.add(id);
+  console.error(`[cadence-ui] ${component} : ${message}`);
+};
+
+/**
+ * Contrôle du contenu, commun à PrimaryButton et GhostButton (appelé par
+ * BaseButton). Aucun texte de repli n'est jamais affiché :
+ * - ni libellé ni icône → erreur en développement, bouton rendu vide ;
+ * - icône seule sans aria-label → nom accessible déduit de l'icône + avertissement.
+ * Renvoie le nom accessible à poser sur le bouton.
+ */
+export const checkButtonContent = (
+  component: "PrimaryButton" | "GhostButton",
+  { label, icon, ariaLabel }: { label?: string; icon?: IconName; ariaLabel?: string },
+): string | undefined => {
+  if (!label && icon === undefined) {
+    errorOnce(component, "missingContent", "`label` ou `icon` + `aria-label` est requis.");
+    return ariaLabel;
+  }
+  if (!label && icon !== undefined && !ariaLabel) {
+    warnOnce(component, "missingAriaLabel", "icône seule sans `aria-label` : le nom de l'icône sert de libellé accessible.", false);
+    return humanizeIcon(icon);
+  }
+  return ariaLabel;
 };
 
 /** Émet les avertissements des anciennes props rencontrées. */
@@ -177,5 +211,8 @@ export const warnDeprecated = (component: string, deprecated: DeprecatedProp[]):
   for (const key of deprecated) warnOnce(component, key, MESSAGES[key]);
 };
 
-/** Réinitialise la mémoire des avertissements (tests uniquement). */
-export const resetWarningsForTests = (): void => warned.clear();
+/** Réinitialise la mémoire des avertissements et erreurs (tests uniquement). */
+export const resetWarningsForTests = (): void => {
+  warned.clear();
+  errored.clear();
+};
