@@ -33,7 +33,7 @@ Règles impératives pour générer du code avec ce design system :
 6. **Le CSS custom est limité au layout.** `display: flex`, `gap`, `padding`, `margin`, largeurs : OK en style inline. Couleurs, polices, bordures, ombres custom : interdit — les composants et tokens couvrent ces besoins.
 7. **Partir des [recettes](#recettes-de-pages-complètes)** pour toute page nouvelle, puis adapter. Ne pas réinventer la structure.
 8. **Un seul `PrimaryButton` plein par vue.** Plusieurs `GhostButton` sont autorisés. 3e action d'un groupe : `Link hideArrow`. `SecondaryButton` est déprécié.
-9. **Toujours passer `label`** sur les champs de formulaire (`TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker`, `CounterInput`).
+9. **Toujours passer `label`** sur les champs de formulaire (`TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker`, `CounterInput`). Exceptions, qui prennent `aria-label` à la place : la variante bouton (`variant="button"` de `DatePicker`, `DateRangePicker`, `Dropdown`) et le filtre rapide `DateRangePicker` d'une `FilterBar`.
 10. **Imports** : composants depuis `@ddaoellena/cadence-ui`, styles via un unique `import "@ddaoellena/cadence-ui/style.css"`, polices via les `<link>` de la section [Installation](#installation--setup).
 11. **Libellés en français correct, accents UTF-8 obligatoires.** Tout texte visible (labels, titres, boutons, placeholders, messages) s'écrit avec ses accents — jamais de français « aplati » en ASCII. Les fichiers source sont en UTF-8 : `é è ê à ç û É À` s'écrivent tels quels, sans entité HTML ni échappement unicode.
 
@@ -380,10 +380,10 @@ Il n'y a pas de grande taille : une action importante se distingue par son nivea
 
 ```tsx
 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-  <div style={{ display: "flex", gap: 4 }}>
-    <Tab label="En cours" variant="active" />
-    <Tab label="À venir" />
-  </div>
+  <TabList aria-label="État des scénarios">
+    <Tab label="En cours" variant="active" onClick={…} />
+    <Tab label="À venir" onClick={…} />
+  </TabList>
   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
     {/* En-tête de dashboard : tous les boutons en sm, action principale comprise */}
     <PrimaryButton size="sm" outline iconStart="download-02" label="Exporter" onClick={onExport} />
@@ -594,9 +594,9 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 | `AppLayout` | Squelette : Sidebar à gauche, contenu de page dans un conteneur blanc arrondi bordé d'un liseré. | Plein écran (`100vh`) |
 | `Sidebar` | Navigation principale entre les grandes sections ; en pied, sélecteur de périmètre (`scope`) et utilisateur connecté (`user`). | Gauche, pleine hauteur, dans `AppLayout` |
 | `Breadcrumbs` | Localisation dans l'arborescence + navigation ascendante. | Au-dessus du titre |
-| `Dropdown` `variant="button"` | Sélecteur de contexte dans le breadcrumb (produit/module). | Dans le breadcrumb |
-| `Tab` | Navigation entre vues au sein d'une même page. | Sous le titre de page |
-| `SecondaryTab` | Sous-navigation (filtres/statuts, avec compteurs) à l'intérieur d'une vue ouverte via un `Tab`. | Sous la rangée de `Tab` |
+| `Dropdown` `variant="button"` | Sélecteur de contexte dans le breadcrumb (produit/module), passé en `content` d'un item. | Dans le breadcrumb |
+| `TabList` + `Tab` | Navigation entre vues au sein d'une même page. `TabList` porte `role="tablist"` et le clavier (←/→, Début / Fin). | Sous le titre de page |
+| `TabList level="secondary"` + `SecondaryTab` | Sous-navigation (filtres/statuts, avec compteurs) à l'intérieur d'une vue ouverte via un `Tab`. | Sous la rangée de `Tab` |
 
 ### Règles
 
@@ -606,8 +606,25 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 - ✅ Périmètre (réseau, client) et utilisateur connecté vont en pied de Sidebar (`scope`, `user`). Il n'y a plus de `Header`.
 - ✅ Afficher `Breadcrumbs` dès que l'utilisateur est à plus d'un niveau de profondeur.
 - ✅ Le dernier item du breadcrumb est la page courante — sans `href`.
+- ✅ Sélecteur de contexte dans le fil d'Ariane : `content` sur l'item (le `<li>` et les séparateurs sont conservés, `label` nomme l'élément). Jamais de fil reconstruit à la main avec les classes internes `breadcrumbs__*`.
+
+```tsx
+<Breadcrumbs
+  items={[
+    { id: "home", label: "Accueil", href: "/" },
+    {
+      id: "product",
+      label: "Produit",
+      content: <Dropdown variant="button" aria-label="Produit" options={produits} value={produit} onChange={setProduit} />,
+    },
+    { id: "current", label: "Perturbations non planifiées" },
+  ]}
+/>
+```
+- ✅ Une rangée d'onglets est **toujours** dans un `TabList` nommé (`aria-label`) : un `role="tab"` hors d'un `role="tablist"` est invalide, et c'est `TabList` qui gère le clavier (seul l'onglet actif est tabulable, ←/→ et Début / Fin pour changer d'onglet). Un `Tab` seul émet un avertissement en développement.
+- ✅ Relier chaque onglet à son panneau : `id` + `controls` sur le `Tab`, et côté panneau `role="tabpanel"`, `id`, `aria-labelledby` (id de l'onglet), `tabIndex={0}`.
 - ✅ L'onglet actif se marque avec `variant="active"` sur `Tab`.
-- ✅ Pour un second niveau de navigation (sous-filtres/statuts d'une vue), utiliser `SecondaryTab` sous la rangée de `Tab` — plus compact, avec compteur optionnel.
+- ✅ Pour un second niveau de navigation (sous-filtres/statuts d'une vue), utiliser `SecondaryTab` dans un `TabList level="secondary"`, sous la rangée de `Tab` — plus compact, avec compteur optionnel.
 - ❌ Ne jamais décaler ou centrer la `Sidebar` — toujours ancrée au bord gauche, jamais tronquée en hauteur.
 - ❌ Ne pas recréer le squelette à la main (Sidebar en `position: fixed`, contenu décalé par `marginLeft`) : utiliser `AppLayout`.
 - ❌ Ne pas ajouter de barre supérieure au-dessus du conteneur : le titre de la page est la première ligne du contenu.
@@ -823,12 +840,12 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
 
 ### Recette 2 — Page liste avec sélection multiple
 
-Liste de `TableCard` avec en-têtes triables, sélection multiple, barre d'actions groupées et confirmation de suppression. Couvre : `TableHeader`, `TableCard`, `GhostButton` (actions par ligne), `Checkbox`, `Modal`, `AlertToast`, `Tab`, tri et filtres.
+Liste de `TableCard` avec en-têtes triables, sélection multiple, barre d'actions groupées et confirmation de suppression. Couvre : `TableHeader`, `TableCard`, `GhostButton` (actions par ligne), `Checkbox`, `Modal`, `AlertToast`, `TabList` + `Tab`, tri et filtres.
 
 ```tsx
 import { useState } from "react";
 import {
-  Tab, PrimaryButton, GhostButton, Link, Checkbox, TableHeader, TableCard, Modal, AlertToast, Indicator,
+  Tab, TabList, PrimaryButton, GhostButton, Link, Checkbox, TableHeader, TableCard, Modal, AlertToast, Indicator,
 } from "@ddaoellena/cadence-ui";
 
 // Largeurs partagées entre TableHeader et TableCard — NE PAS désynchroniser
@@ -839,6 +856,7 @@ export const ScenarioListPage = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [toast, setToast] = useState(false);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
+  const [view, setView] = useState<"current" | "upcoming" | "past">("current");
 
   const toggleRow = (id: string, checked: boolean) =>
     setSelected((prev) => {
@@ -851,11 +869,11 @@ export const ScenarioListPage = () => {
     <div>
       {/* ── Barre titre : onglets + création ── */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
-        <div style={{ display: "flex", gap: 4 }}>
-          <Tab label="En cours" variant="active" />
-          <Tab label="À venir" />
-          <Tab label="Passées" />
-        </div>
+        <TabList aria-label="État des scénarios">
+          <Tab label="En cours" variant={view === "current" ? "active" : "default"} onClick={() => setView("current")} />
+          <Tab label="À venir" variant={view === "upcoming" ? "active" : "default"} onClick={() => setView("upcoming")} />
+          <Tab label="Passées" variant={view === "past" ? "active" : "default"} onClick={() => setView("past")} />
+        </TabList>
         <PrimaryButton label="Créer un scénario" onClick={onCreate} />
       </div>
 
@@ -1283,9 +1301,12 @@ Clavier : ↑/↓ pour naviguer, Entrée pour sélectionner l'option surlignée,
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `items` | `BreadcrumbItem[]` | **requis** | `{ id, label, icon?, href?, onClick? }` — le dernier = page courante |
+| `items` | `BreadcrumbItem[]` | **requis** | `{ id, label, icon?, href?, onClick?, content? }` — le dernier = page courante |
 | `separator` | `ReactNode` | chevron | Séparateur custom |
 | `onNavigate` | `(id: string) => void` | — | Clic sur un item |
+| `className` | `string` | — | — |
+
+`BreadcrumbItem.content` (`ReactNode`) remplace le rendu du libellé — typiquement `<Dropdown variant="button" aria-label="…" />` comme sélecteur de contexte. Le `<li>` et les séparateurs sont conservés ; `label` reste requis et nomme l'élément (`role="group"`) ; `href`, `onClick` et `icon` sont ignorés. ⚠️ Le type de `label` ne change pas : toujours une `string`.
 
 ### Checkbox
 
@@ -1300,14 +1321,15 @@ Clavier : ↑/↓ pour naviguer, Entrée pour sélectionner l'option surlignée,
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
 | `value` | `number` | — | Mode contrôlé |
-| `defaultValue` | `number` | — | Mode non contrôlé |
-| `min`, `max`, `step` | `number` | — | Bornes et pas |
+| `defaultValue` | `number` | `0` | Mode non contrôlé |
+| `min`, `max` | `number` | — | Bornes (incluses) |
+| `step` | `number` | `1` | Pas des boutons − et + ; décimal accepté (`0.5`) |
 | `unit` | `string` | — | Unité affichée (ex : `"min"`, `"km"`) |
 | `label` | `string` | — | Label au-dessus |
 | `disabled` | `boolean` | `false` | — |
 | `onChange` | `(value: number) => void` | — | — |
 
-Champ bordé de 40px ; les boutons − et + sont des `GhostButton size="sm"` icône seule (« Décrémenter », « Incrémenter »), posés dans le cadre et désactivés aux bornes `min` / `max`. Sans infobulle : leur sens est évident (le nom reste annoncé aux lecteurs d'écran). La valeur reste saisissable au clavier (Entrée valide, Échap annule).
+Champ bordé de 40px ; les boutons − et + sont des `GhostButton size="sm"` icône seule (« Décrémenter », « Incrémenter »), posés dans le cadre et désactivés seulement quand la valeur est **déjà** sur `min` / `max` : sinon ils vont jusqu'à la borne (valeur 5, pas 15, `min` 0 → « − » donne 0). Toute valeur (bouton ou saisie) est arrondie au pas **puis** bornée : elle reste toujours dans [`min`, `max`], même si la borne n'est pas un multiple du pas (`max` 58, pas 5 → 58, jamais 60). Sans infobulle : leur sens est évident (le nom reste annoncé aux lecteurs d'écran). La valeur reste saisissable au clavier (Entrée valide, Échap annule).
 
 ### DataTable
 
@@ -1416,14 +1438,16 @@ Sélection d'une période. Même déclencheur et même calendrier que `DatePicke
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `options` | `DropdownOption[]` | **requis** | `{ id, label, icon?, disabled?, divider?, groupLabel? }` — ⚠️ clé `id`, pas `value`. `divider` = trait au-dessus de l'option ; `groupLabel` = en-tête de section au-dessus de l'option |
-| `label` | `string` | — | Label au-dessus |
+| `options` | `DropdownOption[]` | **requis** | `{ id, label, icon?, disabled?, divider?, groupLabel? }` — ⚠️ clé `id`, pas `value`. `divider` = trait au-dessus de l'option ; `groupLabel` = en-tête du groupe qui commence à cette option (jusqu'au `groupLabel` suivant) |
+| `label` | `string` | — | Label au-dessus ; nomme aussi la liste ouverte (`aria-labelledby`) |
 | `value` | `string` | — | `id` de l'option sélectionnée |
-| `placeholder` | `string` | — | — |
+| `placeholder` | `string` | `"Sélectionner…"` | Texte sans sélection. En variante bouton, il entre dans le nom annoncé : « Produit : Sélectionner… » |
 | `disabled` | `boolean` | `false` | — |
 | `onChange` | `(id: string) => void` | — | — |
 | `variant` | `"field" \| "button"` | `"field"` | `"button"` : déclencheur en `PrimaryButton outline size="sm"` (icône, valeur, chevron). **À privilégier dans un dashboard** ; `"field"` dans un formulaire |
-| `aria-label` | `string` | — | Nom accessible sans `label` visible (variante bouton) : « Devise » → annoncé « Devise : EUR € » |
+| `aria-label` | `string` | — | Nom accessible sans `label` visible (variante bouton) : « Devise » → annoncé « Devise : EUR € ». Nomme aussi la liste ouverte |
+
+Accessibilité du menu : la liste (`role="listbox"`) porte le nom du champ (`label` via `aria-labelledby`, sinon `aria-label`). Les options d'un même `groupLabel` sont dans un `role="group"` nommé par son en-tête, annoncé aux lecteurs d'écran ; le `divider` reste décoratif. Au clavier, Tab parcourt les seules options (en-têtes et séparateurs sont sautés), Entrée choisit, Échap ferme.
 
 ⚠️ En variante bouton, l'icône de l'option sélectionnée (`icon`) s'affiche avant le libellé, ramenée à 12px.
 
@@ -1596,7 +1620,7 @@ Carte cliquable avec icône + label + description + carré de coche. Sélection 
 
 ### SecondaryTab
 
-Onglet de sous-navigation (niveau 2), sous une rangée de `Tab`. Style ghost (pastille douce sur l'onglet actif, inactifs en gris `#69797D`), avec compteur optionnel. Item-level : un `<SecondaryTab>` par onglet.
+Onglet de sous-navigation (niveau 2), sous une rangée de `Tab`. Style ghost (pastille douce sur l'onglet actif, inactifs en gris `--cadence-color-icon-muted`), avec compteur optionnel. Un `<SecondaryTab>` par onglet, dans un `TabList level="secondary"`.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
@@ -1605,6 +1629,10 @@ Onglet de sous-navigation (niveau 2), sous une rangée de `Tab`. Style ghost (pa
 | `variant` | `"default" \| "active"` | `"default"` | ⚠️ Pas de prop booléenne `active` |
 | `disabled` | `boolean` | `false` | — |
 | `onClick` | `() => void` | — | — |
+| `id` | `string` | — | `id` de l'onglet (cible de `aria-labelledby` côté panneau) |
+| `controls` | `string` | — | `id` du panneau → `aria-controls` |
+
+⚠️ Toujours dans un `TabList level="secondary"` ; hors `TabList`, avertissement en développement.
 
 ### SegmentedControl / SegmentedControlAlt
 
@@ -1628,10 +1656,11 @@ API identique pour les deux (`SegmentedControl` = navigation, `SegmentedControlA
 | `sections` | `SidebarNavSection[]` | **requis** | `{ id, label, icon, items?, defaultOpen?, notification? }` — sans `items`, la section est un lien direct |
 | `activeId` | `string` | — | Item ou section actif |
 | `onItemClick` | `(id: string) => void` | — | — |
-| `onCollapse` | `() => void` | — | Clic sur le bouton replier / déplier. ⚠️ N'indique pas l'état (replié ou non) : mesurer la largeur pour le connaître |
+| `onCollapse` | `() => void` | — | Clic sur le bouton replier / déplier. ⚠️ N'indique pas l'état (replié ou non) ; dans `AppLayout`, rien à faire : le conteneur suit la largeur |
 | `onLogout` | `() => void` | — | Bouton déconnexion |
 | `scope` | `SidebarScope` | — | Sélecteur de périmètre en pied : `{ options, value?, onChange?, placeholder? }` (options au format `Dropdown`, ⚠️ clé `id`). Masqué quand la Sidebar est repliée ; le menu s'ouvre vers le haut |
 | `user` | `SidebarUser` | — | Utilisateur connecté en pied : `{ name, email?, avatarSrc? }`. Avatar seul quand la Sidebar est repliée |
+| `className` | `string` | — | — |
 
 **Repli** — géré en interne : le bouton « » fait passer la Sidebar de **280 px** (dépliée) à **80 px** (repliée), avec une transition de 250 ms. Il n'y a pas de prop pour piloter ou lire cet état. Dans `AppLayout`, le conteneur de la page suit cette largeur tout seul.
 
@@ -1661,6 +1690,30 @@ API identique pour les deux (`SegmentedControl` = navigation, `SegmentedControlA
 | `variant` | `"default" \| "active"` | `"default"` | ⚠️ Pas de prop booléenne `active` |
 | `disabled` | `boolean` | `false` | — |
 | `onClick` | `() => void` | — | — |
+| `id` | `string` | — | `id` de l'onglet (cible de `aria-labelledby` côté panneau) |
+| `controls` | `string` | — | `id` du panneau → `aria-controls` |
+
+⚠️ Toujours dans un `TabList` ; hors `TabList`, avertissement en développement.
+
+### TabList
+
+Conteneur `role="tablist"` d'une rangée de `Tab` ou de `SecondaryTab`. *Roving tabindex* : seul l'onglet actif est dans l'ordre de tabulation (sans onglet actif, le premier activable). ←/→ en boucle, Début / Fin ; les onglets désactivés sont sautés.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `aria-label` | `string` | **requis** | Nom de la rangée (« État des scénarios ») |
+| `level` | `"primary" \| "secondary"` | `"primary"` | Écart entre onglets : 16px (`Tab`) ou 4px (`SecondaryTab`) |
+| `activation` | `"automatic" \| "manual"` | `"automatic"` | `automatic` : les flèches activent l'onglet ; `manual` : les flèches déplacent le focus, Entrée / Espace activent (panneau coûteux à charger) |
+| `children` | `ReactNode` | **requis** | Les onglets |
+| `className` | `string` | — | — |
+
+```tsx
+<TabList aria-label="État des scénarios">
+  <Tab label="En cours" variant="active" id="tab-current" controls="panel-current" onClick={…} />
+  <Tab label="À venir" id="tab-upcoming" controls="panel-upcoming" onClick={…} />
+</TabList>
+<div role="tabpanel" id="panel-current" aria-labelledby="tab-current" tabIndex={0}>…</div>
+```
 
 ### TableCard
 

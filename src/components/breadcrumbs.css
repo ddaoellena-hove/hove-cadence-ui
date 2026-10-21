@@ -21,6 +21,12 @@
   gap: 2px;
 }
 
+/* ── Contenu libre (sélecteur de contexte) ── */
+.breadcrumbs__content {
+  align-items: center;
+  display: inline-flex;
+}
+
 /* ── Link (shared base) ── */
 .breadcrumbs__link {
   display: inline-flex;

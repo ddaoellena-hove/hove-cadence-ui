@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, within } from "storybook/test";
 import { Breadcrumbs } from "./Breadcrumbs";
 import type { BreadcrumbItem } from "./Breadcrumbs";
 import { Dropdown } from "./Dropdown";
@@ -93,51 +94,45 @@ export const CustomSeparator: Story = {
   },
 };
 
-const ChevronSep = () => (
-  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-    <path d="M5 3l4 4-4 4" stroke="#d1d5db" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-
+/** Sélecteur de contexte : `content` avec un Dropdown en variante bouton (aucune classe interne). */
 export const WithDropdown: Story = {
   name: "With Dropdown (button)",
   render: () => {
     const [product, setProduct] = useState("traffic");
     return (
-      <nav aria-label="Fil d'Ariane" className="breadcrumbs">
-        <ol className="breadcrumbs__list">
-          {/* Item 1 — lien simple */}
-          <li className="breadcrumbs__item">
-            <a href="#" className="breadcrumbs__link" onClick={(e) => e.preventDefault()}>
-              <span className="breadcrumbs__item-label">Accueil</span>
-            </a>
-            <span className="breadcrumbs__separator" aria-hidden="true"><ChevronSep /></span>
-          </li>
-
-          {/* Item 2 — sélecteur de contexte : Dropdown variante bouton */}
-          <li className="breadcrumbs__item">
-            <Dropdown
-              variant="button"
-              aria-label="Produit"
-              value={product}
-              onChange={setProduct}
-              options={[
-                { id: "datahub", label: "Datahub" },
-                { id: "traffic", label: "Traffic Report" },
-                { id: "insights", label: "Insights" },
-              ]}
-            />
-            <span className="breadcrumbs__separator" aria-hidden="true"><ChevronSep /></span>
-          </li>
-
-          {/* Item 3 — page courante */}
-          <li className="breadcrumbs__item">
-            <span className="breadcrumbs__link breadcrumbs__link--current" aria-current="page">
-              <span className="breadcrumbs__item-label">Perturbations non planifiées</span>
-            </span>
-          </li>
-        </ol>
-      </nav>
+      <Breadcrumbs
+        items={[
+          { id: "home", label: "Accueil", href: "#" },
+          {
+            id: "product",
+            label: "Produit",
+            content: (
+              <Dropdown
+                variant="button"
+                aria-label="Produit"
+                value={product}
+                onChange={setProduct}
+                options={[
+                  { id: "datahub", label: "Datahub" },
+                  { id: "traffic", label: "Traffic Report" },
+                  { id: "insights", label: "Insights" },
+                ]}
+              />
+            ),
+          },
+          { id: "current", label: "Perturbations non planifiées" },
+        ]}
+      />
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // Le <li> et les séparateurs sont conservés autour du sélecteur
+    const items = canvasElement.querySelectorAll(".breadcrumbs__item");
+    await expect(items).toHaveLength(3);
+    await expect(items[1].querySelector(".breadcrumbs__separator")).not.toBeNull();
+    await expect(canvas.getByRole("group", { name: "Produit" })).toContainElement(
+      canvas.getByRole("button", { name: /^Produit : / }),
     );
   },
 };

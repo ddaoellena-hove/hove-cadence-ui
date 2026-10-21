@@ -1,3 +1,4 @@
+import { useInTabList } from "./tab-list-context";
 import "./secondary-tab.css";
 
 export interface SecondaryTabProps {
@@ -13,6 +14,10 @@ export interface SecondaryTabProps {
   disabled?: boolean;
   /** Classe CSS additionnelle. */
   className?: string;
+  /** `id` du bouton onglet (cible de `aria-labelledby` côté panneau). */
+  id?: string;
+  /** `id` du panneau contrôlé → `aria-controls`. */
+  controls?: string;
 }
 
 /**
@@ -28,7 +33,11 @@ export const SecondaryTab = ({
   onClick,
   disabled = false,
   className,
+  id,
+  controls,
 }: SecondaryTabProps) => {
+  const inTabList = useInTabList("SecondaryTab");
+  const active = variant === "active";
   const rootClass = [
     "secondary-tab",
     `secondary-tab--${variant}`,
@@ -44,8 +53,12 @@ export const SecondaryTab = ({
       className={rootClass}
       onClick={onClick}
       disabled={disabled}
-      aria-selected={variant === "active"}
+      id={id}
       role="tab"
+      aria-selected={active}
+      aria-controls={controls}
+      // Roving tabindex dans un TabList : seul l'onglet actif est tabulable
+      tabIndex={inTabList ? (active ? 0 : -1) : undefined}
     >
       <span className="secondary-tab__label">
         {label}

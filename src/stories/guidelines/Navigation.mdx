@@ -64,11 +64,11 @@ import { Meta } from "@storybook/addon-docs/blocks";
   </h1>
 
   {/* Navigation intra-page */}
-  <div style={{ display: "flex", gap: 4, marginTop: 16 }}>
-    <Tab label="En cours" variant="active" />
-    <Tab label="Historique" />
-    <Tab label="Statistiques" />
-  </div>
+  <TabList aria-label="Vue">
+    <Tab label="En cours" variant="active" onClick={…} />
+    <Tab label="Historique" onClick={…} />
+    <Tab label="Statistiques" onClick={…} />
+  </TabList>
 
   {/* Contenu */}
 </AppLayout>

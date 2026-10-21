@@ -70,6 +70,26 @@ const CheckIcon = () => (
   </svg>
 );
 
+/** Section du menu : options qui suivent un en-tête de groupe ou un séparateur. */
+interface MenuSection {
+  key: string;
+  groupLabel?: string;
+  divider?: boolean;
+  options: DropdownOption[];
+}
+
+/** Découpe les options en sections : chaque `groupLabel` ou `divider` en ouvre une nouvelle. */
+const toSections = (options: DropdownOption[]): MenuSection[] =>
+  options.reduce<MenuSection[]>((sections, option) => {
+    const current = sections[sections.length - 1];
+    if (!current || option.groupLabel || option.divider) {
+      sections.push({ key: option.id, groupLabel: option.groupLabel, divider: option.divider, options: [option] });
+    } else {
+      current.options.push(option);
+    }
+    return sections;
+  }, []);
+
 // ── Component ──────────────────────────────────────────────────────────────────
 
 export const Dropdown = ({
@@ -89,6 +109,8 @@ export const Dropdown = ({
   const menuRef = useRef<HTMLUListElement>(null);
   usePopoverFit(menuRef, isOpen);
   const triggerId = useId();
+  const labelId = useId();
+  const menuId = useId();
 
   const selectedOption = options.find((o) => o.id === value);
 
@@ -117,6 +139,31 @@ export const Dropdown = ({
     }
   };
 
+  const renderOption = (option: DropdownOption) => (
+    <button
+      key={option.id}
+      type="button"
+      role="option"
+      className={[
+        "dropdown__option",
+        option.disabled ? "dropdown__option--disabled" : "",
+        option.id === value ? "dropdown__option--selected" : "",
+      ].filter(Boolean).join(" ")}
+      aria-selected={option.id === value}
+      aria-disabled={option.disabled}
+      onClick={() => handleSelect(option)}
+      disabled={option.disabled}
+    >
+      {option.icon && <span className="dropdown__option-icon">{option.icon}</span>}
+      <span className="dropdown__option-label">{option.label}</span>
+      {option.id === value && (
+        <span className="dropdown__option-check">
+          <CheckIcon />
+        </span>
+      )}
+    </button>
+  );
+
   const rootClass = ["dropdown", isOpen ? "dropdown--open" : "", disabled ? "dropdown--disabled" : "", className]
     .filter(Boolean)
     .join(" ");
@@ -124,7 +171,7 @@ export const Dropdown = ({
   return (
     <div className={rootClass} ref={containerRef}>
       {label && (
-        <label className="text-input__label" htmlFor={triggerId}>
+        <label id={labelId} className="text-input__label" htmlFor={triggerId}>
           {label}
         </label>
       )}
@@ -160,38 +207,34 @@ export const Dropdown = ({
       </button>
 
       {isOpen && (
-        <ul ref={menuRef} className="dropdown__menu" role="listbox" aria-label="Options">
-          {options.map((option) => (
-            <li key={option.id} role="presentation">
-              {option.divider && <div className="dropdown__divider" aria-hidden="true" />}
-              {option.groupLabel && (
-                <div className="dropdown__group-label" aria-hidden="true">
-                  {option.groupLabel}
-                </div>
-              )}
-              <button
-                type="button"
-                role="option"
-                className={[
-                  "dropdown__option",
-                  option.disabled ? "dropdown__option--disabled" : "",
-                  option.id === value ? "dropdown__option--selected" : "",
-                ].filter(Boolean).join(" ")}
-                aria-selected={option.id === value}
-                aria-disabled={option.disabled}
-                onClick={() => handleSelect(option)}
-                disabled={option.disabled}
-              >
-                {option.icon && <span className="dropdown__option-icon">{option.icon}</span>}
-                <span className="dropdown__option-label">{option.label}</span>
-                {option.id === value && (
-                  <span className="dropdown__option-check">
-                    <CheckIcon />
-                  </span>
+        // Nom de la liste : le label visible, sinon l'aria-label (variante bouton)
+        <ul
+          ref={menuRef}
+          className="dropdown__menu"
+          role="listbox"
+          aria-labelledby={label ? labelId : undefined}
+          aria-label={label ? undefined : (ariaLabel ?? "Options")}
+        >
+          {toSections(options).map((section, index) => {
+            const headerId = `${menuId}-group-${index}`;
+            const items = section.options.map(renderOption);
+            return (
+              <li key={section.key} role="presentation" className="dropdown__section">
+                {section.divider && <div className="dropdown__divider" aria-hidden="true" />}
+                {section.groupLabel ? (
+                  // Groupe annoncé : role="group" nommé par son en-tête (non focusable)
+                  <div role="group" aria-labelledby={headerId} className="dropdown__group">
+                    <div id={headerId} className="dropdown__group-label">
+                      {section.groupLabel}
+                    </div>
+                    {items}
+                  </div>
+                ) : (
+                  items
                 )}
-              </button>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>

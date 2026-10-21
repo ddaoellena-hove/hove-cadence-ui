@@ -66,6 +66,10 @@ const meta: Meta<typeof Dropdown> = {
   title: "Components/Dropdown",
   component: Dropdown,
   tags: ["autodocs"],
+  parameters: {
+    // Les violations a11y font échouer les tests de ce composant
+    a11y: { test: "error" },
+  },
   args: {
     options: basicOptions,
     placeholder: "Sélectionner…",
@@ -161,7 +165,11 @@ export const VarianteBouton: Story = {
 
 /**
  * Options groupées : `groupLabel` (en-tête de section) + `divider`.
- * Couvre le cas de l'ancien `NavigationDropdown` (sélecteur de contexte).
+ * Couvre le sélecteur de contexte du fil d'Ariane (`Breadcrumbs` item `content`).
+ */
+/**
+ * Groupes : chaque `groupLabel` ouvre un `role="group"` nommé par son en-tête.
+ * La liste porte le nom du champ. Au clavier, Tab parcourt les seules options.
  */
 export const WithGroups: Story = {
   name: "With groups (groupLabel + divider)",
@@ -174,13 +182,46 @@ export const WithGroups: Story = {
       { id: "settings", label: "Paramètres", groupLabel: "Autre", divider: true },
     ];
     return (
-      <Dropdown
-        variant="button"
-        aria-label="Produit"
-        options={options}
-        value={value}
-        onChange={setValue}
-      />
+      <div style={{ minHeight: 280 }}>
+        <Dropdown variant="button" aria-label="Produit" options={options} value={value} onChange={setValue} />
+      </div>
     );
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // Ouverture au clavier, sans souris
+    await userEvent.tab();
+    await expect(canvas.getByRole("button", { name: "Produit : Traffic Report" })).toHaveFocus();
+    await userEvent.keyboard("{Enter}");
+
+    const listbox = canvas.getByRole("listbox", { name: "Produit" });
+    const products = within(listbox).getByRole("group", { name: "Produits" });
+    await expect(within(products).getAllByRole("option")).toHaveLength(3);
+    const other = within(listbox).getByRole("group", { name: "Autre" });
+    await expect(within(other).getByRole("option", { name: "Paramètres" })).toBeInTheDocument();
+    // L'en-tête de groupe n'est plus masqué aux lecteurs d'écran
+    await expect(canvas.getByText("Produits")).not.toHaveAttribute("aria-hidden");
+
+    // Tab parcourt les options et saute en-têtes et séparateur
+    const visited: string[] = [];
+    for (let i = 0; i < 4; i++) {
+      await userEvent.tab();
+      visited.push(document.activeElement?.textContent ?? "");
+    }
+    await expect(visited).toEqual(["Datahub", "Traffic Report", "Insights", "Paramètres"]);
+    await userEvent.keyboard("{Enter}");
+    await expect(canvas.getByRole("button", { name: "Produit : Paramètres" })).toBeInTheDocument();
+  },
 };
+
+/** Avec un label visible : la liste prend le nom du label (aria-labelledby). */
+export const ListeNommeeParLeLabel: Story = {
+  name: "Liste nommée par le label",
+  args: { label: "Réseau", options: basicOptions },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: /Réseau/ }));
+    await expect(canvas.getByRole("listbox", { name: "Réseau" })).toBeInTheDocument();
+  },
+};
+

@@ -6,8 +6,14 @@ import "./breadcrumbs.css";
 export interface BreadcrumbItem {
   /** Unique identifier. */
   id: string;
-  /** Display label. */
+  /** Display label. Avec `content`, sert de nom accessible à l'élément. */
   label: string;
+  /**
+   * Contenu rendu à la place du libellé (ex. `<Dropdown variant="button" />`
+   * comme sélecteur de contexte). Le `<li>` et les séparateurs sont conservés ;
+   * `href`, `onClick` et `icon` sont alors ignorés.
+   */
+  content?: ReactNode;
   /** Optional icon rendered before the label. */
   icon?: ReactNode;
   /** When provided, renders the item as an anchor. */
@@ -85,7 +91,17 @@ export const Breadcrumbs = ({
 
           return (
             <li key={item.id} className="breadcrumbs__item">
-              {isLast ? (
+              {item.content ? (
+                // Contenu libre (sélecteur de contexte) : groupe nommé par `label`
+                <span
+                  className="breadcrumbs__content"
+                  role="group"
+                  aria-label={item.label}
+                  aria-current={isLast ? "page" : undefined}
+                >
+                  {item.content}
+                </span>
+              ) : isLast ? (
                 <span
                   className="breadcrumbs__link breadcrumbs__link--current"
                   aria-current="page"

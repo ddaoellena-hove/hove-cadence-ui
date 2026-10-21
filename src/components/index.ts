@@ -33,6 +33,7 @@ export * from './SegmentedControl';
 export * from './Sidebar';
 export * from './SegmentedControlAlt';
 export * from './Tab';
+export * from './TabList';
 export * from './TableCard';
 export * from './TableHeader';
 export * from './TextArea';

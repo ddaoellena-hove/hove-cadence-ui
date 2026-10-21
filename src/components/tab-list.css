@@ -1,0 +1,16 @@
+/* ── TabList ─────────────────────────────────────────────────────────────── */
+/* Rangée d'onglets : seul l'écart dépend du niveau, les onglets gardent leur
+   propre style. */
+.tab-list {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tab-list--primary {
+  gap: 16px;
+}
+
+.tab-list--secondary {
+  gap: 4px;
+}

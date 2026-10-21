@@ -1,5 +1,6 @@
 import { useState, useRef, useId } from "react";
 import { GhostButton } from "./GhostButton";
+import { canDecrementCounter, canIncrementCounter, normalizeCounterValue } from "./counter-input-utils";
 import "./counter-input.css";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -48,12 +49,11 @@ export const CounterInput = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const current = isControlled ? valueProp! : internalValue;
 
+  // Arrondi au pas puis bornage : la valeur reste toujours dans [min, max]
   const update = (next: number) => {
-    const clamped = Math.round(
-      Math.min(max ?? Infinity, Math.max(min ?? -Infinity, next)) / step
-    ) * step;
-    if (!isControlled) setInternalValue(clamped);
-    onChange?.(clamped);
+    const normalized = normalizeCounterValue(next, { min, max, step });
+    if (!isControlled) setInternalValue(normalized);
+    onChange?.(normalized);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,8 +73,9 @@ export const CounterInput = ({
     if (e.key === "Escape") { setInputText(null); inputRef.current?.blur(); }
   };
 
-  const canDecrement = min === undefined || current - step >= min;
-  const canIncrement = max === undefined || current + step <= max;
+  // Désactivé seulement sur la borne : sinon, le bouton va jusqu'à la borne
+  const canDecrement = canDecrementCounter(current, min);
+  const canIncrement = canIncrementCounter(current, max);
 
   const rootClass = ["counter-input", disabled ? "counter-input--disabled" : "", className]
     .filter(Boolean)
