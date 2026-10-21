@@ -1,0 +1,60 @@
+/* ── AppLayout ───────────────────────────────────────────────────────────── */
+/* Ligne flex pleine hauteur : la Sidebar (280 px dépliée, 80 px repliée) pousse
+   directement le contenu, sans position fixe ni mesure de largeur. */
+.app-layout {
+  /* Fond de l'app = couleur produit de la Sidebar (datahub par défaut) */
+  background: var(--cadence-product-datahub, #004650);
+  box-sizing: border-box;
+  display: flex;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-layout:has(.sidebar--traffic-report) {
+  background: var(--cadence-product-traffic-report, #2f2f3b);
+}
+
+.app-layout:has(.sidebar--insights) {
+  background: var(--cadence-product-insights, #3b2f2f);
+}
+
+.app-layout__sidebar {
+  display: flex;
+  flex-shrink: 0;
+  height: 100%;
+}
+
+/* ── Zone de contenu : marge autour du conteneur, côté Sidebar comprise ── */
+.app-layout__main {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  padding: 12px 12px 12px 0;
+}
+
+/* Conteneur blanc arrondi, bordé d'un liseré. Il ne défile pas lui-même :
+   il coupe tout ce qui dépasse de son arrondi, barres de scroll comprises
+   (une barre posée sur l'élément arrondi déborderait dans les coins). */
+.app-layout__container {
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-xl, 12px);
+  box-sizing: border-box;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Zone qui défile, à l'intérieur du cadre */
+.app-layout__scroll {
+  box-sizing: border-box;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  padding: 24px 32px;
+}
