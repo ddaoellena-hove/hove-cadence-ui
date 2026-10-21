@@ -162,6 +162,7 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-shadow-sm` | ombre 1–3px | Champs au repos |
 | `--cadence-shadow-md` | ombre diffuse 12px | Champs au survol |
 | `--cadence-shadow-lg` | ombre portée 10–15px | Menus déroulants |
+| `--cadence-shadow-raised` | ombre portée 16–32px, vers le bas | Carte soulevée au survol (`ActionCard`) |
 | `--cadence-shadow-overlay` | ombre 20–60px | Modale |
 | `--cadence-focus-color` | `#1a3e45` | Couleur de l'anneau de focus (appliqué aux boutons, `Link`, `DataTable`, calendriers) |
 | `--cadence-focus-ring` | liseré blanc 2px + anneau 2px | Anneau de focus `box-shadow` (`:focus-visible`) — appliqué aux nouveaux composants et aux boutons |
@@ -688,7 +689,7 @@ Deux composants proches mais distincts :
 
 ### Cartes d'action : `ActionCard`
 
-Une `ActionCard` présente une action à lancer : un titre, une description courte et un bouton (`PrimaryButton outline size="sm"`). Au survol, la carte prend une ombre portée (`--cadence-shadow-md`).
+Une `ActionCard` présente une action à lancer : un titre, une description courte et un bouton (`PrimaryButton outline size="sm"`). Au survol, la carte se soulève de 4px (`transform`) avec une ombre portée large (`--cadence-shadow-raised`). Avec `prefers-reduced-motion`, seule l'ombre apparaît.
 
 - ✅ Seul le bouton est cliquable : le libellé dit l'action (« Importer », « Configurer »), le titre dit ce que l'on obtient.
 - ✅ En grille : `gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))"`, `gap: 16`. Les cartes prennent la même hauteur et les boutons s'alignent en bas.
@@ -1205,7 +1206,7 @@ export const SupervisionDashboard = () => {
 
 ### ActionCard
 
-Carte d'action : titre, description et un bouton `PrimaryButton outline size="sm"`. Ombre portée au survol (et quand le bouton a le focus clavier). Seul le bouton est cliquable.
+Carte d'action : titre, description et un bouton `PrimaryButton outline size="sm"`. Au survol (et quand le bouton a le focus clavier), elle se soulève de 4px avec l'ombre `--cadence-shadow-raised`. Seul le bouton est cliquable.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
