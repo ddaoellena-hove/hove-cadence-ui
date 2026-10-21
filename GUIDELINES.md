@@ -251,7 +251,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Navigation dans un résultat paginé | `Pagination` | — |
 | Recherche + filtres rapides + filtres actifs au-dessus d'une liste | `FilterBar` | un `TextInput` + `Badge` assemblés à la main |
 | Dialogue bloquant (confirmation, formulaire court) | `Modal` | `AlertToast` (non bloquant) |
-| Notification temporaire non bloquante | `AlertToast` | `Modal` |
+| Notification temporaire non bloquante | `useToast()` + `Toaster` | `Modal` (bloquant) ; `AlertToast` seul (carte brute, hors pile) |
 | Info contextuelle au survol | `Tooltip` / `TooltipTrigger` | `Modal` |
 | Squelette d'application (navigation + contenu de page) | `AppLayout` | — |
 | Navigation principale (sections de l'app) | `Sidebar` | — |
@@ -769,15 +769,23 @@ Une `Card` est **interactive** soit par `onClick` (toute la carte mène à la li
 
 ### Règles
 
-- ✅ `AlertToast` s'affiche en overlay (`position: fixed`, coin haut-droit) — jamais dans le flux du contenu.
-- ✅ `success` et `information` : auto-dismiss après 4 secondes (à gérer côté app avec un `setTimeout`).
-- ✅ `error` : reste visible jusqu'à fermeture manuelle (`dismissible` + `onDismiss`).
-- ❌ Ne pas afficher plus de 3 toasts simultanément.
+- ✅ Les toasts s'affichent via le **`Toaster`** : monter un seul `<Toaster />` à la racine de l'app, puis déclencher avec `useToast()`. Ne pas instancier `AlertToast` à la main dans le flux.
+- ✅ Position : **bas à droite**, en `position: fixed`. Empilement avec effet de profondeur (la plus récente au premier plan) ; au survol, la pile se déploie.
+- ✅ `success` / `information` / `warning` : auto-dismiss après 4 s (géré par le `Toaster`, en pause au survol). `error` : reste jusqu'à fermeture manuelle.
+- ✅ Max 3 toasts simultanés (le `Toaster` retire les plus anciens au-delà).
+- ❌ Ne pas utiliser `AlertToast` seul pour une notification applicative — passer par `useToast()` + `Toaster`.
 - ❌ Ne pas utiliser `Tooltip` pour du contenu long ou interactif.
 
 ```tsx
-// Toast de confirmation
-<AlertToast type="success" title="Scénario créé" dismissible onDismiss={() => setVisible(false)} />
+// 1. Une fois, à la racine de l'app
+import { Toaster } from "@ddaoellena/cadence-ui";
+<Toaster />
+
+// 2. N'importe où
+import { useToast } from "@ddaoellena/cadence-ui";
+const { toast } = useToast();
+toast({ type: "success", title: "Scénario créé", description: "Le scénario est publié." });
+toast({ type: "error", title: "Échec de l'envoi" }); // persistant
 
 // Icône ⓘ d'aide accolée à un bouton désactivé
 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -1788,3 +1796,38 @@ Composant purement visuel — pas de logique de positionnement ni de déclenchem
 | `position` | `"top" \| "bottom" \| "left" \| "right"` | `"top"` | Côté où la bulle apparaît. ⚠️ Pas de prop `tooltip` ni `arrowPosition` |
 
 ⚠️ Rend sa **propre icône ⓘ** comme déclencheur — il n'accepte pas de `children` et ne peut pas envelopper un autre élément. Pour un tooltip sur un élément custom, gérer le survol manuellement avec `Tooltip`.
+
+### Toaster / useToast
+
+Système de notifications. Monter **un seul `<Toaster />`** à la racine de l'app ; déclencher avec `useToast()` (ou la fonction `toast()` importable directement). Pile en bas à droite, effet de profondeur, déploiement au survol, max 3, auto-dismiss (pause au survol).
+
+**`<Toaster />`**
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `className` | `string` | — | Classe CSS additionnelle sur le conteneur |
+
+**`useToast()` → `{ toast, dismiss }`**
+
+| Fonction | Signature | Description |
+|---|---|---|
+| `toast` | `(options: ToastOptions) => number` | Affiche un toast, renvoie son id |
+| `dismiss` | `(id: number) => void` | Ferme un toast |
+
+**`ToastOptions`**
+
+| Champ | Type | Défaut | Description |
+|---|---|---|---|
+| `title` | `string` | **requis** | Titre (gras) |
+| `type` | `"information" \| "success" \| "warning" \| "error"` | `"information"` | Couleur + icône |
+| `description` | `string` | — | Texte secondaire |
+| `duration` | `number` | `4000` (`error` → persistant) | Fermeture auto (ms) ; `0`/`Infinity` = persistant |
+| `dismissible` | `boolean` | `true` | Bouton de fermeture × |
+| `actions` | `[AlertToastAction]` ou `[AlertToastAction, AlertToastAction]` | — | 1 à 2 boutons |
+
+```tsx
+const { toast } = useToast();
+toast({ type: "success", title: "Scénario créé" });
+```
+
+⚠️ `toast()` est sans effet si aucun `<Toaster />` n'est monté. `AlertToast` reste exporté comme carte brute (hors pile) pour des cas particuliers.

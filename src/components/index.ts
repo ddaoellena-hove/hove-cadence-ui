@@ -39,5 +39,7 @@ export * from './TableHeader';
 export * from './TextArea';
 export * from './TextInput';
 export * from './Toggle';
+export * from './Toaster';
 export * from './Tooltip';
 export * from './TooltipTrigger';
+export * from './useToast';
