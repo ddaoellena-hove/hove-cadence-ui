@@ -1296,7 +1296,7 @@ Clavier : ↑/↓ pour naviguer, Entrée pour sélectionner l'option surlignée,
 | `disabled` | `boolean` | `false` | — |
 | `onChange` | `(value: number) => void` | — | — |
 
-Champ bordé de 40px ; les boutons − et + sont des `GhostButton size="sm"` icône seule (« Décrémenter », « Incrémenter »), posés dans le cadre et désactivés aux bornes `min` / `max`. La valeur reste saisissable au clavier (Entrée valide, Échap annule).
+Champ bordé de 40px ; les boutons − et + sont des `GhostButton size="sm"` icône seule (« Décrémenter », « Incrémenter »), posés dans le cadre et désactivés aux bornes `min` / `max`. Sans infobulle : leur sens est évident (le nom reste annoncé aux lecteurs d'écran). La valeur reste saisissable au clavier (Entrée valide, Échap annule).
 
 ### DataTable
 

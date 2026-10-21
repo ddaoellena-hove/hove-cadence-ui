@@ -34,6 +34,12 @@
   user-select: none;
 }
 
+/* Pas d'infobulle sur − et + : leur sens est évident (le nom accessible
+   « Décrémenter » / « Incrémenter » reste annoncé aux lecteurs d'écran) */
+.counter-input .base-button-tip__bubble {
+  display: none;
+}
+
 /* ── Value area ── */
 .counter-input__value {
   align-items: center;
