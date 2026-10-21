@@ -1,4 +1,5 @@
 import { useState, useRef, useId } from "react";
+import { GhostButton } from "./GhostButton";
 import "./counter-input.css";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -87,17 +88,14 @@ export const CounterInput = ({
         </label>
       )}
       <div className={rootClass} role="group" aria-label={label ?? "Compteur"}>
-        <button
-          type="button"
-          className="counter-input__btn counter-input__btn--dec"
+        {/* Boutons discrets : GhostButton icône seule, dans le cadre du champ */}
+        <GhostButton
+          size="sm"
+          icon="minus"
+          aria-label="Décrémenter"
           onClick={() => update(current - step)}
           disabled={disabled || !canDecrement}
-          aria-label="Décrémenter"
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M3 8h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-        </button>
+        />
 
         <div className="counter-input__value">
           <input
@@ -119,17 +117,13 @@ export const CounterInput = ({
           {unit && <span className="counter-input__unit">{unit}</span>}
         </div>
 
-        <button
-          type="button"
-          className="counter-input__btn counter-input__btn--inc"
+        <GhostButton
+          size="sm"
+          icon="plus"
+          aria-label="Incrémenter"
           onClick={() => update(current + step)}
           disabled={disabled || !canIncrement}
-          aria-label="Incrémenter"
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-          </svg>
-        </button>
+        />
       </div>
     </div>
   );
