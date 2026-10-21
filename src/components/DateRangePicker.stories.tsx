@@ -4,6 +4,7 @@ import { expect, userEvent, within } from "storybook/test";
 import { DateRangePicker, type DateRange, type DateRangePickerProps } from "./DateRangePicker";
 import { FilterBar } from "./FilterBar";
 import { Dropdown } from "./Dropdown";
+import { PrimaryButton } from "./PrimaryButton";
 import { formatRange } from "./date-range-utils";
 
 // Date de référence fixe : les stories et leurs tests ne dépendent pas du jour d'exécution
@@ -193,5 +194,49 @@ export const DansUneFilterBar: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("button", { name: "Période : aucune période" })).toBeInTheDocument();
+  },
+};
+
+/** Variante bouton (PrimaryButton outline sm) : pour l'en-tête d'un dashboard. */
+export const VarianteBouton: Story = {
+  name: "Variante bouton",
+  args: { label: undefined, "aria-label": "Période", variant: "button" },
+  render,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole("button", { name: /^Période : / });
+    await expect(trigger).toHaveClass("primary-button", "primary-button--outline", "base-button--sm");
+    await userEvent.click(trigger);
+    await userEvent.click(canvas.getByRole("button", { name: "Aujourd'hui" }));
+    // Le préréglage s'applique : le libellé du bouton le reprend
+    await expect(canvas.getByRole("button", { name: "Période : Aujourd'hui" })).toBeInTheDocument();
+  },
+};
+
+const DEVISES = [
+  { id: "eur", label: "EUR €" },
+  { id: "usd", label: "USD $" },
+];
+
+/** En-tête de dashboard : période, devise et action principale, tous en sm. */
+export const EnTeteDeDashboard: Story = {
+  name: "En-tête de dashboard",
+  render: () => {
+    const [range, setRange] = useState<DateRange>({ start: null, end: null });
+    const [devise, setDevise] = useState("eur");
+    return (
+      <div style={{ display: "flex", alignItems: "center", gap: 8, padding: 24, minHeight: 480, alignContent: "flex-start", flexWrap: "wrap" }}>
+        <DateRangePicker
+          variant="button"
+          aria-label="Période"
+          referenceDate={REFERENCE}
+          placeholder="Choisir une période"
+          value={range}
+          onChange={setRange}
+        />
+        <Dropdown variant="button" aria-label="Devise" options={DEVISES} value={devise} onChange={setDevise} />
+        <PrimaryButton size="sm" outline iconStart="download-02" label="Exporter" />
+      </div>
+    );
   },
 };

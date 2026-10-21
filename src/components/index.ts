@@ -9,6 +9,7 @@ export * from './Avatar';
 export * from './Breadcrumbs';
 export * from './CounterInput';
 export * from './Dropdown';
+export type { TriggerVariant } from './button-trigger-utils';
 export * from './FilterBar';
 export * from './GhostButton';
 export * from './Link';
