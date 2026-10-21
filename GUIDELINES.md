@@ -1480,7 +1480,7 @@ API identique pour les deux ; seul le rendu change (`PrimaryButton` plein ou con
 | `iconStart`, `iconEnd` | nom d'icône `Icons` | — | Icône avant / après le libellé |
 | `tone` | `"default" \| "danger"` | `"default"` | `"danger"` : action destructive (fond rouge / texte rouge) |
 | `size` | `"sm" \| "md"` | `"md"` | 29 / 34px, texte 11 / 12px. Dépend du contexte, ne porte pas de sens. ⚠️ Pas de `"lg"` |
-| `outline` | `boolean` | `false` | **`PrimaryButton` uniquement** : variante contour (fond blanc, bordure), pour les actions secondaires d'un dashboard |
+| `outline` | `boolean` | `false` | **`PrimaryButton` uniquement** : variante contour (fond blanc, bordure `--cadence-color-border-strong`), pour les actions secondaires d'un dashboard |
 | `loading` | `boolean` | `false` | Clics ignorés, `aria-busy`, spinner (à la place de `iconStart`), largeur conservée |
 | `disabled` | `boolean` | `false` | — |
 | `fullWidth` | `boolean` | `false` | Occupe toute la largeur |

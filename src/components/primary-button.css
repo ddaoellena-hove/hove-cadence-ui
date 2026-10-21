@@ -56,12 +56,13 @@
 }
 
 /* ── Variante outline : action secondaire visible (dashboards) ───────────── */
-/* Fond blanc, bordure --cadence-color-text-muted (3,2:1, contraste non textuel
-   ≥ 3:1), liseré bas discret. Survol et appui : le blanc fonce d'un cran par
-   un voile d'encre superposé (le fond reste opaque sur toute surface). */
+/* Fond blanc, bordure --cadence-color-border-strong, liseré bas
+   discret. Le libellé en encre porte l'identification du bouton. Survol et
+   appui : le blanc fonce d'un cran par un voile d'encre superposé, la bordure
+   passe en --cadence-color-label. */
 .primary-button.primary-button--outline {
   background-color: var(--cadence-color-white, rgb(255, 255, 255));
-  border-color: var(--cadence-color-text-muted, rgb(128, 147, 151));
+  border-color: var(--cadence-color-border-strong, rgb(191, 201, 203));
   box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.06);
   color: var(--cadence-color-primary, rgb(0, 40, 48));
 }
