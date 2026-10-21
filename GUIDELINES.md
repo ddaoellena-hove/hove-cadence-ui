@@ -337,7 +337,7 @@ Le multi-colonnes est un outil de **densité locale**, pas un outil de **découp
 - ✅ Dans un groupe, l'engagement croît de gauche à droite : `Link` → `GhostButton` → `PrimaryButton`. **Ghost à gauche, Primary à droite.**
 - ✅ Plusieurs `GhostButton` (ou `PrimaryButton outline` en dashboard) sont autorisés.
 - ✅ Ne pas mélanger Ghost et Outline dans un même groupe : un dashboard prend Outline, le reste Ghost.
-- ✅ Les boutons d'un même groupe ont la même `size` — sauf en tête de dashboard, où les actions de dashboard (`sm`) accompagnent l'action principale de la page (`md`).
+- ✅ Les boutons d'un même groupe ont la même `size`.
 - ✅ Un `GhostButton` isolé porte une icône (`iconStart`) ou se trouve à côté d'un `PrimaryButton` : seul et sans icône, il se lit comme un simple texte.
 - ✅ Icône seule : `icon` + `aria-label` (obligatoire, le typage le vérifie).
 - ✅ Action en cours (soumission, export) : `loading` — clics ignorés, spinner, largeur conservée.
@@ -354,8 +354,8 @@ La taille ne porte **pas de sens** : elle suit le contexte, pas l'importance de 
 
 | `size` | Hauteur | Texte | Contextes |
 |---|---|---|---|
-| `md` (défaut) | 34px | 12px | **Actions principales** : en début de page (création en haut d'un dashboard ou d'une liste) et en fin de formulaire. Aussi : modale, empty state, action inline de formulaire |
-| `sm` | 29px | 11px | **Actions plus discrètes** : actions de dashboard (exporter, filtrer, paramétrer — `PrimaryButton outline size="sm"`), tableau, barre d'outils, barre de sélection, popover (`DatePicker`, `DateRangePicker`), toast, `FilterBar` |
+| `md` (défaut) | 34px | 12px | **Actions principales** : en début de page (page liste, page de détail) et en fin de formulaire. Aussi : modale, empty state, action inline de formulaire |
+| `sm` | 29px | 11px | **Actions plus discrètes** : **tout l'en-tête de dashboard**, action principale comprise (`PrimaryButton size="sm"` et `PrimaryButton outline size="sm"`) ; tableau, barre d'outils, barre de sélection, popover (`DatePicker`, `DateRangePicker`), toast, `FilterBar` |
 
 Il n'y a pas de grande taille : une action importante se distingue par son niveau (`PrimaryButton`), pas par sa taille. Les textes d'action restent entre **11 et 13px** (`Link` : 11 / 12 / 13px).
 
@@ -371,7 +371,7 @@ Il n'y a pas de grande taille : une action importante se distingue par son nivea
 </div>
 ```
 
-**Dashboard — action principale `md` en haut à droite, actions de dashboard `sm` en `outline`**
+**Dashboard — tout l'en-tête en `sm` : actions en `outline`, action principale pleine**
 
 ```tsx
 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -380,11 +380,10 @@ Il n'y a pas de grande taille : une action importante se distingue par son nivea
     <Tab label="À venir" />
   </div>
   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-    {/* Actions de dashboard : plus discrètes */}
+    {/* En-tête de dashboard : tous les boutons en sm, action principale comprise */}
     <PrimaryButton size="sm" outline iconStart="download-02" label="Exporter" onClick={onExport} />
     <PrimaryButton size="sm" outline iconEnd="chevron-down" label="Filtres" onClick={onOpenFilters} />
-    {/* Action principale de la page */}
-    <PrimaryButton iconStart="plus" label="Créer un scénario" onClick={onCreate} />
+    <PrimaryButton size="sm" iconStart="plus" label="Créer un scénario" onClick={onCreate} />
   </div>
 </div>
 ```
@@ -473,8 +472,9 @@ Au-dessus d'une liste filtrable, utiliser `FilterBar` (recherche, filtres rapide
 
 | Contexte | Position | Composant |
 |---|---|---|
-| Dashboard — création | En haut à droite, à côté des onglets | `PrimaryButton` (`md`) |
+| Dashboard — création | En haut à droite, à côté des onglets | `PrimaryButton size="sm"` |
 | Dashboard — actions de dashboard | À gauche de la création | `PrimaryButton outline size="sm"` |
+| Page liste — création | En haut à droite, à côté des onglets | `PrimaryButton` (`md`) |
 | Formulaire — soumission | En bas à droite | `Link` (option) + `GhostButton` + `PrimaryButton`, en `md` |
 | Modale — validation | Pied (via `primaryAction` / `secondaryAction`) | géré par `Modal` |
 | Liste — action par ligne | À droite du header de la ligne | `TableCardAction` |
