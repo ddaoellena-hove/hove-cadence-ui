@@ -115,7 +115,8 @@ export const LongDescriptions: Story = {
     const toggle = (id: string, next: boolean) =>
       setChecked((prev) => {
         const set = new Set(prev);
-        next ? set.add(id) : set.delete(id);
+        if (next) set.add(id);
+        else set.delete(id);
         return set;
       });
     const options = [
@@ -160,7 +161,8 @@ export const Interactive: Story = {
     const toggle = (id: string, next: boolean) =>
       setChecked((prev) => {
         const set = new Set(prev);
-        next ? set.add(id) : set.delete(id);
+        if (next) set.add(id);
+        else set.delete(id);
         return set;
       });
     const options = ["Choice A", "Choice B", "Choice C"];
