@@ -204,10 +204,8 @@ Trois polices, chacune réservée à un rôle précis. Ne pas les substituer.
 - ❌ Ne pas utiliser la mono pour des labels ou du texte d'interface.
 
 ```tsx
-// ✅ Titre de page
-<h1 style={{ fontFamily: "var(--cadence-font-display)", fontSize: 28, fontWeight: 500, color: "var(--cadence-color-primary)" }}>
-  Titre de page
-</h1>
+// ✅ Titre de page : PageHeader (h1 en display 22px, sous-titre, actions, sticky)
+<PageHeader title="Titre de page" subtitle="Dernière mise à jour le 21/10/2026" actions={…} />
 ```
 
 ---
@@ -242,6 +240,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Sélection multiple avec icône + description | `RichCheckbox` | `RichRadioButton` (choix exclusif) |
 | Étiquette d'information neutre (catégorie, tag, code) | `Badge` | `Indicator` (qui porte un état) |
 | État ou statut avec picto + couleur sémantique | `Indicator` | `Badge` (purement informatif) |
+| En-tête de page (titre, sous-titre, actions), collé en haut au défilement | `PageHeader` | `<h1>` à la main |
 | Indicateur chiffré + évolution (haut de tableau de bord) | `KpiCard` | `Indicator` (statut sans valeur) |
 | Proposer une action dans une carte (titre + description + bouton) | `ActionCard` | `KpiCard` (indicateur chiffré), `TableCard` (élément de liste) |
 | Liste de gros volume (> 50 lignes, colonnes de données) | `DataTable` | `TableCard` (liste de cartes riches, peu nombreuses) |
@@ -819,7 +818,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
 };
 ```
 
-- ✅ Le contenu commence directement par le titre de la page (`<h1>`) : pas de padding à ajouter, `AppLayout` le fournit.
+- ✅ Le contenu commence par un `PageHeader` (titre, sous-titre, actions) : pas de padding à ajouter, `AppLayout` le fournit. Le `PageHeader` se colle en haut du conteneur au défilement.
 - ✅ Le repli de la Sidebar élargit le conteneur sans code applicatif.
 - ❌ Pas de `Header` (supprimé en 0.4.0) ni de wrapper `position: fixed`.
 
@@ -944,14 +943,12 @@ export const ScenarioListPage = () => {
 Formulaire en sections, largeur contenue, soumission en bas à droite. Les **panneaux de premier niveau** (formulaire puis synthèse) s'empilent verticalement ; le multi-colonnes n'apparaît qu'**à l'intérieur** des sections. Voir [Composition des panneaux](#composition-des-panneaux-sur-une-page-formulaire).
 
 ```tsx
-import { TextInput, TextArea, Dropdown, DatePicker, CounterInput, SegmentedControlAlt, TableCard, PrimaryButton, Link, GhostButton } from "@ddaoellena/cadence-ui";
+import { PageHeader, TextInput, TextArea, Dropdown, DatePicker, CounterInput, SegmentedControlAlt, TableCard, PrimaryButton, Link, GhostButton } from "@ddaoellena/cadence-ui";
 
 export const ScenarioFormPage = () => (
   // Conteneur de page : flexDirection "column" → les panneaux de premier niveau s'empilent
   <div style={{ display: "flex", flexDirection: "column", gap: 32, maxWidth: 720 }}>
-    <h1 style={{ fontFamily: "var(--cadence-font-display)", fontSize: 28, fontWeight: 500, color: "var(--cadence-color-primary)", margin: 0 }}>
-      Créer un scénario
-    </h1>
+    <PageHeader title="Créer un scénario" />
 
     {/* ══ PANNEAU 1 — Formulaire ══ */}
     <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
@@ -1139,7 +1136,7 @@ Haut d'écran : période d'analyse, grille de `KpiCard` cliquables qui mènent �
 
 ```tsx
 import { useState } from "react";
-import { DateRangePicker, KpiCard, type DateRange } from "@ddaoellena/cadence-ui";
+import { DateRangePicker, KpiCard, PageHeader, type DateRange } from "@ddaoellena/cadence-ui";
 
 export const SupervisionDashboard = () => {
   const [period, setPeriod] = useState<DateRange>(last7Days());
@@ -1147,13 +1144,14 @@ export const SupervisionDashboard = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <h1 style={{ fontFamily: "var(--cadence-font-display)", fontSize: 28, fontWeight: 500, color: "var(--cadence-color-primary)", margin: 0 }}>
-          Supervision
-        </h1>
-        {/* Dashboard : sélecteur en variante bouton, nommé par aria-label */}
-        <DateRangePicker variant="button" aria-label="Période" value={period} onChange={setPeriod} maxDate={new Date()} maxDays={92} />
-      </div>
+      {/* En-tête collé en haut ; dashboard : sélecteur en variante bouton, nommé par aria-label */}
+      <PageHeader
+        title="Supervision"
+        subtitle={`Dernière synchronisation le ${formatDateTime(stats.syncedAt)}`}
+        actions={
+          <DateRangePicker variant="button" aria-label="Période" value={period} onChange={setPeriod} maxDate={new Date()} maxDays={92} />
+        }
+      />
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16 }}>
         <KpiCard label="Courses réalisées" value={stats.trips} delta={{ value: stats.tripsDelta, label: "vs période précédente" }}
@@ -1383,7 +1381,7 @@ Clavier : un seul jour dans l'ordre de tabulation ; ←/→ (jour), ↑/↓ (sem
 
 ### DateRangePicker
 
-Sélection d'une période. Même déclencheur et même calendrier que `DatePicker`. Sélection en deux clics (la fin peut précéder le début : les dates sont inversées), validée par « Appliquer » ; un clic sur un préréglage applique directement.
+Sélection d'une période. Même déclencheur et même calendrier que `DatePicker`. Sélection en deux clics (la fin peut précéder le début : les dates sont inversées), validée par « Appliquer » ; un clic sur un préréglage applique directement. Le popover s'ouvre aligné à gauche du déclencheur et se décale vers la gauche s'il sortirait de l'écran ou du conteneur (idem `DatePicker` et le menu de `Dropdown`).
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
@@ -1511,6 +1509,23 @@ La variation est aussi annoncée en phrase complète aux lecteurs d'écran : « 
 | `hideCloseButton` | `boolean` | `false` | — |
 
 Comportements intégrés : fermeture sur Échap, scroll du body verrouillé, footer fixe quand le corps scrolle.
+
+### PageHeader
+
+En-tête de page : titre (`<h1>`, display 22px), sous-titre et actions sur une ligne (les actions passent sous le titre si la place manque). Collé en haut du conteneur d'`AppLayout` au défilement ; un liseré bas apparaît dès que le contenu passe dessous.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `breadcrumbs` | `ReactNode` | — | Fil d'Ariane au-dessus du titre (`<Breadcrumbs />`) |
+| `title` | `string` | **requis** | Titre de la page (`<h1>`) |
+| `subtitle` | `ReactNode` | — | Ligne sous le titre : contexte, date de mise à jour… |
+| `actions` | `ReactNode` | — | Actions à droite. Dashboard : tout en `sm`, sélecteurs en `variant="button"` |
+| `sticky` | `boolean` | `true` | Reste collé en haut au défilement |
+| `className` | `string` | — | — |
+
+- ✅ Premier élément du contenu d'`AppLayout` : il recouvre le padding du conteneur (`24px 32px`) pour que rien ne défile au-dessus ni sur les côtés.
+- ✅ Les popovers des actions (`DateRangePicker`, `DatePicker`, `Dropdown`) se décalent vers la gauche pour rester dans le conteneur quand le déclencheur est au bord droit.
+- ❌ Un seul `PageHeader` par page, et pas de `<h1>` à côté.
 
 ### Pagination
 

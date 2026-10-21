@@ -83,6 +83,8 @@
   left: 0;
   position: absolute;
   top: calc(100% + 6px);
+  /* Décalage calculé par usePopoverFit pour rester dans la zone visible */
+  translate: var(--_popover-shift, 0px) 0;
   z-index: var(--cadence-z-popover, 100);
 }
 

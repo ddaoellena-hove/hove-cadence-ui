@@ -1,0 +1,80 @@
+/* ── PageHeader ──────────────────────────────────────────────────────────── */
+/* Titre + sous-titre à gauche, actions à droite, sur une ligne (retour à la
+   ligne si la place manque). */
+.page-header {
+  align-items: center;
+  background: var(--cadence-color-white, #ffffff);
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  gap: 12px 24px;
+  justify-content: space-between;
+}
+
+/* Collé en haut de la zone qui défile ; passe au-dessus du contenu */
+.page-header--sticky {
+  position: sticky;
+  top: 0;
+  transition: box-shadow 160ms ease;
+  z-index: var(--cadence-z-sticky, 100);
+}
+
+/* Dans AppLayout : l'en-tête recouvre le padding du conteneur (24px 32px)
+   pour que le contenu ne se voie pas au-dessus ni sur les côtés. Le sticky
+   compte depuis le bord du padding : top négatif pour coller au bord du cadre */
+.app-layout__scroll .page-header--sticky {
+  margin: -24px -32px 0;
+  padding: 24px 32px 16px;
+  top: -24px;
+}
+
+/* Contenu qui défile dessous : liseré bas */
+.page-header--stuck {
+  box-shadow: 0 1px 0 var(--cadence-color-border, #e5e5e5);
+}
+
+/* Repère de détection du défilement (hauteur nulle) */
+.page-header__sentinel {
+  height: 0;
+}
+
+.page-header__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.page-header__breadcrumbs {
+  margin-bottom: 2px;
+}
+
+.page-header__title {
+  color: var(--cadence-color-primary, #002830);
+  font-family: var(--cadence-font-display, "Uxum Grotesque", "Space Grotesk", "Georgia", sans-serif);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.page-header__subtitle {
+  color: var(--cadence-color-icon-muted, #69797d);
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.page-header__actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-header--sticky {
+    transition: none;
+  }
+}

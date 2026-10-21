@@ -5,6 +5,7 @@ import { buttonTriggerClass, type TriggerVariant } from "./button-trigger-utils"
 import { Icons } from "./Icons";
 import { CalendarMonth } from "./CalendarMonth";
 import { dayKey, formatDate, getKeyboardTarget, isOutsideBounds, isSameDay } from "./date-utils";
+import { usePopoverFit } from "./use-popover-fit";
 import "./date-picker.css";
 
 export interface DatePickerSegmentedOption {
@@ -126,6 +127,9 @@ export const DatePicker = ({
   const [minute, setMinute] = useState<number>(value ? value.getMinutes() : 0);
   const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  // Le popover reste dans la zone visible (ex. déclencheur au bord droit d'un en-tête)
+  const popoverRef = useRef<HTMLDivElement>(null);
+  usePopoverFit(popoverRef, open);
   const triggerId = useId();
   // Jour qui porte le focus clavier dans la grille
   const [focusedDate, setFocusedDate] = useState<Date>(value ?? today);
@@ -310,6 +314,7 @@ export const DatePicker = ({
 
       {open && (
         <div
+          ref={popoverRef}
           className="date-picker__popover"
           role="dialog"
           aria-label="Calendrier"

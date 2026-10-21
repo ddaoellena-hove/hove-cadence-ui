@@ -39,51 +39,45 @@ La page est composée de trois zones empilées verticalement dans un conteneur p
 ```
 
 ```tsx
-<div style={{ display: "flex", flexDirection: "column", height: "100%", padding: "24px 32px", gap: 24 }}>
-  <PageHeader /> {/* breadcrumb + titre + SegmentedControl */}
-  <ContentCard />  {/* onglets + actions + tableau */}
-</div>
+<AppLayout sidebar={<Sidebar … />}>
+  <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+    <PageHeader breadcrumbs={…} title="Scénarios de mobilité" actions={…} /> {/* collé en haut au défilement */}
+    <ContentCard />  {/* onglets + actions + tableau */}
+  </div>
+</AppLayout>
 ```
 
 <div className="g h2">2. Header de page</div>
 
-Le header regroupe sur une seule ligne : le breadcrumb + `Dropdown` (variante bouton) à gauche, et un `SegmentedControl` de bascule de vue à droite.
+Le header est un <code>PageHeader</code> : fil d'Ariane et titre à gauche, actions à droite, sur une seule ligne. Il reste collé en haut de l'écran au défilement.
 
 <div className="spec">
-  <div className="label">Breadcrumb</div>
-  Composant : <code>Breadcrumbs</code> + <code>Dropdown</code> <code>variant="button"</code> en position centrale<br/>
-  Police : Inter 12px / 400 — couleur parents <code>#888</code>, courant <code>#555</code><br/>
-  Séparateur : <code>#ccc</code>
+  <div className="label">Composant</div>
+  <code>PageHeader</code> — <code>breadcrumbs</code> (<code>Breadcrumbs</code>), <code>title</code> (h1, display 22px), <code>subtitle</code> facultatif, <code>actions</code><br/>
+  Sticky en haut du conteneur d'<code>AppLayout</code> ; liseré bas quand le contenu défile dessous
 
   <br/><br/>
-  <div className="label">Titre de page</div>
-  Police : Uxum Grotesque, 28px, weight 500, couleur <code>#002830</code><br/>
-  Margin top : <code>6px</code> sous le breadcrumb
-
-  <br/><br/>
-  <div className="label">Bascule de vue (droite)</div>
-  Composant : <code>SegmentedControl</code><br/>
-  Aligné verticalement avec le titre, <code>align-self: flex-end</code>
+  <div className="label">Actions (droite)</div>
+  Tout en <code>sm</code> ; sélecteurs (période, liste) en <code>variant="button"</code> ; bascule de vue : <code>SegmentedControl</code>
 </div>
 
 ```tsx
-<div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
-  <div>
+<PageHeader
+  breadcrumbs={
     <Breadcrumbs items={[
       { id: "home", label: "Accueil", href: "#" },
       { id: "current", label: "Scénarios de mobilité" },
     ]} />
-    <h1 style={{ fontFamily: "Uxum Grotesque", fontSize: 28, fontWeight: 500,
-                 color: "#002830", margin: "6px 0 0" }}>
-      Scénarios de mobilité
-    </h1>
-  </div>
-  <SegmentedControl
-    options={[{ value: "list", label: "Liste" }, { value: "map", label: "Carte" }]}
-    value={view}
-    onChange={setView}
-  />
-</div>
+  }
+  title="Scénarios de mobilité"
+  actions={
+    <SegmentedControl
+      options={[{ value: "list", label: "Liste" }, { value: "map", label: "Carte" }]}
+      value={view}
+      onChange={setView}
+    />
+  }
+/>
 ```
 
 <div className="g h2">3. Carte principale</div>

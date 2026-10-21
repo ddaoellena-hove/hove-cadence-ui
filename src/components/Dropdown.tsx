@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useId, type ReactNode } from "react";
 import { ButtonTriggerContent } from "./ButtonTrigger";
 import { buttonTriggerClass, type TriggerVariant } from "./button-trigger-utils";
+import { usePopoverFit } from "./use-popover-fit";
 import "./dropdown.css";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -77,6 +78,9 @@ export const Dropdown = ({
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  // Le menu reste dans la zone visible (ex. déclencheur au bord droit d'un en-tête)
+  const menuRef = useRef<HTMLUListElement>(null);
+  usePopoverFit(menuRef, isOpen);
   const triggerId = useId();
 
   const selectedOption = options.find((o) => o.id === value);
@@ -149,7 +153,7 @@ export const Dropdown = ({
       </button>
 
       {isOpen && (
-        <ul className="dropdown__menu" role="listbox" aria-label="Options">
+        <ul ref={menuRef} className="dropdown__menu" role="listbox" aria-label="Options">
           {options.map((option) => (
             <li key={option.id} role="presentation">
               {option.divider && <div className="dropdown__divider" aria-hidden="true" />}

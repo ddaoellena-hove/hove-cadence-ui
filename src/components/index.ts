@@ -22,6 +22,7 @@ export * from './DateRangePicker';
 export * from './Icons';
 export * from './Indicator';
 export * from './KpiCard';
+export * from './PageHeader';
 export * from './Pagination';
 export * from './PrimaryButton';
 export * from './RadioButton';
