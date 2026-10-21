@@ -116,10 +116,12 @@
     var(--cadence-focus-ring, 0 0 0 2px rgb(255, 255, 255), 0 0 0 4px rgb(26, 62, 69));
 }
 
+/* Désactivé : fond grisé et bordure plus claire, pour se distinguer du repos
+   (même bordure border-strong sinon) */
 .primary-button--outline:disabled {
-  background-color: var(--cadence-color-white, rgb(255, 255, 255));
+  background-color: var(--cadence-color-divider, rgb(240, 240, 240));
   background-image: none;
-  border-color: var(--cadence-color-border-strong, rgb(191, 201, 203));
+  border-color: var(--cadence-color-border, rgb(229, 229, 229));
   box-shadow: none;
   color: var(--cadence-color-text-disabled, rgb(128, 128, 128));
 }
