@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { TableCard, TableCardAction } from "./TableCard";
+import { TableCard } from "./TableCard";
+import { GhostButton } from "./GhostButton";
 
 /* ── Icône personnalisée ── */
 
@@ -102,14 +103,14 @@ const SeverityBadge = ({ label, color }: { label: string; color: "orange" | "gre
   </div>
 );
 
-/* ── Actions par défaut (utilise TableCardAction du composant) ── */
+/* ── Actions par défaut : GhostButton icône seule, sm (infobulle intégrée) ── */
 
 const defaultActions = (
   <>
-    <TableCardAction icon="copy-01" label="Copier" />
-    <TableCardAction icon="edit-02" label="Modifier" />
-    <TableCardAction icon="save-01" label="Archiver" />
-    <TableCardAction icon="trash" label="Supprimer" destructive />
+    <GhostButton size="sm" icon="copy-01" aria-label="Copier" />
+    <GhostButton size="sm" icon="edit-02" aria-label="Modifier" />
+    <GhostButton size="sm" icon="save-01" aria-label="Archiver" />
+    <GhostButton size="sm" icon="trash" aria-label="Supprimer" tone="danger" />
   </>
 );
 
@@ -203,10 +204,10 @@ export const StackedInfoCards: Story = {
         checkboxState="unchecked"
         actions={
           <>
-            <TableCardAction icon="copy-01" label="Copier" />
-            <TableCardAction icon="edit-02" label="Modifier" />
-            <TableCardAction icon="save-01" label="Archiver" />
-            <TableCardAction icon="trash" label="Supprimer" destructive />
+            <GhostButton size="sm" icon="copy-01" aria-label="Copier" />
+            <GhostButton size="sm" icon="edit-02" aria-label="Modifier" />
+            <GhostButton size="sm" icon="save-01" aria-label="Archiver" />
+            <GhostButton size="sm" icon="trash" aria-label="Supprimer" tone="danger" />
           </>
         }
         columns={[
@@ -274,10 +275,10 @@ export const MultipleRows: Story = {
             onCheckboxChange={(v) => setChecked((prev) => ({ ...prev, [row.id]: v }))}
             actions={
               <>
-                <TableCardAction icon="copy-01"  label="Copier"     />
-                <TableCardAction icon="edit-02"  label="Modifier"   />
-                <TableCardAction icon="save-01"  label="Archiver"   />
-                <TableCardAction icon="trash"    label="Supprimer" destructive />
+                <GhostButton size="sm" icon="copy-01" aria-label="Copier" />
+                <GhostButton size="sm" icon="edit-02" aria-label="Modifier" />
+                <GhostButton size="sm" icon="save-01" aria-label="Archiver" />
+                <GhostButton size="sm" icon="trash" aria-label="Supprimer" tone="danger" />
               </>
             }
             columns={[

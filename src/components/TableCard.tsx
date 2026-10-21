@@ -1,59 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { Checkbox } from "./Checkbox";
 import { Icons, type IconsProps } from "./Icons";
-import { Tooltip } from "./Tooltip";
 import "./table-card.css";
-
-// ── TableCardAction ────────────────────────────────────────────────────────
-
-export interface TableCardActionProps {
-  /** Icon name (Icons component). */
-  icon: IconsProps["icon"];
-  /** Tooltip label shown on hover (white, below the button). */
-  label: string;
-  /** Click handler. */
-  onClick?: () => void;
-  /** Destructive styling (red). */
-  destructive?: boolean;
-}
-
-/**
- * Small icon button for the TableCard actions slot.
- * Shows a white tooltip below on hover.
- */
-export const TableCardAction = ({
-  icon,
-  label,
-  onClick,
-  destructive = false,
-}: TableCardActionProps) => {
-  const [tooltipVisible, setTooltipVisible] = useState(false);
-
-  return (
-    <div className="table-card-action">
-      <button
-        type="button"
-        aria-label={label}
-        onClick={onClick}
-        className={[
-          "table-card-action__btn",
-          destructive ? "table-card-action__btn--destructive" : "",
-        ]
-          .filter(Boolean)
-          .join(" ")}
-        onMouseEnter={() => setTooltipVisible(true)}
-        onMouseLeave={() => setTooltipVisible(false)}
-      >
-        <Icons icon={icon} className="table-card-action__icon" iconMap="" />
-      </button>
-      {tooltipVisible && (
-        <div className="table-card-action__tooltip">
-          <Tooltip label={label} theme="light" arrow="top" />
-        </div>
-      )}
-    </div>
-  );
-};
 
 // ── TableCardColumn ────────────────────────────────────────────────────────
 
@@ -89,7 +37,7 @@ export interface TableCardProps {
   onCheckboxChange?: (checked: boolean) => void;
   /**
    * Actions slot — rendered on the right side of the header.
-   * Use <TableCardAction /> for consistent styling with built-in tooltip.
+   * Utiliser des GhostButton icône seule : size="sm", icon + aria-label (infobulle intégrée), tone="danger" pour supprimer.
    */
   actions?: React.ReactNode;
   /** Body columns. */

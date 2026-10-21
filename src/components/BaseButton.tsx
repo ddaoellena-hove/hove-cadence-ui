@@ -2,6 +2,7 @@ import { forwardRef, type MouseEvent } from "react";
 import { Icons, type IconName } from "./Icons";
 import type { ActionButtonBaseProps, ActionButtonSize } from "./action-button-types";
 import { checkButtonContent } from "./button-compat";
+import { Tooltip } from "./Tooltip";
 import "./base-button.css";
 
 // Composant interne (non exporté par index.ts) : gabarit, icônes, chargement
@@ -77,7 +78,7 @@ export const BaseButton = forwardRef<HTMLButtonElement, BaseButtonProps>(
 
     const renderIcon = (name: IconName) => <Icons icon={name} size={iconSize} className="base-button__icon" />;
 
-    return (
+    const button = (
       <button
         ref={ref}
         type={type}
@@ -104,6 +105,19 @@ export const BaseButton = forwardRef<HTMLButtonElement, BaseButtonProps>(
           </>
         )}
       </button>
+    );
+
+    // Icône seule : le nom accessible s'affiche aussi en infobulle (survol et
+    // focus clavier), pour les utilisateurs qui ne voient que l'icône. Masquée
+    // aux lecteurs d'écran : ils ont déjà le nom via aria-label.
+    if (!iconOnly) return button;
+    return (
+      <div className="base-button-tip">
+        {button}
+        <div className="base-button-tip__bubble" aria-hidden="true">
+          <Tooltip label={accessibleName} theme="light" arrow="top" />
+        </div>
+      </div>
     );
   },
 );

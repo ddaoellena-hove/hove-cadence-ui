@@ -6,10 +6,12 @@
 
 - **`AppLayout`** (nouveau) : squelette d'application. La `Sidebar` est à gauche, fondue dans le fond de l'app (couleur produit). Le contenu de la page est dans un conteneur blanc arrondi, bordé d'un liseré, avec un padding de `24px 32px`. Seul ce conteneur défile, et il suit la largeur de la Sidebar dépliée ou repliée sans aucune mesure côté app.
 - **`Sidebar`** : nouvelles props `scope` (sélecteur de périmètre, ex-`Header`) et `user` (avatar, nom et email), affichées en pied. La Sidebar n'a plus d'arrondi ni d'ombre.
+- **Boutons icône seule** (`GhostButton`, `PrimaryButton`) : le nom accessible (`aria-label`) s'affiche en infobulle, au survol après 300 ms et au focus clavier.
 - **`ActionCard`** (nouveau) : carte d'action avec titre, description, bouton `PrimaryButton outline sm` et illustration facultative. Elle se soulève au survol.
 
 ### ⚠️ Changements cassants
 
+- **`TableCardAction` est supprimé.** Les actions par ligne de `TableCard` utilisent `GhostButton size="sm"` icône seule. Migration : `<TableCardAction icon="trash" label="Supprimer" destructive />` devient `<GhostButton size="sm" icon="trash" aria-label="Supprimer" tone="danger" />`.
 - **`Header` est supprimé.** Le sélecteur de périmètre passe dans `Sidebar scope`, le profil dans `Sidebar user`.
 - **Migration du layout.** Remplacer le squelette de l'ancienne recette 1 (Sidebar en `position: fixed`, `useElementWidth`, `marginLeft`, `HEADER_HEIGHT`) par `<AppLayout sidebar={<Sidebar … />}>{page}</AppLayout>`.
 - **Usage de `--cadence-z-sticky`.** Le token est conservé, mais il ne sert plus à la Sidebar ni au Header.

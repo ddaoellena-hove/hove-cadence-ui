@@ -222,7 +222,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Action secondaire, action inline de formulaire | `GhostButton` | `SecondaryButton` (déprécié) ; `Link` (3e action) |
 | 3e action d'un groupe, action dans une phrase | `Link hideArrow` | `GhostButton` (action secondaire) |
 | Navigation inline, action tertiaire discrète | `Link` | — |
-| Petite action par ligne de liste (icône) | `TableCardAction` | `GhostButton icon` (trop gros ici) |
+| Petite action par ligne de liste (icône) | `GhostButton size="sm"` icône seule (`icon` + `aria-label`, infobulle intégrée) | `PrimaryButton` (trop appuyé dans une ligne) |
 | Saisie de texte libre (1 ligne) | `TextInput` | — |
 | Saisie de texte long (multi-lignes) | `TextArea` | — |
 | Valeur numérique avec +/− | `CounterInput` | `TextInput type="number"` (interdit) |
@@ -270,7 +270,7 @@ Toutes les distances utilisent cette échelle (px) : **4, 8, 12, 16, 20, 24, 32,
 | Contexte | Valeur |
 |---|---|
 | Gap entre boutons d'un groupe | `8` |
-| Gap entre actions d'icône (`TableCardAction`) | `8` |
+| Gap entre actions d'icône (`GhostButton` icône seule) | `8` |
 | Gap entre cards d'une liste | `8` |
 | Gap entre champs d'un formulaire | `20` |
 | Gap entre champs côte à côte (même ligne) | `12` |
@@ -327,7 +327,7 @@ Le multi-colonnes est un outil de **densité locale**, pas un outil de **découp
 | 2 — secondaire | `GhostButton` | Les actions secondaires : sans fond ni bordure au repos, voile au survol. Plusieurs autorisés. | « Annuler », « Exporter », « Réinitialiser » |
 | 2 — secondaire (dashboard) | `PrimaryButton outline` | Les actions secondaires d'un **dashboard** (en-tête de page, barre au-dessus d'une liste) : contour visible, repérable d'un coup d'œil sur une page chargée. | « Exporter », « Filtres », « Paramètres » |
 | 3 — tertiaire | `Link hideArrow` | La 3e action d'un groupe, ou une action dans une phrase. | « Enregistrer comme brouillon » |
-| Par ligne | `TableCardAction` | Petite action icône dans une ligne de liste (`TableCard`). | Dupliquer, modifier, supprimer |
+| Par ligne | `GhostButton size="sm"` icône seule | Petite action icône dans une ligne de liste (`TableCard`), infobulle au survol. | Dupliquer, modifier, supprimer |
 
 `PrimaryButton` (plein ou `outline`) et `GhostButton` ont **la même API et les mêmes dimensions** (voir la [Référence API](#primarybutton--ghostbutton)) : seul le rendu change, ce qui les aligne au pixel dans un groupe.
 
@@ -420,13 +420,13 @@ Il n'y a pas de grande taille : une action importante se distingue par son nivea
 </div>
 ```
 
-**Actions par ligne (`TableCardAction`)** — icônes 24×24 avec tooltip, dans le header de chaque `TableCard` :
+**Actions par ligne** — `GhostButton size="sm"` icône seule, dans le header de chaque `TableCard`. L'`aria-label` s'affiche en infobulle au survol et au focus clavier :
 
 ```tsx
 <>
-  <TableCardAction icon="copy-01" label="Dupliquer" onClick={onDuplicate} />
-  <TableCardAction icon="edit-02" label="Modifier" onClick={onEdit} />
-  <TableCardAction icon="trash" label="Supprimer" onClick={onDelete} destructive />
+  <GhostButton size="sm" icon="copy-01" aria-label="Dupliquer" onClick={onDuplicate} />
+  <GhostButton size="sm" icon="edit-02" aria-label="Modifier" onClick={onEdit} />
+  <GhostButton size="sm" icon="trash" aria-label="Supprimer" tone="danger" onClick={onDelete} />
 </>
 ```
 
@@ -446,7 +446,7 @@ Il n'y a pas de grande taille : une action importante se distingue par son nivea
 | Impact | Composant | Quand |
 |---|---|---|
 | Faible (1 élément, réversible) | `Link variant="destructive"` | Retirer une valeur, un filtre, un champ |
-| Moyen (1 élément, irréversible) | `TableCardAction destructive` + confirmation `Modal` | Supprimer une ligne d'une liste |
+| Moyen (1 élément, irréversible) | `GhostButton tone="danger"` icône seule + confirmation `Modal` | Supprimer une ligne d'une liste |
 | Fort (plusieurs éléments, irréversible) | `PrimaryButton tone="danger"` + confirmation `Modal size="small"` | Suppression multiple |
 
 `GhostButton tone="danger"` sert à une action destructive **secondaire** dans un groupe (ex. « Retirer » à côté d'un `PrimaryButton` « Enregistrer »).
@@ -479,7 +479,7 @@ Au-dessus d'une liste filtrable, utiliser `FilterBar` (recherche, filtres rapide
 | Page liste — création | En haut à droite, à côté des onglets | `PrimaryButton` (`md`) |
 | Formulaire — soumission | En bas à droite | `Link` (option) + `GhostButton` + `PrimaryButton`, en `md` |
 | Modale — validation | Pied (via `primaryAction` / `secondaryAction`) | géré par `Modal` |
-| Liste — action par ligne | À droite du header de la ligne | `TableCardAction` |
+| Liste — action par ligne | À droite du header de la ligne | `GhostButton size="sm"` icône seule |
 | Liste — sélection multiple | À droite de la barre de sélection | `GhostButton` + `PrimaryButton tone="danger"`, `size="sm"` |
 | Formulaire inline | À droite du champ associé | `GhostButton` |
 
@@ -635,7 +635,7 @@ Une liste de cartes se compose de trois briques :
 
 1. **`TableHeader`** — la ligne d'en-têtes de colonnes (labels uppercase + flèches de tri).
 2. **`TableCard`** — une ligne de la liste : header (checkbox + icône + titre + actions) et body en colonnes.
-3. **`TableCardAction`** — les boutons d'action icône du header de ligne.
+3. **`GhostButton size="sm"` icône seule** — les boutons d'action du header de ligne (slot `actions` de `TableCard`).
 
 ### Alignement des colonnes
 
@@ -649,7 +649,7 @@ Une liste de cartes se compose de trois briques :
 - ✅ État sélectionné : `state="selected"` + `checkboxState="checked"` ensemble.
 - ✅ Sans titre ni actions, le header de la card disparaît automatiquement (variante contenu seul).
 - ❌ Ne pas mettre de `<table>` HTML custom — `TableHeader` + `TableCard` (peu de lignes) ou `DataTable` (gros volume) couvrent le besoin.
-- ❌ Ne pas mettre plus de 4 `TableCardAction` par ligne — au-delà, regrouper dans un menu.
+- ❌ Ne pas mettre plus de 4 actions icône par ligne — au-delà, regrouper dans un menu.
 
 Le code complet est dans la [recette 2](#recette-2--page-liste-avec-sélection-multiple) (`TableCard`) et la [recette 5](#recette-5--page-de-supervision) (`DataTable`).
 
@@ -694,7 +694,7 @@ Une `ActionCard` présente une action à lancer : un titre, une description cour
 - ✅ En grille : `gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))"`, `gap: 16`. Les cartes prennent la même hauteur et les boutons s'alignent en bas.
 - ✅ `illustration` (facultative) apporte du cachet : SVG inline ou `<img alt="">` local, 64 à 96px de haut, placé en bas à droite et collé au coin. Décorative : masquée aux lecteurs d'écran, elle ne porte aucune information.
 - ✅ `headingLevel` suit la hiérarchie de la page (h3 par défaut, sous un h2 de section).
-- ❌ Une seule action par carte : pour plusieurs actions, utiliser une liste (`TableCard` + `TableCardAction`).
+- ❌ Une seule action par carte : pour plusieurs actions, utiliser une liste (`TableCard` + `GhostButton` icône seule).
 - ❌ Ne pas recréer une carte cliquable dans son ensemble avec `ActionCard` : pour un indicateur qui mène à une liste, `KpiCard onClick`.
 
 ### Indicateurs chiffrés : `KpiCard`
@@ -804,12 +804,12 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
 
 ### Recette 2 — Page liste avec sélection multiple
 
-Liste de `TableCard` avec en-têtes triables, sélection multiple, barre d'actions groupées et confirmation de suppression. Couvre : `TableHeader`, `TableCard`, `TableCardAction`, `Checkbox`, `Modal`, `AlertToast`, `Tab`, tri et filtres.
+Liste de `TableCard` avec en-têtes triables, sélection multiple, barre d'actions groupées et confirmation de suppression. Couvre : `TableHeader`, `TableCard`, `GhostButton` (actions par ligne), `Checkbox`, `Modal`, `AlertToast`, `Tab`, tri et filtres.
 
 ```tsx
 import { useState } from "react";
 import {
-  Tab, PrimaryButton, GhostButton, Link, Checkbox, TableHeader, TableCard, TableCardAction, Modal, AlertToast, Indicator,
+  Tab, PrimaryButton, GhostButton, Link, Checkbox, TableHeader, TableCard, Modal, AlertToast, Indicator,
 } from "@ddaoellena/cadence-ui";
 
 // Largeurs partagées entre TableHeader et TableCard — NE PAS désynchroniser
@@ -877,9 +877,9 @@ export const ScenarioListPage = () => {
             onCheckboxChange={(checked) => toggleRow(row.id, checked)}
             actions={
               <>
-                <TableCardAction icon="copy-01" label="Dupliquer" onClick={() => onDuplicateOne(row.id)} />
-                <TableCardAction icon="edit-02" label="Modifier" onClick={() => onEdit(row.id)} />
-                <TableCardAction icon="trash" label="Supprimer" destructive onClick={() => onDeleteOne(row.id)} />
+                <GhostButton size="sm" icon="copy-01" aria-label="Dupliquer" onClick={() => onDuplicateOne(row.id)} />
+                <GhostButton size="sm" icon="edit-02" aria-label="Modifier" onClick={() => onEdit(row.id)} />
+                <GhostButton size="sm" icon="trash" aria-label="Supprimer" tone="danger" onClick={() => onDeleteOne(row.id)} />
               </>
             }
             columns={[
@@ -1515,7 +1515,7 @@ API identique pour les deux ; seul le rendu change (`PrimaryButton` plein ou con
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
 | `label` | `string` | **requis** (sauf icône seule) | Libellé. ⚠️ Exclusif avec `icon`. Sans `label` ni `icon`, le bouton ne rend **aucun texte de repli** et une erreur est émise en développement |
-| `icon` | nom d'icône `Icons` | — | Icône seule (bouton carré). ⚠️ `aria-label` **obligatoire** (typé) ; à défaut, le nom de l'icône sert de nom accessible avec un avertissement en développement |
+| `icon` | nom d'icône `Icons` | — | Icône seule (bouton carré). ⚠️ `aria-label` **obligatoire** (typé) ; à défaut, le nom de l'icône sert de nom accessible avec un avertissement en développement. Le nom accessible s'affiche en **infobulle** sous le bouton, au survol (après 300 ms) et au focus clavier |
 | `aria-label` | `string` | — | Nom accessible. Obligatoire avec `icon` |
 | `iconStart`, `iconEnd` | nom d'icône `Icons` | — | Icône avant / après le libellé |
 | `tone` | `"default" \| "danger"` | `"default"` | `"danger"` : action destructive (fond rouge / texte rouge) |
@@ -1631,18 +1631,9 @@ API identique pour les deux (`SegmentedControl` = navigation, `SegmentedControlA
 | `iconElement` | `ReactNode` | — | SVG custom (16×16) — prioritaire sur `icon` |
 | `checkboxState` | `"unchecked" \| "checked" \| "indeterminate"` | `"unchecked"` | — |
 | `onCheckboxChange` | `(checked: boolean) => void` | — | — |
-| `actions` | `ReactNode` | — | Slot — utiliser des `TableCardAction` |
+| `actions` | `ReactNode` | — | Slot — des `GhostButton size="sm"` icône seule (`icon` + `aria-label`, `tone="danger"` pour supprimer) |
 | `columns` | `TableCardColumn[]` | `[]` | `{ key, content, width? \| flex? }` — `width` px fixe **ou** `flex` (jamais les deux) |
 | `state` | `"default" \| "selected" \| "disabled"` | `"default"` | `selected` = fond bleu du wrapper |
-
-### TableCardAction
-
-| Prop | Type | Défaut | Description |
-|---|---|---|---|
-| `icon` | nom d'icône `Icons` | **requis** | — |
-| `label` | `string` | **requis** | Tooltip au survol + aria-label |
-| `onClick` | `() => void` | — | — |
-| `destructive` | `boolean` | `false` | Icône rouge |
 
 ### TableHeader
 
