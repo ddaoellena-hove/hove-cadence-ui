@@ -30,6 +30,7 @@ import {
   type DataTableValue,
 } from "./data-table-utils";
 import "./data-table.css";
+import "./scrollbar.css";
 
 export type { DataTableSort, DataTableValue };
 
@@ -312,6 +313,7 @@ export function DataTable<T extends object>({
 
   const rootClass = [
     "data-table",
+    "cadence-scrollbar",
     `data-table--${density}`,
     loading && rows.length > 0 ? "data-table--busy" : "",
     className,

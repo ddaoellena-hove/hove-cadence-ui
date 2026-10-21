@@ -47,7 +47,9 @@
   --cadence-color-white: #ffffff;          /* Surfaces de premier plan */
   --cadence-color-surface-alt: #eef1f4;    /* Fonds de wrapper (TableCard, Badge) */
   --cadence-color-border: #e5e5e5;         /* Bordures par défaut */
-  --cadence-color-border-strong: #bfc9cb;  /* Bordures appuyées, états disabled, contour de PrimaryButton outline */
+  --cadence-color-border-strong: #bfc9cb;
+  --cadence-color-scrollbar-thumb: rgba(0, 40, 48, 0.2);        /* Curseur des barres de défilement (cadence-scrollbar) */
+  --cadence-color-scrollbar-thumb-hover: rgba(0, 40, 48, 0.36); /* … au survol */  /* Bordures appuyées, états disabled, contour de PrimaryButton outline */
   --cadence-color-divider: #f0f0f0;        /* Séparateurs internes (colonnes, footers) */
 
   /* ── Typographie ───────────────────────────────────────────────────────── */

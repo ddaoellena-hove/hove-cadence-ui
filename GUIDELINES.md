@@ -126,6 +126,7 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-color-surface-alt` | `#eef1f4` | Fonds de wrapper (TableCard, Badge), jours d'une période (`DateRangePicker`) |
 | `--cadence-color-border` | `#e5e5e5` | Bordures par défaut |
 | `--cadence-color-border-strong` | `#bfc9cb` | Bordures appuyées, états disabled |
+| `--cadence-color-scrollbar-thumb` | `rgba(0, 40, 48, 0.2)` | Curseur des barres de défilement (`cadence-scrollbar`) ; `-hover` : `rgba(0, 40, 48, 0.36)` |
 | `--cadence-color-divider` | `#f0f0f0` | Séparateurs internes |
 | `--cadence-font-sans` | Inter | Texte d'interface |
 | `--cadence-font-display` | Uxum Grotesque → Space Grotesk | Titres |
@@ -179,6 +180,7 @@ La story **Foundation/Tokens** affiche tous ces tokens à partir des variables C
 - ✅ Dans du code applicatif, référencer les tokens (`color: var(--cadence-color-primary)`) plutôt que les hex en dur.
 - ✅ Statut dans du code applicatif → `--cadence-status-*` ; jamais un hex.
 - ✅ Couches : `zIndex: "var(--cadence-z-toast)"` pour un toast, `var(--cadence-z-sticky)` pour un élément collant — pas de valeur inventée.
+- ✅ Toute zone qui défile (composant ou app) prend la classe **`cadence-scrollbar`** : barre fine sans fond, curseur arrondi en retrait qui fonce au survol (déjà posée sur `AppLayout`, `DataTable`, le corps de `Modal` et le menu d'`Autocomplete`). La `Sidebar` garde sa barre claire sur fond sombre.
 - ✅ Pour créer un nouveau composant, piocher dans `tokens.css` ; n'ajouter un token que si la valeur a vocation à être partagée.
 - ❌ Ne pas redéfinir les `--cadence-*` au niveau d'un composant — ce sont des valeurs globales du thème.
 
