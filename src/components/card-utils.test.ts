@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildSparklinePoints, describeDelta, formatDelta, formatKpiValue, getDeltaTone } from "./kpi-card-utils";
+import { buildSparklinePoints, describeDelta, formatDelta, formatKpiValue, getDeltaTone } from "./card-utils";
 
 describe("formatKpiValue", () => {
   it("formate les nombres en fr-FR", () => {

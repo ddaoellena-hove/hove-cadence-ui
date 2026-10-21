@@ -1,12 +1,12 @@
 import './tokens.css';
 
-export * from './ActionCard';
 export * from './AppLayout';
 export * from './AlertToast';
 export * from './Autocomplete';
 export * from './Badge';
 export * from './Avatar';
 export * from './Breadcrumbs';
+export * from './Card';
 export * from './CounterInput';
 export * from './Dropdown';
 export type { TriggerVariant } from './button-trigger-utils';
@@ -21,7 +21,6 @@ export * from './DatePicker';
 export * from './DateRangePicker';
 export * from './Icons';
 export * from './Indicator';
-export * from './KpiCard';
 export * from './PageHeader';
 export * from './Pagination';
 export * from './PrimaryButton';

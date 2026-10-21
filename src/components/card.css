@@ -1,0 +1,269 @@
+/* ── Card ────────────────────────────────────────────────────────────────── */
+/* Carte blanche à bordure fine. Tout est facultatif sauf le titre : statut,
+   valeur et évolution, mini-courbe, description, bouton d'action,
+   illustration. Interactive (onClick ou bouton d'action) : elle se soulève au
+   survol et au focus clavier. */
+.card {
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-lg, 10px);
+  box-sizing: border-box;
+  color: var(--cadence-color-primary, #002830);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  gap: 12px;
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
+  padding: 16px 20px;
+  position: relative;
+  /* Transition longue et décélérée : la carte « flotte » au lieu de sauter */
+  transition:
+    box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card--interactive:hover,
+.card--interactive:focus-within {
+  box-shadow: var(--cadence-shadow-raised, 0 16px 32px -8px rgba(0, 0, 0, 0.16), 0 4px 10px rgba(0, 0, 0, 0.05));
+  transform: translateY(-4px);
+}
+
+/* Carte cliquable au clavier : anneau de focus autour de toute la carte */
+.card--clickable:has(.card__stretched:focus-visible) {
+  box-shadow:
+    var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45),
+    var(--cadence-shadow-raised, 0 16px 32px -8px rgba(0, 0, 0, 0.16), 0 4px 10px rgba(0, 0, 0, 0.05));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+
+  /* Sans mouvement : l'ombre seule signale le survol */
+  .card--interactive:hover,
+  .card--interactive:focus-within {
+    transform: none;
+  }
+}
+
+/* ── En-tête : titre + statut ────────────────────────────────────────────── */
+.card__header {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  min-height: 24px;
+}
+
+.card__title {
+  color: var(--cadence-color-primary, #002830);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0;
+  min-width: 0;
+}
+
+/* Bouton étiré : sa zone cliquable couvre toute la carte */
+.card__stretched {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  outline: none;
+  padding: 0;
+  text-align: left;
+}
+
+.card__stretched::after {
+  border-radius: inherit;
+  content: "";
+  inset: 0;
+  position: absolute;
+}
+
+/* ── Valeur, variation, courbe ───────────────────────────────────────────── */
+.card__body {
+  align-items: flex-end;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.card__figures {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.card__value {
+  align-items: baseline;
+  display: flex;
+  gap: 6px;
+  margin: 0;
+}
+
+.card__number {
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-size: 28px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.card__unit {
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.card__delta {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  gap: 4px;
+  margin: 0;
+}
+
+/* Couleurs de texte AA : tokens de statut, pas --cadence-color-success (3,4:1) */
+.card__delta--positive {
+  color: var(--cadence-status-completed-fg, #15803d);
+}
+
+.card__delta--negative {
+  color: var(--cadence-status-critical-fg, #b91c1c);
+}
+
+.card__delta--neutral {
+  color: var(--cadence-color-icon-muted, #69797d);
+}
+
+.card__delta-icon {
+  flex-shrink: 0;
+}
+
+.card__delta-label {
+  color: var(--cadence-color-icon-muted, #69797d);
+  font-weight: 400;
+}
+
+.card__sparkline {
+  display: block;
+  flex-shrink: 0;
+}
+
+.card__sparkline-line {
+  fill: none;
+  stroke: var(--cadence-color-label, #1a3e45);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+.card__sparkline-dot {
+  fill: var(--cadence-color-label, #1a3e45);
+}
+
+/* ── Description ─────────────────────────────────────────────────────────── */
+.card__description {
+  color: var(--cadence-color-icon-muted, #69797d);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Directement sous le titre (carte sans valeur) : resserrée */
+.card__header + .card__description {
+  margin-top: -6px;
+}
+
+/* ── Pied : bouton en bas à gauche, illustration collée au coin bas-droit ── */
+.card__footer {
+  align-items: flex-end;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.card__actions {
+  display: flex;
+  flex-shrink: 0;
+}
+
+/* Les marges négatives annulent le padding de la carte : l'illustration
+   touche le coin, rogné par l'arrondi (overflow: hidden) */
+.card__illustration {
+  display: flex;
+  flex-shrink: 1;
+  justify-content: flex-end;
+  margin: 0 -20px -16px auto;
+  max-width: 50%;
+  min-width: 0;
+  pointer-events: none;
+}
+
+.card__illustration > img,
+.card__illustration > svg {
+  display: block;
+  height: auto;
+  max-height: 96px;
+  max-width: 100%;
+}
+
+/* ── Chargement ──────────────────────────────────────────────────────────── */
+.card__skeleton {
+  animation: card-pulse 1.2s ease-in-out infinite;
+  background: var(--cadence-color-surface-alt, #eef1f4);
+  border-radius: var(--cadence-radius-sm, 6px);
+  display: block;
+}
+
+.card__skeleton--value {
+  height: 30px;
+  width: 120px;
+}
+
+.card__skeleton--delta {
+  height: 14px;
+  width: 80px;
+}
+
+.card__body--loading {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@keyframes card-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card__skeleton {
+    animation: none;
+  }
+}
+
+/* ── Texte réservé aux lecteurs d'écran ──────────────────────────────────── */
+.card__sr-only {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}

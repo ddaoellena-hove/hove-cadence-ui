@@ -1,4 +1,4 @@
-// Fonctions pures de KpiCard (internes, non exportées par index.ts).
+// Fonctions pures de Card (internes, non exportées par index.ts).
 
 export type KpiGoodDirection = "up" | "down" | "neutral";
 export type KpiDeltaUnit = "%" | "pt" | "";
