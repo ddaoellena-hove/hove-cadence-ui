@@ -380,10 +380,10 @@ Il n'y a pas de grande taille : une action importante se distingue par son nivea
 
 ```tsx
 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-  <div style={{ display: "flex", gap: 4 }}>
-    <Tab label="En cours" variant="active" />
-    <Tab label="À venir" />
-  </div>
+  <TabList aria-label="État des scénarios">
+    <Tab label="En cours" variant="active" onClick={…} />
+    <Tab label="À venir" onClick={…} />
+  </TabList>
   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
     {/* En-tête de dashboard : tous les boutons en sm, action principale comprise */}
     <PrimaryButton size="sm" outline iconStart="download-02" label="Exporter" onClick={onExport} />
@@ -595,8 +595,8 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 | `Sidebar` | Navigation principale entre les grandes sections ; en pied, sélecteur de périmètre (`scope`) et utilisateur connecté (`user`). | Gauche, pleine hauteur, dans `AppLayout` |
 | `Breadcrumbs` | Localisation dans l'arborescence + navigation ascendante. | Au-dessus du titre |
 | `Dropdown` `variant="button"` | Sélecteur de contexte dans le breadcrumb (produit/module). | Dans le breadcrumb |
-| `Tab` | Navigation entre vues au sein d'une même page. | Sous le titre de page |
-| `SecondaryTab` | Sous-navigation (filtres/statuts, avec compteurs) à l'intérieur d'une vue ouverte via un `Tab`. | Sous la rangée de `Tab` |
+| `TabList` + `Tab` | Navigation entre vues au sein d'une même page. `TabList` porte `role="tablist"` et le clavier (←/→, Début / Fin). | Sous le titre de page |
+| `TabList level="secondary"` + `SecondaryTab` | Sous-navigation (filtres/statuts, avec compteurs) à l'intérieur d'une vue ouverte via un `Tab`. | Sous la rangée de `Tab` |
 
 ### Règles
 
@@ -606,8 +606,10 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 - ✅ Périmètre (réseau, client) et utilisateur connecté vont en pied de Sidebar (`scope`, `user`). Il n'y a plus de `Header`.
 - ✅ Afficher `Breadcrumbs` dès que l'utilisateur est à plus d'un niveau de profondeur.
 - ✅ Le dernier item du breadcrumb est la page courante — sans `href`.
+- ✅ Une rangée d'onglets est **toujours** dans un `TabList` nommé (`aria-label`) : un `role="tab"` hors d'un `role="tablist"` est invalide, et c'est `TabList` qui gère le clavier (seul l'onglet actif est tabulable, ←/→ et Début / Fin pour changer d'onglet). Un `Tab` seul émet un avertissement en développement.
+- ✅ Relier chaque onglet à son panneau : `id` + `controls` sur le `Tab`, et côté panneau `role="tabpanel"`, `id`, `aria-labelledby` (id de l'onglet), `tabIndex={0}`.
 - ✅ L'onglet actif se marque avec `variant="active"` sur `Tab`.
-- ✅ Pour un second niveau de navigation (sous-filtres/statuts d'une vue), utiliser `SecondaryTab` sous la rangée de `Tab` — plus compact, avec compteur optionnel.
+- ✅ Pour un second niveau de navigation (sous-filtres/statuts d'une vue), utiliser `SecondaryTab` dans un `TabList level="secondary"`, sous la rangée de `Tab` — plus compact, avec compteur optionnel.
 - ❌ Ne jamais décaler ou centrer la `Sidebar` — toujours ancrée au bord gauche, jamais tronquée en hauteur.
 - ❌ Ne pas recréer le squelette à la main (Sidebar en `position: fixed`, contenu décalé par `marginLeft`) : utiliser `AppLayout`.
 - ❌ Ne pas ajouter de barre supérieure au-dessus du conteneur : le titre de la page est la première ligne du contenu.
@@ -823,12 +825,12 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
 
 ### Recette 2 — Page liste avec sélection multiple
 
-Liste de `TableCard` avec en-têtes triables, sélection multiple, barre d'actions groupées et confirmation de suppression. Couvre : `TableHeader`, `TableCard`, `GhostButton` (actions par ligne), `Checkbox`, `Modal`, `AlertToast`, `Tab`, tri et filtres.
+Liste de `TableCard` avec en-têtes triables, sélection multiple, barre d'actions groupées et confirmation de suppression. Couvre : `TableHeader`, `TableCard`, `GhostButton` (actions par ligne), `Checkbox`, `Modal`, `AlertToast`, `TabList` + `Tab`, tri et filtres.
 
 ```tsx
 import { useState } from "react";
 import {
-  Tab, PrimaryButton, GhostButton, Link, Checkbox, TableHeader, TableCard, Modal, AlertToast, Indicator,
+  Tab, TabList, PrimaryButton, GhostButton, Link, Checkbox, TableHeader, TableCard, Modal, AlertToast, Indicator,
 } from "@ddaoellena/cadence-ui";
 
 // Largeurs partagées entre TableHeader et TableCard — NE PAS désynchroniser
@@ -839,6 +841,7 @@ export const ScenarioListPage = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [toast, setToast] = useState(false);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
+  const [view, setView] = useState<"current" | "upcoming" | "past">("current");
 
   const toggleRow = (id: string, checked: boolean) =>
     setSelected((prev) => {
@@ -851,11 +854,11 @@ export const ScenarioListPage = () => {
     <div>
       {/* ── Barre titre : onglets + création ── */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
-        <div style={{ display: "flex", gap: 4 }}>
-          <Tab label="En cours" variant="active" />
-          <Tab label="À venir" />
-          <Tab label="Passées" />
-        </div>
+        <TabList aria-label="État des scénarios">
+          <Tab label="En cours" variant={view === "current" ? "active" : "default"} onClick={() => setView("current")} />
+          <Tab label="À venir" variant={view === "upcoming" ? "active" : "default"} onClick={() => setView("upcoming")} />
+          <Tab label="Passées" variant={view === "past" ? "active" : "default"} onClick={() => setView("past")} />
+        </TabList>
         <PrimaryButton label="Créer un scénario" onClick={onCreate} />
       </div>
 
@@ -1596,7 +1599,7 @@ Carte cliquable avec icône + label + description + carré de coche. Sélection 
 
 ### SecondaryTab
 
-Onglet de sous-navigation (niveau 2), sous une rangée de `Tab`. Style ghost (pastille douce sur l'onglet actif, inactifs en gris `#69797D`), avec compteur optionnel. Item-level : un `<SecondaryTab>` par onglet.
+Onglet de sous-navigation (niveau 2), sous une rangée de `Tab`. Style ghost (pastille douce sur l'onglet actif, inactifs en gris `--cadence-color-icon-muted`), avec compteur optionnel. Un `<SecondaryTab>` par onglet, dans un `TabList level="secondary"`.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
@@ -1605,6 +1608,10 @@ Onglet de sous-navigation (niveau 2), sous une rangée de `Tab`. Style ghost (pa
 | `variant` | `"default" \| "active"` | `"default"` | ⚠️ Pas de prop booléenne `active` |
 | `disabled` | `boolean` | `false` | — |
 | `onClick` | `() => void` | — | — |
+| `id` | `string` | — | `id` de l'onglet (cible de `aria-labelledby` côté panneau) |
+| `controls` | `string` | — | `id` du panneau → `aria-controls` |
+
+⚠️ Toujours dans un `TabList level="secondary"` ; hors `TabList`, avertissement en développement.
 
 ### SegmentedControl / SegmentedControlAlt
 
@@ -1661,6 +1668,30 @@ API identique pour les deux (`SegmentedControl` = navigation, `SegmentedControlA
 | `variant` | `"default" \| "active"` | `"default"` | ⚠️ Pas de prop booléenne `active` |
 | `disabled` | `boolean` | `false` | — |
 | `onClick` | `() => void` | — | — |
+| `id` | `string` | — | `id` de l'onglet (cible de `aria-labelledby` côté panneau) |
+| `controls` | `string` | — | `id` du panneau → `aria-controls` |
+
+⚠️ Toujours dans un `TabList` ; hors `TabList`, avertissement en développement.
+
+### TabList
+
+Conteneur `role="tablist"` d'une rangée de `Tab` ou de `SecondaryTab`. *Roving tabindex* : seul l'onglet actif est dans l'ordre de tabulation (sans onglet actif, le premier activable). ←/→ en boucle, Début / Fin ; les onglets désactivés sont sautés.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `aria-label` | `string` | **requis** | Nom de la rangée (« État des scénarios ») |
+| `level` | `"primary" \| "secondary"` | `"primary"` | Écart entre onglets : 16px (`Tab`) ou 4px (`SecondaryTab`) |
+| `activation` | `"automatic" \| "manual"` | `"automatic"` | `automatic` : les flèches activent l'onglet ; `manual` : les flèches déplacent le focus, Entrée / Espace activent (panneau coûteux à charger) |
+| `children` | `ReactNode` | **requis** | Les onglets |
+| `className` | `string` | — | — |
+
+```tsx
+<TabList aria-label="État des scénarios">
+  <Tab label="En cours" variant="active" id="tab-current" controls="panel-current" onClick={…} />
+  <Tab label="À venir" id="tab-upcoming" controls="panel-upcoming" onClick={…} />
+</TabList>
+<div role="tabpanel" id="panel-current" aria-labelledby="tab-current" tabIndex={0}>…</div>
+```
 
 ### TableCard
 

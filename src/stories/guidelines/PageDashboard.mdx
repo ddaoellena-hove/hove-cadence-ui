@@ -97,7 +97,7 @@ La rangée supérieure de la carte est divisée en deux zones : les onglets à g
 
 <div className="spec">
   <div className="label">Onglets</div>
-  Composant : <code>Tab</code>, gap <code>16px</code>, texte en <strong>UPPERCASE</strong><br/>
+  Composant : <code>TabList</code> + <code>Tab</code> (écart de <code>16px</code> fourni par <code>TabList</code>), texte en <strong>UPPERCASE</strong><br/>
   Padding de la rangée : <code>0 24px</code><br/>
   Border bottom : <code>1px solid #f0f0f0</code>
 
@@ -111,12 +111,12 @@ La rangée supérieure de la carte est divisée en deux zones : les onglets à g
 ```tsx
 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between",
               padding: "0 24px", borderBottom: "1px solid #f0f0f0", height: 52 }}>
-  <div style={{ display: "flex", gap: 16 }}>
-    <Tab label="En cours" variant="active" />
-    <Tab label="À venir" />
-    <Tab label="Passées" />
-    <Tab label="Brouillon" />
-  </div>
+  <TabList aria-label="État des scénarios">
+    <Tab label="En cours" variant="active" onClick={…} />
+    <Tab label="À venir" onClick={…} />
+    <Tab label="Passées" onClick={…} />
+    <Tab label="Brouillon" onClick={…} />
+  </TabList>
   <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
       <Toggle state={mapView ? "active" : "default"} onChange={setMapView} />

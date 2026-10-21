@@ -1,3 +1,4 @@
+import { useInTabList } from "./tab-list-context";
 import "./tab.css";
 
 export interface TabProps {
@@ -11,6 +12,10 @@ export interface TabProps {
   disabled?: boolean;
   /** Optional extra class name. */
   className?: string;
+  /** `id` du bouton onglet (cible de `aria-labelledby` côté panneau). */
+  id?: string;
+  /** `id` du panneau contrôlé → `aria-controls`. */
+  controls?: string;
 }
 
 export const Tab = ({
@@ -19,7 +24,11 @@ export const Tab = ({
   onClick,
   disabled = false,
   className,
+  id,
+  controls,
 }: TabProps) => {
+  const inTabList = useInTabList("Tab");
+  const active = variant === "active";
   const rootClass = [
     "tab",
     `tab--${variant}`,
@@ -35,8 +44,12 @@ export const Tab = ({
       className={rootClass}
       onClick={onClick}
       disabled={disabled}
-      aria-selected={variant === "active"}
+      id={id}
       role="tab"
+      aria-selected={active}
+      aria-controls={controls}
+      // Roving tabindex dans un TabList : seul l'onglet actif est tabulable
+      tabIndex={inTabList ? (active ? 0 : -1) : undefined}
     >
       <span className="tab__label">{label}</span>
       {variant === "active" && <span className="tab__underline" aria-hidden="true" />}

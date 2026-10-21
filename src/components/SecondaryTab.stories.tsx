@@ -1,12 +1,24 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, userEvent, within } from "storybook/test";
 import { SecondaryTab } from "./SecondaryTab";
 import { Tab } from "./Tab";
+import { TabList } from "./TabList";
 
 const meta: Meta<typeof SecondaryTab> = {
   title: "Components/SecondaryTab",
   component: SecondaryTab,
   tags: ["autodocs"],
+  parameters: {
+    // Les violations a11y font échouer les tests de ce composant
+    a11y: { test: "error" },
+  },
+  // Un onglet vit toujours dans un TabList (role="tab" exige role="tablist")
+  render: (args) => (
+    <TabList aria-label="Exemple" level="secondary">
+      <SecondaryTab {...args} />
+    </TabList>
+  ),
   argTypes: {
     variant: { control: "radio", options: ["default", "active"] },
     count: { control: "number" },
@@ -45,7 +57,7 @@ export const SubTabBar: Story = {
     ];
     const [active, setActive] = useState("published");
     return (
-      <div style={{ display: "inline-flex", gap: 4 }}>
+      <TabList aria-label="Statut de publication" level="secondary">
         {items.map((it) => (
           <SecondaryTab
             key={it.id}
@@ -55,8 +67,18 @@ export const SubTabBar: Story = {
             onClick={() => setActive(it.id)}
           />
         ))}
-      </div>
+      </TabList>
     );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // Parcours au clavier, sans souris
+    await userEvent.tab();
+    await expect(canvas.getByRole("tab", { name: /^Publiés/ })).toHaveFocus();
+    await userEvent.keyboard("{ArrowRight}");
+    await expect(canvas.getByRole("tab", { name: /^Planifiés/ })).toHaveAttribute("aria-selected", "true");
+    await userEvent.keyboard("{Home}");
+    await expect(canvas.getByRole("tab", { name: /^Publiés/ })).toHaveAttribute("aria-selected", "true");
   },
 };
 
@@ -72,22 +94,24 @@ export const TwoLevels: Story = {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 520 }}>
         {/* Niveau 1 — Tab, avec séparateur pleine largeur */}
-        <div style={{ display: "inline-flex", gap: 24, borderBottom: "1px solid var(--cadence-color-border, #e5e5e5)" }}>
-          {[
-            { id: "datasets", label: "Jeux de données" },
-            { id: "stops", label: "Arrêts" },
-          ].map((t) => (
-            <Tab
-              key={t.id}
-              label={t.label}
-              variant={primary === t.id ? "active" : "default"}
-              onClick={() => setPrimary(t.id)}
-            />
-          ))}
+        <div style={{ borderBottom: "1px solid var(--cadence-color-border, #e5e5e5)" }}>
+          <TabList aria-label="Section">
+            {[
+              { id: "datasets", label: "Jeux de données" },
+              { id: "stops", label: "Arrêts" },
+            ].map((t) => (
+              <Tab
+                key={t.id}
+                label={t.label}
+                variant={primary === t.id ? "active" : "default"}
+                onClick={() => setPrimary(t.id)}
+              />
+            ))}
+          </TabList>
         </div>
 
         {/* Niveau 2 — SecondaryTab */}
-        <div style={{ display: "inline-flex", gap: 4 }}>
+        <TabList aria-label="Statut de publication" level="secondary">
           {[
             { id: "published", label: "Publiés", count: 4 },
             { id: "planned", label: "Planifiés", count: 1 },
@@ -101,7 +125,7 @@ export const TwoLevels: Story = {
               onClick={() => setSecondary(s.id)}
             />
           ))}
-        </div>
+        </TabList>
       </div>
     );
   },
