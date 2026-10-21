@@ -32,7 +32,7 @@ describe("resolveButtonProps — matrice outline × destructive × withIcon × s
               // Taille : Primary medium/large → md/lg ; Secondary → sm/md (sm par défaut)
               const expectedSize =
                 component === "PrimaryButton"
-                  ? { medium: "md", large: "lg", none: undefined }[size ?? "none"]
+                  ? { medium: "md", large: "md", none: undefined }[size ?? "none"]
                   : { medium: "sm", large: "md", none: "sm" }[size ?? "none"];
               expect(props.size).toBe(expectedSize);
               // Contenu
@@ -57,11 +57,11 @@ describe("resolveButtonProps — matrice outline × destructive × withIcon × s
 describe("resolveButtonProps — cas particuliers", () => {
   it("laisse passer la nouvelle API sans dépréciation", () => {
     const { variant, props, deprecated } = resolveButtonProps(
-      { label: "Valider", tone: "danger", size: "lg", iconStart: "check" },
+      { label: "Valider", tone: "danger", size: "sm", iconStart: "check" },
       "PrimaryButton",
     );
     expect(variant).toBe("primary");
-    expect(props).toMatchObject({ label: "Valider", tone: "danger", size: "lg", iconStart: "check" });
+    expect(props).toMatchObject({ label: "Valider", tone: "danger", size: "sm", iconStart: "check" });
     expect(deprecated).toEqual([]);
   });
 

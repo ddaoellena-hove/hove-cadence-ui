@@ -1,34 +1,24 @@
 /* ── PrimaryButton : action principale, plein ─────────────────────────────── */
-/* Gabarit commun dans base-button.css. Rendu par défaut inchangé depuis la 0.2 :
-   fond --cadence-color-label, bordure et appui --cadence-color-primary, relief
-   interne propre au composant (ombres inset en rgba, pas de token). */
+/* Gabarit commun dans base-button.css. Repos --cadence-color-label, survol un
+   cran plus foncé (--cadence-color-primary-hover), appui --cadence-color-primary.
+   Relief interne discret : liseré clair en haut, liseré sombre en bas (rgba,
+   propre au composant). */
 .primary-button {
   background-color: var(--cadence-color-label, rgb(26, 62, 69));
   border-color: var(--cadence-color-primary, rgb(0, 40, 48));
   box-shadow:
-    inset 0 2px 0 rgba(255, 255, 255, 0.25),
-    inset 0 -2px 12px rgba(0, 0, 0, 0.1),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.25);
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
   color: var(--cadence-color-white, rgb(255, 255, 255));
 }
 
 .primary-button:hover:not(:disabled) {
-  box-shadow:
-    inset 0 2px 0 rgba(255, 255, 255, 0.25),
-    inset 0 -2px 12px rgba(0, 0, 0, 0.1),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.25),
-    0 2px 12px rgba(0, 0, 0, 0.1),
-    0 0 1px rgba(0, 0, 0, 0.5);
+  background-color: var(--cadence-color-primary-hover, rgb(16, 53, 61));
 }
 
 .primary-button:active:not(:disabled) {
   background-color: var(--cadence-color-primary, rgb(0, 40, 48));
-  box-shadow:
-    inset 0 2px 0 rgba(255, 255, 255, 0.25),
-    inset 0 -2px 12px rgba(0, 0, 0, 0.1),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.25),
-    0 0 8px rgba(0, 0, 0, 0.1),
-    0 0 1px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* ── Ton danger ──────────────────────────────────────────────────────────── */
@@ -36,9 +26,8 @@
   background-color: var(--cadence-color-danger, rgb(218, 30, 40));
   border-color: var(--cadence-color-danger, rgb(218, 30, 40));
   box-shadow:
-    inset 0 2px 0 rgba(255, 255, 255, 0.25),
-    inset 0 -2px 12px rgba(0, 0, 0, 0.1),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.1);
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12);
 }
 
 .primary-button--danger:hover:not(:disabled) {
@@ -54,8 +43,7 @@
 /* ── Focus clavier ───────────────────────────────────────────────────────── */
 .primary-button:focus-visible {
   box-shadow:
-    inset 0 2px 0 rgba(255, 255, 255, 0.25),
-    inset 0 -2px 12px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
     var(--cadence-focus-ring, 0 0 0 2px rgb(255, 255, 255), 0 0 0 4px rgb(26, 62, 69));
 }
 
@@ -63,41 +51,39 @@
 .primary-button:disabled {
   background-color: var(--cadence-color-border, rgb(229, 229, 229));
   border-color: var(--cadence-color-border-strong, rgb(191, 201, 203));
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.75),
-    inset 0 -2px 3px rgba(255, 255, 255, 0.25);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
   color: var(--cadence-color-text-disabled, rgb(128, 128, 128));
 }
 
 /* ── Variante outline : action secondaire visible (dashboards) ───────────── */
-/* Rendu repris de l'ancien PrimaryButton outline : fond blanc, bordure
-   --cadence-color-text-muted (3,2:1, contraste non textuel ≥ 3:1), relief léger. */
+/* Fond blanc, bordure --cadence-color-text-muted (3,2:1, contraste non textuel
+   ≥ 3:1), liseré bas discret. Survol et appui : le blanc fonce d'un cran par
+   un voile d'encre superposé (le fond reste opaque sur toute surface). */
 .primary-button.primary-button--outline {
   background-color: var(--cadence-color-white, rgb(255, 255, 255));
   border-color: var(--cadence-color-text-muted, rgb(128, 147, 151));
-  box-shadow:
-    inset 0 -2px 8px rgba(0, 0, 0, 0.05),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.06);
   color: var(--cadence-color-primary, rgb(0, 40, 48));
 }
 
 .primary-button--outline:hover:not(:disabled) {
+  /* Fond blanc explicite : sinon la règle :hover du bouton plein s'applique */
+  background-color: var(--cadence-color-white, rgb(255, 255, 255));
+  background-image: linear-gradient(
+    var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06)),
+    var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06))
+  );
   border-color: var(--cadence-color-label, rgb(26, 62, 69));
-  box-shadow:
-    inset 0 -2px 8px rgba(0, 0, 0, 0.05),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.1),
-    0 2px 12px rgba(0, 0, 0, 0.1),
-    0 0 1px rgba(0, 0, 0, 0.5);
 }
 
 .primary-button--outline:active:not(:disabled) {
-  background-color: var(--cadence-color-divider, rgb(240, 240, 240));
+  background-color: var(--cadence-color-white, rgb(255, 255, 255));
+  background-image: linear-gradient(
+    var(--cadence-color-active-overlay, rgba(0, 40, 48, 0.12)),
+    var(--cadence-color-active-overlay, rgba(0, 40, 48, 0.12))
+  );
   border-color: var(--cadence-color-label, rgb(26, 62, 69));
-  box-shadow:
-    inset 0 -2px 8px rgba(0, 0, 0, 0.05),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.1),
-    0 0 8px rgba(0, 0, 0, 0.1),
-    0 0 1px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
 .primary-button--outline.primary-button--danger {
@@ -107,22 +93,31 @@
 
 .primary-button--outline.primary-button--danger:hover:not(:disabled) {
   background-color: var(--cadence-color-white, rgb(255, 255, 255));
+  background-image: linear-gradient(
+    var(--cadence-color-danger-hover-overlay, rgba(218, 30, 40, 0.06)),
+    var(--cadence-color-danger-hover-overlay, rgba(218, 30, 40, 0.06))
+  );
   border-color: var(--cadence-color-danger, rgb(218, 30, 40));
 }
 
 .primary-button--outline.primary-button--danger:active:not(:disabled) {
-  background-color: var(--cadence-color-danger-hover-overlay, rgba(218, 30, 40, 0.06));
+  background-color: var(--cadence-color-white, rgb(255, 255, 255));
+  background-image: linear-gradient(
+    var(--cadence-color-danger-active-overlay, rgba(218, 30, 40, 0.12)),
+    var(--cadence-color-danger-active-overlay, rgba(218, 30, 40, 0.12))
+  );
   border-color: var(--cadence-color-danger, rgb(218, 30, 40));
 }
 
 .primary-button--outline:focus-visible {
   box-shadow:
-    inset 0 -2px 8px rgba(0, 0, 0, 0.05),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.06),
     var(--cadence-focus-ring, 0 0 0 2px rgb(255, 255, 255), 0 0 0 4px rgb(26, 62, 69));
 }
 
 .primary-button--outline:disabled {
   background-color: var(--cadence-color-white, rgb(255, 255, 255));
+  background-image: none;
   border-color: var(--cadence-color-border-strong, rgb(191, 201, 203));
   box-shadow: none;
   color: var(--cadence-color-text-disabled, rgb(128, 128, 128));

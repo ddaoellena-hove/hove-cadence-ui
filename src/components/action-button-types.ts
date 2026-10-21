@@ -4,12 +4,12 @@ import type { MouseEventHandler } from "react";
 import type { IconName } from "./Icons";
 
 export type ActionButtonTone = "default" | "danger";
-export type ActionButtonSize = "sm" | "md" | "lg";
+export type ActionButtonSize = "sm" | "md";
 
 export interface ActionButtonBaseProps {
   /** Ton sémantique. "danger" = action destructive. Défaut "default". */
   tone?: ActionButtonTone;
-  /** Gabarit : "sm" (tableau, barre d'outils, popover), "md" (défaut), "lg". Ne porte pas de sens. */
+  /** Gabarit : "sm" (tableau, barre d'outils, popover) ou "md" (défaut). Ne porte pas de sens. */
   size?: ActionButtonSize;
   /** Icône avant le libellé. */
   iconStart?: IconName;

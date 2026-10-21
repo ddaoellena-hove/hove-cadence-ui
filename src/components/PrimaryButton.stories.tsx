@@ -14,7 +14,7 @@ const meta: Meta<typeof PrimaryButton> = {
   args: { label: "Enregistrer" },
   argTypes: {
     tone: { control: "inline-radio", options: ["default", "danger"] },
-    size: { control: "inline-radio", options: ["sm", "md", "lg"] },
+    size: { control: "inline-radio", options: ["sm", "md"] },
     outline: { control: "boolean" },
     // Anciennes props (0.2), encore acceptées en 0.3.0 : masquées des contrôles
     withIcon: { table: { disable: true } },
@@ -67,13 +67,12 @@ export const IconeSeule: Story = {
   render: (args) => <PrimaryButton size={args.size} tone={args.tone} icon="plus" aria-label="Ajouter" />,
 };
 
-/** Tailles : sm (tableau, popover), md (défaut), lg (fin de formulaire, création, empty state). */
+/** Tailles : sm (tableau, barre d'outils, popover, toast) et md (défaut). */
 export const Tailles: Story = {
   render: (args) => (
     <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
       <PrimaryButton tone={args.tone} size="sm" label="Petit" />
       <PrimaryButton tone={args.tone} size="md" label="Moyen" />
-      <PrimaryButton tone={args.tone} size="lg" label="Grand" />
     </div>
   ),
 };
@@ -133,7 +132,7 @@ export const AnciennesProps: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("button", { name: "outline (variante contour)" })).toHaveClass("primary-button--outline");
     await expect(canvas.getByRole("button", { name: "destructive → danger" })).toHaveClass("primary-button--danger");
-    await expect(canvas.getByRole("button", { name: "withIcon + large" })).toHaveClass("base-button--lg", "base-button--icon-start");
+    await expect(canvas.getByRole("button", { name: "withIcon + large" })).toHaveClass("base-button--md", "base-button--icon-start");
     await expect(canvas.getByRole("button", { name: "Supprimer" })).toHaveClass("base-button--icon-only");
   },
 };

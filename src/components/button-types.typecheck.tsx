@@ -31,6 +31,10 @@ export const TypeTests = () => (
     {/* @ts-expect-error GhostButton n'accepte pas size="medium" */}
     <GhostButton label="Annuler" size="medium" />
 
+    {/* ❌ Plus de grande taille */}
+    {/* @ts-expect-error size="lg" n'existe plus */}
+    <PrimaryButton label="Créer" size="lg" />
+
     {/* ✅ Variante contour de PrimaryButton (API v2, non dépréciée) */}
     <PrimaryButton label="Exporter" outline size="sm" iconStart="download-02" />
 

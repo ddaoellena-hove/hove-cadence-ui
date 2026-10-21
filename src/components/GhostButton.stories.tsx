@@ -13,7 +13,7 @@ const meta: Meta<typeof GhostButton> = {
   args: { label: "Annuler" },
   argTypes: {
     tone: { control: "inline-radio", options: ["default", "danger"] },
-    size: { control: "inline-radio", options: ["sm", "md", "lg"] },
+    size: { control: "inline-radio", options: ["sm", "md"] },
   },
 };
 
@@ -54,13 +54,12 @@ export const IconeSeule: Story = {
   },
 };
 
-/** Tailles : sm (tableau, popover), md (défaut), lg (fin de formulaire). */
+/** Tailles : sm (tableau, barre d'outils, popover) et md (défaut). */
 export const Tailles: Story = {
   render: (args) => (
     <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
       <GhostButton tone={args.tone} size="sm" label="Petit" />
       <GhostButton tone={args.tone} size="md" label="Moyen" />
-      <GhostButton tone={args.tone} size="lg" label="Grand" />
     </div>
   ),
 };

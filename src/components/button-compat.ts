@@ -21,7 +21,7 @@ export interface LegacyButtonFlags {
 }
 
 type BaseWithLegacySize = Omit<ActionButtonBaseProps, "size"> & {
-  /** "sm" | "md" | "lg". @deprecated pour "medium" | "large". */
+  /** "sm" | "md". @deprecated pour "medium" | "large". */
   size?: ActionButtonSize | LegacySize;
 };
 
@@ -99,7 +99,8 @@ export const resolveButtonProps = (
   let resolvedSize: ActionButtonSize | undefined;
   if (size === "medium" || size === "large") {
     deprecated.push("size");
-    resolvedSize = component === "SecondaryButton" ? (size === "medium" ? "sm" : "md") : size === "medium" ? "md" : "lg";
+    // Plus de grande taille : large → md (PrimaryButton comme SecondaryButton large)
+    resolvedSize = component === "SecondaryButton" && size === "medium" ? "sm" : "md";
   } else {
     resolvedSize = size ?? (component === "SecondaryButton" ? "sm" : undefined);
   }
@@ -153,7 +154,7 @@ declare const process: { env: { NODE_ENV?: string } };
 const MESSAGES: Record<DeprecatedProp, string> = {
   withIcon: "`withIcon` est déprécié : utilisez `iconStart`, `iconEnd` ou `icon` (icône seule + `aria-label`).",
   destructive: '`destructive` est déprécié : utilisez `tone="danger"`.',
-  size: '`size="medium" | "large"` est déprécié : utilisez `"sm" | "md" | "lg"`.',
+  size: '`size="medium" | "large"` est déprécié : utilisez `"sm"` ou `"md"` (plus de grande taille).',
   state: '`state` est ignoré : survol et appui sont gérés en CSS (utilisez `disabled`).',
   iconMap: "`iconMap` est ignoré.",
   missingLabel: "`label` manquant : le libellé « Label » est affiché par défaut.",

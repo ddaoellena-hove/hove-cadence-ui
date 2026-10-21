@@ -11,7 +11,7 @@ import type { ActionButtonProps, ActionButtonSize, ActionButtonTone } from "../c
 // Survol, appui et focus sont gérés en CSS : on les voit en interagissant
 // (Tab pour le focus clavier).
 
-const SIZES: ActionButtonSize[] = ["sm", "md", "lg"];
+const SIZES: ActionButtonSize[] = ["sm", "md"];
 const TONES: ActionButtonTone[] = ["default", "danger"];
 
 const caption: React.CSSProperties = {

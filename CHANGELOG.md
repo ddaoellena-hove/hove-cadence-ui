@@ -11,16 +11,17 @@ Les actions s'organisent en **trois niveaux** :
 
 **Nouveau**
 - `GhostButton`. Même API et mêmes dimensions que `PrimaryButton` :
-  - `tone="default" | "danger"`, `size="sm" | "md" | "lg"` ;
+  - `tone="default" | "danger"`, `size="sm" | "md"` (plus de grande taille) ;
   - `iconStart` / `iconEnd` ;
   - `icon` + `aria-label` (obligatoire, typé) ;
   - `loading`, `fullWidth`, `type`, `forwardRef`.
 - `PrimaryButton` adopte la même API. Survol, appui et focus passent en CSS (plus de `state` JS). Sa variante **`outline`** est conservée (non dépréciée) : contour visible, pour les actions secondaires d'un dashboard.
-- Textes d'action ramenés entre **11 et 13px** : boutons `sm` 11 / `md` 12 / `lg` 13px (contre 11 / 13 / 15), `Link` 11 / 12 / 13px (contre 12 / 14 / 16). Hauteurs inchangées.
+- Textes d'action ramenés entre **11 et 13px** : boutons `sm` 11 / `md` 12px (contre 11 / 13), `Link` 11 / 12 / 13px (contre 12 / 14 / 16).
+- **Plus de grande taille de bouton** : `size="large"` (0.2) est rendu en `md` (34px au lieu de 46px). Fins de formulaire, créations de dashboard et empty states passent en `md`.
 - Focus clavier visible partout : `--cadence-focus-ring` sur `:focus-visible`.
 - Nouveaux tokens :
   - `--cadence-color-danger-hover`, `-danger-active`, `-danger-text`, `-danger-border` ;
-  - `--cadence-color-link` ;
+  - `--cadence-color-primary-hover`, `--cadence-color-link` ;
   - `--cadence-color-hover-overlay`, `-active-overlay`, `-danger-hover-overlay`, `-danger-active-overlay`.
 - Story **Actions / Matrice** : tous les boutons × tons × tailles × états.
 
@@ -31,6 +32,7 @@ Les actions s'organisent en **trois niveaux** :
 - « Tout effacer » de `FilterBar` passe d'un lien bleu à un `GhostButton size="sm"`.
 - Les anciens `SecondaryButton` passent d'un rayon de 6px à la pilule. Les boutons à icône seule deviennent carrés.
 - Le rouge plein passe de `#de353e` (4,48:1, sous AA) à `--cadence-color-danger` (`#da1e28`, 5,0:1).
+- Reliefs internes des boutons plus discrets (liserés de 1px). Au survol, la couleur fonce d'un cran (plein et `outline`) au lieu d'ajouter une ombre portée.
 - `Link` :
   - `#0f62fe` → `--cadence-color-link` (`#1d4ed8`, AA aussi sur `surface-alt`) ;
   - `#dc2626` → `--cadence-color-danger-text` ;
@@ -44,7 +46,7 @@ Les actions s'organisent en **trois niveaux** :
 | `SecondaryButton outline` | `PrimaryButton outline size="sm"` |
 | `SecondaryButton` plein | `PrimaryButton size="sm"` ou `GhostButton size="sm"` selon le rôle |
 | `destructive` | `tone="danger"` |
-| `size="medium"` / `"large"` | `"md"` (défaut) / `"lg"` |
+| `size="medium"` / `"large"` | `"md"` (défaut, plus de grande taille) |
 | `withIcon="left"` / `"right"` + `icon` | `iconStart` / `iconEnd` |
 | `withIcon="only"` + `icon` | `icon` + `aria-label` |
 | `state` | supprimé (`"disabled"` → `disabled`) |

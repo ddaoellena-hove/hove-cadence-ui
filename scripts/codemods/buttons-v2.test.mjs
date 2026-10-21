@@ -4,9 +4,9 @@ import { transformMarkdown, transformSource } from "./buttons-v2.mjs";
 const run = (code) => transformSource(code, "fixture.tsx");
 
 describe("codemod buttons-v2 — éléments", () => {
-  it("PrimaryButton outline est conservé, size large → lg", () => {
+  it("PrimaryButton outline est conservé, size large → md (défaut, retiré)", () => {
     const { code, todos } = run(`const a = <PrimaryButton size="large" outline label="Annuler" onClick={f} />;`);
-    expect(code).toBe(`const a = <PrimaryButton size="lg" outline label="Annuler" onClick={f} />;`);
+    expect(code).toBe(`const a = <PrimaryButton outline label="Annuler" onClick={f} />;`);
     expect(todos).toEqual([]);
   });
 

@@ -103,12 +103,11 @@ import { Link } from "../../components/Link";
   </thead>
   <tbody>
     <tr><td><code>sm</code></td><td>29px</td><td>11px</td><td>Tableau, barre d'outils, barre de sélection, popover, toast, <code>FilterBar</code></td></tr>
-    <tr><td><code>md</code> (défaut)</td><td>34px</td><td>12px</td><td>Modale, action inline de formulaire, barre d'actions de page</td></tr>
-    <tr><td><code>lg</code></td><td>46px</td><td>13px</td><td>Fin de formulaire, création en haut de dashboard, empty state</td></tr>
+    <tr><td><code>md</code> (défaut)</td><td>34px</td><td>12px</td><td>Tout le reste : modale, formulaire, en-tête de dashboard, empty state</td></tr>
   </tbody>
 </table>
 
-<p>La taille ne porte pas de sens : l'importance d'une action, c'est son niveau.</p>
+<p>Pas de grande taille : l'importance d'une action, c'est son niveau, pas sa taille.</p>
 
 <div className="g h2">Exemples</div>
 
@@ -116,8 +115,8 @@ import { Link } from "../../components/Link";
 // Fin de formulaire — les trois niveaux
 <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end" }}>
   <Link hideArrow onClick={onSaveDraft}>Enregistrer comme brouillon</Link>
-  <GhostButton size="lg" label="Réinitialiser" onClick={onReset} />
-  <PrimaryButton size="lg" label="Créer le scénario" onClick={onSubmit} loading={isSaving} />
+  <GhostButton label="Réinitialiser" onClick={onReset} />
+  <PrimaryButton label="Créer le scénario" onClick={onSubmit} loading={isSaving} />
 </div>
 
 // Barre de sélection d'une liste

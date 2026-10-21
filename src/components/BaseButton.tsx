@@ -15,7 +15,7 @@ export interface BaseButtonProps extends ActionButtonBaseProps {
   "aria-label"?: string;
 }
 
-const ICON_SIZE: Record<ActionButtonSize, number> = { sm: 12, md: 16, lg: 20 };
+const ICON_SIZE: Record<ActionButtonSize, number> = { sm: 12, md: 16 };
 
 const Spinner = () => <span className="base-button__spinner" aria-hidden="true" />;
 

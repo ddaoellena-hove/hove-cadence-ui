@@ -103,7 +103,8 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | Token | Valeur | Usage |
 |---|---|---|
 | `--cadence-color-primary` | `#002830` | Encre principale — texte fort, boutons, modale |
-| `--cadence-color-label` | `#1a3e45` | Labels de formulaire, badges |
+| `--cadence-color-label` | `#1a3e45` | Labels de formulaire, badges ; fond de `PrimaryButton` au repos |
+| `--cadence-color-primary-hover` | `#10353d` | Survol d'un `PrimaryButton` : un cran plus foncé que le repos |
 | `--cadence-color-text-muted` | `#809397` | Texte secondaire (heures, descriptions) |
 | `--cadence-color-text-disabled` | `#808080` | Texte des états désactivés |
 | `--cadence-color-placeholder` | `#737373` | Placeholders des champs |
@@ -349,20 +350,19 @@ La taille ne porte **pas de sens** : elle suit le contexte, pas l'importance de 
 | `size` | Hauteur | Texte | Contextes |
 |---|---|---|---|
 | `sm` | 29px | 11px | Tableau, barre d'outils, barre de sélection, popover (`DatePicker`, `DateRangePicker`), toast, `FilterBar` |
-| `md` (défaut) | 34px | 12px | Modale, action inline de formulaire, barre d'actions de page |
-| `lg` | 46px | 13px | Fin de formulaire, création en haut de dashboard, empty state |
+| `md` (défaut) | 34px | 12px | Tout le reste : modale, formulaire (y compris la soumission), en-tête de dashboard, empty state |
 
-Les textes d'action restent entre **11 et 13px** (boutons et `Link` : `sm` 11, `md` 12, `lg` 13).
+Il n'y a pas de grande taille : une action importante se distingue par son niveau (`PrimaryButton`), pas par sa taille. Les textes d'action restent entre **11 et 13px** (`Link` : 11 / 12 / 13px).
 
 ### Exemples
 
-**Fin de formulaire — les trois niveaux, `size="lg"`**
+**Fin de formulaire — les trois niveaux**
 
 ```tsx
 <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end" }}>
   <Link hideArrow onClick={onSaveDraft}>Enregistrer comme brouillon</Link>
-  <GhostButton size="lg" label="Réinitialiser" onClick={onReset} />
-  <PrimaryButton size="lg" label="Créer le scénario" onClick={onSubmit} loading={isSaving} />
+  <GhostButton label="Réinitialiser" onClick={onReset} />
+  <PrimaryButton label="Créer le scénario" onClick={onSubmit} loading={isSaving} />
 </div>
 ```
 
@@ -375,8 +375,8 @@ Les textes d'action restent entre **11 et 13px** (boutons et `Link` : `sm` 11, `
     <Tab label="À venir" />
   </div>
   <div style={{ display: "flex", gap: 8 }}>
-    <PrimaryButton size="lg" outline iconStart="download-02" label="Exporter" onClick={onExport} />
-    <PrimaryButton size="lg" iconStart="plus" label="Créer un scénario" onClick={onCreate} />
+    <PrimaryButton outline iconStart="download-02" label="Exporter" onClick={onExport} />
+    <PrimaryButton iconStart="plus" label="Créer un scénario" onClick={onCreate} />
   </div>
 </div>
 ```
@@ -423,12 +423,12 @@ Les textes d'action restent entre **11 et 13px** (boutons et `Link` : `sm` 11, `
 
 **Modale** — le pied est géré par `primaryAction` (`PrimaryButton`) et `secondaryAction` (`GhostButton`) de `Modal` : ne pas recréer de boutons dans `children`.
 
-**Empty state — `size="lg"`**
+**Empty state**
 
 ```tsx
 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, padding: 48 }}>
   <p style={{ color: "var(--cadence-color-text-muted)", fontSize: 14 }}>Aucun scénario créé pour ce réseau.</p>
-  <PrimaryButton size="lg" label="Créer le premier scénario" onClick={onCreate} />
+  <PrimaryButton label="Créer le premier scénario" onClick={onCreate} />
 </div>
 ```
 
@@ -465,9 +465,9 @@ Au-dessus d'une liste filtrable, utiliser `FilterBar` (recherche, filtres rapide
 
 | Contexte | Position | Composant |
 |---|---|---|
-| Dashboard — création | En haut à droite, à côté des onglets | `PrimaryButton size="lg"` |
+| Dashboard — création | En haut à droite, à côté des onglets | `PrimaryButton` |
 | Dashboard — actions secondaires | À gauche de la création | `PrimaryButton outline`, même `size` |
-| Formulaire — soumission | En bas à droite | `Link` (option) + `GhostButton` + `PrimaryButton`, `size="lg"` |
+| Formulaire — soumission | En bas à droite | `Link` (option) + `GhostButton` + `PrimaryButton` |
 | Modale — validation | Pied (via `primaryAction` / `secondaryAction`) | géré par `Modal` |
 | Liste — action par ligne | À droite du header de la ligne | `TableCardAction` |
 | Liste — sélection multiple | À droite de la barre de sélection | `GhostButton` + `PrimaryButton tone="danger"`, `size="sm"` |
@@ -504,7 +504,7 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 | `SecondaryButton outline` | `PrimaryButton outline size="sm"` (ou `GhostButton size="sm"` hors dashboard) |
 | `SecondaryButton` plein | `PrimaryButton size="sm"` **ou** `GhostButton size="sm"` selon le rôle (le codemod laisse un `TODO buttons-v2`) |
 | `destructive` | `tone="danger"` |
-| `size="medium"` / `"large"` | `"md"` (défaut) / `"lg"` |
+| `size="medium"` / `"large"` | `"md"` (défaut, plus de grande taille) |
 | `withIcon="left"` / `"right"` + `icon` | `iconStart` / `iconEnd` |
 | `withIcon="only"` + `icon` | `icon` + `aria-label` |
 | `state` | supprimé (`"disabled"` → `disabled`) |
@@ -818,7 +818,7 @@ export const ScenarioListPage = () => {
           <Tab label="À venir" />
           <Tab label="Passées" />
         </div>
-        <PrimaryButton size="lg" label="Créer un scénario" onClick={onCreate} />
+        <PrimaryButton label="Créer un scénario" onClick={onCreate} />
       </div>
 
       {/* ── Barre de sélection (visible si ≥ 1 sélection) ── */}
@@ -974,8 +974,8 @@ export const ScenarioFormPage = () => (
     {/* ══ Soumission ══ */}
     <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end" }}>
       <Link variant="secondary" hideArrow onClick={onSaveDraft}>Enregistrer comme brouillon</Link>
-      <GhostButton size="lg" label="Réinitialiser" onClick={onReset} />
-      <PrimaryButton size="lg" label="Créer le scénario" onClick={onSubmit} />
+      <GhostButton label="Réinitialiser" onClick={onReset} />
+      <PrimaryButton label="Créer le scénario" onClick={onSubmit} />
     </div>
   </div>
 );
@@ -988,7 +988,7 @@ export const ScenarioFormPage = () => (
   <p style={{ fontFamily: "var(--cadence-font-sans)", color: "var(--cadence-color-text-muted)", fontSize: 14, margin: 0 }}>
     Aucun scénario créé pour ce réseau.
   </p>
-  <PrimaryButton size="lg" label="Créer le premier scénario" onClick={onCreate} />
+  <PrimaryButton label="Créer le premier scénario" onClick={onCreate} />
 </div>
 ```
 
@@ -1419,7 +1419,7 @@ La variation est aussi annoncée en phrase complète aux lecteurs d'écran : « 
 | `children` | `ReactNode` | **requis** | Texte du lien |
 | `href` | `string` | — | Rend un `<a>` ; sans `href` + avec `onClick` → `<button>` |
 | `variant` | `"primary" \| "destructive" \| "inverse"` | `"primary"` | `--cadence-color-link`, `--cadence-color-danger-text`, blanc. ⚠️ `"destructive"`, pas `"danger"`. `"secondary"` est déprécié (identique à `"primary"`) |
-| `size` | `"sm" \| "md" \| "lg"` | `"md"` | 11 / 12 / 13px (alignés sur les boutons) |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | 11 / 12 / 13px |
 | `icon` | `ReactNode` | — | Icône avant le texte |
 | `hideArrow` | `boolean` | `false` | Masque la flèche (usage bouton texte) |
 | `disabled` | `boolean` | `false` | — |
@@ -1479,7 +1479,7 @@ API identique pour les deux ; seul le rendu change (`PrimaryButton` plein ou con
 | `aria-label` | `string` | — | Nom accessible. Obligatoire avec `icon` |
 | `iconStart`, `iconEnd` | nom d'icône `Icons` | — | Icône avant / après le libellé |
 | `tone` | `"default" \| "danger"` | `"default"` | `"danger"` : action destructive (fond rouge / texte rouge) |
-| `size` | `"sm" \| "md" \| "lg"` | `"md"` | 29 / 34 / 46px, texte 11 / 12 / 13px. Dépend du contexte, ne porte pas de sens |
+| `size` | `"sm" \| "md"` | `"md"` | 29 / 34px, texte 11 / 12px. Dépend du contexte, ne porte pas de sens. ⚠️ Pas de `"lg"` |
 | `outline` | `boolean` | `false` | **`PrimaryButton` uniquement** : variante contour (fond blanc, bordure), pour les actions secondaires d'un dashboard |
 | `loading` | `boolean` | `false` | Clics ignorés, `aria-busy`, spinner (à la place de `iconStart`), largeur conservée |
 | `disabled` | `boolean` | `false` | — |
@@ -1489,7 +1489,7 @@ API identique pour les deux ; seul le rendu change (`PrimaryButton` plein ou con
 | `className` | `string` | — | — |
 | `ref` | `Ref<HTMLButtonElement>` | — | `forwardRef` vers le `<button>` |
 
-- Survol, appui et focus sont gérés en CSS (`:hover`, `:active`, `:focus-visible` avec `--cadence-focus-ring`). ⚠️ Pas de prop `state`.
+- Survol, appui et focus sont gérés en CSS (`:hover`, `:active`, `:focus-visible` avec `--cadence-focus-ring`). Au survol, la couleur fonce d'un cran (plein : `--cadence-color-primary-hover` ; `outline` : voile d'encre sur le blanc ; danger : `--cadence-color-danger-hover`), sans ombre portée. ⚠️ Pas de prop `state`.
 - Anciennes props de `PrimaryButton` (`withIcon`, `destructive`, `size="medium" | "large"`, `state`) : acceptées en 0.3.0 avec un avertissement en développement, supprimées en 1.0.0 (voir [Migration depuis la 0.2](#migration-depuis-la-02)). `outline` n'est **pas** déprécié. `GhostButton` n'accepte que l'API ci-dessus (ni `outline`, ni les anciennes props).
 
 ### SecondaryButton (déprécié)

@@ -8,7 +8,7 @@
 // - SecondaryButton plein               → PrimaryButton size="sm" + TODO (rôle à vérifier)
 // - withIcon left / right / only + icon → iconStart / iconEnd / icon + aria-label
 // - destructive                         → tone="danger"
-// - size medium / large                 → md (défaut, retiré) / lg ; SecondaryButton : sm / md
+// - size medium / large                 → md (défaut, retiré) ; SecondaryButton : sm / md
 // - state, iconMap                      → retirés (state="disabled" → disabled)
 // - imports mis à jour.
 // Les cas qu'il ne sait pas trancher reçoivent un commentaire « TODO buttons-v2 ».
@@ -86,13 +86,14 @@ const transformElement = (opening, closing, sf) => {
   // size
   const size = attrs.get("size");
   const sizeValue = size ? staticValue(size, sf) : undefined;
-  const mapSize = (v) => (isSecondary ? { medium: "sm", large: "md" }[v] : { medium: "md", large: "lg" }[v]);
+  // Plus de grande taille : large → md
+  const mapSize = (v) => (isSecondary ? { medium: "sm", large: "md" }[v] : "md");
   if (size && (sizeValue === "medium" || sizeValue === "large")) {
     const next = mapSize(sizeValue);
     if (next === "md" && !isSecondary) remove(size); // md est le défaut
     else replace(size, `size="${next}"`);
   } else if (size && sizeValue === null) {
-    todos.push(`size dynamique (${valueText(size, sf)}) : convertir medium/large en sm/md/lg`);
+    todos.push(`size dynamique (${valueText(size, sf)}) : convertir medium/large en sm/md`);
   } else if (!size && isSecondary) {
     add.push('size="sm"');
   }
