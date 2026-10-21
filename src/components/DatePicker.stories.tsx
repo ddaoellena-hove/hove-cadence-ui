@@ -245,3 +245,23 @@ export const Clavier: Story = {
     await expect(trigger).toHaveFocus();
   },
 };
+
+/** Variante bouton (PrimaryButton outline sm) : pour l'en-tête d'un dashboard. */
+export const VarianteBouton: Story = {
+  name: "Variante bouton",
+  args: { variant: "button", "aria-label": "Date", value: new Date(2026, 9, 20) },
+  render: (args) => (
+    <div style={{ padding: 24, minHeight: 420 }}>
+      <ControlledTemplate {...args} />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole("button", { name: /^Date : / });
+    // Mêmes classes que PrimaryButton outline sm
+    await expect(trigger).toHaveClass("primary-button", "primary-button--outline", "base-button--sm");
+    await userEvent.click(trigger);
+    await expect(trigger).toHaveAttribute("aria-expanded", "true");
+    await expect(canvas.getByRole("dialog", { name: "Calendrier" })).toBeInTheDocument();
+  },
+};

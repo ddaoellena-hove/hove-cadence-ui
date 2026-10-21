@@ -1,0 +1,48 @@
+/* ── Déclencheur en variante bouton (DatePicker, DateRangePicker, Dropdown) ── */
+/* Le gabarit vient de base-button.css et primary-button.css (outline sm) :
+   ici, seulement ce qui est propre à un déclencheur de menu. */
+
+/* Ouvert : même aspect qu'au survol (voile d'encre, bordure foncée) */
+.button-trigger.button-trigger--open:not(:disabled) {
+  background-color: var(--cadence-color-white, rgb(255, 255, 255));
+  background-image: linear-gradient(
+    var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06)),
+    var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06))
+  );
+  border-color: var(--cadence-color-label, rgb(26, 62, 69));
+}
+
+.button-trigger__start {
+  align-items: center;
+  display: inline-flex;
+}
+
+/* Icône d'option fournie en ReactNode (Dropdown) : ramenée à 12px */
+.button-trigger__start > svg {
+  height: 12px;
+  width: 12px;
+}
+
+.button-trigger__text {
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.button-trigger__text--placeholder {
+  color: var(--cadence-color-placeholder, #737373);
+}
+
+.button-trigger__chevron {
+  transition: transform 0.2s ease;
+}
+
+.button-trigger__chevron--open {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button-trigger__chevron {
+    transition: none;
+  }
+}

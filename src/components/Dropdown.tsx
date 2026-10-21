@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect, useId, type ReactNode } from "react";
+import { ButtonTriggerContent } from "./ButtonTrigger";
+import { buttonTriggerClass, type TriggerVariant } from "./button-trigger-utils";
 import "./dropdown.css";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -25,6 +27,13 @@ export interface DropdownProps {
   disabled?: boolean;
   /** Appelé à chaque sélection avec l'id de l'option. */
   onChange?: (id: string) => void;
+  /**
+   * Apparence du déclencheur : `"field"` (champ de formulaire, défaut) ou
+   * `"button"` (PrimaryButton outline sm, pour l'en-tête d'un dashboard).
+   */
+  variant?: TriggerVariant;
+  /** Nom accessible sans `label` visible (variante bouton) : « Devise ». */
+  "aria-label"?: string;
   /** Classe CSS additionnelle. */
   className?: string;
 }
@@ -60,6 +69,8 @@ export const Dropdown = ({
   placeholder = "Sélectionner…",
   disabled = false,
   onChange,
+  variant = "field",
+  "aria-label": ariaLabel,
   className,
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -107,20 +118,32 @@ export const Dropdown = ({
       <button
         id={triggerId}
         type="button"
-        className="dropdown__trigger"
+        className={variant === "button" ? buttonTriggerClass(Boolean(selectedOption?.icon), isOpen) : "dropdown__trigger"}
         onClick={() => !disabled && setIsOpen((prev) => !prev)}
         onKeyDown={handleKeyDown}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         disabled={disabled}
+        aria-label={!label && ariaLabel ? `${ariaLabel} : ${selectedOption ? selectedOption.label : placeholder}` : undefined}
       >
-        {selectedOption?.icon && (
-          <span className="dropdown__trigger-icon">{selectedOption.icon}</span>
+        {variant === "button" ? (
+          <ButtonTriggerContent
+            start={selectedOption?.icon}
+            text={selectedOption ? selectedOption.label : placeholder}
+            isPlaceholder={!selectedOption}
+            open={isOpen}
+          />
+        ) : (
+          <>
+            {selectedOption?.icon && (
+              <span className="dropdown__trigger-icon">{selectedOption.icon}</span>
+            )}
+            <span className={`dropdown__trigger-label${!selectedOption ? " dropdown__trigger-label--placeholder" : ""}`}>
+              {selectedOption ? selectedOption.label : placeholder}
+            </span>
+            <ChevronIcon open={isOpen} />
+          </>
         )}
-        <span className={`dropdown__trigger-label${!selectedOption ? " dropdown__trigger-label--placeholder" : ""}`}>
-          {selectedOption ? selectedOption.label : placeholder}
-        </span>
-        <ChevronIcon open={isOpen} />
       </button>
 
       {isOpen && (

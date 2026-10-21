@@ -2,6 +2,9 @@ import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import { CalendarMonth, type CalendarDayState } from "./CalendarMonth";
 import { GhostButton } from "./GhostButton";
 import { PrimaryButton } from "./PrimaryButton";
+import { ButtonTriggerContent } from "./ButtonTrigger";
+import { buttonTriggerClass, type TriggerVariant } from "./button-trigger-utils";
+import { Icons } from "./Icons";
 import { compareDays, dayKey, getKeyboardTarget, isOutsideBounds, isSameDay, formatDate } from "./date-utils";
 import {
   DEFAULT_PRESETS,
@@ -43,6 +46,11 @@ export interface DateRangePickerProps {
   months?: 1 | 2;
   /** Nom accessible sans `label` visible (ex. dans une FilterBar) : « Période ». */
   "aria-label"?: string;
+  /**
+   * Apparence du déclencheur : `"field"` (champ de formulaire, défaut) ou
+   * `"button"` (PrimaryButton outline sm, pour l'en-tête d'un dashboard).
+   */
+  variant?: TriggerVariant;
 }
 
 const CalendarIcon = () => (
@@ -77,6 +85,7 @@ export const DateRangePicker = ({
   referenceDate,
   months = 2,
   "aria-label": ariaLabel,
+  variant = "field",
 }: DateRangePickerProps) => {
   const reference = referenceDate ?? new Date();
   const triggerId = useId();
@@ -248,21 +257,36 @@ export const DateRangePicker = ({
         ref={triggerRef}
         id={triggerId}
         type="button"
-        className={`date-range-picker__trigger${open ? " date-range-picker__trigger--open" : ""}`}
+        className={
+          variant === "button"
+            ? buttonTriggerClass(true, open)
+            : `date-range-picker__trigger${open ? " date-range-picker__trigger--open" : ""}`
+        }
         onClick={() => (open ? close(false) : !disabled && openPopover())}
         disabled={disabled}
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-label={!label && ariaLabel ? `${ariaLabel} : ${triggerText ?? "aucune période"}` : undefined}
       >
-        <span
-          className={`date-range-picker__trigger-text${triggerText ? "" : " date-range-picker__trigger-text--placeholder"}`}
-        >
-          {triggerText ?? placeholder}
-        </span>
-        <span className="date-range-picker__icon">
-          <CalendarIcon />
-        </span>
+        {variant === "button" ? (
+          <ButtonTriggerContent
+            start={<Icons icon="calendar" size={12} />}
+            text={triggerText ?? placeholder}
+            isPlaceholder={!triggerText}
+            open={open}
+          />
+        ) : (
+          <>
+            <span
+              className={`date-range-picker__trigger-text${triggerText ? "" : " date-range-picker__trigger-text--placeholder"}`}
+            >
+              {triggerText ?? placeholder}
+            </span>
+            <span className="date-range-picker__icon">
+              <CalendarIcon />
+            </span>
+          </>
+        )}
       </button>
 
       {open && (

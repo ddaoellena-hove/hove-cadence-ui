@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
+import { expect, userEvent, within } from "storybook/test";
 import { Dropdown } from "./Dropdown";
 import type { DropdownOption } from "./Dropdown";
 
@@ -138,5 +139,22 @@ export const Controlled: Story = {
         </p>
       </div>
     );
+  },
+};
+
+/** Variante bouton (PrimaryButton outline sm) : pour l'en-tête d'un dashboard. */
+export const VarianteBouton: Story = {
+  name: "Variante bouton",
+  args: { variant: "button", "aria-label": "Vue", options: optionsWithIcons, value: "map" },
+  render: (args) => {
+    const [value, setValue] = useState(args.value);
+    return <Dropdown {...args} value={value} onChange={setValue} />;
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole("button", { name: /^Vue : / });
+    await expect(trigger).toHaveClass("primary-button", "primary-button--outline", "base-button--sm");
+    await userEvent.click(trigger);
+    await expect(canvas.getByRole("listbox")).toBeInTheDocument();
   },
 };

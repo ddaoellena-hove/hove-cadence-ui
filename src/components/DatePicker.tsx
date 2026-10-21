@@ -1,5 +1,8 @@
 import { useState, useRef, useEffect, useLayoutEffect, useId, type KeyboardEvent } from "react";
 import { PrimaryButton } from "./PrimaryButton";
+import { ButtonTriggerContent } from "./ButtonTrigger";
+import { buttonTriggerClass, type TriggerVariant } from "./button-trigger-utils";
+import { Icons } from "./Icons";
 import { CalendarMonth } from "./CalendarMonth";
 import { dayKey, formatDate, getKeyboardTarget, isOutsideBounds, isSameDay } from "./date-utils";
 import "./date-picker.css";
@@ -31,6 +34,13 @@ export interface DatePickerProps {
   segmentedValue?: string;
   /** Called when the user switches segment. */
   onSegmentChange?: (value: string) => void;
+  /**
+   * Apparence du déclencheur : `"field"` (champ de formulaire, défaut) ou
+   * `"button"` (PrimaryButton outline sm, pour l'en-tête d'un dashboard).
+   */
+  variant?: TriggerVariant;
+  /** Nom accessible sans `label` visible (variante bouton) : « Date ». */
+  "aria-label"?: string;
 }
 
 /** Minimal inline SegmentedControlAlt used only inside the popover */
@@ -98,6 +108,8 @@ export const DatePicker = ({
   segmentedOptions,
   segmentedValue,
   onSegmentChange,
+  variant = "field",
+  "aria-label": ariaLabel,
 }: DatePickerProps) => {
   const today = new Date();
   const resolvedPlaceholder =
@@ -218,6 +230,7 @@ export const DatePicker = ({
 
   // Effective selected date for display in trigger
   const displayValue = withTime ? (value ?? null) : value;
+  const isButton = variant === "button";
 
   return (
     <div
@@ -240,43 +253,59 @@ export const DatePicker = ({
         ref={triggerRef}
         id={triggerId}
         type="button"
-        className={`date-picker__trigger${open ? " date-picker__trigger--open" : ""}`}
+        className={
+          isButton
+            ? buttonTriggerClass(true, open)
+            : `date-picker__trigger${open ? " date-picker__trigger--open" : ""}`
+        }
         onClick={() => !disabled && setOpen((o) => !o)}
         disabled={disabled}
         aria-haspopup="dialog"
         aria-expanded={open}
+        aria-label={!label && ariaLabel ? `${ariaLabel} : ${displayValue ? formatDate(displayValue, withTime) : "aucune date"}` : undefined}
       >
-        <span
-          className={`date-picker__trigger-text${!displayValue ? " date-picker__trigger-text--placeholder" : ""}`}
-        >
-          {displayValue ? formatDate(displayValue, withTime) : resolvedPlaceholder}
-        </span>
-        <svg
-          className="date-picker__icon"
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <rect
-            x="1"
-            y="3"
-            width="14"
-            height="12"
-            rx="2"
-            stroke="currentColor"
-            strokeWidth="1.5"
+        {isButton ? (
+          <ButtonTriggerContent
+            start={<Icons icon="calendar" size={12} />}
+            text={displayValue ? formatDate(displayValue, withTime) : resolvedPlaceholder}
+            isPlaceholder={!displayValue}
+            open={open}
           />
-          <path d="M1 7h14" stroke="currentColor" strokeWidth="1.5" />
-          <path
-            d="M5 1v4M11 1v4"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-        </svg>
+        ) : (
+          <>
+            <span
+              className={`date-picker__trigger-text${!displayValue ? " date-picker__trigger-text--placeholder" : ""}`}
+            >
+              {displayValue ? formatDate(displayValue, withTime) : resolvedPlaceholder}
+            </span>
+            <svg
+              className="date-picker__icon"
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <rect
+                x="1"
+                y="3"
+                width="14"
+                height="12"
+                rx="2"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              />
+              <path d="M1 7h14" stroke="currentColor" strokeWidth="1.5" />
+              <path
+                d="M5 1v4M11 1v4"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            </svg>
+          </>
+        )}
       </button>
 
       {open && (

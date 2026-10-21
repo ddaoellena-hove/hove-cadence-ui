@@ -6,6 +6,7 @@
 
 - **`AppLayout`** (nouveau) : squelette d'application. La `Sidebar` est à gauche, fondue dans le fond de l'app (couleur produit). Le contenu de la page est dans un conteneur blanc arrondi, bordé d'un liseré, avec un padding de `24px 32px`. Seul ce conteneur défile, et il suit la largeur de la Sidebar dépliée ou repliée sans aucune mesure côté app.
 - **`Sidebar`** : nouvelles props `scope` (sélecteur de périmètre, ex-`Header`) et `user` (avatar, nom et email), affichées en pied. La Sidebar n'a plus d'arrondi ni d'ombre.
+- **`DatePicker`, `DateRangePicker`, `Dropdown`** : nouvelle prop `variant="button"`. Le déclencheur prend le gabarit d'un `PrimaryButton outline size="sm"` (icône, valeur, chevron), pour l'en-tête d'un dashboard. `DatePicker` et `Dropdown` gagnent aussi `aria-label`.
 - **`ActionCard`** (nouveau) : carte d'action avec titre, description, bouton `PrimaryButton outline sm` et illustration facultative. Elle se soulève au survol.
 
 ### ⚠️ Changements cassants
