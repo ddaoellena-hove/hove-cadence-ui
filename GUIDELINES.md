@@ -1438,14 +1438,16 @@ Sélection d'une période. Même déclencheur et même calendrier que `DatePicke
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `options` | `DropdownOption[]` | **requis** | `{ id, label, icon?, disabled?, divider?, groupLabel? }` — ⚠️ clé `id`, pas `value`. `divider` = trait au-dessus de l'option ; `groupLabel` = en-tête de section au-dessus de l'option |
-| `label` | `string` | — | Label au-dessus |
+| `options` | `DropdownOption[]` | **requis** | `{ id, label, icon?, disabled?, divider?, groupLabel? }` — ⚠️ clé `id`, pas `value`. `divider` = trait au-dessus de l'option ; `groupLabel` = en-tête du groupe qui commence à cette option (jusqu'au `groupLabel` suivant) |
+| `label` | `string` | — | Label au-dessus ; nomme aussi la liste ouverte (`aria-labelledby`) |
 | `value` | `string` | — | `id` de l'option sélectionnée |
-| `placeholder` | `string` | — | — |
+| `placeholder` | `string` | `"Sélectionner…"` | Texte sans sélection. En variante bouton, il entre dans le nom annoncé : « Produit : Sélectionner… » |
 | `disabled` | `boolean` | `false` | — |
 | `onChange` | `(id: string) => void` | — | — |
 | `variant` | `"field" \| "button"` | `"field"` | `"button"` : déclencheur en `PrimaryButton outline size="sm"` (icône, valeur, chevron). **À privilégier dans un dashboard** ; `"field"` dans un formulaire |
-| `aria-label` | `string` | — | Nom accessible sans `label` visible (variante bouton) : « Devise » → annoncé « Devise : EUR € » |
+| `aria-label` | `string` | — | Nom accessible sans `label` visible (variante bouton) : « Devise » → annoncé « Devise : EUR € ». Nomme aussi la liste ouverte |
+
+Accessibilité du menu : la liste (`role="listbox"`) porte le nom du champ (`label` via `aria-labelledby`, sinon `aria-label`). Les options d'un même `groupLabel` sont dans un `role="group"` nommé par son en-tête, annoncé aux lecteurs d'écran ; le `divider` reste décoratif. Au clavier, Tab parcourt les seules options (en-têtes et séparateurs sont sautés), Entrée choisit, Échap ferme.
 
 ⚠️ En variante bouton, l'icône de l'option sélectionnée (`icon`) s'affiche avant le libellé, ramenée à 12px.
 

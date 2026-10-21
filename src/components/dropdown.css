@@ -84,8 +84,9 @@
   text-overflow: ellipsis;
 }
 
+/* Placeholder au contraste AA (#bfc9cb n'atteignait que 1,7:1) */
 .dropdown__trigger-label--placeholder {
-  color: var(--cadence-color-border-strong, #bfc9cb);
+  color: var(--cadence-color-placeholder, #737373);
   font-weight: 400;
 }
 
@@ -119,6 +120,14 @@
   border: 1px solid var(--cadence-color-border, #e5e5e5);
   border-radius: var(--cadence-radius-xl, 12px);
   box-shadow: var(--cadence-shadow-lg, 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1));
+}
+
+/* ── Sections et groupes : options empilées avec le même écart que le menu ── */
+.dropdown__section,
+.dropdown__group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 /* ── Divider ── */
