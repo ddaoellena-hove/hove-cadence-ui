@@ -41,19 +41,20 @@
 }
 
 /* ── Tailles ─────────────────────────────────────────────────────────────── */
+/* Alignées sur les boutons : 11 / 12 / 13px */
 .link--sm {
-  font-size: 12px;
+  font-size: 11px;
   line-height: 16px;
 }
 
 .link--md {
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 12px;
+  line-height: 18px;
 }
 
 .link--lg {
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 13px;
+  line-height: 20px;
 }
 
 /* ── Variantes ───────────────────────────────────────────────────────────── */

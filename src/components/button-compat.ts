@@ -1,5 +1,5 @@
 // Compatibilité 0.3.0 : traduit les anciennes props de PrimaryButton et
-// SecondaryButton (withIcon, destructive, outline, size medium/large, state)
+// SecondaryButton (withIcon, destructive, size medium/large, state)
 // vers l'API v2. Fonctions pures, testées sans DOM.
 // Suppression annoncée pour la 1.0.0.
 
@@ -14,8 +14,6 @@ export type LegacyState = "clicked" | "disabled" | "enabled" | "hover";
 export interface LegacyButtonFlags {
   /** @deprecated Utiliser `tone="danger"`. */
   destructive?: boolean;
-  /** @deprecated Utiliser `GhostButton`. */
-  outline?: boolean;
   /** @deprecated Ignoré : survol et appui sont gérés en CSS (`"disabled"` équivaut à `disabled`). */
   state?: LegacyState;
   /** @deprecated Ignoré. */
@@ -27,11 +25,18 @@ type BaseWithLegacySize = Omit<ActionButtonBaseProps, "size"> & {
   size?: ActionButtonSize | LegacySize;
 };
 
+/** Variante de PrimaryButton (pas de GhostButton). */
+export interface PrimaryVariantProps {
+  /** Variante contour : action secondaire visible, ex. dans un dashboard. Défaut false (plein). */
+  outline?: boolean;
+}
+
 /** Nouvelle API, avec les anciens drapeaux encore tolérés. */
-export type ModernButtonProps = BaseWithLegacySize & LegacyButtonFlags & ActionButtonContentProps;
+export type ModernButtonProps = BaseWithLegacySize & PrimaryVariantProps & LegacyButtonFlags & ActionButtonContentProps;
 
 /** Ancienne API à `withIcon` (icône et libellé optionnels). */
 export type LegacyIconButtonProps = BaseWithLegacySize &
+  PrimaryVariantProps &
   LegacyButtonFlags & {
     /** @deprecated Utiliser `iconStart` / `iconEnd` / `icon`. */
     withIcon: LegacyWithIcon;
@@ -50,14 +55,14 @@ export type ResolvedButtonProps = ActionButtonBaseProps & {
 };
 
 export interface ResolvedButton {
-  /** "ghost" pour un ancien `outline`. */
-  variant: "primary" | "ghost";
+  /** "outline" pour `outline`. */
+  variant: "primary" | "outline";
   props: ResolvedButtonProps;
   /** Anciennes props rencontrées (pour les avertissements). */
   deprecated: DeprecatedProp[];
 }
 
-export type DeprecatedProp = "withIcon" | "destructive" | "outline" | "size" | "state" | "iconMap" | "missingLabel" | "missingAriaLabel";
+export type DeprecatedProp = "withIcon" | "destructive" | "size" | "state" | "iconMap" | "missingLabel" | "missingAriaLabel";
 
 // Icône par défaut de l'ancienne API quand `withIcon` est fourni sans `icon`
 const LEGACY_DEFAULT_ICON: IconName = "map-01";
@@ -101,7 +106,6 @@ export const resolveButtonProps = (
 
   // ── Ton, variante, état ──
   if (destructive !== undefined) deprecated.push("destructive");
-  if (outline !== undefined) deprecated.push("outline");
   if (state !== undefined) deprecated.push("state");
   if (iconMap !== undefined) deprecated.push("iconMap");
   const resolvedTone = tone ?? (destructive ? "danger" : undefined);
@@ -138,7 +142,7 @@ export const resolveButtonProps = (
     if (label === undefined) deprecated.push("missingLabel");
   }
 
-  return { variant: outline ? "ghost" : "primary", props, deprecated };
+  return { variant: outline ? "outline" : "primary", props, deprecated };
 };
 
 // ── Avertissements (développement uniquement, une fois par prop) ───────────
@@ -149,7 +153,6 @@ declare const process: { env: { NODE_ENV?: string } };
 const MESSAGES: Record<DeprecatedProp, string> = {
   withIcon: "`withIcon` est déprécié : utilisez `iconStart`, `iconEnd` ou `icon` (icône seule + `aria-label`).",
   destructive: '`destructive` est déprécié : utilisez `tone="danger"`.',
-  outline: "`outline` est déprécié : utilisez `GhostButton`.",
   size: '`size="medium" | "large"` est déprécié : utilisez `"sm" | "md" | "lg"`.',
   state: '`state` est ignoré : survol et appui sont gérés en CSS (utilisez `disabled`).',
   iconMap: "`iconMap` est ignoré.",

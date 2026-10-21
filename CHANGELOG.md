@@ -5,8 +5,8 @@
 ### Boutons v2
 
 Les actions s'organisent en **trois niveaux** :
-1. `PrimaryButton` : action principale, un seul par vue ;
-2. **`GhostButton`** (nouveau) : actions secondaires, sans fond ni bordure au repos ;
+1. `PrimaryButton` : action principale, un seul (plein) par vue ;
+2. **`GhostButton`** (nouveau) : actions secondaires, sans fond ni bordure au repos — ou `PrimaryButton outline` pour les actions secondaires d'un **dashboard** ;
 3. `Link hideArrow` : 3e action d'un groupe, ou action dans une phrase.
 
 **Nouveau**
@@ -15,21 +15,18 @@ Les actions s'organisent en **trois niveaux** :
   - `iconStart` / `iconEnd` ;
   - `icon` + `aria-label` (obligatoire, typé) ;
   - `loading`, `fullWidth`, `type`, `forwardRef`.
-- `PrimaryButton` adopte la même API. Survol, appui et focus passent en CSS (plus de `state` JS).
+- `PrimaryButton` adopte la même API. Survol, appui et focus passent en CSS (plus de `state` JS). Sa variante **`outline`** est conservée (non dépréciée) : contour visible, pour les actions secondaires d'un dashboard.
+- Textes d'action ramenés entre **11 et 13px** : boutons `sm` 11 / `md` 12 / `lg` 13px (contre 11 / 13 / 15), `Link` 11 / 12 / 13px (contre 12 / 14 / 16). Hauteurs inchangées.
 - Focus clavier visible partout : `--cadence-focus-ring` sur `:focus-visible`.
 - Nouveaux tokens :
-  - `--cadence-color-danger-hover`, `-danger-active`, `-danger-text` ;
+  - `--cadence-color-danger-hover`, `-danger-active`, `-danger-text`, `-danger-border` ;
   - `--cadence-color-link` ;
   - `--cadence-color-hover-overlay`, `-active-overlay`, `-danger-hover-overlay`, `-danger-active-overlay`.
 - Story **Actions / Matrice** : tous les boutons × tons × tailles × états.
 
 **Changements visuels**
 - Le **bleu plein disparaît des actions**. Les anciens `SecondaryButton` pleins sont rendus en `PrimaryButton size="sm"` (encre). `--cadence-color-accent` est réservé aux états.
-- **`outline` devient ghost** : sans bordure, avec un voile au survol. Écrans concernés :
-  - pied de `Modal` (« Annuler ») ;
-  - 1re action d'`AlertToast` ;
-  - « Annuler » de `DateRangePicker` ;
-  - tous les `outline` des applications.
+- **Les actions secondaires internes passent en ghost** (sans bordure, voile au survol) : pied de `Modal` (« Annuler »), 1re action d'`AlertToast`, « Annuler » de `DateRangePicker`. Les `PrimaryButton outline` des applications gardent leur contour.
 - « Valider » de `DatePicker`, « Appliquer » de `DateRangePicker` et l'action pleine d'`AlertToast` passent du bleu à l'encre.
 - « Tout effacer » de `FilterBar` passe d'un lien bleu à un `GhostButton size="sm"`.
 - Les anciens `SecondaryButton` passent d'un rayon de 6px à la pilule. Les boutons à icône seule deviennent carrés.
@@ -43,8 +40,8 @@ Les actions s'organisent en **trois niveaux** :
 
 | Avant | Après |
 |---|---|
-| `PrimaryButton outline` | `GhostButton` |
-| `SecondaryButton outline` | `GhostButton size="sm"` |
+| `PrimaryButton outline` | inchangé (variante conservée) — ou `GhostButton` hors dashboard |
+| `SecondaryButton outline` | `PrimaryButton outline size="sm"` |
 | `SecondaryButton` plein | `PrimaryButton size="sm"` ou `GhostButton size="sm"` selon le rôle |
 | `destructive` | `tone="danger"` |
 | `size="medium"` / `"large"` | `"md"` (défaut) / `"lg"` |

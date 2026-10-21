@@ -32,7 +32,10 @@ const Row = ({ title, children }: { title: string; children: ReactNode }) => (
 
 type Button = typeof PrimaryButton | typeof GhostButton;
 
-const Variants = ({ Component, tone, size }: { Component: Button; tone: ActionButtonTone; size: ActionButtonSize }) => {
+// PrimaryButton en variante contour, pour la matrice
+const PrimaryOutline = (props: ActionButtonProps) => <PrimaryButton outline {...props} />;
+
+const Variants = ({ Component, tone, size }: { Component: Button | typeof PrimaryOutline; tone: ActionButtonTone; size: ActionButtonSize }) => {
   const C = Component as React.ComponentType<ActionButtonProps>;
   const verb = tone === "danger" ? "Supprimer" : "Enregistrer";
   return (
@@ -48,7 +51,7 @@ const Variants = ({ Component, tone, size }: { Component: Button; tone: ActionBu
   );
 };
 
-const Section = ({ name, Component }: { name: string; Component: Button }) => (
+const Section = ({ name, Component }: { name: string; Component: Button | typeof PrimaryOutline }) => (
   <section style={{ display: "flex", flexDirection: "column", gap: 12 }}>
     <h2 style={{ fontFamily: "var(--cadence-font-sans)", fontSize: 16, fontWeight: 600, color: "var(--cadence-color-primary)", margin: 0 }}>
       {name}
@@ -82,6 +85,7 @@ const Group = ({ background, label }: { background: string; label: string }) => 
 const MatriceActions = () => (
   <div style={{ display: "flex", flexDirection: "column", gap: 32, padding: 24 }}>
     <Section name="PrimaryButton" Component={PrimaryButton} />
+    <Section name="PrimaryButton outline (dashboards)" Component={PrimaryOutline} />
     <Section name="GhostButton" Component={GhostButton} />
     <section style={{ display: "flex", flexDirection: "column", gap: 12 }}>
       <h2 style={{ fontFamily: "var(--cadence-font-sans)", fontSize: 16, fontWeight: 600, color: "var(--cadence-color-primary)", margin: 0 }}>
@@ -89,6 +93,18 @@ const MatriceActions = () => (
       </h2>
       <Group background="var(--cadence-color-white)" label="Sur --cadence-color-white" />
       <Group background="var(--cadence-color-surface-alt)" label="Sur --cadence-color-surface-alt" />
+    </section>
+    <section style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <h2 style={{ fontFamily: "var(--cadence-font-sans)", fontSize: 16, fontWeight: 600, color: "var(--cadence-color-primary)", margin: 0 }}>
+        En-tête de dashboard : Outline + Primary
+      </h2>
+      {["var(--cadence-color-white)", "var(--cadence-color-surface-alt)"].map((background) => (
+        <div key={background} style={{ background, borderRadius: 10, padding: 24, display: "flex", alignItems: "center", gap: 8, justifyContent: "flex-end" }}>
+          <PrimaryButton outline iconStart="download-02" label="Exporter" />
+          <PrimaryButton outline iconEnd="chevron-down" label="Filtres" />
+          <PrimaryButton iconStart="plus" label="Créer un scénario" />
+        </div>
+      ))}
     </section>
   </div>
 );

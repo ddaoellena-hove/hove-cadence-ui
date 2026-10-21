@@ -45,7 +45,7 @@
   flex-shrink: 0;
 }
 
-/* ── Tailles (valeurs reprises des boutons 0.2) ──────────────────────────── */
+/* ── Tailles (gabarits repris des boutons 0.2, textes ramenés à 11–13px) ─── */
 /* sm = ancien SecondaryButton medium */
 .base-button--sm {
   font-size: 11px;
@@ -71,11 +71,11 @@
 
 /* md = ancien PrimaryButton medium (défaut) */
 .base-button--md {
-  font-size: 13px;
+  font-size: 12px;
   gap: 8px;
   height: 34px;
-  letter-spacing: -0.13px;
-  line-height: 15.6px;
+  letter-spacing: -0.12px;
+  line-height: 14.4px;
   padding: 0 24px;
 }
 
@@ -94,11 +94,11 @@
 
 /* lg = ancien PrimaryButton large */
 .base-button--lg {
-  font-size: 15px;
+  font-size: 13px;
   gap: 8px;
   height: 46px;
-  letter-spacing: -0.15px;
-  line-height: 18px;
+  letter-spacing: -0.13px;
+  line-height: 15.6px;
   padding: 0 32px;
 }
 

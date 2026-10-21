@@ -15,9 +15,9 @@ const meta: Meta<typeof PrimaryButton> = {
   argTypes: {
     tone: { control: "inline-radio", options: ["default", "danger"] },
     size: { control: "inline-radio", options: ["sm", "md", "lg"] },
+    outline: { control: "boolean" },
     // Anciennes props (0.2), encore acceptées en 0.3.0 : masquées des contrôles
     withIcon: { table: { disable: true } },
-    outline: { table: { disable: true } },
     destructive: { table: { disable: true } },
     state: { table: { disable: true } },
     iconMap: { table: { disable: true } },
@@ -32,6 +32,23 @@ export const Defaut: Story = { name: "Défaut" };
 
 /** Action destructive principale (avec une `Modal` de confirmation). */
 export const Danger: Story = { args: { label: "Supprimer", tone: "danger" } };
+
+/**
+ * Variante contour : action secondaire **visible**, pour les dashboards
+ * (barre d'en-tête chargée, actions à repérer d'un coup d'œil). Ailleurs,
+ * préférer `GhostButton`.
+ */
+export const Outline: Story = {
+  render: (args) => (
+    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+      <PrimaryButton size={args.size} outline iconStart="download-02" label="Exporter" />
+      <PrimaryButton size={args.size} outline label="Filtres" iconEnd="chevron-down" />
+      <PrimaryButton size={args.size} outline tone="danger" label="Clôturer" />
+      <PrimaryButton size={args.size} outline label="Désactivé" disabled />
+      <PrimaryButton size={args.size} iconStart="plus" label="Créer un scénario" />
+    </div>
+  ),
+};
 
 /** Icône de début ou de fin. */
 export const AvecIcones: Story = {
@@ -100,13 +117,13 @@ export const Groupe: Story = {
 
 /**
  * Compatibilité 0.3.0 : les anciennes props sont traduites (avertissement en
- * développement, une fois). `outline` est rendu en GhostButton.
+ * développement, une fois). `outline` reste une variante à part entière.
  */
 export const AnciennesProps: Story = {
   name: "Anciennes props (dépréciées)",
   render: () => (
     <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-      <PrimaryButton outline label="outline → Ghost" />
+      <PrimaryButton outline label="outline (variante contour)" />
       <PrimaryButton destructive label="destructive → danger" />
       <PrimaryButton withIcon="left" icon="plus" size="large" label="withIcon + large" />
       <PrimaryButton withIcon="only" icon="trash" label="Supprimer" />
@@ -114,7 +131,7 @@ export const AnciennesProps: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("button", { name: "outline → Ghost" })).toHaveClass("ghost-button");
+    await expect(canvas.getByRole("button", { name: "outline (variante contour)" })).toHaveClass("primary-button--outline");
     await expect(canvas.getByRole("button", { name: "destructive → danger" })).toHaveClass("primary-button--danger");
     await expect(canvas.getByRole("button", { name: "withIcon + large" })).toHaveClass("base-button--lg", "base-button--icon-start");
     await expect(canvas.getByRole("button", { name: "Supprimer" })).toHaveClass("base-button--icon-only");

@@ -5,7 +5,7 @@ import { SecondaryButton } from "./SecondaryButton";
 /**
  * ⚠️ **Déprécié** — suppression en 1.0.0. Le bleu plein n'est plus utilisé pour
  * les actions. Correspondance :
- * - `<SecondaryButton outline />` → `<GhostButton size="sm" />`
+ * - `<SecondaryButton outline />` → `<PrimaryButton outline size="sm" />` (ou `GhostButton size="sm"` hors dashboard)
  * - `<SecondaryButton />` (plein) → `<PrimaryButton size="sm" />`, ou `GhostButton size="sm"` selon le rôle
  * - `size="large"` → `size="md"`
  *
@@ -21,7 +21,7 @@ const meta: Meta<typeof SecondaryButton> = {
 export default meta;
 type Story = StoryObj<typeof SecondaryButton>;
 
-/** Rendu de l'enveloppe : outline → Ghost sm, plein → Primary sm. */
+/** Rendu de l'enveloppe : outline → Primary outline sm, plein → Primary sm. */
 export const Correspondance: Story = {
   render: () => (
     <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -33,7 +33,7 @@ export const Correspondance: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByRole("button", { name: "Exporter" })).toHaveClass("ghost-button", "base-button--sm");
+    await expect(canvas.getByRole("button", { name: "Exporter" })).toHaveClass("primary-button--outline", "base-button--sm");
     await expect(canvas.getByRole("button", { name: "Appliquer" })).toHaveClass("primary-button", "base-button--sm");
     await expect(canvas.getByRole("button", { name: "Large → md" })).toHaveClass("base-button--md");
   },

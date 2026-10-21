@@ -25,8 +25,8 @@ describe("resolveButtonProps — matrice outline × destructive × withIcon × s
               const input = { outline, destructive, withIcon, size, icon: "plus", label: "Ajouter" } as CompatButtonProps;
               const { variant, props } = resolveButtonProps(input, component);
 
-              // Variante : outline → Ghost, sinon Primary
-              expect(variant).toBe(outline ? "ghost" : "primary");
+              // Variante : outline → contour (PrimaryButton), sinon plein
+              expect(variant).toBe(outline ? "outline" : "primary");
               // Ton : destructive → danger
               expect(props.tone).toBe(destructive ? "danger" : undefined);
               // Taille : Primary medium/large → md/lg ; Secondary → sm/md (sm par défaut)
@@ -89,12 +89,14 @@ describe("resolveButtonProps — cas particuliers", () => {
     expect(deprecated).toEqual(expect.arrayContaining(["withIcon", "missingLabel"]));
   });
 
-  it("liste les anciennes props rencontrées", () => {
-    const { deprecated } = resolveButtonProps(
+  it("liste les anciennes props rencontrées ; outline n'en fait pas partie", () => {
+    const { deprecated, variant } = resolveButtonProps(
       { label: "A", outline: true, destructive: true, size: "large", state: "enabled", iconMap: "x" },
       "PrimaryButton",
     );
-    expect(deprecated).toEqual(expect.arrayContaining(["outline", "destructive", "size", "state", "iconMap"]));
+    expect(deprecated).toEqual(expect.arrayContaining(["destructive", "size", "state", "iconMap"]));
+    expect(deprecated).not.toContain("outline");
+    expect(variant).toBe("outline");
   });
 });
 
@@ -107,11 +109,11 @@ describe("avertissements", () => {
   afterEach(() => warn.mockRestore());
 
   it("n'avertit qu'une fois par composant et par prop", () => {
-    warnDeprecated("PrimaryButton", ["outline", "destructive"]);
-    warnDeprecated("PrimaryButton", ["outline", "destructive"]);
-    warnDeprecated("PrimaryButton", ["outline"]);
+    warnDeprecated("PrimaryButton", ["withIcon", "destructive"]);
+    warnDeprecated("PrimaryButton", ["withIcon", "destructive"]);
+    warnDeprecated("PrimaryButton", ["withIcon"]);
     expect(warn).toHaveBeenCalledTimes(2);
-    expect(warn.mock.calls[0][0]).toContain("GhostButton");
+    expect(warn.mock.calls[0][0]).toContain("iconStart");
   });
 
   it("distingue les composants", () => {

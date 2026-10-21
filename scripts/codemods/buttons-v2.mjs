@@ -3,8 +3,8 @@
 //
 //   node scripts/codemods/buttons-v2.mjs [--dry] [--report] <fichiers ou dossiers…>
 //
-// - PrimaryButton outline               → GhostButton
-// - SecondaryButton outline             → GhostButton size="sm"
+// - PrimaryButton outline               → inchangé (variante contour conservée)
+// - SecondaryButton outline             → PrimaryButton outline size="sm"
 // - SecondaryButton plein               → PrimaryButton size="sm" + TODO (rôle à vérifier)
 // - withIcon left / right / only + icon → iconStart / iconEnd / icon + aria-label
 // - destructive                         → tone="danger"
@@ -71,16 +71,8 @@ const transformElement = (opening, closing, sf) => {
   const add = []; // attributs à ajouter après le nom de balise
 
   const isSecondary = tag === "SecondaryButton";
-  let ghost = false;
-
-  // outline
+  // outline est conservé tel quel : PrimaryButton garde sa variante contour
   const outline = attrs.get("outline");
-  if (outline) {
-    const v = staticValue(outline, sf);
-    if (v === true) ghost = true;
-    if (v === null) todos.push(`outline dynamique (${valueText(outline, sf)}) : choisir GhostButton ou PrimaryButton`);
-    else remove(outline);
-  }
 
   // destructive
   const destructive = attrs.get("destructive");
@@ -142,10 +134,9 @@ const transformElement = (opening, closing, sf) => {
     }
   }
 
-  // Nouveau nom de composant
+  // Nouveau nom de composant : SecondaryButton → PrimaryButton (outline conservé)
   let newTag = tag;
-  if (ghost) newTag = "GhostButton";
-  else if (isSecondary) {
+  if (isSecondary) {
     newTag = "PrimaryButton";
     if (!outline) todos.push('ancien bouton secondaire plein → PrimaryButton size="sm" : vérifier le rôle (principal, ou GhostButton ?)');
   }

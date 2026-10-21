@@ -48,6 +48,12 @@ import { Link } from "../../components/Link";
       <td>« Annuler », « Exporter », « Réinitialiser »</td>
     </tr>
     <tr>
+      <td>2 — secondaire (dashboard)</td>
+      <td><code>PrimaryButton outline</code></td>
+      <td>Actions secondaires d'un dashboard : contour visible, repérable sur une page chargée. Ailleurs, <code>GhostButton</code>.</td>
+      <td>« Exporter », « Filtres »</td>
+    </tr>
+    <tr>
       <td>3 — tertiaire</td>
       <td><code>Link hideArrow</code></td>
       <td>3e action d'un groupe, ou action dans une phrase.</td>
@@ -69,11 +75,17 @@ import { Link } from "../../components/Link";
     <GhostButton label="Annuler" />
     <PrimaryButton tone="danger" label="Supprimer" />
   </div>
+  <div style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "flex-end", padding: 24, background: "var(--cadence-color-white)", borderTop: "1px solid var(--cadence-color-border)" }}>
+    <PrimaryButton outline iconStart="download-02" label="Exporter" />
+    <PrimaryButton outline iconEnd="chevron-down" label="Filtres" />
+    <PrimaryButton iconStart="plus" label="Créer un scénario" />
+  </div>
 </div>
 
 <div className="g h2">Règles</div>
 
-<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Un seul <code>PrimaryButton</code> par vue ; plusieurs <code>GhostButton</code> sont autorisés.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Un seul <code>PrimaryButton</code> plein par vue ; plusieurs <code>GhostButton</code> (ou <code>PrimaryButton outline</code> en dashboard) sont autorisés.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text"><code>GhostButton</code> par défaut ; <code>PrimaryButton outline</code> pour les actions secondaires d'un dashboard. Pas de mélange des deux dans un groupe.</span></div>
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Ghost à gauche, Primary à droite ; la 3e action est un <code>Link hideArrow</code>, à gauche du groupe.</span></div>
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Les boutons d'un même groupe ont la même <code>size</code>.</span></div>
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Un <code>GhostButton</code> isolé porte une icône (<code>iconStart</code>) ou se trouve à côté d'un <code>PrimaryButton</code>.</span></div>
@@ -87,12 +99,12 @@ import { Link } from "../../components/Link";
 
 <table>
   <thead>
-    <tr><th><code>size</code></th><th>Hauteur</th><th>Contextes</th></tr>
+    <tr><th><code>size</code></th><th>Hauteur</th><th>Texte</th><th>Contextes</th></tr>
   </thead>
   <tbody>
-    <tr><td><code>sm</code></td><td>29px</td><td>Tableau, barre d'outils, barre de sélection, popover, toast, <code>FilterBar</code></td></tr>
-    <tr><td><code>md</code> (défaut)</td><td>34px</td><td>Modale, action inline de formulaire, barre d'actions de page</td></tr>
-    <tr><td><code>lg</code></td><td>46px</td><td>Fin de formulaire, création en haut de dashboard, empty state</td></tr>
+    <tr><td><code>sm</code></td><td>29px</td><td>11px</td><td>Tableau, barre d'outils, barre de sélection, popover, toast, <code>FilterBar</code></td></tr>
+    <tr><td><code>md</code> (défaut)</td><td>34px</td><td>12px</td><td>Modale, action inline de formulaire, barre d'actions de page</td></tr>
+    <tr><td><code>lg</code></td><td>46px</td><td>13px</td><td>Fin de formulaire, création en haut de dashboard, empty state</td></tr>
   </tbody>
 </table>
 

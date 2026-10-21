@@ -1,6 +1,6 @@
 # Boutons v2 — `PrimaryButton` + `GhostButton`, `Link` en 3e action (phase 0)
 
-> Statut : **proposition, en attente de validation.** Aucun code n'est écrit.
+> Statut : **validée (Q1 à Q9) et implémentée** sur `feat/buttons-v2`. Ajustements demandés après coup : voir la dernière section.
 > Base : `main` @ `5b8c199` (v0.2.0), branche `feat/buttons-v2`. Cible : **0.3.0**, sans API cassée.
 > Les mesures et contrastes ci-dessous viennent du rendu réel dans Storybook (Chromium), pas des CSS lus à la main.
 
@@ -240,3 +240,10 @@ Pour chacun, je fais une comparaison avant/après dans Storybook (même méthode
 | Q9 | `PrimaryButton` garde son rendu actuel (repos `#1a3e45`, appui `#002830`) ? | **Oui** : aucun changement pour le bouton principal |
 
 Après validation : phase 1 (composants + `Link` + tokens), un commit ; phase 2 (compatibilité + migration interne), un commit ; codemod, un commit ; phase 3 (documentation, `CHANGELOG.md`, version 0.3.0), un commit. Rien n'est poussé ni publié sans ton accord.
+
+---
+
+## 9. Ajustements après validation
+
+- **`PrimaryButton outline` conservé** comme vraie variante (non dépréciée), pour les actions secondaires des dashboards : fond blanc, bordure `--cadence-color-text-muted`, relief léger (rendu de la 0.2, en tokens) ; en `tone="danger"`, bordure `--cadence-color-danger-border` (nouveau token) et texte `--cadence-color-danger-text`. La compatibilité ne redirige plus `outline` vers `GhostButton` : `SecondaryButton outline` → `PrimaryButton outline size="sm"`, et le codemod laisse `outline` tel quel. `GhostButton` reste le choix par défaut hors dashboard, et les usages internes (Modal, AlertToast, DatePicker, DateRangePicker, FilterBar) restent en Ghost.
+- **Textes d'action entre 11 et 13px** : boutons `sm` / `md` / `lg` en 11 / 12 / 13px (au lieu de 11 / 13 / 15), `Link` en 11 / 12 / 13px (au lieu de 12 / 14 / 16). Hauteurs et icônes inchangées.

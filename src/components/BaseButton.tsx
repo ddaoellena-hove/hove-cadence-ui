@@ -8,7 +8,8 @@ import "./base-button.css";
 // primary-button.css / ghost-button.css.
 
 export interface BaseButtonProps extends ActionButtonBaseProps {
-  variant: "primary" | "ghost";
+  /** "outline" : PrimaryButton contour (classes primary-button + primary-button--outline). */
+  variant: "primary" | "outline" | "ghost";
   label?: string;
   icon?: IconName;
   "aria-label"?: string;
@@ -40,12 +41,13 @@ export const BaseButton = forwardRef<HTMLButtonElement, BaseButtonProps>(
   ) => {
     const iconOnly = icon !== undefined && !label;
     const iconSize = ICON_SIZE[size];
-    const root = variant === "primary" ? "primary-button" : "ghost-button";
+    const root = variant === "ghost" ? "ghost-button" : "primary-button";
 
     const rootClass = [
       "base-button",
       `base-button--${size}`,
       root,
+      variant === "outline" ? "primary-button--outline" : "",
       tone === "danger" ? `${root}--danger` : "",
       iconOnly ? "base-button--icon-only" : "",
       !iconOnly && iconStart ? "base-button--icon-start" : "",

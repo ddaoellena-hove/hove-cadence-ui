@@ -4,9 +4,10 @@ import { transformMarkdown, transformSource } from "./buttons-v2.mjs";
 const run = (code) => transformSource(code, "fixture.tsx");
 
 describe("codemod buttons-v2 — éléments", () => {
-  it("PrimaryButton outline → GhostButton, size large → lg", () => {
-    const { code } = run(`const a = <PrimaryButton size="large" outline label="Annuler" onClick={f} />;`);
-    expect(code).toBe(`const a = <GhostButton size="lg" label="Annuler" onClick={f} />;`);
+  it("PrimaryButton outline est conservé, size large → lg", () => {
+    const { code, todos } = run(`const a = <PrimaryButton size="large" outline label="Annuler" onClick={f} />;`);
+    expect(code).toBe(`const a = <PrimaryButton size="lg" outline label="Annuler" onClick={f} />;`);
+    expect(todos).toEqual([]);
   });
 
   it("retire size medium (défaut) et traduit destructive", () => {
@@ -43,9 +44,9 @@ describe("codemod buttons-v2 — éléments", () => {
     expect(run(`const a = <PrimaryButton state="disabled" label="A" />;`).code).toBe(`const a = <PrimaryButton disabled label="A" />;`);
   });
 
-  it("SecondaryButton outline → GhostButton sm, sans TODO", () => {
+  it("SecondaryButton outline → PrimaryButton outline sm, sans TODO", () => {
     const { code, todos } = run(`const a = <SecondaryButton outline label="Annuler" />;`);
-    expect(code).toBe(`const a = <GhostButton size="sm" label="Annuler" />;`);
+    expect(code).toBe(`const a = <PrimaryButton size="sm" outline label="Annuler" />;`);
     expect(todos).toEqual([]);
   });
 
@@ -64,15 +65,14 @@ describe("codemod buttons-v2 — éléments", () => {
   });
 
   it("renomme aussi la balise fermante", () => {
-    const { code } = run(`const a = <PrimaryButton outline label="A">x</PrimaryButton>;`);
-    expect(code).toBe(`const a = <GhostButton label="A">x</GhostButton>;`);
+    const { code } = run(`const a = <SecondaryButton outline label="A">x</SecondaryButton>;`);
+    expect(code).toBe(`const a = <PrimaryButton size="sm" outline label="A">x</PrimaryButton>;`);
   });
 
-  it("laisse un TODO sur un outline dynamique sans rien casser", () => {
-    const { code, todos } = run(`const a = <PrimaryButton outline={secondary} label="A" />;`);
-    expect(code).toContain("TODO buttons-v2 : outline dynamique (secondary)");
-    expect(code).toContain(`<PrimaryButton outline={secondary} label="A" />`);
-    expect(todos).toHaveLength(1);
+  it("garde un outline dynamique sans TODO", () => {
+    const { code, todos } = run(`const a = <PrimaryButton outline={secondary} withIcon="left" icon="plus" label="A" />;`);
+    expect(code).toBe(`const a = <PrimaryButton outline={secondary} iconStart="plus" label="A" />;`);
+    expect(todos).toEqual([]);
   });
 
   it("ne touche pas un fichier déjà migré", () => {
@@ -86,22 +86,21 @@ describe("codemod buttons-v2 — imports", () => {
     const { code } = run(
       `import { Link, PrimaryButton, SecondaryButton } from "@ddaoellena/cadence-ui";\nconst a = <><SecondaryButton outline label="A" /><PrimaryButton label="B" /></>;`,
     );
-    expect(code.split("\n")[0]).toBe(`import { Link, PrimaryButton, GhostButton } from "@ddaoellena/cadence-ui";`);
+    expect(code.split("\n")[0]).toBe(`import { Link, PrimaryButton } from "@ddaoellena/cadence-ui";`);
   });
 
   it("remplace un import par composant", () => {
     const { code } = run(`import { SecondaryButton } from "./SecondaryButton";\nconst a = <SecondaryButton outline label="A" />;`);
-    expect(code.split("\n")[0]).toBe(`import { GhostButton } from "./GhostButton";`);
+    expect(code.split("\n")[0]).toBe(`import { PrimaryButton } from "./PrimaryButton";`);
   });
 
   it("fusionne plusieurs imports par composant sans doublon", () => {
     const { code } = run(
       `import { PrimaryButton } from "../components/PrimaryButton";\nimport { SecondaryButton } from "../components/SecondaryButton";\nconst a = <><SecondaryButton outline label="A" /><PrimaryButton label="B" /></>;`,
     );
-    expect(code.split("\n").slice(0, 3)).toEqual([
-      `import { GhostButton } from "../components/GhostButton";`,
+    expect(code.split("\n").slice(0, 2)).toEqual([
       `import { PrimaryButton } from "../components/PrimaryButton";`,
-      `const a = <><GhostButton size="sm" label="A" /><PrimaryButton label="B" /></>;`,
+      `const a = <><PrimaryButton size="sm" outline label="A" /><PrimaryButton label="B" /></>;`,
     ]);
   });
 
@@ -109,18 +108,18 @@ describe("codemod buttons-v2 — imports", () => {
     const { code } = run(
       `import { SecondaryButton } from "./SecondaryButton";\nconst meta = { component: SecondaryButton };\nconst a = <SecondaryButton outline label="A" />;`,
     );
-    expect(code).toContain(`import { GhostButton } from "./GhostButton";`);
+    expect(code).toContain(`import { PrimaryButton } from "./PrimaryButton";`);
     expect(code).toContain(`import { SecondaryButton } from "./SecondaryButton";`);
   });
 });
 
 describe("codemod buttons-v2 — Markdown / MDX", () => {
   it("transforme les blocs tsx, y compris du JSX nu à plusieurs racines", () => {
-    const mdx = "# Titre\n\n```tsx\n<PrimaryButton outline label=\"Réinitialiser\" />\n<PrimaryButton label=\"Valider\" />\n```\n\nTexte avec `PrimaryButton outline`.\n";
+    const mdx = "# Titre\n\n```tsx\n<SecondaryButton outline label=\"Réinitialiser\" />\n<PrimaryButton destructive label=\"Supprimer\" />\n```\n\nTexte avec `SecondaryButton outline`.\n";
     const { code, changed } = transformMarkdown(mdx);
     expect(changed).toBe(true);
-    expect(code).toContain('```tsx\n<GhostButton label="Réinitialiser" />\n<PrimaryButton label="Valider" />\n```');
+    expect(code).toContain('```tsx\n<PrimaryButton size="sm" outline label="Réinitialiser" />\n<PrimaryButton tone="danger" label="Supprimer" />\n```');
     // Le texte hors des blocs de code n'est pas touché
-    expect(code).toContain("Texte avec `PrimaryButton outline`.");
+    expect(code).toContain("Texte avec `SecondaryButton outline`.");
   });
 });

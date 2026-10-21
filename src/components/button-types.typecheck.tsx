@@ -31,8 +31,10 @@ export const TypeTests = () => (
     {/* @ts-expect-error GhostButton n'accepte pas size="medium" */}
     <GhostButton label="Annuler" size="medium" />
 
+    {/* ✅ Variante contour de PrimaryButton (API v2, non dépréciée) */}
+    <PrimaryButton label="Exporter" outline size="sm" iconStart="download-02" />
+
     {/* ✅ Compatibilité 0.3.0 : anciennes props encore acceptées par PrimaryButton */}
-    <PrimaryButton label="Annuler" outline />
     <PrimaryButton withIcon="only" icon="plus" />
     <PrimaryButton withIcon="left" icon="plus" label="Ajouter" destructive size="large" />
   </>

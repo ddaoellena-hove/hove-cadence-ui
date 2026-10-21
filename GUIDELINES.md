@@ -32,7 +32,7 @@ Règles impératives pour générer du code avec ce design system :
 5. **`Checkbox`, `Toggle`, `RadioButton`, `RichCheckbox` et `RichRadioButton` se pilotent par la prop `state`**, pas par une prop `checked` — elle n'existe pas. Exemple : `<Checkbox state={isChecked ? "checked" : "unchecked"} onChange={setIsChecked} />`.
 6. **Le CSS custom est limité au layout.** `display: flex`, `gap`, `padding`, `margin`, largeurs : OK en style inline. Couleurs, polices, bordures, ombres custom : interdit — les composants et tokens couvrent ces besoins.
 7. **Partir des [recettes](#recettes-de-pages-complètes)** pour toute page nouvelle, puis adapter. Ne pas réinventer la structure.
-8. **Un seul `PrimaryButton` par vue.** Plusieurs `GhostButton` sont autorisés. 3e action d'un groupe : `Link hideArrow`. `SecondaryButton` est déprécié.
+8. **Un seul `PrimaryButton` plein par vue.** Plusieurs `GhostButton` sont autorisés. 3e action d'un groupe : `Link hideArrow`. `SecondaryButton` est déprécié.
 9. **Toujours passer `label`** sur les champs de formulaire (`TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker`, `CounterInput`).
 10. **Imports** : composants depuis `@ddaoellena/cadence-ui`, styles via un unique `import "@ddaoellena/cadence-ui/style.css"`, polices via les `<link>` de la section [Installation](#installation--setup).
 11. **Libellés en français correct, accents UTF-8 obligatoires.** Tout texte visible (labels, titres, boutons, placeholders, messages) s'écrit avec ses accents — jamais de français « aplati » en ASCII. Les fichiers source sont en UTF-8 : `é è ê à ç û É À` s'écrivent tels quels, sans entité HTML ni échappement unicode.
@@ -113,7 +113,8 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-color-danger` | `#da1e28` | Actions destructives (fond de `PrimaryButton tone="danger"`), erreurs |
 | `--cadence-color-danger-hover` | `#c91720` | Survol d'un `PrimaryButton tone="danger"` |
 | `--cadence-color-danger-active` | `#b91c1c` | Appui d'un `PrimaryButton tone="danger"` |
-| `--cadence-color-danger-text` | `#b91c1c` | Texte danger sur fond clair (`GhostButton tone="danger"`, `Link variant="destructive"`) — AA sur blanc et `surface-alt` |
+| `--cadence-color-danger-text` | `#b91c1c` | Texte danger sur fond clair (`GhostButton tone="danger"`, `PrimaryButton outline tone="danger"`, `Link variant="destructive"`) — AA sur blanc et `surface-alt` |
+| `--cadence-color-danger-border` | `#ed8e93` | Bordure d'un `PrimaryButton outline tone="danger"` |
 | `--cadence-color-link` | `#1d4ed8` | Texte de `Link` — AA sur blanc (6,7:1) et `surface-alt` (5,9:1) |
 | `--cadence-color-success` | `#24a148` | Confirmations, états valides |
 | `--cadence-color-info` | `#0f62fe` | Accent « information » d'`AlertToast` |
@@ -316,16 +317,20 @@ Le multi-colonnes est un outil de **densité locale**, pas un outil de **découp
 |---|---|---|---|
 | 1 — principal | `PrimaryButton` | L'action principale de la vue. **Un seul par vue** (une modale, un popover ou un toast comptent comme une vue). | « Créer », « Enregistrer », « Appliquer » |
 | 2 — secondaire | `GhostButton` | Les actions secondaires : sans fond ni bordure au repos, voile au survol. Plusieurs autorisés. | « Annuler », « Exporter », « Réinitialiser » |
+| 2 — secondaire (dashboard) | `PrimaryButton outline` | Les actions secondaires d'un **dashboard** (en-tête de page, barre au-dessus d'une liste) : contour visible, repérable d'un coup d'œil sur une page chargée. | « Exporter », « Filtres », « Paramètres » |
 | 3 — tertiaire | `Link hideArrow` | La 3e action d'un groupe, ou une action dans une phrase. | « Enregistrer comme brouillon » |
 | Par ligne | `TableCardAction` | Petite action icône dans une ligne de liste (`TableCard`). | Dupliquer, modifier, supprimer |
 
-`PrimaryButton` et `GhostButton` ont **la même API et les mêmes dimensions** (voir la [Référence API](#primarybutton--ghostbutton)) : seul le rendu change, ce qui les aligne au pixel dans un groupe.
+`PrimaryButton` (plein ou `outline`) et `GhostButton` ont **la même API et les mêmes dimensions** (voir la [Référence API](#primarybutton--ghostbutton)) : seul le rendu change, ce qui les aligne au pixel dans un groupe.
+
+**Ghost ou Outline ?** `GhostButton` par défaut (formulaires, modales, popovers, barres d'outils, barres de sélection). `PrimaryButton outline` dans un dashboard, quand les actions secondaires doivent rester visibles au repos à côté de l'action de création.
 
 ### Règles
 
 - ✅ Un seul `PrimaryButton` par vue.
 - ✅ Dans un groupe, l'engagement croît de gauche à droite : `Link` → `GhostButton` → `PrimaryButton`. **Ghost à gauche, Primary à droite.**
-- ✅ Plusieurs `GhostButton` sont autorisés.
+- ✅ Plusieurs `GhostButton` (ou `PrimaryButton outline` en dashboard) sont autorisés.
+- ✅ Ne pas mélanger Ghost et Outline dans un même groupe : un dashboard prend Outline, le reste Ghost.
 - ✅ Les boutons d'un même groupe ont la même `size`.
 - ✅ Un `GhostButton` isolé porte une icône (`iconStart`) ou se trouve à côté d'un `PrimaryButton` : seul et sans icône, il se lit comme un simple texte.
 - ✅ Icône seule : `icon` + `aria-label` (obligatoire, le typage le vérifie).
@@ -334,17 +339,20 @@ Le multi-colonnes est un outil de **densité locale**, pas un outil de **découp
 - ❌ Pas de `Link` pour une action secondaire hors de la 3e position d'un groupe ou d'une phrase : utiliser `GhostButton`.
 - ❌ Ne pas utiliser `PrimaryButton` pour de la navigation : `Link href`.
 - ❌ Ne pas désactiver un bouton sans `TooltipTrigger` explicatif.
+- ❌ `PrimaryButton outline` n'est pas une action principale : la vue garde un seul `PrimaryButton` plein.
 - ❌ `SecondaryButton` est déprécié (suppression en 1.0.0) : le bleu plein n'est plus utilisé pour les actions, `--cadence-color-accent` est réservé aux états (sélection, élément actif).
 
 ### Taille selon le contexte
 
 La taille ne porte **pas de sens** : elle suit le contexte, pas l'importance de l'action (l'importance, c'est le niveau).
 
-| `size` | Hauteur | Contextes |
-|---|---|---|
-| `sm` | 29px | Tableau, barre d'outils, barre de sélection, popover (`DatePicker`, `DateRangePicker`), toast, `FilterBar` |
-| `md` (défaut) | 34px | Modale, action inline de formulaire, barre d'actions de page |
-| `lg` | 46px | Fin de formulaire, création en haut de dashboard, empty state |
+| `size` | Hauteur | Texte | Contextes |
+|---|---|---|---|
+| `sm` | 29px | 11px | Tableau, barre d'outils, barre de sélection, popover (`DatePicker`, `DateRangePicker`), toast, `FilterBar` |
+| `md` (défaut) | 34px | 12px | Modale, action inline de formulaire, barre d'actions de page |
+| `lg` | 46px | 13px | Fin de formulaire, création en haut de dashboard, empty state |
+
+Les textes d'action restent entre **11 et 13px** (boutons et `Link` : `sm` 11, `md` 12, `lg` 13).
 
 ### Exemples
 
@@ -358,7 +366,7 @@ La taille ne porte **pas de sens** : elle suit le contexte, pas l'importance de 
 </div>
 ```
 
-**Dashboard — création en haut à droite, à l'opposé des onglets**
+**Dashboard — actions secondaires en `outline`, création en haut à droite**
 
 ```tsx
 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -366,7 +374,10 @@ La taille ne porte **pas de sens** : elle suit le contexte, pas l'importance de 
     <Tab label="En cours" variant="active" />
     <Tab label="À venir" />
   </div>
-  <PrimaryButton size="lg" iconStart="plus" label="Créer un scénario" onClick={onCreate} />
+  <div style={{ display: "flex", gap: 8 }}>
+    <PrimaryButton size="lg" outline iconStart="download-02" label="Exporter" onClick={onExport} />
+    <PrimaryButton size="lg" iconStart="plus" label="Créer un scénario" onClick={onCreate} />
+  </div>
 </div>
 ```
 
@@ -455,6 +466,7 @@ Au-dessus d'une liste filtrable, utiliser `FilterBar` (recherche, filtres rapide
 | Contexte | Position | Composant |
 |---|---|---|
 | Dashboard — création | En haut à droite, à côté des onglets | `PrimaryButton size="lg"` |
+| Dashboard — actions secondaires | À gauche de la création | `PrimaryButton outline`, même `size` |
 | Formulaire — soumission | En bas à droite | `Link` (option) + `GhostButton` + `PrimaryButton`, `size="lg"` |
 | Modale — validation | Pied (via `primaryAction` / `secondaryAction`) | géré par `Modal` |
 | Liste — action par ligne | À droite du header de la ligne | `TableCardAction` |
@@ -488,8 +500,8 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 
 | 0.2 | 0.3 |
 |---|---|
-| `PrimaryButton outline` | `GhostButton` |
-| `SecondaryButton outline` | `GhostButton size="sm"` |
+| `PrimaryButton outline` | inchangé (variante contour, réservée aux dashboards) — ou `GhostButton` hors dashboard |
+| `SecondaryButton outline` | `PrimaryButton outline size="sm"` (ou `GhostButton size="sm"` hors dashboard) |
 | `SecondaryButton` plein | `PrimaryButton size="sm"` **ou** `GhostButton size="sm"` selon le rôle (le codemod laisse un `TODO buttons-v2`) |
 | `destructive` | `tone="danger"` |
 | `size="medium"` / `"large"` | `"md"` (défaut) / `"lg"` |
@@ -1407,7 +1419,7 @@ La variation est aussi annoncée en phrase complète aux lecteurs d'écran : « 
 | `children` | `ReactNode` | **requis** | Texte du lien |
 | `href` | `string` | — | Rend un `<a>` ; sans `href` + avec `onClick` → `<button>` |
 | `variant` | `"primary" \| "destructive" \| "inverse"` | `"primary"` | `--cadence-color-link`, `--cadence-color-danger-text`, blanc. ⚠️ `"destructive"`, pas `"danger"`. `"secondary"` est déprécié (identique à `"primary"`) |
-| `size` | `"sm" \| "md" \| "lg"` | `"md"` | — |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | 11 / 12 / 13px (alignés sur les boutons) |
 | `icon` | `ReactNode` | — | Icône avant le texte |
 | `hideArrow` | `boolean` | `false` | Masque la flèche (usage bouton texte) |
 | `disabled` | `boolean` | `false` | — |
@@ -1458,7 +1470,7 @@ Affiche « 1–50 sur 12 430 » (`Intl.NumberFormat("fr-FR")`), précédent / su
 
 ### PrimaryButton / GhostButton
 
-API identique pour les deux ; seul le rendu change (`PrimaryButton` plein, `GhostButton` sans fond ni bordure). Mêmes dimensions à taille égale.
+API identique pour les deux ; seul le rendu change (`PrimaryButton` plein ou contour, `GhostButton` sans fond ni bordure). Mêmes dimensions à taille égale.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
@@ -1467,7 +1479,8 @@ API identique pour les deux ; seul le rendu change (`PrimaryButton` plein, `Ghos
 | `aria-label` | `string` | — | Nom accessible. Obligatoire avec `icon` |
 | `iconStart`, `iconEnd` | nom d'icône `Icons` | — | Icône avant / après le libellé |
 | `tone` | `"default" \| "danger"` | `"default"` | `"danger"` : action destructive (fond rouge / texte rouge) |
-| `size` | `"sm" \| "md" \| "lg"` | `"md"` | 29 / 34 / 46px. Dépend du contexte, ne porte pas de sens |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | 29 / 34 / 46px, texte 11 / 12 / 13px. Dépend du contexte, ne porte pas de sens |
+| `outline` | `boolean` | `false` | **`PrimaryButton` uniquement** : variante contour (fond blanc, bordure), pour les actions secondaires d'un dashboard |
 | `loading` | `boolean` | `false` | Clics ignorés, `aria-busy`, spinner (à la place de `iconStart`), largeur conservée |
 | `disabled` | `boolean` | `false` | — |
 | `fullWidth` | `boolean` | `false` | Occupe toute la largeur |
@@ -1477,11 +1490,11 @@ API identique pour les deux ; seul le rendu change (`PrimaryButton` plein, `Ghos
 | `ref` | `Ref<HTMLButtonElement>` | — | `forwardRef` vers le `<button>` |
 
 - Survol, appui et focus sont gérés en CSS (`:hover`, `:active`, `:focus-visible` avec `--cadence-focus-ring`). ⚠️ Pas de prop `state`.
-- Anciennes props de `PrimaryButton` (`withIcon`, `outline`, `destructive`, `size="medium" | "large"`, `state`) : acceptées en 0.3.0 avec un avertissement en développement, supprimées en 1.0.0 (voir [Migration depuis la 0.2](#migration-depuis-la-02)). `GhostButton` n'accepte que l'API ci-dessus.
+- Anciennes props de `PrimaryButton` (`withIcon`, `destructive`, `size="medium" | "large"`, `state`) : acceptées en 0.3.0 avec un avertissement en développement, supprimées en 1.0.0 (voir [Migration depuis la 0.2](#migration-depuis-la-02)). `outline` n'est **pas** déprécié. `GhostButton` n'accepte que l'API ci-dessus (ni `outline`, ni les anciennes props).
 
 ### SecondaryButton (déprécié)
 
-⚠️ **Obsolète** — suppression en 1.0.0. En 0.3.0, c'est une enveloppe : `outline` → `GhostButton size="sm"`, plein → `PrimaryButton size="sm"`, `size="large"` → `"md"`. Ne plus l'utiliser dans du nouveau code.
+⚠️ **Obsolète** — suppression en 1.0.0. En 0.3.0, c'est une enveloppe : `outline` → `PrimaryButton outline size="sm"`, plein → `PrimaryButton size="sm"`, `size="large"` → `"md"`. Ne plus l'utiliser dans du nouveau code.
 
 ### RadioButton
 
