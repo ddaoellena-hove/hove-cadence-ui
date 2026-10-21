@@ -15,9 +15,10 @@
   min-width: 0;
   overflow: hidden;
   padding: 16px 20px;
+  /* Transition longue et décélérée : la carte « flotte » au lieu de sauter */
   transition:
-    box-shadow 200ms ease,
-    transform 200ms ease;
+    box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .action-card:hover,
