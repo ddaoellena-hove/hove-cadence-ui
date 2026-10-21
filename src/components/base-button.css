@@ -105,6 +105,48 @@
   width: 34px;
 }
 
+/* ── Infobulle des boutons icône seule ──────────────────────────────────── */
+/* Le nom accessible s'affiche sous le bouton au survol (après un court délai)
+   et au focus clavier. */
+.base-button-tip {
+  display: inline-flex;
+  flex-shrink: 0;
+  position: relative;
+  vertical-align: middle;
+}
+
+.base-button-tip__bubble {
+  left: 50%;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  transform: translateX(-50%);
+  transition: opacity 120ms ease, visibility 0s linear 120ms;
+  visibility: hidden;
+  white-space: nowrap;
+  z-index: var(--cadence-z-popover, 100);
+}
+
+.base-button-tip:hover .base-button-tip__bubble,
+.base-button-tip:has(.base-button:focus-visible) .base-button-tip__bubble {
+  opacity: 1;
+  transition: opacity 120ms ease 300ms, visibility 0s linear 300ms;
+  visibility: visible;
+}
+
+/* Focus clavier : affichage immédiat */
+.base-button-tip:has(.base-button:focus-visible) .base-button-tip__bubble {
+  transition-delay: 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .base-button-tip__bubble,
+  .base-button-tip:hover .base-button-tip__bubble {
+    transition: none;
+  }
+}
+
 /* ── Chargement ──────────────────────────────────────────────────────────── */
 .base-button__spinner {
   animation: base-button-spin 0.7s linear infinite;

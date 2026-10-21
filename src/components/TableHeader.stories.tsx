@@ -1,7 +1,8 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TableHeader, type TableHeaderColumn } from "./TableHeader";
-import { TableCard, TableCardAction } from "./TableCard";
+import { TableCard } from "./TableCard";
+import { GhostButton } from "./GhostButton";
 
 const meta: Meta<typeof TableHeader> = {
   title: "Components/TableHeader",
@@ -116,9 +117,9 @@ export const WithTableCards: Story = {
               iconElement={<DisruptionIcon />}
               actions={
                 <>
-                  <TableCardAction icon="copy-01" label="Dupliquer" />
-                  <TableCardAction icon="edit-02" label="Modifier" />
-                  <TableCardAction icon="trash"   label="Supprimer" destructive />
+                  <GhostButton size="sm" icon="copy-01" aria-label="Dupliquer" />
+                  <GhostButton size="sm" icon="edit-02" aria-label="Modifier" />
+                  <GhostButton size="sm" icon="trash" aria-label="Supprimer" tone="danger" />
                 </>
               }
               columns={[

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, fn, userEvent, within } from "storybook/test";
+import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import { GhostButton } from "./GhostButton";
 
 const meta: Meta<typeof GhostButton> = {
@@ -37,11 +37,11 @@ export const AvecIcones: Story = {
   ),
 };
 
-/** Icône seule : `aria-label` obligatoire (typé). */
+/** Icône seule : `aria-label` obligatoire (typé), affiché en infobulle au survol et au focus. */
 export const IconeSeule: Story = {
   name: "Icône seule",
   render: (args) => (
-    <div style={{ display: "flex", gap: 8 }}>
+    <div style={{ display: "flex", gap: 8, paddingBottom: 48 }}>
       <GhostButton size={args.size} icon="edit-02" aria-label="Modifier" />
       <GhostButton size={args.size} icon="trash" aria-label="Supprimer" tone="danger" />
     </div>
@@ -51,6 +51,15 @@ export const IconeSeule: Story = {
     // Carré : largeur = hauteur
     const { width, height } = button.getBoundingClientRect();
     await expect(Math.round(width)).toBe(Math.round(height));
+    // Infobulle : reprend le nom accessible, masquée aux lecteurs d'écran
+    const bubble = button.parentElement?.querySelector(".base-button-tip__bubble") as HTMLElement;
+    await expect(bubble).toHaveAttribute("aria-hidden", "true");
+    await expect(bubble).toHaveTextContent("Modifier");
+    await expect(getComputedStyle(bubble).visibility).toBe("hidden");
+    // Focus clavier : affichée sans délai
+    await userEvent.tab();
+    await expect(button).toHaveFocus();
+    await waitFor(() => expect(getComputedStyle(bubble).visibility).toBe("visible"));
   },
 };
 

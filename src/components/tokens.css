@@ -15,7 +15,7 @@
   --cadence-color-placeholder: #737373;    /* Placeholders des champs */
 
   /* ── Couleurs — icônes ─────────────────────────────────────────────────── */
-  --cadence-color-icon-muted: #69797d;     /* Icônes d'action discrètes (TableCardAction, TableHeader) */
+  --cadence-color-icon-muted: #69797d;     /* Icônes d'action discrètes (TableHeader) */
   --cadence-color-icon-neutral: #737373;   /* Icônes neutres (pictos métier) */
   --cadence-color-icon-disabled: #c5cfd3;  /* Pictos inactifs : flèches de tri non actives (TableHeader, DataTable) */
 
