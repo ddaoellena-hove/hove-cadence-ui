@@ -1,4 +1,7 @@
-import { Meta, Canvas } from "@storybook/addon-docs/blocks";
+import { Meta } from "@storybook/addon-docs/blocks";
+import { GhostButton } from "../../components/GhostButton";
+import { PrimaryButton } from "../../components/PrimaryButton";
+import { Link } from "../../components/Link";
 
 <Meta title="Foundation/Guidelines/Boutons" />
 
@@ -25,112 +28,109 @@ import { Meta, Canvas } from "@storybook/addon-docs/blocks";
 
 # Boutons
 
-<div className="g h2">Choisir le bon bouton</div>
+<div className="g h2">Trois niveaux d'action</div>
 
 <table>
   <thead>
-    <tr><th>Composant</th><th>Quand l'utiliser</th><th>Exemple</th></tr>
+    <tr><th>Niveau</th><th>Composant</th><th>Quand l'utiliser</th><th>Exemple</th></tr>
   </thead>
   <tbody>
     <tr>
+      <td>1 — principal</td>
       <td><code>PrimaryButton</code></td>
-      <td>Action principale de la page. <strong>Un seul par vue.</strong></td>
-      <td>« Créer », « Enregistrer », « Lancer »</td>
+      <td>L'action principale de la vue. <strong>Un seul par vue</strong> (une modale, un popover ou un toast comptent comme une vue).</td>
+      <td>« Créer », « Enregistrer », « Appliquer »</td>
     </tr>
     <tr>
-      <td><code>SecondaryButton</code></td>
-      <td>Actions secondaires ou alternatives. Peut être utilisé plusieurs fois.</td>
-      <td>« Exporter », « Annuler », « Voir les détails »</td>
+      <td>2 — secondaire</td>
+      <td><code>GhostButton</code></td>
+      <td>Actions secondaires : sans fond ni bordure au repos, voile au survol. Plusieurs autorisés.</td>
+      <td>« Annuler », « Exporter », « Réinitialiser »</td>
     </tr>
     <tr>
-      <td><code>Link</code></td>
-      <td>Navigation inline dans du texte, ou action tertiaire discrète.</td>
-      <td>« Retour », « En savoir plus », « Supprimer »</td>
+      <td>3 — tertiaire</td>
+      <td><code>Link hideArrow</code></td>
+      <td>3e action d'un groupe, ou action dans une phrase.</td>
+      <td>« Enregistrer comme brouillon »</td>
     </tr>
   </tbody>
 </table>
 
+<p>Dans un groupe, l'engagement croît de gauche à droite : <code>Link</code> → <code>GhostButton</code> → <code>PrimaryButton</code>.</p>
+
+<div style={{ display: "flex", flexDirection: "column", gap: 0, margin: "16px 0", border: "1px solid var(--cadence-color-border)", borderRadius: 10, overflow: "hidden" }}>
+  <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end", padding: 24, background: "var(--cadence-color-white)" }}>
+    <Link hideArrow onClick={() => {}}>Enregistrer comme brouillon</Link>
+    <GhostButton label="Réinitialiser" />
+    <PrimaryButton label="Créer le scénario" />
+  </div>
+  <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end", padding: 24, background: "var(--cadence-color-surface-alt)" }}>
+    <Link variant="destructive" hideArrow onClick={() => {}}>Retirer le filtre</Link>
+    <GhostButton label="Annuler" />
+    <PrimaryButton tone="danger" label="Supprimer" />
+  </div>
+</div>
+
 <div className="g h2">Règles</div>
 
-<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Un seul <code>PrimaryButton</code> par zone d'action — il représente l'intention principale.</span></div>
-<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Placer le bouton principal à droite quand il est aligné avec un bouton secondaire.</span></div>
-<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Utiliser le variant <code>destructive</code> de <code>Link</code> pour les actions destructives (suppression).</span></div>
-<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas utiliser <code>PrimaryButton</code> pour des actions de navigation — préférer <code>Link</code>.</span></div>
-<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas empiler deux <code>PrimaryButton</code> côte à côte.</span></div>
-<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas désactiver un bouton sans expliquer pourquoi via un <code>Tooltip</code>.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Un seul <code>PrimaryButton</code> par vue ; plusieurs <code>GhostButton</code> sont autorisés.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Ghost à gauche, Primary à droite ; la 3e action est un <code>Link hideArrow</code>, à gauche du groupe.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Les boutons d'un même groupe ont la même <code>size</code>.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Un <code>GhostButton</code> isolé porte une icône (<code>iconStart</code>) ou se trouve à côté d'un <code>PrimaryButton</code>.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Icône seule : <code>icon</code> + <code>aria-label</code> (obligatoire).</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas utiliser <code>PrimaryButton</code> pour de la navigation — préférer <code>Link href</code>.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas mettre deux <code>PrimaryButton</code> côte à côte.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas désactiver un bouton sans expliquer pourquoi via un <code>TooltipTrigger</code>.</span></div>
+<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text"><code>SecondaryButton</code> est déprécié : le bleu plein n'est plus utilisé pour les actions.</span></div>
 
-<div className="g h2">Contextes d'usage du PrimaryButton</div>
+<div className="g h2">Taille selon le contexte</div>
 
-**En fin de formulaire**
+<table>
+  <thead>
+    <tr><th><code>size</code></th><th>Hauteur</th><th>Contextes</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>sm</code></td><td>29px</td><td>Tableau, barre d'outils, barre de sélection, popover, toast, <code>FilterBar</code></td></tr>
+    <tr><td><code>md</code> (défaut)</td><td>34px</td><td>Modale, action inline de formulaire, barre d'actions de page</td></tr>
+    <tr><td><code>lg</code></td><td>46px</td><td>Fin de formulaire, création en haut de dashboard, empty state</td></tr>
+  </tbody>
+</table>
 
-Le `PrimaryButton` clôt toujours un formulaire. Lorsque deux boutons sont nécessaires, on associe la variante **Outline** (action secondaire) à la variante **Default** (action principale), toujours positionnée à droite.
+<p>La taille ne porte pas de sens : l'importance d'une action, c'est son niveau.</p>
 
-```tsx
-// ✅ Pied de formulaire — deux boutons
-<div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-  <GhostButton label="Réinitialiser" onClick={onReset} />
-  <PrimaryButton label="Suivant" onClick={onNext} />
-</div>
-```
-
-**Dans un dashboard**
-
-Le `PrimaryButton` est utilisé comme **action principale de la page** — typiquement la création d'un nouvel élément — positionné en haut à droite, à l'opposé des filtres ou des onglets.
-
-```tsx
-// ✅ Action principale dans un dashboard
-<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-  <div style={{ display: "flex", gap: 4 }}>
-    <Tab label="En cours" variant="active" />
-    <Tab label="À venir" />
-    <Tab label="Passées" />
-    <Tab label="Brouillon" />
-  </div>
-  <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-      <Toggle state={mapView ? "active" : "default"} onChange={setMapView} />
-      <span>Affichage cartographique</span>
-    </div>
-    <PrimaryButton label="Créer un scénario de mobilité" onClick={onCreate} />
-  </div>
-</div>
-```
-
-<div className="g h2">Règle universelle — boutons en groupe</div>
-
-La même règle s'applique à `PrimaryButton` **et** `SecondaryButton` : lorsqu'ils apparaissent en groupe de deux, **l'un est toujours `outline`, l'autre toujours `default` (rempli)**. On ne met jamais deux boutons remplis ni deux outlines côte à côte.
+<div className="g h2">Exemples</div>
 
 ```tsx
-// ✅ Groupe de SecondaryButton
-<div style={{ display: "flex", gap: 8 }}>
-  <GhostButton size="sm" label="Exporter" onClick={onExport} />
-  <PrimaryButton size="sm" label="Appliquer" onClick={onApply} />
-</div>
-
-// ✅ Groupe de PrimaryButton (fin de formulaire)
-<div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-  <GhostButton label="Réinitialiser" onClick={onReset} />
-  <PrimaryButton label="Suivant" onClick={onNext} />
-</div>
-```
-
-<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">En groupe de deux : toujours <code>outline</code> à gauche, <code>default</code> (rempli) à droite.</span></div>
-<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">En dashboard : <code>PrimaryButton</code> toujours en haut à droite, pour la création.</span></div>
-<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Si une 3e action est nécessaire, la représenter sous forme de <code>Link</code> avec <code>hideArrow</code> — jamais un 3e bouton.</span></div>
-<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne jamais mettre deux boutons remplis ni deux <code>outline</code> côte à côte.</span></div>
-<div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne jamais associer un <code>PrimaryButton</code> et un <code>SecondaryButton</code> dans le même groupe — ils ne se mélangent pas.</span></div>
-
-**Groupe de 3 actions**
-
-```tsx
-// ✅ Deux boutons + un Link en 3e action
+// Fin de formulaire — les trois niveaux
 <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end" }}>
-  <Link variant="secondary" hideArrow onClick={onSaveDraft}>
-    Enregistrer comme brouillon
-  </Link>
-  <GhostButton label="Réinitialiser" onClick={onReset} />
-  <PrimaryButton label="Valider" onClick={onSubmit} />
+  <Link hideArrow onClick={onSaveDraft}>Enregistrer comme brouillon</Link>
+  <GhostButton size="lg" label="Réinitialiser" onClick={onReset} />
+  <PrimaryButton size="lg" label="Créer le scénario" onClick={onSubmit} loading={isSaving} />
 </div>
+
+// Barre de sélection d'une liste
+<div style={{ display: "flex", gap: 8 }}>
+  <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" onClick={onDuplicate} />
+  <PrimaryButton size="sm" iconStart="trash" tone="danger" label="Supprimer" onClick={onDelete} />
+</div>
+
+// Action inline à côté d'un champ
+<GhostButton iconStart="plus" label="Ajouter" onClick={onAdd} />
 ```
+
+<div className="g h2">Action destructive</div>
+
+<table>
+  <thead>
+    <tr><th>Impact</th><th>Composant</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Faible (1 élément, réversible)</td><td><code>Link variant="destructive"</code></td></tr>
+    <tr><td>Moyen (1 élément, irréversible)</td><td><code>TableCardAction destructive</code> + confirmation <code>Modal</code></td></tr>
+    <tr><td>Fort (plusieurs éléments, irréversible)</td><td><code>PrimaryButton tone="danger"</code> + confirmation <code>Modal size="small"</code></td></tr>
+  </tbody>
+</table>
+
+<p>La matrice complète des états (repos, survol, appui, focus, désactivé, chargement) est dans <strong>Actions / Matrice</strong>.</p>
 
 </div>

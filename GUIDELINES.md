@@ -32,7 +32,7 @@ Règles impératives pour générer du code avec ce design system :
 5. **`Checkbox`, `Toggle`, `RadioButton`, `RichCheckbox` et `RichRadioButton` se pilotent par la prop `state`**, pas par une prop `checked` — elle n'existe pas. Exemple : `<Checkbox state={isChecked ? "checked" : "unchecked"} onChange={setIsChecked} />`.
 6. **Le CSS custom est limité au layout.** `display: flex`, `gap`, `padding`, `margin`, largeurs : OK en style inline. Couleurs, polices, bordures, ombres custom : interdit — les composants et tokens couvrent ces besoins.
 7. **Partir des [recettes](#recettes-de-pages-complètes)** pour toute page nouvelle, puis adapter. Ne pas réinventer la structure.
-8. **Un seul `PrimaryButton` rempli par vue.** Plusieurs `SecondaryButton` sont autorisés.
+8. **Un seul `PrimaryButton` par vue.** Plusieurs `GhostButton` sont autorisés. 3e action d'un groupe : `Link hideArrow`. `SecondaryButton` est déprécié.
 9. **Toujours passer `label`** sur les champs de formulaire (`TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker`, `CounterInput`).
 10. **Imports** : composants depuis `@ddaoellena/cadence-ui`, styles via un unique `import "@ddaoellena/cadence-ui/style.css"`, polices via les `<link>` de la section [Installation](#installation--setup).
 11. **Libellés en français correct, accents UTF-8 obligatoires.** Tout texte visible (labels, titres, boutons, placeholders, messages) s'écrit avec ses accents — jamais de français « aplati » en ASCII. Les fichiers source sont en UTF-8 : `é è ê à ç û É À` s'écrivent tels quels, sans entité HTML ni échappement unicode.
@@ -87,7 +87,7 @@ La **Uxum Grotesque** (titres) est une police commerciale : si le projet la poss
 ### 3. Importer les composants
 
 ```tsx
-import { PrimaryButton, TextInput, TableCard, Modal } from "@ddaoellena/cadence-ui";
+import { PrimaryButton, GhostButton, TextInput, TableCard, Modal } from "@ddaoellena/cadence-ui";
 ```
 
 ### 4. Squelette d'application minimal
@@ -110,11 +110,15 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-color-icon-muted` | `#69797d` | Icônes d'action discrètes |
 | `--cadence-color-icon-neutral` | `#737373` | Icônes neutres (pictos métier) |
 | `--cadence-color-icon-disabled` | `#c5cfd3` | Pictos inactifs : flèches de tri non actives (`TableHeader`, `DataTable`) |
-| `--cadence-color-danger` | `#da1e28` | Actions destructives, erreurs |
+| `--cadence-color-danger` | `#da1e28` | Actions destructives (fond de `PrimaryButton tone="danger"`), erreurs |
+| `--cadence-color-danger-hover` | `#c91720` | Survol d'un `PrimaryButton tone="danger"` |
+| `--cadence-color-danger-active` | `#b91c1c` | Appui d'un `PrimaryButton tone="danger"` |
+| `--cadence-color-danger-text` | `#b91c1c` | Texte danger sur fond clair (`GhostButton tone="danger"`, `Link variant="destructive"`) — AA sur blanc et `surface-alt` |
+| `--cadence-color-link` | `#1d4ed8` | Texte de `Link` — AA sur blanc (6,7:1) et `surface-alt` (5,9:1) |
 | `--cadence-color-success` | `#24a148` | Confirmations, états valides |
 | `--cadence-color-info` | `#0f62fe` | Accent « information » d'`AlertToast` |
 | `--cadence-color-warning` | `#f1c21b` | Accent « avertissement » d'`AlertToast`. ⚠️ 1,7:1 sur blanc : jamais en couleur de texte |
-| `--cadence-color-accent` | `#1b6cff` | Élément actif / sélectionné (Sidebar, options de menu, `SecondaryButton` rempli) |
+| `--cadence-color-accent` | `#1b6cff` | Élément actif / sélectionné (Sidebar, options de menu). ⚠️ Réservé aux états : jamais pour une action |
 | `--cadence-color-accent-subtle` | `#f0f6ff` | Survol d'un élément actif (Sidebar), ligne sélectionnée (`DataTable`) |
 | `--cadence-color-white` | `#ffffff` | Surfaces de premier plan |
 | `--cadence-color-surface-alt` | `#eef1f4` | Fonds de wrapper (TableCard, Badge), jours d'une période (`DateRangePicker`) |
@@ -149,12 +153,16 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-product-datahub` | `#004650` | Fond de `Sidebar product="datahub"` |
 | `--cadence-product-traffic-report` | `#2f2f3b` | Fond de `Sidebar product="traffic-report"` |
 | `--cadence-product-insights` | `#3b2f2f` | Fond de `Sidebar product="insights"` |
+| `--cadence-color-hover-overlay` | `rgba(0, 40, 48, 0.06)` | Survol d'un élément sans fond (`GhostButton`) — visible sur tout fond |
+| `--cadence-color-active-overlay` | `rgba(0, 40, 48, 0.12)` | Appui d'un élément sans fond |
+| `--cadence-color-danger-hover-overlay` | `rgba(218, 30, 40, 0.06)` | Survol d'un `GhostButton tone="danger"` |
+| `--cadence-color-danger-active-overlay` | `rgba(218, 30, 40, 0.12)` | Appui d'un `GhostButton tone="danger"` |
 | `--cadence-shadow-sm` | ombre 1–3px | Champs au repos |
 | `--cadence-shadow-md` | ombre diffuse 12px | Champs au survol |
 | `--cadence-shadow-lg` | ombre portée 10–15px | Menus déroulants |
 | `--cadence-shadow-overlay` | ombre 20–60px | Modale |
-| `--cadence-focus-color` | `#1a3e45` | Couleur de l'anneau de focus (proposé, pas encore appliqué) |
-| `--cadence-focus-ring` | liseré blanc 2px + anneau 2px | Anneau de focus `box-shadow` (proposé, pas encore appliqué) |
+| `--cadence-focus-color` | `#1a3e45` | Couleur de l'anneau de focus (appliqué aux boutons, `Link`, `DataTable`, calendriers) |
+| `--cadence-focus-ring` | liseré blanc 2px + anneau 2px | Anneau de focus `box-shadow` (`:focus-visible`) — appliqué aux nouveaux composants et aux boutons |
 | `--cadence-z-sticky` | `100` | Sidebar et Header fixes |
 | `--cadence-z-popover` | `100` | Popovers et bulles ancrés (DatePicker, tooltips) |
 | `--cadence-z-dropdown` | `200` | Menus déroulants |
@@ -207,10 +215,11 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 
 | Intention | Composant | Ne pas confondre avec |
 |---|---|---|
-| Action principale de la page | `PrimaryButton` | — |
-| Action secondaire, action inline de formulaire | `SecondaryButton` | — |
+| Action principale de la vue (une seule) | `PrimaryButton` | `GhostButton` (secondaire) |
+| Action secondaire, action inline de formulaire | `GhostButton` | `SecondaryButton` (déprécié) ; `Link` (3e action) |
+| 3e action d'un groupe, action dans une phrase | `Link hideArrow` | `GhostButton` (action secondaire) |
 | Navigation inline, action tertiaire discrète | `Link` | — |
-| Petite action par ligne de liste (icône) | `TableCardAction` | `SecondaryButton withIcon="only"` (trop gros ici) |
+| Petite action par ligne de liste (icône) | `TableCardAction` | `GhostButton icon` (trop gros ici) |
 | Saisie de texte libre (1 ligne) | `TextInput` | — |
 | Saisie de texte long (multi-lignes) | `TextArea` | — |
 | Valeur numérique avec +/− | `CounterInput` | `TextInput type="number"` (interdit) |
@@ -301,51 +310,55 @@ Le multi-colonnes est un outil de **densité locale**, pas un outil de **découp
 
 ## Boutons
 
-### Choisir le bon composant
+### Trois niveaux d'action
 
-| Composant | Quand l'utiliser | Exemple |
-|---|---|---|
-| `PrimaryButton` | Action principale de la page. **Un seul par vue.** | « Créer », « Enregistrer », « Lancer » |
-| `SecondaryButton` | Actions secondaires ou alternatives. Peut être utilisé plusieurs fois. | « Exporter », « Annuler », « Voir les détails » |
-| `Link` | Navigation inline dans du texte, ou action tertiaire discrète. | « Retour », « En savoir plus », « Supprimer » |
-| `TableCardAction` | Action rapide par ligne de liste (icône + tooltip). | Dupliquer, modifier, supprimer une ligne |
+| Niveau | Composant | Quand l'utiliser | Exemple |
+|---|---|---|---|
+| 1 — principal | `PrimaryButton` | L'action principale de la vue. **Un seul par vue** (une modale, un popover ou un toast comptent comme une vue). | « Créer », « Enregistrer », « Appliquer » |
+| 2 — secondaire | `GhostButton` | Les actions secondaires : sans fond ni bordure au repos, voile au survol. Plusieurs autorisés. | « Annuler », « Exporter », « Réinitialiser » |
+| 3 — tertiaire | `Link hideArrow` | La 3e action d'un groupe, ou une action dans une phrase. | « Enregistrer comme brouillon » |
+| Par ligne | `TableCardAction` | Petite action icône dans une ligne de liste (`TableCard`). | Dupliquer, modifier, supprimer |
+
+`PrimaryButton` et `GhostButton` ont **la même API et les mêmes dimensions** (voir la [Référence API](#primarybutton--ghostbutton)) : seul le rendu change, ce qui les aligne au pixel dans un groupe.
 
 ### Règles
 
-- ✅ Un seul `PrimaryButton` par zone d'action.
-- ✅ Placer le bouton principal à droite quand aligné avec un secondaire.
-- ✅ En groupe de deux boutons (Primary ou Secondary) : toujours `outline` à gauche, `default` (rempli) à droite.
-- ✅ Si une 3e action est nécessaire, la représenter sous forme de `Link` avec `hideArrow` — jamais un 3e bouton.
-- ✅ Utiliser `variant="destructive"` sur `Link` pour les actions destructives.
-- ❌ Ne jamais mettre deux boutons remplis ni deux `outline` côte à côte.
-- ❌ Ne jamais associer un `PrimaryButton` et un `SecondaryButton` dans le même groupe — ils ne se mélangent pas.
-- ❌ Ne pas utiliser `PrimaryButton` pour de la navigation.
+- ✅ Un seul `PrimaryButton` par vue.
+- ✅ Dans un groupe, l'engagement croît de gauche à droite : `Link` → `GhostButton` → `PrimaryButton`. **Ghost à gauche, Primary à droite.**
+- ✅ Plusieurs `GhostButton` sont autorisés.
+- ✅ Les boutons d'un même groupe ont la même `size`.
+- ✅ Un `GhostButton` isolé porte une icône (`iconStart`) ou se trouve à côté d'un `PrimaryButton` : seul et sans icône, il se lit comme un simple texte.
+- ✅ Icône seule : `icon` + `aria-label` (obligatoire, le typage le vérifie).
+- ✅ Action en cours (soumission, export) : `loading` — clics ignorés, spinner, largeur conservée.
+- ❌ Jamais deux `PrimaryButton` côte à côte.
+- ❌ Pas de `Link` pour une action secondaire hors de la 3e position d'un groupe ou d'une phrase : utiliser `GhostButton`.
+- ❌ Ne pas utiliser `PrimaryButton` pour de la navigation : `Link href`.
 - ❌ Ne pas désactiver un bouton sans `TooltipTrigger` explicatif.
+- ❌ `SecondaryButton` est déprécié (suppression en 1.0.0) : le bleu plein n'est plus utilisé pour les actions, `--cadence-color-accent` est réservé aux états (sélection, élément actif).
 
-**Règle universelle — boutons en groupe**
+### Taille selon le contexte
 
-Lorsqu'ils apparaissent en groupe de deux, l'un est toujours `outline` (à gauche) et l'autre toujours rempli (à droite). Jamais deux remplis, jamais deux outlines.
+La taille ne porte **pas de sens** : elle suit le contexte, pas l'importance de l'action (l'importance, c'est le niveau).
+
+| `size` | Hauteur | Contextes |
+|---|---|---|
+| `sm` | 29px | Tableau, barre d'outils, barre de sélection, popover (`DatePicker`, `DateRangePicker`), toast, `FilterBar` |
+| `md` (défaut) | 34px | Modale, action inline de formulaire, barre d'actions de page |
+| `lg` | 46px | Fin de formulaire, création en haut de dashboard, empty state |
+
+### Exemples
+
+**Fin de formulaire — les trois niveaux, `size="lg"`**
 
 ```tsx
-// ✅ Groupe de SecondaryButton
-<div style={{ display: "flex", gap: 8 }}>
-  <SecondaryButton outline label="Exporter" />
-  <SecondaryButton label="Appliquer" />
+<div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end" }}>
+  <Link hideArrow onClick={onSaveDraft}>Enregistrer comme brouillon</Link>
+  <GhostButton size="lg" label="Réinitialiser" onClick={onReset} />
+  <PrimaryButton size="lg" label="Créer le scénario" onClick={onSubmit} loading={isSaving} />
 </div>
 ```
 
-**En fin de formulaire — deux PrimaryButton `size="large"`**
-
-```tsx
-<div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-  <PrimaryButton size="large" outline label="Réinitialiser" onClick={onReset} />
-  <PrimaryButton size="large" label="Enregistrer" onClick={onSubmit} />
-</div>
-```
-
-**Dans un dashboard — PrimaryButton `size="large"` pour créer un élément**
-
-Positionné en haut à droite, à l'opposé des onglets/filtres :
+**Dashboard — création en haut à droite, à l'opposé des onglets**
 
 ```tsx
 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -353,33 +366,41 @@ Positionné en haut à droite, à l'opposé des onglets/filtres :
     <Tab label="En cours" variant="active" />
     <Tab label="À venir" />
   </div>
-  <PrimaryButton size="large" label="Créer un scénario" onClick={onCreate} />
+  <PrimaryButton size="lg" iconStart="plus" label="Créer un scénario" onClick={onCreate} />
 </div>
 ```
 
-**Dans un formulaire — SecondaryButton inline**
-
-Les `SecondaryButton` s'utilisent en inline à l'intérieur d'un formulaire, associés à un champ — jamais comme action de soumission.
+**Formulaire — action inline à côté d'un champ (`GhostButton`)**
 
 ```tsx
-// Champ avec action inline
 <div style={{ display: "flex", alignItems: "flex-end", gap: 8 }}>
   <TextInput label="Identifiant d'arrêt" placeholder="stop_area:IDFM:…" />
-  <SecondaryButton label="Vérifier" onClick={onCheck} />
+  <GhostButton iconStart="search-md" label="Vérifier" onClick={onCheck} />
 </div>
 
-// Ajout d'un élément dans une liste
-<div style={{ display: "flex", gap: 8 }}>
+<div style={{ display: "flex", alignItems: "flex-end", gap: 8 }}>
   <Dropdown label="Type d'objet" options={types} value={type} onChange={setType} />
-  <SecondaryButton withIcon="left" icon="plus" label="Ajouter" onClick={onAdd} />
+  <GhostButton iconStart="plus" label="Ajouter" onClick={onAdd} />
 </div>
 ```
 
-**Dans un dashboard dense — hiérarchiser avec TableCardAction puis SecondaryButton**
+**Liste — barre de sélection, `size="sm"`**
 
-Deux niveaux selon l'état de sélection :
+```tsx
+// Visible uniquement quand selectedCount > 0
+<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px" }}>
+  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+    <Checkbox aria-label="Tout désélectionner" state="checked" onChange={onDeselectAll} />
+    <Link hideArrow onClick={onDeselectAll}>Tout désélectionner</Link>
+  </div>
+  <div style={{ display: "flex", gap: 8 }}>
+    <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" onClick={onDuplicate} />
+    <PrimaryButton size="sm" iconStart="trash" tone="danger" label="Supprimer" onClick={onDelete} />
+  </div>
+</div>
+```
 
-*État par défaut — actions par ligne (`TableCardAction`)* : petits boutons icônes 24×24 dans le header de chaque ligne, tooltip blanc au survol.
+**Actions par ligne (`TableCardAction`)** — icônes 24×24 avec tooltip, dans le header de chaque `TableCard` :
 
 ```tsx
 <>
@@ -389,58 +410,28 @@ Deux niveaux selon l'état de sélection :
 </>
 ```
 
-*État sélectionné — barre d'actions groupées* : `SecondaryButton` labellisés pour les actions neutres, `PrimaryButton` destructif pour la suppression — jamais un `Link` ici.
+**Modale** — le pied est géré par `primaryAction` (`PrimaryButton`) et `secondaryAction` (`GhostButton`) de `Modal` : ne pas recréer de boutons dans `children`.
 
-```tsx
-// Barre visible uniquement quand selectedCount > 0
-<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px" }}>
-  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-    <Checkbox state="checked" onChange={onDeselectAll} />
-    <Link hideArrow onClick={onDeselectAll}>Tout désélectionner</Link>
-  </div>
-  <div style={{ display: "flex", gap: 8 }}>
-    <SecondaryButton withIcon="left" icon="copy-01" label="Dupliquer" onClick={onDuplicate} />
-    <PrimaryButton withIcon="left" icon="trash" label="Supprimer" destructive onClick={onDelete} />
-  </div>
-</div>
-```
-
-**Groupe de 3 actions — Link en 3e position**
-
-```tsx
-<div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end" }}>
-  <Link variant="secondary" hideArrow onClick={onSaveDraft}>
-    Enregistrer comme brouillon
-  </Link>
-  <PrimaryButton size="large" outline label="Réinitialiser" onClick={onReset} />
-  <PrimaryButton size="large" label="Valider" onClick={onSubmit} />
-</div>
-```
-
-**Dans une modale — PrimaryButton `size="medium"` (défaut)**
-
-Les modales utilisent la taille par défaut. Le footer est géré par les props `primaryAction` / `secondaryAction` de `Modal` — ne pas recréer de boutons dans `children`.
-
-**État vide (empty state) — PrimaryButton `size="large"`**
+**Empty state — `size="lg"`**
 
 ```tsx
 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, padding: 48 }}>
   <p style={{ color: "var(--cadence-color-text-muted)", fontSize: 14 }}>Aucun scénario créé pour ce réseau.</p>
-  <PrimaryButton size="large" label="Créer le premier scénario" onClick={onCreate} />
+  <PrimaryButton size="lg" label="Créer le premier scénario" onClick={onCreate} />
 </div>
 ```
 
-**Action destructive — niveau de visibilité selon l'impact**
+### Action destructive — visibilité selon l'impact
 
 | Impact | Composant | Quand |
 |---|---|---|
-| Faible (1 élément, réversible) | `Link variant="destructive"` | Supprimer un champ, retirer une valeur |
+| Faible (1 élément, réversible) | `Link variant="destructive"` | Retirer une valeur, un filtre, un champ |
 | Moyen (1 élément, irréversible) | `TableCardAction destructive` + confirmation `Modal` | Supprimer une ligne d'une liste |
-| Fort (plusieurs éléments, irréversible) | `PrimaryButton destructive` dans la barre groupée + confirmation `Modal` | Suppression multiple |
+| Fort (plusieurs éléments, irréversible) | `PrimaryButton tone="danger"` + confirmation `Modal size="small"` | Suppression multiple |
+
+`GhostButton tone="danger"` sert à une action destructive **secondaire** dans un groupe (ex. « Retirer » à côté d'un `PrimaryButton` « Enregistrer »).
 
 **Confirmation modale avant suppression irréversible**
-
-Toute suppression irréversible est confirmée via une `Modal size="small"` :
 
 ```tsx
 <Modal
@@ -455,34 +446,22 @@ Toute suppression irréversible est confirmée via une `Modal size="small"` :
 </Modal>
 ```
 
-**Contrôles de tri et de filtre d'une liste**
+### Contrôles d'une liste
 
-Positionnés dans la barre au-dessus de la liste, hors du flux des boutons d'action :
-- Le tri : `SecondaryButton outline` avec icône `switch-vertical-01`.
-- Le filtre : un `Link hideArrow` + compteur de filtres actifs.
+Au-dessus d'une liste filtrable, utiliser `FilterBar` (recherche, filtres rapides, filtres actifs). Un tri hors `DataTable` se fait avec un `GhostButton size="sm" iconStart="switch-vertical-01"`, hors du flux des boutons d'action.
 
-```tsx
-<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-    <Link hideArrow onClick={onOpenFilters}>Filtrer les scénarios</Link>
-    {activeFilters > 0 && <span style={{ color: "var(--cadence-color-text-muted)" }}>({activeFilters} filtres)</span>}
-  </div>
-  <SecondaryButton outline withIcon="left" icon="switch-vertical-01" label="Date de création" />
-</div>
-```
-
-**Placement systématique**
+### Placement systématique
 
 | Contexte | Position | Composant |
 |---|---|---|
-| Dashboard — création | En haut à droite, à côté des onglets | `PrimaryButton size="large"` |
-| Formulaire — soumission | En bas à droite | `PrimaryButton size="large"` (outline + rempli) |
-| Modale — validation | Footer (via `primaryAction`/`secondaryAction`) | géré par `Modal` |
+| Dashboard — création | En haut à droite, à côté des onglets | `PrimaryButton size="lg"` |
+| Formulaire — soumission | En bas à droite | `Link` (option) + `GhostButton` + `PrimaryButton`, `size="lg"` |
+| Modale — validation | Pied (via `primaryAction` / `secondaryAction`) | géré par `Modal` |
 | Liste — action par ligne | À droite du header de la ligne | `TableCardAction` |
-| Liste — sélection multiple | À droite de la barre de sélection | `SecondaryButton` + `PrimaryButton destructive` |
-| Formulaire inline | À droite du champ associé | `SecondaryButton` |
+| Liste — sélection multiple | À droite de la barre de sélection | `GhostButton` + `PrimaryButton tone="danger"`, `size="sm"` |
+| Formulaire inline | À droite du champ associé | `GhostButton` |
 
-Un bouton ne change jamais de position selon l'état de l'application — il peut être affiché/masqué, activé/désactivé, mais son emplacement reste fixe.
+Un bouton ne change jamais de position selon l'état de l'application : il peut être affiché, masqué, activé, désactivé ou en chargement, mais son emplacement reste fixe.
 
 **Bouton désactivé — explication obligatoire**
 
@@ -499,9 +478,25 @@ Un bouton ne change jamais de position selon l'état de l'application — il peu
 </div>
 ```
 
-**Ordre de lecture dans un groupe**
+### Migration depuis la 0.2
 
-De gauche à droite, engagement croissant : `Link` (tertiaire) → bouton `outline` (secondaire) → bouton rempli (principal). Le bouton principal n'est jamais à gauche.
+Les anciennes props restent acceptées en 0.3.0 (avertissement en développement, une fois par prop) ; suppression en 1.0.0. Le codemod fait l'essentiel :
+
+```bash
+node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry src
+```
+
+| 0.2 | 0.3 |
+|---|---|
+| `PrimaryButton outline` | `GhostButton` |
+| `SecondaryButton outline` | `GhostButton size="sm"` |
+| `SecondaryButton` plein | `PrimaryButton size="sm"` **ou** `GhostButton size="sm"` selon le rôle (le codemod laisse un `TODO buttons-v2`) |
+| `destructive` | `tone="danger"` |
+| `size="medium"` / `"large"` | `"md"` (défaut) / `"lg"` |
+| `withIcon="left"` / `"right"` + `icon` | `iconStart` / `iconEnd` |
+| `withIcon="only"` + `icon` | `icon` + `aria-label` |
+| `state` | supprimé (`"disabled"` → `disabled`) |
+| `Link variant="secondary"` | `Link` (identique à `"primary"`) |
 
 ---
 
@@ -783,8 +778,7 @@ Liste de `TableCard` avec en-têtes triables, sélection multiple, barre d'actio
 ```tsx
 import { useState } from "react";
 import {
-  Tab, PrimaryButton, SecondaryButton, Link, Checkbox,
-  TableHeader, TableCard, TableCardAction, Modal, AlertToast, Indicator,
+  Tab, PrimaryButton, GhostButton, Link, Checkbox, TableHeader, TableCard, TableCardAction, Modal, AlertToast, Indicator,
 } from "@ddaoellena/cadence-ui";
 
 // Largeurs partagées entre TableHeader et TableCard — NE PAS désynchroniser
@@ -812,7 +806,7 @@ export const ScenarioListPage = () => {
           <Tab label="À venir" />
           <Tab label="Passées" />
         </div>
-        <PrimaryButton size="large" label="Créer un scénario" onClick={onCreate} />
+        <PrimaryButton size="lg" label="Créer un scénario" onClick={onCreate} />
       </div>
 
       {/* ── Barre de sélection (visible si ≥ 1 sélection) ── */}
@@ -823,8 +817,8 @@ export const ScenarioListPage = () => {
             <Link hideArrow onClick={() => setSelected(new Set())}>Tout désélectionner</Link>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
-            <SecondaryButton withIcon="left" icon="copy-01" label="Dupliquer" onClick={onDuplicate} />
-            <PrimaryButton withIcon="left" icon="trash" label="Supprimer" destructive onClick={() => setConfirmOpen(true)} />
+            <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" onClick={onDuplicate} />
+            <PrimaryButton size="sm" iconStart="trash" tone="danger" label="Supprimer" onClick={() => setConfirmOpen(true)} />
           </div>
         </div>
       )}
@@ -898,7 +892,7 @@ export const ScenarioListPage = () => {
 Formulaire en sections, largeur contenue, soumission en bas à droite. Les **panneaux de premier niveau** (formulaire puis synthèse) s'empilent verticalement ; le multi-colonnes n'apparaît qu'**à l'intérieur** des sections. Voir [Composition des panneaux](#composition-des-panneaux-sur-une-page-formulaire).
 
 ```tsx
-import { TextInput, TextArea, Dropdown, DatePicker, CounterInput, SegmentedControlAlt, TableCard, PrimaryButton, Link } from "@ddaoellena/cadence-ui";
+import { TextInput, TextArea, Dropdown, DatePicker, CounterInput, SegmentedControlAlt, TableCard, PrimaryButton, Link, GhostButton } from "@ddaoellena/cadence-ui";
 
 export const ScenarioFormPage = () => (
   // Conteneur de page : flexDirection "column" → les panneaux de premier niveau s'empilent
@@ -968,8 +962,8 @@ export const ScenarioFormPage = () => (
     {/* ══ Soumission ══ */}
     <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end" }}>
       <Link variant="secondary" hideArrow onClick={onSaveDraft}>Enregistrer comme brouillon</Link>
-      <PrimaryButton size="large" outline label="Réinitialiser" onClick={onReset} />
-      <PrimaryButton size="large" label="Créer le scénario" onClick={onSubmit} />
+      <GhostButton size="lg" label="Réinitialiser" onClick={onReset} />
+      <PrimaryButton size="lg" label="Créer le scénario" onClick={onSubmit} />
     </div>
   </div>
 );
@@ -982,7 +976,7 @@ export const ScenarioFormPage = () => (
   <p style={{ fontFamily: "var(--cadence-font-sans)", color: "var(--cadence-color-text-muted)", fontSize: 14, margin: 0 }}>
     Aucun scénario créé pour ce réseau.
   </p>
-  <PrimaryButton size="large" label="Créer le premier scénario" onClick={onCreate} />
+  <PrimaryButton size="lg" label="Créer le premier scénario" onClick={onCreate} />
 </div>
 ```
 
@@ -993,8 +987,7 @@ Liste de gros volume paginée par l'API : `FilterBar` au-dessus, `DataTable` (tr
 ```tsx
 import { useEffect, useState } from "react";
 import {
-  FilterBar, DataTable, Pagination, Dropdown, Checkbox, Link,
-  SecondaryButton, PrimaryButton, Badge, Indicator,
+  FilterBar, DataTable, Pagination, Dropdown, Checkbox, Link, PrimaryButton, GhostButton, Badge, Indicator,
   type DataTableColumn, type DataTableSort,
 } from "@ddaoellena/cadence-ui";
 
@@ -1038,7 +1031,7 @@ export const SupervisionPage = () => {
         activeFilters={line !== "all" ? [{ id: "line", label: line }] : []}
         onRemoveFilter={() => update(() => setLine("all"))}
         resultCount={result?.total}
-        actions={<SecondaryButton outline withIcon="left" icon="download-02" label="Exporter" />}
+        actions={<GhostButton size="sm" iconStart="download-02" label="Exporter" />}
       />
 
       {selectedIds.length > 0 && (
@@ -1048,8 +1041,8 @@ export const SupervisionPage = () => {
             <Link hideArrow onClick={() => setSelectedIds([])}>Tout désélectionner</Link>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
-            <SecondaryButton withIcon="left" icon="copy-01" label="Dupliquer" />
-            <PrimaryButton withIcon="left" icon="trash" label="Clôturer" destructive onClick={onConfirm} />
+            <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" />
+            <PrimaryButton size="sm" iconStart="trash" tone="danger" label="Clôturer" onClick={onConfirm} />
           </div>
         </div>
       )}
@@ -1145,7 +1138,7 @@ export const SupervisionDashboard = () => {
 | `title` | `string` | label du type : `Information`, `Succès`, `Avertissement`, `Erreur` | Titre en gras |
 | `description` | `string` | — | Texte secondaire. Sans valeur, la ligne n'est pas rendue |
 | `progress` | `number` (0-100) | — | Barre de progression (masquée si absent) |
-| `actions` | `[AlertToastAction]` ou `[AlertToastAction, AlertToastAction]` | — | 1 à 2 boutons (`{ label, onClick?, outline? }`) |
+| `actions` | `[AlertToastAction]` ou `[AlertToastAction, AlertToastAction]` | — | 1 à 2 boutons `size="sm"` (`{ label, onClick?, outline? }`) : `outline` (défaut pour la 1re) → `GhostButton`, sinon `PrimaryButton` |
 | `dismissible` | `boolean` | auto `true` si `actions` | Affiche le bouton × |
 | `onDismiss` | `() => void` | — | Clic sur ×. ⚠️ Pas de prop `onClose`. |
 | `className`, `style` | — | — | Échappatoires |
@@ -1342,7 +1335,7 @@ Barre au-dessus d'une liste : ligne 1 = recherche · filtres rapides · actions 
 | `quickFilters` | `ReactNode` | — | Slot : `Dropdown`, `SegmentedControl`… |
 | `activeFilters` | `{ id, label }[]` | `[]` | Affichés en `Badge dismissible` |
 | `onRemoveFilter` | `(id: string) => void` | — | Croix d'un badge. Sans callback, les badges ne sont pas supprimables |
-| `onClearAll` | `() => void` | — | « Tout effacer » (`Link hideArrow`), affiché à partir de **2** filtres actifs |
+| `onClearAll` | `() => void` | — | « Tout effacer » (`GhostButton size="sm"`), affiché à partir de **2** filtres actifs |
 | `resultCount` | `number` | — | « 12 430 résultats » / « 1 résultat » / « Aucun résultat » (annoncé aux lecteurs d'écran) |
 | `actions` | `ReactNode` | — | Slot à droite : export, menu de colonnes… |
 | `className` | `string` | — | — |
@@ -1413,7 +1406,7 @@ La variation est aussi annoncée en phrase complète aux lecteurs d'écran : « 
 |---|---|---|---|
 | `children` | `ReactNode` | **requis** | Texte du lien |
 | `href` | `string` | — | Rend un `<a>` ; sans `href` + avec `onClick` → `<button>` |
-| `variant` | `"primary" \| "secondary" \| "destructive" \| "inverse"` | `"primary"` | ⚠️ `"destructive"`, pas `"danger"` |
+| `variant` | `"primary" \| "destructive" \| "inverse"` | `"primary"` | `--cadence-color-link`, `--cadence-color-danger-text`, blanc. ⚠️ `"destructive"`, pas `"danger"`. `"secondary"` est déprécié (identique à `"primary"`) |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | — |
 | `icon` | `ReactNode` | — | Icône avant le texte |
 | `hideArrow` | `boolean` | `false` | Masque la flèche (usage bouton texte) |
@@ -1429,8 +1422,8 @@ La variation est aussi annoncée en phrase complète aux lecteurs d'écran : « 
 | `onClose` | `() => void` | **requis** | Backdrop, ×, Échap |
 | `title` | `string` | — | Titre (header sombre) |
 | `children` | `ReactNode` | **requis** | Corps (scrollable si long) |
-| `primaryAction` | `{ label, onClick, destructive? }` | — | Bouton droit du footer |
-| `secondaryAction` | `{ label, onClick }` | — | Bouton gauche (outline) |
+| `primaryAction` | `{ label, onClick, destructive? }` | — | Bouton droit du pied : `PrimaryButton` (`destructive` → `tone="danger"`) |
+| `secondaryAction` | `{ label, onClick }` | — | Bouton gauche du pied : `GhostButton` |
 | `size` | `"small" \| "medium" \| "large"` | `"medium"` | 400 / 560 / 800 px |
 | `hideCloseButton` | `boolean` | `false` | — |
 
@@ -1463,21 +1456,32 @@ Navigation dans un résultat paginé. Composant contrôlé.
 
 Affiche « 1–50 sur 12 430 » (`Intl.NumberFormat("fr-FR")`), précédent / suivant, et les pages avec ellipses (`1 … 4 5 6 … 249`, 7 positions fixes). ⚠️ Le menu de taille s'ouvre vers le bas : prévoir de l'espace sous la pagination.
 
-### PrimaryButton / SecondaryButton
+### PrimaryButton / GhostButton
 
-API identique pour les deux :
+API identique pour les deux ; seul le rendu change (`PrimaryButton` plein, `GhostButton` sans fond ni bordure). Mêmes dimensions à taille égale.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `label` | `string` | — | Texte (sauf si `withIcon="only"`) |
-| `withIcon` | `"left" \| "no" \| "only" \| "right"` | `"no"` | Position de l'icône |
-| `icon` | nom d'icône `Icons` | — | Ex : `"plus"`, `"trash"` |
-| `outline` | `boolean` | `false` | Variante ghost |
-| `destructive` | `boolean` | `false` | Style danger (rouge) |
-| `size` | `"medium" \| "large"` | `"medium"` | — |
+| `label` | `string` | — | Libellé. ⚠️ Exclusif avec `icon` |
+| `icon` | nom d'icône `Icons` | — | Icône seule (bouton carré). ⚠️ `aria-label` **obligatoire** (typé) |
+| `aria-label` | `string` | — | Nom accessible. Obligatoire avec `icon` |
+| `iconStart`, `iconEnd` | nom d'icône `Icons` | — | Icône avant / après le libellé |
+| `tone` | `"default" \| "danger"` | `"default"` | `"danger"` : action destructive (fond rouge / texte rouge) |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | 29 / 34 / 46px. Dépend du contexte, ne porte pas de sens |
+| `loading` | `boolean` | `false` | Clics ignorés, `aria-busy`, spinner (à la place de `iconStart`), largeur conservée |
 | `disabled` | `boolean` | `false` | — |
+| `fullWidth` | `boolean` | `false` | Occupe toute la largeur |
+| `type` | `"button" \| "submit" \| "reset"` | `"button"` | — |
 | `onClick` | `MouseEventHandler` | — | — |
-| `state` | `"enabled" \| "hover" \| "clicked" \| "disabled"` | géré en interne | Ne pas piloter manuellement sauf besoin spécifique |
+| `className` | `string` | — | — |
+| `ref` | `Ref<HTMLButtonElement>` | — | `forwardRef` vers le `<button>` |
+
+- Survol, appui et focus sont gérés en CSS (`:hover`, `:active`, `:focus-visible` avec `--cadence-focus-ring`). ⚠️ Pas de prop `state`.
+- Anciennes props de `PrimaryButton` (`withIcon`, `outline`, `destructive`, `size="medium" | "large"`, `state`) : acceptées en 0.3.0 avec un avertissement en développement, supprimées en 1.0.0 (voir [Migration depuis la 0.2](#migration-depuis-la-02)). `GhostButton` n'accepte que l'API ci-dessus.
+
+### SecondaryButton (déprécié)
+
+⚠️ **Obsolète** — suppression en 1.0.0. En 0.3.0, c'est une enveloppe : `outline` → `GhostButton size="sm"`, plein → `PrimaryButton size="sm"`, `size="large"` → `"md"`. Ne plus l'utiliser dans du nouveau code.
 
 ### RadioButton
 

@@ -125,10 +125,23 @@ Statuts, accents, thèmes produits, élévations, focus et couches. Les tokens d
 ## Accents et toasts
 
 <div className="tk-grid">
-  <ColorCard name="--cadence-color-accent" usage="Élément actif ou sélectionné : Sidebar, options de menu, SecondaryButton rempli" dark />
+  <ColorCard name="--cadence-color-accent" usage="Élément actif ou sélectionné : Sidebar, options de menu — réservé aux états, jamais pour une action" dark />
   <ColorCard name="--cadence-color-accent-subtle" usage="Survol d'un élément actif (Sidebar)" />
   <ColorCard name="--cadence-color-info" usage="Accent « information » d'AlertToast" dark />
   <ColorCard name="--cadence-color-warning" usage="Accent « avertissement » d'AlertToast — jamais en couleur de texte" />
+</div>
+
+## Actions et liens
+
+<div className="tk-grid">
+  <ColorCard name="--cadence-color-link" usage="Texte de Link (AA sur blanc et surface-alt)" dark />
+  <ColorCard name="--cadence-color-danger-hover" usage={'Survol d\'un PrimaryButton tone="danger"'} dark />
+  <ColorCard name="--cadence-color-danger-active" usage={'Appui d\'un PrimaryButton tone="danger"'} dark />
+  <ColorCard name="--cadence-color-danger-text" usage="Texte danger sur fond clair : GhostButton danger, Link destructive" dark />
+  <ColorCard name="--cadence-color-hover-overlay" usage="Survol d'un GhostButton (voile, visible sur tout fond)" />
+  <ColorCard name="--cadence-color-active-overlay" usage="Appui d'un GhostButton" />
+  <ColorCard name="--cadence-color-danger-hover-overlay" usage="Survol d'un GhostButton danger" />
+  <ColorCard name="--cadence-color-danger-active-overlay" usage="Appui d'un GhostButton danger" />
 </div>
 
 ## Thèmes produits
