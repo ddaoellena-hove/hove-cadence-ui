@@ -135,11 +135,12 @@ export const AlertToast = ({
         {actions && actions.length > 0 && (
           <div className="alert-toast__actions">
             {actions.map((action, idx) =>
-              // Action secondaire (outline, ou 1re par défaut) → Ghost ; action principale → Primary
+              // Faible emphase dans un toast : action secondaire → Ghost ;
+              // action principale → PrimaryButton outline (jamais rempli)
               (action.outline ?? idx === 0) ? (
                 <GhostButton key={idx} size="sm" label={action.label} onClick={action.onClick} />
               ) : (
-                <PrimaryButton key={idx} size="sm" label={action.label} onClick={action.onClick} />
+                <PrimaryButton key={idx} outline size="sm" label={action.label} onClick={action.onClick} />
               ),
             )}
           </div>

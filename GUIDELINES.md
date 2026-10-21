@@ -773,6 +773,7 @@ Une `Card` est **interactive** soit par `onClick` (toute la carte mène à la li
 - ✅ Position : **bas à droite**, en `position: fixed`. Empilement avec effet de profondeur (la plus récente au premier plan) ; au survol, la pile se déploie.
 - ✅ `success` / `information` / `warning` : auto-dismiss après 4 s (géré par le `Toaster`, en pause au survol). `error` : reste jusqu'à fermeture manuelle.
 - ✅ Max 3 toasts simultanés (le `Toaster` retire les plus anciens au-delà).
+- ✅ Boutons d'action d'un toast : **faible emphase** — `GhostButton` (secondaire) + `PrimaryButton outline` (principale). **Jamais de bouton rempli** : exception assumée à la règle « groupe de deux = outline + rempli », justifiée par le contexte transitoire et non bloquant du toast.
 - ❌ Ne pas utiliser `AlertToast` seul pour une notification applicative — passer par `useToast()` + `Toaster`.
 - ❌ Ne pas utiliser `Tooltip` pour du contenu long ou interactif.
 
@@ -1257,7 +1258,7 @@ Squelette d'application : la `Sidebar` à gauche et le contenu de la page dans u
 | `title` | `string` | label du type : `Information`, `Succès`, `Avertissement`, `Erreur` | Titre en gras |
 | `description` | `string` | — | Texte secondaire. Sans valeur, la ligne n'est pas rendue |
 | `progress` | `number` (0-100) | — | Barre de progression (masquée si absent) |
-| `actions` | `[AlertToastAction]` ou `[AlertToastAction, AlertToastAction]` | — | 1 à 2 boutons `size="sm"` (`{ label, onClick?, outline? }`) : `outline` (défaut pour la 1re) → `GhostButton`, sinon `PrimaryButton` |
+| `actions` | `[AlertToastAction]` ou `[AlertToastAction, AlertToastAction]` | — | 1 à 2 boutons `size="sm"` (`{ label, onClick?, outline? }`) **faible emphase** : `outline` (défaut pour la 1re) → `GhostButton` (secondaire), sinon → `PrimaryButton outline` (principale). **Jamais de bouton rempli dans un toast.** |
 | `dismissible` | `boolean` | auto `true` si `actions` | Affiche le bouton × |
 | `onDismiss` | `() => void` | — | Clic sur ×. ⚠️ Pas de prop `onClose`. |
 | `className`, `style` | — | — | Échappatoires |
