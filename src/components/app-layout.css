@@ -34,13 +34,26 @@
   padding: 12px 12px 12px 0;
 }
 
-/* Conteneur blanc arrondi, bordé d'un liseré ; c'est lui qui défile */
+/* Conteneur blanc arrondi, bordé d'un liseré. Il ne défile pas lui-même :
+   il coupe tout ce qui dépasse de son arrondi, barres de scroll comprises
+   (une barre posée sur l'élément arrondi déborderait dans les coins). */
 .app-layout__container {
   background: var(--cadence-color-white, #ffffff);
   border: 1px solid var(--cadence-color-border, #e5e5e5);
   border-radius: var(--cadence-radius-xl, 12px);
   box-sizing: border-box;
+  display: flex;
   flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Zone qui défile, à l'intérieur du cadre */
+.app-layout__scroll {
+  box-sizing: border-box;
+  flex: 1;
+  min-height: 0;
   min-width: 0;
   overflow: auto;
   padding: 24px 32px;

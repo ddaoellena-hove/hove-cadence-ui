@@ -1181,7 +1181,7 @@ Carte d'action : titre, description et un bouton `PrimaryButton outline size="sm
 
 ### AppLayout
 
-Squelette d'application : la `Sidebar` à gauche et le contenu de la page dans un conteneur blanc arrondi (`--cadence-radius-xl`), bordé d'un liseré (`--cadence-color-border`), avec un padding de `24px 32px`. Plein écran (`100vh`) : seul le conteneur défile.
+Squelette d'application : la `Sidebar` à gauche et le contenu de la page dans un conteneur blanc arrondi (`--cadence-radius-xl`), bordé d'un liseré (`--cadence-color-border`), avec un padding de `24px 32px`. Plein écran (`100vh`) : seul le conteneur défile, et ses barres de scroll (verticale comme horizontale) restent dans l'arrondi.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|

@@ -135,3 +135,36 @@ export const ContenuLong: Story = {
     </AppLayout>
   ),
 };
+
+/**
+ * Contenu plus large et plus haut que le conteneur : les deux barres de scroll
+ * restent dans l'arrondi (c'est la zone intérieure qui défile, le cadre coupe).
+ */
+export const ContenuLarge: Story = {
+  name: "Contenu large",
+  render: () => (
+    <AppLayout sidebar={<AppSidebar />}>
+      <div
+        style={{
+          width: 2000,
+          height: 1500,
+          background: "var(--cadence-color-surface-alt)",
+          borderRadius: "var(--cadence-radius-lg)",
+        }}
+      />
+    </AppLayout>
+  ),
+  play: async ({ canvasElement }) => {
+    const container = canvasElement.querySelector(".app-layout__container") as HTMLElement;
+    const scroller = canvasElement.querySelector(".app-layout__scroll") as HTMLElement;
+    // Le cadre arrondi coupe, la zone intérieure défile dans les deux sens
+    await expect(getComputedStyle(container).overflow).toBe("hidden");
+    await expect(scroller.scrollWidth).toBeGreaterThan(scroller.clientWidth);
+    await expect(scroller.scrollHeight).toBeGreaterThan(scroller.clientHeight);
+    // La zone qui défile tient dans le cadre (rien ne dépasse de l'arrondi)
+    const frame = container.getBoundingClientRect();
+    const inner = scroller.getBoundingClientRect();
+    await expect(inner.right).toBeLessThanOrEqual(frame.right);
+    await expect(inner.bottom).toBeLessThanOrEqual(frame.bottom);
+  },
+};
