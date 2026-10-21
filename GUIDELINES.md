@@ -162,6 +162,7 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-shadow-sm` | ombre 1–3px | Champs au repos |
 | `--cadence-shadow-md` | ombre diffuse 12px | Champs au survol |
 | `--cadence-shadow-lg` | ombre portée 10–15px | Menus déroulants |
+| `--cadence-shadow-raised` | ombre portée 16–32px, vers le bas | Carte soulevée au survol (`ActionCard`) |
 | `--cadence-shadow-overlay` | ombre 20–60px | Modale |
 | `--cadence-focus-color` | `#1a3e45` | Couleur de l'anneau de focus (appliqué aux boutons, `Link`, `DataTable`, calendriers) |
 | `--cadence-focus-ring` | liseré blanc 2px + anneau 2px | Anneau de focus `box-shadow` (`:focus-visible`) — appliqué aux nouveaux composants et aux boutons |
@@ -240,6 +241,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Étiquette d'information neutre (catégorie, tag, code) | `Badge` | `Indicator` (qui porte un état) |
 | État ou statut avec picto + couleur sémantique | `Indicator` | `Badge` (purement informatif) |
 | Indicateur chiffré + évolution (haut de tableau de bord) | `KpiCard` | `Indicator` (statut sans valeur) |
+| Proposer une action dans une carte (titre + description + bouton) | `ActionCard` | `KpiCard` (indicateur chiffré), `TableCard` (élément de liste) |
 | Liste de gros volume (> 50 lignes, colonnes de données) | `DataTable` | `TableCard` (liste de cartes riches, peu nombreuses) |
 | Élément de liste riche, peu nombreux (header + colonnes) | `TableCard` | `DataTable` (gros volumes) ; un `<table>` HTML custom |
 | Ligne d'en-têtes de colonnes avec tri (au-dessus de `TableCard`) | `TableHeader` | en-têtes de `DataTable` (intégrés) |
@@ -684,6 +686,17 @@ Deux composants proches mais distincts :
 - ✅ `Indicator` peut surcharger son libellé par défaut via `label`.
 - ❌ Ne pas utiliser `Badge` pour un état (utiliser `Indicator`).
 - ❌ Ne pas créer de nouvelles couleurs de statut — les 8 variantes couvrent les cas.
+
+### Cartes d'action : `ActionCard`
+
+Une `ActionCard` présente une action à lancer : un titre, une description courte et un bouton (`PrimaryButton outline size="sm"`). Au survol, la carte se soulève de 4px (`transform`) avec une ombre portée large (`--cadence-shadow-raised`). Avec `prefers-reduced-motion`, seule l'ombre apparaît.
+
+- ✅ Seul le bouton est cliquable : le libellé dit l'action (« Importer », « Configurer »), le titre dit ce que l'on obtient.
+- ✅ En grille : `gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))"`, `gap: 16`. Les cartes prennent la même hauteur et les boutons s'alignent en bas.
+- ✅ `illustration` (facultative) apporte du cachet : SVG inline ou `<img alt="">` local, 64 à 96px de haut, placé en bas à droite et collé au coin. Décorative : masquée aux lecteurs d'écran, elle ne porte aucune information.
+- ✅ `headingLevel` suit la hiérarchie de la page (h3 par défaut, sous un h2 de section).
+- ❌ Une seule action par carte : pour plusieurs actions, utiliser une liste (`TableCard` + `TableCardAction`).
+- ❌ Ne pas recréer une carte cliquable dans son ensemble avec `ActionCard` : pour un indicateur qui mène à une liste, `KpiCard onClick`.
 
 ### Indicateurs chiffrés : `KpiCard`
 
@@ -1190,6 +1203,24 @@ export const SupervisionDashboard = () => {
 ## Référence API des composants
 
 **Source de vérité des props.** Si une prop n'est pas listée ici, elle n'existe pas — ne pas en inventer. Convention : les props sans défaut indiqué sont `undefined` ; ⚠️ signale les pièges courants.
+
+### ActionCard
+
+Carte d'action : titre, description et un bouton `PrimaryButton outline size="sm"`. Au survol (et quand le bouton a le focus clavier), elle se soulève de 4px avec l'ombre `--cadence-shadow-raised`. Seul le bouton est cliquable.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `title` | `string` | **requis** | Titre de la carte |
+| `description` | `string` | — | Texte d'explication sous le titre |
+| `actionLabel` | `string` | **requis** | Libellé du bouton |
+| `onAction` | `() => void` | — | Clic sur le bouton |
+| `actionIcon` | nom d'icône `Icons` | — | Icône avant le libellé du bouton |
+| `illustration` | `ReactNode` | — | Illustration décorative en bas à droite (`aria-hidden`), hauteur max 96px, largeur max 50 % |
+| `headingLevel` | `2 \| 3 \| 4` | `3` | Niveau de titre (`<h2>`, `<h3>`, `<h4>`) |
+| `className` | `string` | — | — |
+
+⚠️ Le style du bouton est fixe (`outline`, `sm`) : pas de prop pour le changer.
+⚠️ `illustration` est décorative et masquée aux lecteurs d'écran : jamais d'information utile dedans, jamais d'URL distante (fichier local ou SVG inline).
 
 ### AlertToast
 
