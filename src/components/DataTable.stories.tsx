@@ -1,7 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 import { DataTable, type DataTableColumn, type DataTableSort } from "./DataTable";
+import { GhostButton } from "./GhostButton";
+import { Tooltip } from "./Tooltip";
+import type { IconName } from "./Icons";
 import { Pagination } from "./Pagination";
 import { compareValues } from "./data-table-utils";
 import { generateDisruptions, generateTrips, type Disruption, type Trip } from "../stories/data/transport";
@@ -325,5 +329,146 @@ export const Accents: Story = {
     for (const row of canvasElement.querySelectorAll<HTMLElement>(".data-table__row--header")) {
       await expect(Math.round(row.getBoundingClientRect().height)).toBe(40);
     }
+  },
+};
+
+/* ── Colonne d'actions (GhostButton + tooltip non clippé) ─────────────────── */
+
+/**
+ * Bouton d'action icône (GhostButton) avec un tooltip rendu dans un PORTAIL
+ * (`createPortal` vers `document.body`, `position: fixed`, z-index élevé) :
+ * il échappe à l'overflow du tableau et ne se fait donc pas clipper.
+ */
+function ActionButton({
+  icon,
+  label,
+  tone,
+  onClick,
+}: {
+  icon: IconName;
+  label: string;
+  tone?: "default" | "danger";
+  onClick: () => void;
+}) {
+  const ref = useRef<HTMLButtonElement>(null);
+  const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
+
+  const show = () => {
+    const r = ref.current?.getBoundingClientRect();
+    if (r) setPos({ left: r.left + r.width / 2, top: r.top });
+  };
+  const hide = () => setPos(null);
+
+  return (
+    <span
+      style={{ display: "inline-flex" }}
+      onMouseEnter={show}
+      onMouseLeave={hide}
+      onFocus={show}
+      onBlur={hide}
+    >
+      <GhostButton ref={ref} size="sm" icon={icon} aria-label={label} tone={tone} onClick={onClick} />
+      {pos &&
+        createPortal(
+          <div
+            role="presentation"
+            style={{
+              position: "fixed",
+              left: pos.left,
+              top: pos.top,
+              transform: "translate(-50%, calc(-100% - 8px))",
+              zIndex: 1000,
+              pointerEvents: "none",
+            }}
+          >
+            <Tooltip label={label} theme="dark" arrow="bottom" />
+          </div>,
+          document.body,
+        )}
+    </span>
+  );
+}
+
+/** Rangée d'actions d'une ligne : dupliquer, modifier, supprimer. */
+function RowActions({ row, onAction }: { row: Trip; onAction: (msg: string) => void }) {
+  const name = `${row.line} → ${row.terminus}`;
+  return (
+    <div style={{ display: "inline-flex", gap: 2 }}>
+      <ActionButton icon="copy-01" label="Dupliquer" onClick={() => onAction(`Dupliquer : ${name}`)} />
+      <ActionButton icon="edit-02" label="Modifier" onClick={() => onAction(`Modifier : ${name}`)} />
+      <ActionButton icon="trash" label="Supprimer" tone="danger" onClick={() => onAction(`Supprimer : ${name}`)} />
+    </div>
+  );
+}
+
+/**
+ * Colonne d'actions en fin de ligne (GhostButton). Le tooltip au survol est
+ * rendu dans un portail : non clippé par l'overflow du tableau, au-dessus de
+ * tout grâce au z-index. Tester le survol d'une action sur une ligne du bas.
+ */
+/* Colonne d'actions collée à droite (dernière cellule) + masquage du tooltip
+   intégré de GhostButton (clippé) au profit du tooltip en portail. */
+const STICKY_ACTIONS_CSS = `
+.dt-sticky .data-table__row > *:last-child {
+  position: sticky;
+  right: 0;
+  background: var(--cadence-color-white, #ffffff);
+  z-index: 1;
+}
+.dt-sticky .data-table__body .data-table__row:hover > *:last-child {
+  background: var(--cadence-color-surface-alt, #eef1f4);
+}
+.dt-sticky .data-table__row--selected > *:last-child {
+  background: var(--cadence-color-accent-subtle, #f0f6ff);
+}
+.dt-sticky .data-table__row > *:last-child::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--cadence-color-border, #e5e5e5);
+  pointer-events: none;
+}
+.dt-sticky .base-button-tip__bubble {
+  display: none;
+}
+`;
+
+export const ColonneActions: Story = {
+  name: "Colonne d'actions",
+  render: () => {
+    const [last, setLast] = useState("—");
+    const columns = useMemo<DataTableColumn<Trip>[]>(
+      () => [
+        ...TRIP_COLUMNS,
+        {
+          id: "actions",
+          header: "Actions",
+          accessor: () => "",
+          width: 132,
+          align: "right",
+          cell: (row) => <RowActions row={row} onAction={setLast} />,
+        },
+      ],
+      [],
+    );
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <style>{STICKY_ACTIONS_CSS}</style>
+        <span style={{ fontFamily: "var(--cadence-font-sans)", fontSize: 13, color: "var(--cadence-color-label)" }}>
+          Dernière action : {last}
+        </span>
+        <DataTable<Trip>
+          aria-label="Courses de la journée"
+          columns={columns}
+          getRowId={(t) => t.id}
+          data={TRIPS_50}
+          maxHeight={360}
+          className="dt-sticky"
+        />
+      </div>
+    );
   },
 };
