@@ -1,146 +1,40 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, within } from "storybook/test";
 import { SecondaryButton } from "./SecondaryButton";
 
+/**
+ * ⚠️ **Déprécié** — suppression en 1.0.0. Le bleu plein n'est plus utilisé pour
+ * les actions. Correspondance :
+ * - `<SecondaryButton outline />` → `<GhostButton size="sm" />`
+ * - `<SecondaryButton />` (plein) → `<PrimaryButton size="sm" />`, ou `GhostButton size="sm"` selon le rôle
+ * - `size="large"` → `size="md"`
+ *
+ * Migration automatique : `node scripts/codemods/buttons-v2.mjs src`.
+ */
 const meta: Meta<typeof SecondaryButton> = {
-  title: "Components/SecondaryButton",
+  title: "Components/SecondaryButton (déprécié)",
   component: SecondaryButton,
-  tags: ["autodocs"],
-  argTypes: {
-    state: {
-      options: ["clicked", "disabled", "enabled", "hover"],
-      control: { type: "select" },
-    },
-    withIcon: {
-      options: ["left", "no", "only", "right"],
-      control: { type: "select" },
-    },
-    size: {
-      options: ["medium", "large"],
-      control: { type: "select" },
-    },
-    outline: { control: { type: "boolean" } },
-    destructive: { control: { type: "boolean" } },
-    label: { control: { type: "text" } },
-  },
+  tags: ["autodocs", "deprecated"],
+  parameters: { a11y: { test: "error" } },
 };
 
 export default meta;
-
 type Story = StoryObj<typeof SecondaryButton>;
 
-export const Default: Story = {
-  args: {
-    state: "enabled",
-    withIcon: "no",
-    outline: false,
-    destructive: false,
-    label: "Label",
+/** Rendu de l'enveloppe : outline → Ghost sm, plein → Primary sm. */
+export const Correspondance: Story = {
+  render: () => (
+    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+      <SecondaryButton outline label="Exporter" />
+      <SecondaryButton label="Appliquer" />
+      <SecondaryButton size="large" label="Large → md" />
+      <SecondaryButton withIcon="left" icon="copy-01" label="Dupliquer" />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("button", { name: "Exporter" })).toHaveClass("ghost-button", "base-button--sm");
+    await expect(canvas.getByRole("button", { name: "Appliquer" })).toHaveClass("primary-button", "base-button--sm");
+    await expect(canvas.getByRole("button", { name: "Large → md" })).toHaveClass("base-button--md");
   },
 };
-
-export const Outline: Story = {
-  args: {
-    state: "enabled",
-    withIcon: "no",
-    outline: true,
-    destructive: false,
-    label: "Label",
-  },
-};
-
-export const Destructive: Story = {
-  args: {
-    state: "enabled",
-    withIcon: "no",
-    outline: false,
-    destructive: true,
-    label: "Delete",
-  },
-};
-
-export const Disabled: Story = {
-  args: {
-    state: "disabled",
-    withIcon: "no",
-    outline: false,
-    destructive: false,
-    label: "Label",
-  },
-};
-
-export const WithIconLeft: Story = {
-  args: {
-    state: "enabled",
-    withIcon: "left",
-    outline: false,
-    destructive: false,
-    label: "Label",
-    icon: "map-01",
-  },
-};
-
-export const WithIconRight: Story = {
-  args: {
-    state: "enabled",
-    withIcon: "right",
-    outline: false,
-    destructive: false,
-    label: "Label",
-    icon: "map-01",
-  },
-};
-
-export const IconOnly: Story = {
-  args: {
-    state: "enabled",
-    withIcon: "only",
-    outline: false,
-    destructive: false,
-    icon: "map-01",
-  },
-};
-
-export const DestructiveOutline: Story = {
-  args: {
-    state: "enabled",
-    withIcon: "no",
-    outline: true,
-    destructive: true,
-    label: "Delete",
-  },
-};
-
-export const Large: Story = {
-  args: {
-    state: "enabled",
-    withIcon: "no",
-    outline: false,
-    destructive: false,
-    size: "large",
-    label: "Label",
-  },
-};
-
-export const LargeOutline: Story = {
-  args: {
-    state: "enabled",
-    withIcon: "no",
-    outline: true,
-    destructive: false,
-    size: "large",
-    label: "Label",
-  },
-};
-
-export const LargeWithIconLeft: Story = {
-  args: {
-    state: "enabled",
-    withIcon: "left",
-    outline: false,
-    destructive: false,
-    size: "large",
-    label: "Label",
-    icon: "map-01",
-  },
-};
-

@@ -68,7 +68,7 @@ Le `PrimaryButton` clôt toujours un formulaire. Lorsque deux boutons sont néce
 ```tsx
 // ✅ Pied de formulaire — deux boutons
 <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-  <PrimaryButton outline label="Réinitialiser" onClick={onReset} />
+  <GhostButton label="Réinitialiser" onClick={onReset} />
   <PrimaryButton label="Suivant" onClick={onNext} />
 </div>
 ```
@@ -103,13 +103,13 @@ La même règle s'applique à `PrimaryButton` **et** `SecondaryButton` : lorsqu'
 ```tsx
 // ✅ Groupe de SecondaryButton
 <div style={{ display: "flex", gap: 8 }}>
-  <SecondaryButton outline label="Exporter" onClick={onExport} />
-  <SecondaryButton label="Appliquer" onClick={onApply} />
+  <GhostButton size="sm" label="Exporter" onClick={onExport} />
+  <PrimaryButton size="sm" label="Appliquer" onClick={onApply} />
 </div>
 
 // ✅ Groupe de PrimaryButton (fin de formulaire)
 <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-  <PrimaryButton outline label="Réinitialiser" onClick={onReset} />
+  <GhostButton label="Réinitialiser" onClick={onReset} />
   <PrimaryButton label="Suivant" onClick={onNext} />
 </div>
 ```
@@ -128,7 +128,7 @@ La même règle s'applique à `PrimaryButton` **et** `SecondaryButton` : lorsqu'
   <Link variant="secondary" hideArrow onClick={onSaveDraft}>
     Enregistrer comme brouillon
   </Link>
-  <PrimaryButton outline label="Réinitialiser" onClick={onReset} />
+  <GhostButton label="Réinitialiser" onClick={onReset} />
   <PrimaryButton label="Valider" onClick={onSubmit} />
 </div>
 ```

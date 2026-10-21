@@ -7,8 +7,8 @@ import { Dropdown } from "../components/Dropdown";
 import { FilterBar } from "../components/FilterBar";
 import { Link } from "../components/Link";
 import { Pagination } from "../components/Pagination";
+import { GhostButton } from "../components/GhostButton";
 import { PrimaryButton } from "../components/PrimaryButton";
-import { SecondaryButton } from "../components/SecondaryButton";
 import { DISRUPTION_COLUMNS } from "./data/columns";
 import { SEVERITY_LABELS, generateDisruptions } from "./data/transport";
 
@@ -95,7 +95,7 @@ const SupervisionPage = () => {
           resetPage();
         }}
         resultCount={filtered.length}
-        actions={<SecondaryButton outline withIcon="left" icon="download-02" label="Exporter" />}
+        actions={<GhostButton size="sm" iconStart="download-02" label="Exporter" />}
       />
 
       {/* ── Barre de sélection (visible si ≥ 1 sélection) ── */}
@@ -114,8 +114,8 @@ const SupervisionPage = () => {
             <Link hideArrow size="sm" onClick={() => setSelectedIds([])}>Tout désélectionner</Link>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
-            <SecondaryButton withIcon="left" icon="copy-01" label="Dupliquer" />
-            <PrimaryButton withIcon="left" icon="trash" label="Clôturer" destructive />
+            <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" />
+            <PrimaryButton size="sm" iconStart="trash" label="Clôturer" tone="danger" />
           </div>
         </div>
       )}
@@ -158,14 +158,7 @@ const meta: Meta<typeof SupervisionPage> = {
   component: SupervisionPage,
   parameters: {
     layout: "padded",
-    a11y: {
-      test: "error",
-      config: {
-        // PrimaryButton destructive (#de353e, texte blanc) est à 4,48:1, sous le
-        // seuil AA : défaut préexistant du composant, signalé, hors de ce lot.
-        rules: [{ id: "color-contrast", selector: "*:not(.primary-button *)" }],
-      },
-    },
+    a11y: { test: "error" },
   },
 };
 
