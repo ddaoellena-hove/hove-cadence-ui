@@ -562,7 +562,7 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 
 ### Règles
 
-- ✅ Toujours passer la prop `label` sur `TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker` et `CounterInput` — c'est le seul moyen de garantir la cohérence visuelle. Exception : `DateRangePicker` en filtre rapide d'une `FilterBar` prend `aria-label` à la place.
+- ✅ Toujours passer la prop `label` sur `TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker` et `CounterInput` — c'est le seul moyen de garantir la cohérence visuelle. Exceptions, qui prennent `aria-label` à la place : `DateRangePicker` en filtre rapide d'une `FilterBar`, et `DatePicker` / `DateRangePicker` / `Dropdown` en `variant="button"` dans un dashboard.
 - ✅ Une période → un seul `DateRangePicker`, jamais deux `DatePicker` « Début » / « Fin » (sauf saisie avec heures, non gérée par `DateRangePicker` en v1).
 - ✅ Utiliser la prop `helperText` de `TextInput`/`TextArea` pour les instructions.
 - ✅ Afficher les erreurs avec `state="error"` + message dans `helperText`.
@@ -1295,6 +1295,8 @@ Clavier : ↑/↓ pour naviguer, Entrée pour sélectionner l'option surlignée,
 | `label` | `string` | — | Label au-dessus |
 | `disabled` | `boolean` | `false` | — |
 | `onChange` | `(value: number) => void` | — | — |
+
+Champ bordé de 40px ; les boutons − et + sont des `GhostButton size="sm"` icône seule (« Décrémenter », « Incrémenter »), posés dans le cadre et désactivés aux bornes `min` / `max`. Sans infobulle : leur sens est évident (le nom reste annoncé aux lecteurs d'écran). La valeur reste saisissable au clavier (Entrée valide, Échap annule).
 
 ### DataTable
 

@@ -76,6 +76,10 @@ export const IncrementDecrement: Story = {
     const inc = canvas.getByLabelText("Incrémenter");
     const dec = canvas.getByLabelText("Décrémenter");
 
+    // Pas d'infobulle sur − et + (nom accessible conservé)
+    const bubble = inc.parentElement?.querySelector(".base-button-tip__bubble") as HTMLElement;
+    await expect(getComputedStyle(bubble).display).toBe("none");
+
     await inc.click();
     await expect(args.onChange).toHaveBeenCalledWith(6);
 
