@@ -4,6 +4,7 @@ import { expect, userEvent, within } from "storybook/test";
 import { ActionMenu, type ActionMenuItem } from "./ActionMenu";
 import { TableCard } from "./TableCard";
 import { Modal } from "./Modal";
+import { Drawer } from "./Drawer";
 import { DataTable, type DataTableColumn } from "./DataTable";
 import { Badge } from "./Badge";
 import { generateTrips, type Trip } from "../stories/data/transport";
@@ -210,5 +211,42 @@ export const ToutesDesactivees: Story = {
     await expect(menu).toHaveFocus();
     await userEvent.keyboard("{Enter}{Escape}");
     await expect(body.queryByRole("menu")).not.toBeInTheDocument();
+  },
+};
+
+/* ── Dans un Drawer : le menu en portail passe au-dessus de la surcouche ── */
+
+function DrawerDemo() {
+  const [open, setOpen] = useState(false);
+  const [last, setLast] = useState("—");
+  const items = useTripActions(setLast, () => setLast("Supprimé"));
+  return (
+    <>
+      <button type="button" onClick={() => setOpen(true)}>Ouvrir le détail</button>
+      <Drawer isOpen={open} onClose={() => setOpen(false)} title="Course 146243">
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <span>Dernière action : {last}</span>
+          <ActionMenu label="Actions de la course" items={items} />
+        </div>
+      </Drawer>
+    </>
+  );
+}
+
+export const DansUnDrawer: Story = {
+  name: "Dans un Drawer",
+  render: () => <DrawerDemo />,
+  play: async ({ canvasElement }) => {
+    const body = within(canvasElement.ownerDocument.body);
+    await userEvent.click(body.getByRole("button", { name: "Ouvrir le détail" }));
+    await body.findByRole("dialog", { name: "Course 146243" });
+    await userEvent.click(body.getByRole("button", { name: "Actions de la course" }));
+    const menu = await body.findByRole("menu", { name: "Actions de la course" });
+    // Le menu n'est pas masqué par le voile du Drawer.
+    const r = menu.getBoundingClientRect();
+    const hit = canvasElement.ownerDocument.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    await expect(menu.contains(hit)).toBe(true);
+    await userEvent.click(body.getByRole("menuitem", { name: "Modifier" }));
+    await expect(body.getByText("Dernière action : Modifié")).toBeInTheDocument();
   },
 };

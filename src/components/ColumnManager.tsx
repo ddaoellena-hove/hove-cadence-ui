@@ -12,6 +12,7 @@ import { ChevronUp } from "@untitledui/icons/ChevronUp";
 import { ChevronDown } from "@untitledui/icons/ChevronDown";
 import { GhostButton } from "./GhostButton";
 import { Checkbox } from "./Checkbox";
+import { layerAboveOverlay } from "./overlay-primitives";
 import "./column-manager.css";
 import "./scrollbar.css";
 
@@ -35,7 +36,7 @@ const MARGIN = 8;
 
 export const ColumnManager = ({ columns, visibleIds, order, onChange, className }: ColumnManagerProps) => {
   const [open, setOpen] = useState(false);
-  const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
+  const [pos, setPos] = useState<{ left: number; top: number; zIndex?: string } | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const containerRef = useRef<HTMLSpanElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -68,7 +69,7 @@ export const ColumnManager = ({ columns, visibleIds, order, onChange, className 
     const left = Math.max(MARGIN, Math.min(t.left, vw - p.width - MARGIN));
     const below = t.bottom + 6;
     const top = below + p.height <= vh - MARGIN ? below : Math.max(MARGIN, t.top - p.height - 6);
-    setPos({ left, top });
+    setPos({ left, top, zIndex: layerAboveOverlay(triggerRef.current) });
   }, [open]);
 
   useEffect(() => {
@@ -139,7 +140,7 @@ export const ColumnManager = ({ columns, visibleIds, order, onChange, className 
             className="column-manager__panel cadence-scrollbar"
             role="dialog"
             aria-labelledby={titleId}
-            style={{ position: "fixed", left: pos?.left ?? -9999, top: pos?.top ?? -9999, visibility: pos ? "visible" : "hidden" }}
+            style={{ position: "fixed", left: pos?.left ?? -9999, top: pos?.top ?? -9999, zIndex: pos?.zIndex, visibility: pos ? "visible" : "hidden" }}
             onKeyDown={(e) => {
               if (e.key === "Escape") {
                 e.preventDefault();

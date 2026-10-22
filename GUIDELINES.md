@@ -187,7 +187,7 @@ La story **Foundation/Tokens** affiche tous ces tokens à partir des variables C
 - ✅ Dans du code applicatif, référencer les tokens (`color: var(--cadence-color-primary)`) plutôt que les hex en dur.
 - ✅ Statut dans du code applicatif → `--cadence-status-*` ; jamais un hex.
 - ✅ Couches : `zIndex: "var(--cadence-z-toast)"` pour un toast, `var(--cadence-z-sticky)` pour un élément collant — pas de valeur inventée.
-- ✅ Échelle des couches, de bas en haut : contenu → `sticky` = `popover` (100) → `dropdown` (200) → `modal` (1000) → `toast` (1100). Un `z-index` de 0 à 2 reste permis pour l'empilement interne d'un composant (pastille, flèche) ; toute couche de page passe par un token (un test le vérifie).
+- ✅ Échelle des couches, de bas en haut : contenu → `sticky` = `popover` (100) → `dropdown` (200) → `modal` (1000) → `toast` (1100). Un `z-index` de 0 à 2 reste permis pour l'empilement interne d'un composant (pastille, flèche) ; toute couche de page passe par un token (un test le vérifie). Un menu ou un `Popover` en portail ouvert depuis une `Modal` ou un `Drawer` passe automatiquement juste au-dessus de la surcouche.
 - ✅ Toute zone qui défile (composant ou app) prend la classe **`cadence-scrollbar`** : barre fine sans fond, curseur arrondi en retrait qui fonce au survol (déjà posée sur `AppLayout`, `DataTable`, le corps de `Modal` et le menu d'`Autocomplete`). La `Sidebar` garde sa barre claire sur fond sombre.
 - ✅ Pour créer un nouveau composant, piocher dans `tokens.css` ; n'ajouter un token que si la valeur a vocation à être partagée.
 - ❌ Ne pas redéfinir les `--cadence-*` au niveau d'un composant — ce sont des valeurs globales du thème.

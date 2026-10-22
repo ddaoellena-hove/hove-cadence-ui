@@ -12,6 +12,7 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode, type Ref } from "react";
 import { createPortal } from "react-dom";
 import { Icons, type IconName } from "./Icons";
+import { layerAboveOverlay } from "./overlay-primitives";
 import "./menu.css";
 import "./scrollbar.css";
 
@@ -48,6 +49,7 @@ interface MenuPosition {
   top: number;
   minWidth: number;
   up: boolean;
+  zIndex?: string;
 }
 
 export const Menu = ({ items, label, align = "end", renderTrigger, className }: MenuProps) => {
@@ -99,7 +101,7 @@ export const Menu = ({ items, label, align = "end", renderTrigger, className }: 
     const up = below + m.height > vh - VIEWPORT_MARGIN && t.top - 6 - m.height > VIEWPORT_MARGIN;
     const top = Math.max(VIEWPORT_MARGIN, Math.min(up ? t.top - 6 - m.height : below, vh - m.height - VIEWPORT_MARGIN));
 
-    setPos({ left, top, up, minWidth: Math.max(MENU_MIN_WIDTH, t.width) });
+    setPos({ left, top, up, minWidth: Math.max(MENU_MIN_WIDTH, t.width), zIndex: layerAboveOverlay(trigger) });
   }, [open, align]);
 
   // Défilement/redimensionnement → ferme (évite que le menu « flotte »).
@@ -235,6 +237,7 @@ export const Menu = ({ items, label, align = "end", renderTrigger, className }: 
               left: pos?.left ?? -9999,
               top: pos?.top ?? -9999,
               minWidth: `min(${pos?.minWidth ?? MENU_MIN_WIDTH}px, calc(100vw - 16px))`,
+              zIndex: pos?.zIndex,
               visibility: pos ? "visible" : "hidden",
             }}
             onKeyDown={onMenuKeyDown}
