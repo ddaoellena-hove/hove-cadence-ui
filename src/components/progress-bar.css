@@ -35,7 +35,7 @@
   position: relative;
   overflow: hidden;
   height: 6px;
-  border-radius: 999px;
+  border-radius: var(--cadence-radius-pill, 999px);
   background: var(--cadence-color-surface-alt, #eef1f4);
 }
 

@@ -5,7 +5,7 @@
   border-radius: 50%;
   overflow: hidden;
   background-color: var(--cadence-color-border, #e5e5e5);
-  color: #555;
+  color: var(--cadence-color-label, #1a3e45);
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   font-weight: 600;
   user-select: none;
@@ -37,23 +37,23 @@
 }
 
 .avatar--green {
-  background-color: #c8e6c9;
-  color: #2e7d32;
+  background-color: var(--cadence-status-completed-bg, #dcfce7);
+  color: var(--cadence-status-completed-fg, #15803d);
 }
 
 .avatar--blue {
-  background-color: #bbdefb;
-  color: #1565c0;
+  background-color: var(--cadence-status-info-bg, #eff6ff);
+  color: var(--cadence-status-info-fg, #1d4ed8);
 }
 
 .avatar--orange {
-  background-color: #ffe0b2;
-  color: #e65100;
+  background-color: var(--cadence-status-warning-bg, #fff7ed);
+  color: var(--cadence-status-warning-fg, #c2410c);
 }
 
 .avatar--purple {
-  background-color: #e1bee7;
-  color: #6a1b9a;
+  background-color: var(--cadence-status-upcoming-bg, #ede9fe);
+  color: var(--cadence-status-upcoming-fg, #6d28d9);
 }
 
 .avatar--gray {

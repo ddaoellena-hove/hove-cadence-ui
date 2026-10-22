@@ -1,13 +1,13 @@
 /* ── Wrapper ─────────────────────────────────────────────────────────────── */
 .table-card {
   background-color: var(--cadence-color-surface-alt, #eef1f4);
-  border-radius: 10px;
+  border-radius: var(--cadence-radius-lg, 10px);
   padding: 2px;
   width: 100%;
 }
 
 .table-card--selected {
-  background-color: #c8d6e4;
+  background-color: var(--cadence-color-selected-surface, #c8d6e4);
 }
 
 .table-card--disabled {
@@ -76,7 +76,7 @@
 /* ── Content (body) ──────────────────────────────────────────────────────── */
 .table-card__body {
   background-color: var(--cadence-color-white, #ffffff);
-  border-radius: 8px;
+  border-radius: var(--cadence-radius-md, 8px);
   display: flex;
   min-height: 0;
   overflow: hidden;

@@ -20,7 +20,7 @@
 .text-area__field {
   background-color: var(--cadence-color-white, #ffffff);
   border: 1px solid;
-  border-radius: 10px;
+  border-radius: var(--cadence-radius-lg, 10px);
   display: flex;
   position: relative;
   transition:
@@ -43,8 +43,8 @@
 
 /* focus */
 .text-area__field--focus {
-  border: 1.5px solid #2d5f6b;
-  box-shadow: 0 0 0 4px rgba(45, 95, 107, 0.12);
+  border: 1.5px solid var(--cadence-color-field-focus, #2d5f6b);
+  box-shadow: var(--cadence-field-focus-ring, 0 0 0 4px rgba(45, 95, 107, 0.12));
 }
 
 /* disabled */
@@ -70,7 +70,7 @@
 .text-area__textarea {
   background: transparent;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--cadence-radius-lg, 10px);
   color: var(--cadence-color-primary, #002830);
   flex: 1;
   font-family: var(--cadence-font-sans, "Inter", Helvetica);

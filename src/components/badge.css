@@ -3,7 +3,7 @@
   align-items: center;
   background-color: var(--cadence-color-surface-alt, #eef1f4);
   border: 1px solid var(--cadence-color-border, #e5e5e5);
-  border-radius: 6px;
+  border-radius: var(--cadence-radius-sm, 6px);
   color: var(--cadence-color-label, #1a3e45);
   display: inline-flex;
   font-family: var(--cadence-font-sans, "Inter", Helvetica);
@@ -63,6 +63,6 @@
 }
 
 .badge__dismiss:hover {
-  background-color: rgba(0, 40, 48, 0.08);
+  background-color: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
   color: var(--cadence-color-primary, #002830);
 }

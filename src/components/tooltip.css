@@ -24,7 +24,7 @@
   align-items: center;
   justify-content: center;
   padding: 10px 18px;
-  border-radius: 12px;
+  border-radius: var(--cadence-radius-xl, 12px);
   background-color: var(--_bg);
   position: relative;
   z-index: 1; /* sits above the ::after arrow square */

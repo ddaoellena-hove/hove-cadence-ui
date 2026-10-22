@@ -56,8 +56,8 @@
 
 /* ── Hover ripple ring ── */
 .checkbox.hover .checkbox-inner {
-  background-color: #0028301a;
-  border-radius: 18px;
+  background-color: var(--cadence-color-active-overlay, rgba(0, 40, 48, 0.12));
+  border-radius: var(--cadence-radius-pill, 18px);
   height: 30px;
   width: 30px;
   left: calc(50% - 15px);

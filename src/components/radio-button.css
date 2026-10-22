@@ -1,7 +1,7 @@
 /* RadioButton — base */
 .radio-button {
   border: 1px solid;
-  border-radius: 50px;
+  border-radius: var(--cadence-radius-pill, 50px);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -45,8 +45,8 @@
 
 /* ── Hover ripple ring (hover state) ── */
 .radio-button.hover .radio-button-inner {
-  background-color: #0028301a;
-  border-radius: 13px;
+  background-color: var(--cadence-color-active-overlay, rgba(0, 40, 48, 0.12));
+  border-radius: var(--cadence-radius-pill, 13px);
   height: 26px;
   width: 26px;
   left: calc(50% - 13px);
@@ -57,7 +57,7 @@
 
 /* ── Selected dot ── */
 .radio-button.selected .radio-button-inner {
-  background-color: hsl(190, 45%, 19%);
+  background-color: var(--cadence-color-label, #1a3e45); /* ex-hsl(190, 45 %, 19 %) ≈ #1b3f46 */
   border: 1px solid var(--cadence-color-label, #1a3e45);
   border-radius: 5px;
   height: 8px;

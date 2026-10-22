@@ -2,7 +2,7 @@
 .segmented-control__pill {
   background-color: var(--cadence-color-white, #ffffff);
   border: 1px solid var(--cadence-color-border-strong, #bfc9cb);
-  border-radius: 8px;
+  border-radius: var(--cadence-radius-md, 8px);
   box-shadow:
     inset 0px 2px 0px rgba(255, 255, 255, 0.25),
     inset 0px -3px 8px rgba(0, 0, 0, 0.05),
@@ -27,7 +27,7 @@
 .segmented-control {
   align-items: center;
   background-color: var(--cadence-color-segmented-track, #e6f0fa);
-  border-radius: 12px;
+  border-radius: var(--cadence-radius-xl, 12px);
   display: inline-flex;
   gap: 0;
   overflow: hidden;
@@ -54,7 +54,7 @@
   -webkit-appearance: none;
   background: transparent;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--cadence-radius-md, 8px);
   color: var(--cadence-color-label, #1a3e45);
   cursor: pointer;
   display: flex;
@@ -84,7 +84,7 @@
 
 /* Inactive hover */
 .segmented-control__tab:not(.segmented-control__tab--active):hover:not(:disabled) {
-  background-color: rgba(255, 255, 255, 0.45);
+  background-color: var(--cadence-color-segmented-hover, rgba(255, 255, 255, 0.45));
   color: var(--cadence-color-label, #1a3e45);
 }
 

@@ -24,7 +24,7 @@
   background-clip: padding-box;
   background-color: var(--cadence-color-scrollbar-thumb, rgba(0, 40, 48, 0.2));
   border: 3px solid transparent;
-  border-radius: 999px;
+  border-radius: var(--cadence-radius-pill, 999px);
   min-height: 32px;
   min-width: 32px;
 }

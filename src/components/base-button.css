@@ -7,7 +7,7 @@
   align-items: center;
   appearance: none;
   border: 1px solid transparent;
-  border-radius: 999px;
+  border-radius: var(--cadence-radius-pill, 999px);
   box-sizing: border-box;
   cursor: pointer;
   display: inline-flex;

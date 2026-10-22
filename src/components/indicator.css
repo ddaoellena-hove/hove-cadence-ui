@@ -1,7 +1,7 @@
 /* ── Base ─────────────────────────────────────────────────────────────────── */
 .indicator {
   align-items: center;
-  border-radius: 6px;
+  border-radius: var(--cadence-radius-sm, 6px);
   display: inline-flex;
   font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: 12px;

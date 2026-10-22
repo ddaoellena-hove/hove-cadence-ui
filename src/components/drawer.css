@@ -8,7 +8,7 @@
   z-index: var(--cadence-z-modal, 1000);
   display: flex;
   justify-content: flex-end;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--cadence-color-scrim, rgba(0, 0, 0, 0.5));
   opacity: 0;
   transition: opacity 250ms ease;
 }

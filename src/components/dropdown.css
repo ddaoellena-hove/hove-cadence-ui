@@ -27,7 +27,7 @@
   height: var(--cadence-control-height-field, 40px);
   background: var(--cadence-color-white, #ffffff);
   border: 1px solid var(--cadence-color-border, #e5e5e5);
-  border-radius: 10px;
+  border-radius: var(--cadence-radius-lg, 10px);
   cursor: pointer;
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   font-size: 13px;
@@ -49,14 +49,14 @@
 
 .dropdown__trigger:focus-visible {
   outline: none;
-  border: 1.5px solid #2d5f6b;
-  box-shadow: 0 0 0 4px rgba(45, 95, 107, 0.12);
+  border: 1.5px solid var(--cadence-color-field-focus, #2d5f6b);
+  box-shadow: var(--cadence-field-focus-ring, 0 0 0 4px rgba(45, 95, 107, 0.12));
   padding: 0 20px;
 }
 
 .dropdown--open .dropdown__trigger {
-  border: 1.5px solid #2d5f6b;
-  box-shadow: 0 0 0 4px rgba(45, 95, 107, 0.12);
+  border: 1.5px solid var(--cadence-color-field-focus, #2d5f6b);
+  box-shadow: var(--cadence-field-focus-ring, 0 0 0 4px rgba(45, 95, 107, 0.12));
   padding: 0 20px;
 }
 

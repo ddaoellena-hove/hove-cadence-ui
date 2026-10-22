@@ -62,7 +62,7 @@
   padding: 0 20px;
   background-color: var(--cadence-color-white, #ffffff);
   border: 1px solid var(--cadence-color-border, #e5e5e5);
-  border-radius: 10px;
+  border-radius: var(--cadence-radius-lg, 10px);
   cursor: pointer;
   transition:
     box-shadow 120ms ease,
@@ -77,8 +77,8 @@
 }
 
 .date-picker__trigger--open {
-  border: 1.5px solid #2d5f6b;
-  box-shadow: 0 0 0 4px rgba(45, 95, 107, 0.12);
+  border: 1.5px solid var(--cadence-color-field-focus, #2d5f6b);
+  box-shadow: var(--cadence-field-focus-ring, 0 0 0 4px rgba(45, 95, 107, 0.12));
 }
 
 .date-picker__trigger:disabled {
@@ -113,7 +113,7 @@
   z-index: var(--cadence-z-popover, 100);
   background: var(--cadence-color-white, #ffffff);
   border: 1px solid var(--cadence-color-border, #e5e5e5);
-  border-radius: 12px;
+  border-radius: var(--cadence-radius-xl, 12px);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.10), 0 1px 4px rgba(0, 0, 0, 0.06);
   padding: 16px;
   width: 280px;

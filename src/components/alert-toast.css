@@ -2,7 +2,7 @@
 
 .alert-toast {
   background-color: var(--cadence-color-white, #ffffff);
-  border-radius: 12px;
+  border-radius: var(--cadence-radius-xl, 12px);
   box-shadow:
     0px 0px 8px #0000001a,
     0px 0px 2px #00000040;
@@ -80,7 +80,7 @@
 .alert-toast__title {
   font-size: 13px;
   font-weight: 600;
-  color: #000000;
+  color: var(--cadence-color-primary, #002830);
   letter-spacing: 0;
   line-height: normal;
   margin: 0;
@@ -162,11 +162,11 @@
 
 .alert-toast__close-btn:hover {
   background-color: var(--cadence-color-divider, #f0f0f0);
-  color: #000000;
+  color: var(--cadence-color-primary, #002830);
 }
 
 .alert-toast__close-btn:focus-visible {
-  outline: 2px solid #0f62fe;
+  outline: 2px solid var(--cadence-color-info, #0f62fe);
   outline-offset: 2px;
 }
 

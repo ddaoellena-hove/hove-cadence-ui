@@ -1,7 +1,7 @@
 /* ── Overlay ─────────────────────────────────────────────────────────────── */
 .modal-overlay {
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--cadence-color-scrim, rgba(0, 0, 0, 0.5));
   display: flex;
   inset: 0;
   justify-content: center;
@@ -13,7 +13,7 @@
 /* ── Frame (fond --cadence-color-primary) ─────────────────────────────────── */
 .modal {
   background-color: var(--cadence-color-primary, #002830);
-  border-radius: 12px;
+  border-radius: var(--cadence-radius-xl, 12px);
   box-shadow: var(--cadence-shadow-overlay, 0px 20px 60px rgba(0, 0, 0, 0.2), 0px 4px 16px rgba(0, 0, 0, 0.1));
   display: flex;
   flex-direction: column;
@@ -50,8 +50,8 @@
   align-items: center;
   background: transparent;
   border: none;
-  border-radius: 6px;
-  color: rgba(255, 255, 255, 0.55);
+  border-radius: var(--cadence-radius-sm, 6px);
+  color: var(--cadence-color-on-dark-muted, rgba(255, 255, 255, 0.6));
   cursor: pointer;
   display: flex;
   flex-shrink: 0;
@@ -63,14 +63,14 @@
 }
 
 .modal__close:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--cadence-color-on-dark-divider, rgba(255, 255, 255, 0.1));
   color: var(--cadence-color-white, #ffffff);
 }
 
 /* ── Inner — fond blanc, border-radius 9px ───────────────────────────────── */
 .modal__inner {
   background-color: var(--cadence-color-white, #ffffff);
-  border-radius: 10px;
+  border-radius: var(--cadence-radius-lg, 10px);
   display: flex;
   flex-direction: column;
   min-height: 0;

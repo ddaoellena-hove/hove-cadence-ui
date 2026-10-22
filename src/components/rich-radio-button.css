@@ -4,7 +4,7 @@
   align-items: center;
   gap: 8px;
   padding: 8px 8px 9px 11px;
-  border-radius: 12px;
+  border-radius: var(--cadence-radius-xl, 12px);
   border: 1.5px solid;
   cursor: pointer;
   user-select: none;
@@ -30,7 +30,7 @@
 }
 
 .rich-radio-button.default:hover {
-  border-color: #405e64;
+  border-color: var(--cadence-color-control-border-active, #405e64);
   box-shadow:
     inset 0 2px 0 rgba(255, 255, 255, 0.9),
     inset 0 -2px 0 rgba(0, 40, 48, 0.1),
@@ -38,7 +38,7 @@
 }
 
 .rich-radio-button.hover {
-  border-color: #405e64;
+  border-color: var(--cadence-color-control-border-active, #405e64);
   border-width: 1px;
   background-color: var(--cadence-color-white, #ffffff);
   /* Même relief, un cran plus marqué */
@@ -50,7 +50,7 @@
 }
 
 .rich-radio-button.selected {
-  border-color: #405e64;
+  border-color: var(--cadence-color-control-border-active, #405e64);
   border-width: 1px;
   color: var(--cadence-color-label, #1a3e45);
   background-color: var(--cadence-color-white, #ffffff);
@@ -63,7 +63,7 @@
 
 .rich-radio-button.disabled {
   background-color: var(--cadence-color-border, #e5e5e5);
-  border-color: #bfbfbf;
+  border-color: var(--cadence-color-border-strong, #bfc9cb);
   border-width: 1px;
   color: var(--cadence-color-placeholder, #737373);
   cursor: not-allowed;
@@ -182,7 +182,7 @@
 .rich-radio-button--large {
   gap: 12px;
   padding: 12px 12px 13px 16px;
-  border-radius: 16px;
+  border-radius: var(--cadence-radius-2xl, 16px);
   min-width: 240px;
   align-items: center;
 }

@@ -48,7 +48,7 @@
   left: 0;
   right: 0;
   height: 3.5px;
-  border-radius: 999px;
+  border-radius: var(--cadence-radius-pill, 999px);
   background: var(--cadence-color-primary, #002830);
 }
 

@@ -43,11 +43,31 @@
   /* ── Couleurs — accent interactif (sélection) ──────────────────────────── */
   --cadence-color-accent: #1b6cff;         /* Élément actif / sélectionné : Sidebar, options de menu, SecondaryButton rempli ; remplissage de ProgressBar */
   --cadence-color-accent-subtle: #f0f6ff;  /* Fond de survol d'un élément actif (Sidebar) */
+  --cadence-color-accent-on-dark: #3b8eff; /* Pastille de notification sur fond sombre (Sidebar) */
+  --cadence-color-selected-surface: #c8d6e4; /* Fond d'une carte sélectionnée (TableCard) */
 
   /* ── Couleurs — surfaces & bordures ────────────────────────────────────── */
   --cadence-color-white: #ffffff;          /* Surfaces de premier plan */
   --cadence-color-segmented-track: #e6f0fa;
   --cadence-color-segmented-track-disabled: #dde8f0;
+  --cadence-color-segmented-hover: rgba(255, 255, 255, 0.45); /* Survol d'un segment inactif */
+
+  /* ── Champs : focus ─────────────────────────────────────────────────────── */
+  --cadence-color-field-focus: #2d5f6b;                      /* Bordure d'un champ focalisé (1,5px) */
+  --cadence-color-field-focus-subtle: rgba(45, 95, 107, 0.1); /* Jour sélectionné d'un calendrier */
+  --cadence-field-focus-ring: 0 0 0 4px rgba(45, 95, 107, 0.12); /* Halo d'un champ focalisé */
+  --cadence-color-control-border-active: #405e64;            /* Bordure d'une carte de choix survolée ou cochée */
+
+  /* ── Voile ──────────────────────────────────────────────────────────────── */
+  --cadence-color-scrim: rgba(0, 0, 0, 0.5);                 /* Voile de Modal et Drawer */
+
+  /* ── Sur fond sombre (Sidebar, en-tête sombre) ──────────────────────────── */
+  --cadence-color-on-dark: rgba(255, 255, 255, 0.9);         /* Texte et icône actifs */
+  --cadence-color-on-dark-muted: rgba(255, 255, 255, 0.6);   /* Texte secondaire, icône au repos */
+  --cadence-color-on-dark-subtle: rgba(255, 255, 255, 0.4);  /* Chevron au repos, contour de focus */
+  --cadence-color-on-dark-hover: rgba(255, 255, 255, 0.07);  /* Survol */
+  --cadence-color-on-dark-active: rgba(255, 255, 255, 0.15); /* Élément actif, curseur de défilement */
+  --cadence-color-on-dark-divider: rgba(255, 255, 255, 0.1); /* Séparateur, fond discret */
   --cadence-color-surface-alt: #eef1f4;    /* Fonds de wrapper (TableCard, Badge) */
   --cadence-color-surface-subtle: #fafafa; /* Fond de carte discret sur fond blanc (fichiers de FileUpload) */
   --cadence-color-border: #e5e5e5;         /* Bordures par défaut */
@@ -68,6 +88,8 @@
   --cadence-radius-md: 8px;    /* Contenus internes : body de TableCard */
   --cadence-radius-lg: 10px;   /* Champs et wrappers : inputs, cards */
   --cadence-radius-xl: 12px;   /* Conteneurs : modale, counter-input */
+  --cadence-radius-2xl: 16px;  /* Grandes cartes riches : RichCheckbox / RichRadioButton large */
+  --cadence-radius-pill: 999px; /* Pilules et cercles : boutons, SearchInput, Toggle, halos ronds */
 
   /* ── Hauteurs de contrôle ─────────────────────────────────────────────────
      Deux gabarits pour aligner des contrôles sur une même rangée.

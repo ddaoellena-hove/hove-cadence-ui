@@ -30,7 +30,7 @@
   padding: 0;
   background: transparent;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--cadence-radius-sm, 6px);
   cursor: pointer;
   color: var(--cadence-color-primary, #002830);
   transition: background 0.12s ease;
@@ -38,11 +38,11 @@
 }
 
 .date-picker__nav-btn:hover {
-  background: rgba(0, 40, 48, 0.07);
+  background: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
 }
 
 .date-picker__nav-btn:active {
-  background: rgba(0, 40, 48, 0.14);
+  background: var(--cadence-color-active-overlay, rgba(0, 40, 48, 0.12));
 }
 
 /* ── Grid ────────────────────────────────────────────────────────────── */
@@ -95,7 +95,7 @@
   padding: 0;
   background: transparent;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--cadence-radius-sm, 6px);
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   font-size: 13px;
   font-weight: 500;
@@ -109,7 +109,7 @@
 }
 
 .date-picker__day:hover:not(:disabled):not(.date-picker__day--selected) {
-  background: rgba(0, 40, 48, 0.07);
+  background: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
   color: var(--cadence-color-primary, #002830);
 }
 
@@ -118,8 +118,8 @@
 }
 
 .date-picker__day--today {
-  background: rgba(45, 95, 107, 0.10);
-  color: #2d5f6b;
+  background: var(--cadence-color-field-focus-subtle, rgba(45, 95, 107, 0.1));
+  color: var(--cadence-color-field-focus, #2d5f6b);
   font-weight: 600;
 }
 
