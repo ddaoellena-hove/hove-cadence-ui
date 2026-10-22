@@ -105,3 +105,18 @@ Validation du dernier ajustement : **667 tests réussis dans 94 fichiers**, Type
 Le changement de champ actif en consultation provenait des fonctions play qui exécutaient automatiquement clics et saisies dans le Canvas. Dans `TimePicker.stories.tsx`, le helper `testOnly` conserve ces fonctions uniquement lorsque `import.meta.env.MODE === "test"`. Les démonstrations restent au repos dans Storybook ; Vitest continue d’exécuter les 12 stories avec leurs scénarios et contrôles d’accessibilité. Aucun changement au composant TimePicker pour cette correction.
 
 Vérification navigateur : aucun déplacement de focus au chargement de la story, saisie manuelle des minutes conservée après attente, validation de 09:45. Pour exécuter les scénarios automatisés : `npx vitest run --project storybook src/components/TimePicker.stories.tsx`.
+
+## Mise à jour — hygiène de release, token AA et dette a11y
+
+Lot d'amélioration (branche `release/0.6.0`, commits locaux, aucun push) :
+
+- **Hygiène de release** : le travail de session (refonte du champ TimePicker en saisie en ligne + horloge, `TimeFields` layout `inline`, `StopLabel` id en `Badge`, élagage des stories TimePicker, fiche GUIDELINES) est désormais découpé en commits cohérents par sujet. Fichiers de config locaux préservés hors index.
+- **Token de texte secondaire AA** : `--cadence-color-text-secondary: #64757a` (4,8:1 sur blanc) ajouté dans `tokens.css`. Petits textes migrés depuis `--cadence-color-text-muted` (3,2:1, sous AA) dans `autocomplete.css` (description/empty) et `drawer.css` (sous-titre). `text-muted` reste réservé aux **icônes** et au **grand texte/gras** (3:1 suffit).
+
+### Dette identifiée — à traiter dans un lot dédié
+
+1. **Accessibilité globale non garantie.** Passer `.storybook/preview.ts` `a11y.test` de `'todo'` à `'error'` fait apparaître **≈166 violations color-contrast + ≈39 aria-toggle-field-name** (noms de champs manquants) réparties sur **13 fichiers de stories** de composants matures (Checkbox, Toggle, Radio, Avatar, Indicator, TableHeader/TableCard, AlertToast…), plus quelques `aria-required-parent`, `empty-table-header`, `landmark-unique`. Le passage global a été **re-basculé sur `'todo'`** faute de budget pour corriger proprement. C'est un vrai chantier pré-1.0 : migrer les textes restants vers le token AA (certains en style inline), nommer les champs des stories « All States/Disabled/Hover », puis activer `'error'` globalement. À faire par lots en gardant la suite verte.
+2. **Deux `console.error` « value prop sans onChange »** persistent dans la suite (champ contrôlé en lecture seule). Non localisés (l'agent précédent non plus) ; bénins (dev uniquement), n'échouent aucun test. La story `Autocomplete/Disabled` a été écartée comme cause (champ désactivé = read-only, pas de warning).
+3. **API dépréciées encore appelées dans les démos** (~35 occurrences : `PrimaryButton` `destructive`/`size="medium|large"`/`withIcon`, `Link variant="secondary"`, `SecondaryButton`, `DataVisualization`). Migrer les **sites d'appel** (stories/recettes) avant le retrait prévu en 1.0 ; **garder les shims** dans les composants jusque-là.
+
+Validation de ce lot : suite storybook **73 fichiers / 420 tests verts**, `tsc -b`, `build:lib` et `git diff --check` propres. Aucune publication.
