@@ -1,10 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
 import { TextArea } from "./TextArea";
 
 const meta: Meta<typeof TextArea> = {
   title: "Components/TextArea",
   component: TextArea,
   tags: ["autodocs"],
+  // Champ contrôlé : value s'accompagne toujours d'un onChange (sinon React
+  // l'affiche en lecture seule et avertit).
+  args: { onChange: fn() },
   argTypes: {
     state: {
       control: "select",
