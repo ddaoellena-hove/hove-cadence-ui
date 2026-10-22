@@ -33,6 +33,10 @@
   overflow: hidden;
   padding: 4px;
   position: relative;
+  /* Épouse ses segments (« hug ») : une largeur explicite empêche l'étirement
+     par un parent flex en colonne ou une grille. Jamais toute la largeur. */
+  width: fit-content;
+  max-width: 100%;
 }
 
 .segmented-control--disabled {

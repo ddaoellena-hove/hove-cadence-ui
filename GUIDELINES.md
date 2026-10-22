@@ -604,6 +604,7 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 - ✅ Afficher les erreurs avec `state="error"` + message dans `helperText`.
 - ✅ Grouper les champs connexes avec un titre de section.
 - ✅ Utiliser `SegmentedControl` pour les choix exclusifs de 2 à 4 options, dans les formulaires comme pour changer de vue.
+- ❌ Ne jamais étirer un `SegmentedControl` sur toute la largeur : il épouse ses segments (voir sa [fiche API](#segmentedcontrol)).
 - ❌ Ne pas mélanger `Checkbox` et `RadioButton` dans la même liste.
 - ❌ Ne pas utiliser `Toggle` pour des choix qui nécessitent une confirmation.
 - ❌ Ne jamais ajouter un `<label>` HTML custom autour d'un champ — utiliser la prop `label` du composant.
@@ -1988,6 +1989,9 @@ Onglet de sous-navigation (niveau 2), sous un `SegmentedControl`. Style ghost (p
 ### SegmentedControl
 
 Composant unique : apparence de l’ancien Alt, pour les formulaires et les bascules de vue. Dans un parcours à plusieurs niveaux, associer `SegmentedControl` au premier niveau et `SecondaryTab` dans un `TabList level="secondary"` au second. Le groupe utilise `role="radiogroup"`, sans `TabList` autour de lui. Les flèches déplacent le focus et la sélection ; Début/Fin atteignent les extrémités.
+
+- ✅ Le `SegmentedControl` **épouse ses segments** (« hug ») : sa largeur est celle de ses options, alignées à gauche. Le composant fixe `width: fit-content`, donc il ne s'étire pas dans une colonne flex ou une grille.
+- ❌ Ne jamais l'étirer sur toute la largeur de la page ou de son conteneur (`width: 100%`, `flex: 1`, `alignSelf: "stretch"`, segments en `flex: 1`). Seul l'en-tête interne du popover de `DatePicker` le fait, et ce n'est pas un modèle à reproduire.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|

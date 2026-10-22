@@ -2,6 +2,10 @@
 
 ## 0.5.0 (non publiée)
 
+### SegmentedControl : largeur au contenu
+
+- Le composant épouse ses segments (`width: fit-content; max-width: 100%`) et ne s’étire plus dans une colonne flex ou une grille, comme le faisait la recette « Offre et qualité ». Règle ajoutée aux guidelines : jamais pleine largeur.
+
 ### FileUpload : cartes fichier
 
 - Bouton « Parcourir » en `PrimaryButton outline size="sm"`.
