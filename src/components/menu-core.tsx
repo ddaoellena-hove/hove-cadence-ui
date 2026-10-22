@@ -9,10 +9,10 @@
  * Utilisée par ActionMenu et ExportMenu. Le déclencheur est fourni par
  * l'appelant via `renderTrigger` (le composant pose l'ARIA sur la ref).
  */
-import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode, type Ref } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode, type Ref } from "react";
 import { createPortal } from "react-dom";
 import { Icons, type IconName } from "./Icons";
-import { layerAboveOverlay } from "./overlay-primitives";
+import { useAnchoredPanel } from "./overlay-primitives";
 import "./menu.css";
 import "./scrollbar.css";
 
@@ -41,25 +41,14 @@ export interface MenuProps {
   className?: string;
 }
 
-const VIEWPORT_MARGIN = 8;
 const MENU_MIN_WIDTH = 180;
-
-interface MenuPosition {
-  left: number;
-  top: number;
-  minWidth: number;
-  up: boolean;
-  zIndex?: string;
-}
 
 export const Menu = ({ items, label, align = "end", renderTrigger, className }: MenuProps) => {
   const menuId = useId();
   const [open, setOpen] = useState(false);
-  const [pos, setPos] = useState<MenuPosition | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const containerRef = useRef<HTMLSpanElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const typeahead = useRef<{ text: string; timer: number }>({ text: "", timer: 0 });
@@ -83,54 +72,20 @@ export const Menu = ({ items, label, align = "end", renderTrigger, className }: 
 
   useEffect(() => () => window.clearTimeout(typeahead.current.timer), []);
 
-  // Positionnement (portail, position: fixed), une fois le menu monté.
-  useLayoutEffect(() => {
-    if (!open) return;
-    const trigger = triggerRef.current;
-    const menu = menuRef.current;
-    if (!trigger || !menu) return;
-    const t = trigger.getBoundingClientRect();
-    const m = menu.getBoundingClientRect();
-    const vw = document.documentElement.clientWidth;
-    const vh = document.documentElement.clientHeight;
-
-    let left = align === "end" ? t.right - m.width : t.left;
-    left = Math.max(VIEWPORT_MARGIN, Math.min(left, vw - m.width - VIEWPORT_MARGIN));
-
-    const below = t.bottom + 6;
-    const up = below + m.height > vh - VIEWPORT_MARGIN && t.top - 6 - m.height > VIEWPORT_MARGIN;
-    const top = Math.max(VIEWPORT_MARGIN, Math.min(up ? t.top - 6 - m.height : below, vh - m.height - VIEWPORT_MARGIN));
-
-    setPos({ left, top, up, minWidth: Math.max(MENU_MIN_WIDTH, t.width), zIndex: layerAboveOverlay(trigger) });
-  }, [open, align]);
-
-  // Défilement/redimensionnement → ferme (évite que le menu « flotte »).
-  useEffect(() => {
-    if (!open) return;
-    const close = (e: Event) => {
-      if (e.target instanceof Node && menuRef.current?.contains(e.target)) return;
+  // Position (portail, position: fixed), clic extérieur, suivi au défilement
+  // et au redimensionnement : comportement partagé des panneaux ancrés. Le
+  // menu se ferme si son déclencheur sort de la fenêtre (focus rendu).
+  const pos = useAnchoredPanel({
+    open,
+    triggerRef,
+    panelRef: menuRef,
+    align,
+    onOutsideClick: () => setOpen(false),
+    onTriggerHidden: () => {
       if (menuRef.current?.contains(document.activeElement)) triggerRef.current?.focus();
       setOpen(false);
-    };
-    window.addEventListener("resize", close);
-    window.addEventListener("scroll", close, true);
-    return () => {
-      window.removeEventListener("resize", close);
-      window.removeEventListener("scroll", close, true);
-    };
-  }, [open]);
-
-  // Fermeture au clic extérieur.
-  useEffect(() => {
-    if (!open) return;
-    const onPointerDown = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (containerRef.current?.contains(target) || menuRef.current?.contains(target)) return;
-      setOpen(false);
-    };
-    document.addEventListener("mousedown", onPointerDown);
-    return () => document.removeEventListener("mousedown", onPointerDown);
-  }, [open]);
+    },
+  });
 
   // Focus sur l'item actif, une fois positionné (sinon visibility:hidden).
   useEffect(() => {
@@ -220,7 +175,7 @@ export const Menu = ({ items, label, align = "end", renderTrigger, className }: 
   const toggle = () => (open ? closeMenu(false) : openMenu());
 
   return (
-    <span className={["menu", className].filter(Boolean).join(" ")} ref={containerRef} onKeyDown={onContainerKeyDown}>
+    <span className={["menu", className].filter(Boolean).join(" ")} onKeyDown={onContainerKeyDown}>
       {renderTrigger({ ref: triggerRef, open, toggle })}
 
       {open &&
@@ -237,7 +192,7 @@ export const Menu = ({ items, label, align = "end", renderTrigger, className }: 
               position: "fixed",
               left: pos?.left ?? -9999,
               top: pos?.top ?? -9999,
-              minWidth: `min(${pos?.minWidth ?? MENU_MIN_WIDTH}px, calc(100vw - 16px))`,
+              minWidth: `min(${Math.max(MENU_MIN_WIDTH, pos?.triggerWidth ?? 0)}px, calc(100vw - 16px))`,
               zIndex: pos?.zIndex,
               visibility: pos ? "visible" : "hidden",
             }}

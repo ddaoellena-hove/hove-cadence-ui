@@ -13,10 +13,10 @@
  * rendent le focus au déclencheur, Tab l'amène à l'élément qui le suit. Le clic extérieur ferme aussi ;
  * défilement et redimensionnement replacent le panneau. À ne pas confondre avec Tooltip (lecture seule, sans focus).
  */
-import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode, type Ref } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode, type Ref } from "react";
 import { createPortal } from "react-dom";
 import { GhostButton } from "./GhostButton";
-import { layerAboveOverlay } from "./overlay-primitives";
+import { useAnchoredPanel } from "./overlay-primitives";
 import "./popover.css";
 import "./scrollbar.css";
 
@@ -51,29 +51,8 @@ export interface PopoverProps {
   className?: string;
 }
 
-interface PopoverPosition {
-  left: number;
-  top: number;
-  zIndex?: string;
-}
-
-const MARGIN = 8;
-const GAP = 6;
 const FOCUSABLE =
   'a[href], button:not(:disabled), input:not(:disabled):not([type="hidden"]), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])';
-
-/** Position sous (ou au-dessus du) déclencheur, bornée à la fenêtre. */
-const placePanel = (trigger: HTMLElement, panel: HTMLElement, align: "start" | "end"): PopoverPosition => {
-  const t = trigger.getBoundingClientRect();
-  const p = panel.getBoundingClientRect();
-  const vw = document.documentElement.clientWidth;
-  const vh = document.documentElement.clientHeight;
-  const wanted = align === "end" ? t.right - p.width : t.left;
-  const left = Math.max(MARGIN, Math.min(wanted, vw - p.width - MARGIN));
-  const below = t.bottom + GAP;
-  const top = below + p.height <= vh - MARGIN ? below : Math.max(MARGIN, t.top - p.height - GAP);
-  return { left, top, zIndex: layerAboveOverlay(trigger) };
-};
 
 /** Atteignable au clavier : rendu (ni display: none ni hidden) et hors zone inerte. */
 const isTabbable = (el: HTMLElement) => el.getClientRects().length > 0 && !el.closest("[inert]");
@@ -112,7 +91,6 @@ export const Popover = ({
 }: PopoverProps) => {
   const [openState, setOpenState] = useState(defaultOpen);
   const open = openProp ?? openState;
-  const [pos, setPos] = useState<PopoverPosition | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
@@ -144,13 +122,17 @@ export const Popover = ({
     else trigger.removeAttribute("aria-controls");
   }, [open, panelId]);
 
-  // Positionnement une fois le panneau monté (masqué tant qu'il n'est pas placé).
-  useLayoutEffect(() => {
-    const trigger = triggerRef.current;
-    const panel = panelRef.current;
-    if (!open || !trigger || !panel) return;
-    setPos(placePanel(trigger, panel, align));
-  }, [open, align]);
+  // Position (null tant que non mesurée : panneau masqué), clic extérieur,
+  // suivi au défilement / redimensionnement (replacé, pas fermé : clavier
+  // virtuel sur mobile) — comportement partagé des panneaux ancrés.
+  const pos = useAnchoredPanel({
+    open,
+    triggerRef,
+    panelRef,
+    align,
+    onOutsideClick: () => close(false),
+    onTriggerHidden: () => close(Boolean(panelRef.current?.contains(document.activeElement))),
+  });
 
   // Focus initial : premier élément tabulable du contenu, sinon le panneau.
   useEffect(() => {
@@ -168,43 +150,6 @@ export const Popover = ({
     const active = document.activeElement;
     if (!active || active === document.body) triggerRef.current?.focus();
   }, [open]);
-
-  // Clic extérieur : ferme. Défilement et redimensionnement : replacent le
-  // panneau sans le fermer (sur mobile, le clavier virtuel qui s'ouvre sur un
-  // champ du panneau redimensionne et fait défiler la page).
-  useEffect(() => {
-    if (!open) return;
-    const onDown = (e: MouseEvent) => {
-      const target = e.target;
-      if (!(target instanceof Node)) return;
-      if (triggerRef.current?.contains(target) || panelRef.current?.contains(target)) return;
-      // Surface flottante ouverte depuis le contenu (menu en portail, autre
-      // popover) : ce n'est pas un clic extérieur.
-      if (target instanceof Element && target.closest("[data-cadence-floating]")) return;
-      close(false);
-    };
-    let frame = 0;
-    const onMove = (e: Event) => {
-      if (e.target instanceof Node && panelRef.current?.contains(e.target)) return;
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        const trigger = triggerRef.current;
-        const panel = panelRef.current;
-        if (trigger && panel) setPos(placePanel(trigger, panel, align));
-      });
-    };
-    document.addEventListener("mousedown", onDown);
-    window.addEventListener("scroll", onMove, true);
-    window.addEventListener("resize", onMove);
-    return () => {
-      cancelAnimationFrame(frame);
-      document.removeEventListener("mousedown", onDown);
-      window.removeEventListener("scroll", onMove, true);
-      window.removeEventListener("resize", onMove);
-    };
-    // close ne lit que des refs et des setters
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, align]);
 
   return (
     <>

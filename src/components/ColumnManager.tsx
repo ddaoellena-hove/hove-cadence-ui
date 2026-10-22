@@ -8,14 +8,14 @@
  * boutons monter/descendre — alternative sans glisser. Le DataTable consomme `visibleIds` (via
  * `hiddenColumnIds`) et `order` (via `columnOrder`).
  */
-import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
+import { useEffect, useId, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import { createPortal } from "react-dom";
 import { ChevronUp } from "@untitledui/icons/ChevronUp";
 import { ChevronDown } from "@untitledui/icons/ChevronDown";
 import { DotsGrid } from "@untitledui/icons/DotsGrid";
 import { GhostButton } from "./GhostButton";
 import { Checkbox } from "./Checkbox";
-import { layerAboveOverlay } from "./overlay-primitives";
+import { useAnchoredPanel } from "./overlay-primitives";
 import "./column-manager.css";
 import "./scrollbar.css";
 
@@ -35,13 +35,10 @@ export interface ColumnManagerProps {
   className?: string;
 }
 
-const MARGIN = 8;
 
 export const ColumnManager = ({ columns, visibleIds, order, onChange, className }: ColumnManagerProps) => {
   const [open, setOpen] = useState(false);
-  const [pos, setPos] = useState<{ left: number; top: number; zIndex?: string } | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const containerRef = useRef<HTMLSpanElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const panelId = useId();
@@ -65,46 +62,22 @@ export const ColumnManager = ({ columns, visibleIds, order, onChange, className 
     else triggerRef.current?.removeAttribute("aria-controls");
   }, [open, panelId]);
 
-  // Positionnement (portail, aligné sur le bord gauche du déclencheur).
-  useLayoutEffect(() => {
-    if (!open) return;
-    const t = triggerRef.current?.getBoundingClientRect();
-    const p = panelRef.current?.getBoundingClientRect();
-    if (!t || !p) return;
-    const vw = document.documentElement.clientWidth;
-    const vh = document.documentElement.clientHeight;
-    const left = Math.max(MARGIN, Math.min(t.left, vw - p.width - MARGIN));
-    const below = t.bottom + 6;
-    const top = below + p.height <= vh - MARGIN ? below : Math.max(MARGIN, t.top - p.height - 6);
-    setPos({ left, top, zIndex: layerAboveOverlay(triggerRef.current) });
-  }, [open]);
+  // Position, clic extérieur et suivi au défilement : comportement partagé
+  // des panneaux ancrés (fermé si le déclencheur sort de la fenêtre).
+  const pos = useAnchoredPanel({
+    open,
+    triggerRef,
+    panelRef,
+    onOutsideClick: () => setOpen(false),
+    onTriggerHidden: () => setOpen(false),
+  });
 
+  // Focus à l'ouverture seulement (pas à chaque recalcul de position).
   useEffect(() => {
-    if (open && pos) panelRef.current?.querySelector<HTMLButtonElement>("button:not(:disabled)")?.focus();
+    const panel = panelRef.current;
+    if (!open || !pos || !panel || panel.contains(document.activeElement)) return;
+    panel.querySelector<HTMLButtonElement>("button:not(:disabled)")?.focus();
   }, [open, pos]);
-
-  // Fermeture : clic extérieur, défilement, Échap (focus au déclencheur).
-  useEffect(() => {
-    if (!open) return;
-    const onDown = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (containerRef.current?.contains(target) || panelRef.current?.contains(target)) return;
-      setOpen(false);
-    };
-    const onScroll = (e: Event) => {
-      if (e.target instanceof Node && panelRef.current?.contains(e.target)) return;
-      if (panelRef.current?.contains(document.activeElement)) triggerRef.current?.focus();
-      setOpen(false);
-    };
-    document.addEventListener("mousedown", onDown);
-    window.addEventListener("scroll", onScroll, true);
-    window.addEventListener("resize", onScroll);
-    return () => {
-      document.removeEventListener("mousedown", onDown);
-      window.removeEventListener("scroll", onScroll, true);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, [open]);
 
   const close = () => {
     setOpen(false);
@@ -198,7 +171,7 @@ export const ColumnManager = ({ columns, visibleIds, order, onChange, className 
   };
 
   return (
-    <span className={["column-manager", className].filter(Boolean).join(" ")} ref={containerRef}>
+    <span className={["column-manager", className].filter(Boolean).join(" ")}>
       <GhostButton ref={triggerRef} size="sm" label="Colonnes" onClick={() => setOpen((o) => !o)} />
 
       {open &&

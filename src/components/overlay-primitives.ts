@@ -205,3 +205,119 @@ export const OverlayPortal = ({ children }: { children: ReactNode }): ReactNode 
  */
 export const layerAboveOverlay = (trigger: Element | null | undefined): string | undefined =>
   trigger?.closest('[aria-modal="true"]') ? "calc(var(--cadence-z-modal, 1000) + 1)" : undefined;
+
+// ── Panneau ancré (menu, popover, ColumnManager) ───────────────────────────
+
+const ANCHOR_MARGIN = 8;
+const ANCHOR_GAP = 6;
+
+export interface AnchoredPosition {
+  left: number;
+  top: number;
+  /** Retourné au-dessus du déclencheur (manque de place en dessous). */
+  up: boolean;
+  /** Couche si ouvert depuis une Modal / un Drawer (sinon celle du CSS). */
+  zIndex?: string;
+  /** Largeur du déclencheur (largeur minimale d'un menu). */
+  triggerWidth: number;
+}
+
+/**
+ * Position fixe d'un panneau sous son déclencheur, aligné sur le bord
+ * `start` ou `end`, retourné au-dessus s'il manque de place en dessous et
+ * qu'il y tient, et toujours borné à la fenêtre.
+ */
+export const placeAnchored = (trigger: HTMLElement, panel: HTMLElement, align: "start" | "end"): AnchoredPosition => {
+  const t = trigger.getBoundingClientRect();
+  const p = panel.getBoundingClientRect();
+  const vw = document.documentElement.clientWidth;
+  const vh = document.documentElement.clientHeight;
+  const wanted = align === "end" ? t.right - p.width : t.left;
+  const left = Math.max(ANCHOR_MARGIN, Math.min(wanted, vw - p.width - ANCHOR_MARGIN));
+  const below = t.bottom + ANCHOR_GAP;
+  const above = t.top - ANCHOR_GAP - p.height;
+  const up = below + p.height > vh - ANCHOR_MARGIN && above >= ANCHOR_MARGIN;
+  const top = Math.max(ANCHOR_MARGIN, Math.min(up ? above : below, vh - p.height - ANCHOR_MARGIN));
+  return { left, top, up, zIndex: layerAboveOverlay(trigger), triggerWidth: t.width };
+};
+
+export interface UseAnchoredPanelOptions {
+  open: boolean;
+  triggerRef: RefObject<HTMLElement | null>;
+  panelRef: RefObject<HTMLElement | null>;
+  align?: "start" | "end";
+  /** Clic hors du déclencheur, du panneau et de toute surface flottante. */
+  onOutsideClick: () => void;
+  /** Le déclencheur a quitté la fenêtre (défilement) : fermer. */
+  onTriggerHidden: () => void;
+}
+
+/**
+ * Comportement commun des panneaux ancrés en portail : position (null tant
+ * que le panneau n'est pas mesuré, à masquer), clic extérieur, et suivi du
+ * déclencheur au défilement et au redimensionnement — le panneau est replacé
+ * (clavier virtuel sur mobile) et fermé seulement si le déclencheur sort de la
+ * fenêtre. Les surfaces marquées `data-cadence-floating` ouvertes depuis le
+ * contenu (menu dans un popover…) ne comptent pas comme extérieures.
+ */
+export const useAnchoredPanel = ({
+  open,
+  triggerRef,
+  panelRef,
+  align = "start",
+  onOutsideClick,
+  onTriggerHidden,
+}: UseAnchoredPanelOptions): AnchoredPosition | null => {
+  const [pos, setPos] = useState<AnchoredPosition | null>(null);
+  // Rappels à jour sans relancer les écouteurs à chaque rendu du parent.
+  const callbacks = useRef({ onOutsideClick, onTriggerHidden });
+  useEffect(() => {
+    callbacks.current = { onOutsideClick, onTriggerHidden };
+  }, [onOutsideClick, onTriggerHidden]);
+
+  useLayoutEffect(() => {
+    // À la réouverture, l'ancienne position est remplacée avant l'affichage
+    // (effet de mise en page) : pas besoin de la remettre à null à la fermeture.
+    const trigger = triggerRef.current;
+    const panel = panelRef.current;
+    if (open && trigger && panel) setPos(placeAnchored(trigger, panel, align));
+  }, [open, align, triggerRef, panelRef]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      const target = e.target;
+      if (!(target instanceof Node)) return;
+      if (triggerRef.current?.contains(target) || panelRef.current?.contains(target)) return;
+      if (target instanceof Element && target.closest("[data-cadence-floating]")) return;
+      callbacks.current.onOutsideClick();
+    };
+    let frame = 0;
+    const onMove = (e: Event) => {
+      if (e.target instanceof Node && panelRef.current?.contains(e.target)) return;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const trigger = triggerRef.current;
+        const panel = panelRef.current;
+        if (!trigger || !panel) return;
+        const r = trigger.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > document.documentElement.clientHeight) {
+          callbacks.current.onTriggerHidden();
+          return;
+        }
+        setPos(placeAnchored(trigger, panel, align));
+      });
+    };
+    document.addEventListener("mousedown", onDown);
+    window.addEventListener("scroll", onMove, true);
+    window.addEventListener("resize", onMove);
+    return () => {
+      cancelAnimationFrame(frame);
+      document.removeEventListener("mousedown", onDown);
+      window.removeEventListener("scroll", onMove, true);
+      window.removeEventListener("resize", onMove);
+    };
+  }, [open, align, triggerRef, panelRef]);
+
+  return pos;
+};
