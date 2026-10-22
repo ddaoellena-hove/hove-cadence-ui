@@ -2382,7 +2382,7 @@ Message persistant dans le flux. Erreur : `role="alert"` ; autres types : `role=
 | `type` | `"information" \| "success" \| "warning" \| "error"` | **requis** | Type sémantique |
 | `title` | `string` | — | Titre facultatif |
 | `children` | `ReactNode` | **requis** | Corps du message |
-| `action` | `{ label: string; onClick: () => void }` | — | Action secondaire |
+| `action` | `{ label: string; onClick: () => void }` | — | Action secondaire, rendue en `PrimaryButton outline size="sm"` (contour visible sur le fond teinté, quel que soit le type) |
 | `dismissible` | `boolean` | `false` | Affiche « Fermer » |
 | `onDismiss` | `() => void` | — | L'app retire l'alerte au clic |
 | `className` | `string` | — | Classe additionnelle |

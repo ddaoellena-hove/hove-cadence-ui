@@ -12,7 +12,7 @@ import { CheckCircle } from "@untitledui/icons/CheckCircle";
 import { AlertTriangle } from "@untitledui/icons/AlertTriangle";
 import { AlertCircle } from "@untitledui/icons/AlertCircle";
 import { XClose } from "@untitledui/icons/XClose";
-import { GhostButton } from "./GhostButton";
+import { PrimaryButton } from "./PrimaryButton";
 import "./inline-alert.css";
 
 export type InlineAlertType = "information" | "success" | "warning" | "error";
@@ -53,7 +53,8 @@ export const InlineAlert = ({ type, title, children, action, dismissible = false
         <div className="inline-alert__text">{children}</div>
         {action && (
           <div className="inline-alert__actions">
-            <GhostButton size="sm" label={action.label} onClick={action.onClick} />
+            {/* Outline : contour visible sur le fond teinté du bandeau. */}
+            <PrimaryButton outline size="sm" label={action.label} onClick={action.onClick} />
           </div>
         )}
       </div>
