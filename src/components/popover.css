@@ -1,6 +1,16 @@
 /* ── Popover ───────────────────────────────────────────────────────────────
    Panneau non modal en portail (position fixe), couche popover. */
 
+/* Déclencheur : pas d'infobulle intégrée (GhostButton icône seule). Son nom
+   accessible (aria-label) est conservé. */
+.popover-trigger {
+  display: contents;
+}
+
+.popover-trigger .base-button-tip__bubble {
+  display: none;
+}
+
 .popover {
   z-index: var(--cadence-z-popover, 100);
   box-sizing: border-box;

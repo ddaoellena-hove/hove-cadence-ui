@@ -208,7 +208,9 @@ export const Popover = ({
 
   return (
     <>
-      {renderTrigger({ ref: triggerRef, open, toggle: () => setOpen(!open) })}
+      {/* Enveloppe neutre (display: contents) : coupe l'infobulle intégrée d'un
+          déclencheur icône seule, le panneau prenant le relais au clic. */}
+      <span className="popover-trigger">{renderTrigger({ ref: triggerRef, open, toggle: () => setOpen(!open) })}</span>
       {open &&
         createPortal(
           <div

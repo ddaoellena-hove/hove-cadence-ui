@@ -6,7 +6,6 @@ import { GhostButton } from "./GhostButton";
 import { PrimaryButton } from "./PrimaryButton";
 import { CounterInput } from "./CounterInput";
 import { DescriptionList } from "./DescriptionList";
-import { LineBadge } from "./LineBadge";
 import { Link } from "./Link";
 import { Modal } from "./Modal";
 import { ExportMenu } from "./ExportMenu";
@@ -26,30 +25,37 @@ export const AideContextuelle: Story = {
   name: "Aide contextuelle",
   render: () => (
     <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-      <span style={{ fontSize: 13 }}>Taux de ponctualité</span>
+      <span style={{ fontSize: 13 }}>Hauteur des contrôles</span>
       <Popover
-        title="Calcul de la ponctualité"
+        title="Hauteurs de contrôle"
         renderTrigger={({ ref, toggle }) => (
-          <GhostButton ref={ref} size="sm" icon="help-circle" aria-label="Aide : calcul de la ponctualité" onClick={toggle} />
+          <GhostButton ref={ref} size="sm" icon="help-circle" aria-label="Aide : hauteurs de contrôle" onClick={toggle} />
         )}
       >
         <p style={{ margin: "0 0 8px" }}>
-          Part des passages arrivés avec moins de 5 minutes de retard sur l’horaire théorique, hors courses supprimées.
+          Deux tokens fixent la hauteur des contrôles : 29 px pour le gabarit compact, 40 px pour les champs. Une rangée
+          n’utilise qu’un seul gabarit.
         </p>
-        <Link href="#methodologie">Lire la méthodologie</Link>
+        <Link href="#hauteurs-de-controle">Lire les guidelines</Link>
       </Popover>
     </div>
   ),
   play: async ({ canvas, canvasElement }) => {
-    const trigger = canvas.getByRole("button", { name: "Aide : calcul de la ponctualité" });
+    // Nom accessible conservé, sans infobulle (ni intégrée, ni title natif).
+    const trigger = canvas.getByRole("button", { name: "Aide : hauteurs de contrôle" });
+    await expect(trigger).not.toHaveAttribute("title");
+    await userEvent.hover(trigger);
+    const bubble = canvasElement.querySelector(".popover-trigger .base-button-tip__bubble");
+    await expect(bubble).not.toBeNull();
+    await expect(bubble).not.toBeVisible();
     await expect(trigger).toHaveAttribute("aria-expanded", "false");
     await userEvent.click(trigger);
     const body = within(canvasElement.ownerDocument.body);
-    const dialog = await body.findByRole("dialog", { name: "Calcul de la ponctualité" });
+    const dialog = await body.findByRole("dialog", { name: "Hauteurs de contrôle" });
     await expect(trigger).toHaveAttribute("aria-expanded", "true");
     await expect(trigger).toHaveAttribute("aria-controls", dialog.id);
     // Focus sur le premier élément focusable du contenu.
-    await waitFor(() => expect(body.getByRole("link", { name: "Lire la méthodologie" })).toHaveFocus());
+    await waitFor(() => expect(body.getByRole("link", { name: "Lire les guidelines" })).toHaveFocus());
     // Échap : fermeture, focus rendu au déclencheur.
     await userEvent.keyboard("{Escape}");
     await expect(body.queryByRole("dialog")).toBeNull();
@@ -62,30 +68,30 @@ export const MiniFormulaire: Story = {
   name: "Mini-formulaire",
   args: { onOpenChange: fn() },
   render: function MiniForm(args) {
-    const [threshold, setThreshold] = useState(5);
-    const [draft, setDraft] = useState(threshold);
+    const [gap, setGap] = useState(16);
+    const [draft, setDraft] = useState(gap);
     return (
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
         <Popover
-          title="Seuil d’alerte"
+          title="Espacement de la grille"
           onOpenChange={(open) => {
-            if (open) setDraft(threshold);
+            if (open) setDraft(gap);
             args.onOpenChange?.(open);
           }}
           renderTrigger={({ ref, toggle }) => (
-            <PrimaryButton ref={ref} outline size="sm" iconStart="settings-01" label="Seuil d’alerte" onClick={toggle} />
+            <PrimaryButton ref={ref} outline size="sm" iconStart="settings-01" label="Espacement de la grille" onClick={toggle} />
           )}
         >
           {({ close }) => (
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              <CounterInput label="Retard" min={1} max={30} step={1} unit="min" value={draft} onChange={setDraft} />
+              <CounterInput label="Gap" min={4} max={48} step={4} unit="px" value={draft} onChange={setDraft} />
               <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
                 <GhostButton size="sm" label="Annuler" onClick={close} />
                 <PrimaryButton
                   size="sm"
                   label="Appliquer"
                   onClick={() => {
-                    setThreshold(draft);
+                    setGap(draft);
                     close();
                   }}
                 />
@@ -93,20 +99,20 @@ export const MiniFormulaire: Story = {
             </div>
           )}
         </Popover>
-        <span style={{ fontSize: 13 }}>Alerte au-delà de {threshold} min</span>
+        <span style={{ fontSize: 13 }}>Gap appliqué : {gap} px</span>
       </div>
     );
   },
   play: async ({ canvas, canvasElement, args }) => {
-    const trigger = canvas.getByRole("button", { name: "Seuil d’alerte" });
+    const trigger = canvas.getByRole("button", { name: "Espacement de la grille" });
     await userEvent.click(trigger);
     await expect(args.onOpenChange).toHaveBeenCalledWith(true);
     const body = within(canvasElement.ownerDocument.body);
-    await body.findByRole("dialog", { name: "Seuil d’alerte" });
+    await body.findByRole("dialog", { name: "Espacement de la grille" });
     await userEvent.click(body.getByRole("button", { name: "Incrémenter" }));
     await userEvent.click(body.getByRole("button", { name: "Appliquer" }));
     await expect(body.queryByRole("dialog")).toBeNull();
-    await expect(canvas.getByText("Alerte au-delà de 6 min")).toBeInTheDocument();
+    await expect(canvas.getByText("Gap appliqué : 20 px")).toBeInTheDocument();
     await expect(trigger).toHaveFocus();
   },
 };
@@ -117,14 +123,14 @@ export const Fermeture: Story = {
   render: () => (
     <div style={{ display: "flex", gap: 12 }}>
       <Popover
-        title="Ligne 1"
+        title="Token d’accent"
         renderTrigger={({ ref, toggle }) => <GhostButton ref={ref} size="sm" label="Détail" onClick={toggle} />}
       >
         <DescriptionList
           density="compact"
           items={[
-            { id: "line", label: "Ligne", value: <LineBadge code="1" mode="metro" color="#FFCD00" textColor="#000000" /> },
-            { id: "status", label: "Trafic", value: "Perturbé entre Châtelet et Nation" },
+            { id: "token", label: "Token", value: "--cadence-color-accent" },
+            { id: "usage", label: "Usage", value: "Élément actif ou sélectionné, jamais une action" },
           ]}
         />
       </Popover>
@@ -136,12 +142,12 @@ export const Fermeture: Story = {
     const trigger = canvas.getByRole("button", { name: "Détail" });
     // Clic extérieur.
     await userEvent.click(trigger);
-    await body.findByRole("dialog", { name: "Ligne 1" });
+    await body.findByRole("dialog", { name: "Token d’accent" });
     await userEvent.click(canvasElement);
     await expect(body.queryByRole("dialog")).toBeNull();
     // Contenu sans élément focusable : le panneau reçoit le focus.
     await userEvent.click(trigger);
-    const dialog = await body.findByRole("dialog", { name: "Ligne 1" });
+    const dialog = await body.findByRole("dialog", { name: "Token d’accent" });
     await waitFor(() => expect(dialog).toHaveFocus());
     // Tab vers Fermer, puis Tab après ce dernier élément : fermé, la
     // tabulation reprend après le déclencheur.
@@ -161,25 +167,25 @@ export const Controle: Story = {
     return (
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <Popover
-          title="Dernière synchronisation"
+          title="Version du Design System"
           hideTitle
           align="end"
           width={240}
           open={open}
           onOpenChange={setOpen}
           renderTrigger={({ ref, toggle }) => (
-            <GhostButton ref={ref} size="sm" icon="info-circle" aria-label="Dernière synchronisation" onClick={toggle} />
+            <GhostButton ref={ref} size="sm" icon="info-circle" aria-label="Version du Design System" onClick={toggle} />
           )}
         >
-          Flux GTFS-RT reçu à 14:32, il y a 2 minutes.
+          Version 0.6.0, en relecture : rien n’est publié sur npm.
         </Popover>
       </div>
     );
   },
   play: async ({ canvas, canvasElement }) => {
     const body = within(canvasElement.ownerDocument.body);
-    const dialog = await body.findByRole("dialog", { name: "Dernière synchronisation" });
-    const trigger = canvas.getByRole("button", { name: "Dernière synchronisation" });
+    const dialog = await body.findByRole("dialog", { name: "Version du Design System" });
+    const trigger = canvas.getByRole("button", { name: "Version du Design System" });
     // Aligné sur le bord droit du déclencheur, sans sortir de la fenêtre.
     await waitFor(() => {
       const d = dialog.getBoundingClientRect();
@@ -198,17 +204,17 @@ export const DansUneModal: Story = {
     const [open, setOpen] = useState(false);
     return (
       <>
-        <PrimaryButton label="Modifier la perturbation" onClick={() => setOpen(true)} />
-        <Modal isOpen={open} onClose={() => setOpen(false)} title="Modifier la perturbation">
+        <PrimaryButton label="Modifier le composant" onClick={() => setOpen(true)} />
+        <Modal isOpen={open} onClose={() => setOpen(false)} title="Modifier le composant">
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <span>Niveau de sévérité</span>
+            <span>Variante du bouton</span>
             <Popover
-              title="Niveaux de sévérité"
+              title="Variantes de bouton"
               renderTrigger={({ ref, toggle }) => (
-                <GhostButton ref={ref} size="sm" icon="help-circle" aria-label="Aide : niveaux de sévérité" onClick={toggle} />
+                <GhostButton ref={ref} size="sm" icon="help-circle" aria-label="Aide : variantes de bouton" onClick={toggle} />
               )}
             >
-              <p style={{ margin: 0 }}>Bloquant : aucune circulation. Perturbé : retards ou fréquence réduite.</p>
+              <p style={{ margin: 0 }}>Plein : action principale, une seule par vue. Outline : action secondaire d’un dashboard.</p>
             </Popover>
           </div>
         </Modal>
@@ -217,23 +223,23 @@ export const DansUneModal: Story = {
   },
   play: async ({ canvas, canvasElement }) => {
     const body = within(canvasElement.ownerDocument.body);
-    await userEvent.click(canvas.getByRole("button", { name: "Modifier la perturbation" }));
-    await body.findByRole("dialog", { name: "Modifier la perturbation" });
-    const trigger = body.getByRole("button", { name: "Aide : niveaux de sévérité" });
+    await userEvent.click(canvas.getByRole("button", { name: "Modifier le composant" }));
+    await body.findByRole("dialog", { name: "Modifier le composant" });
+    const trigger = body.getByRole("button", { name: "Aide : variantes de bouton" });
     await userEvent.click(trigger);
-    const popover = await body.findByRole("dialog", { name: "Niveaux de sévérité" });
+    const popover = await body.findByRole("dialog", { name: "Variantes de bouton" });
     await waitFor(() => expect(popover).toHaveFocus());
     // Au-dessus du voile de la Modal : le centre du panneau est bien le panneau.
     const r = popover.getBoundingClientRect();
     const hit = canvasElement.ownerDocument.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
     await expect(popover.contains(hit)).toBe(true);
     await userEvent.keyboard("{Escape}");
-    await expect(body.queryByRole("dialog", { name: "Niveaux de sévérité" })).toBeNull();
-    await expect(body.getByRole("dialog", { name: "Modifier la perturbation" })).toBeInTheDocument();
+    await expect(body.queryByRole("dialog", { name: "Variantes de bouton" })).toBeNull();
+    await expect(body.getByRole("dialog", { name: "Modifier le composant" })).toBeInTheDocument();
     await expect(trigger).toHaveFocus();
     // Échap suivant : la Modal se ferme.
     await userEvent.keyboard("{Escape}");
-    await waitFor(() => expect(body.queryByRole("dialog", { name: "Modifier la perturbation" })).toBeNull());
+    await waitFor(() => expect(body.queryByRole("dialog", { name: "Modifier le composant" })).toBeNull());
   },
 };
 
@@ -249,13 +255,13 @@ export const FermetureRefusee: Story = {
     const [open, setOpen] = useState(false);
     return (
       <Popover
-        title="Commentaire de régulation"
+        title="Note de version"
         open={open}
         onOpenChange={(next) => {
           args.onOpenChange?.(next);
           if (next) setOpen(true); // fermeture ignorée : il faut confirmer
         }}
-        renderTrigger={({ ref, toggle }) => <GhostButton ref={ref} size="sm" label="Commenter" onClick={toggle} />}
+        renderTrigger={({ ref, toggle }) => <GhostButton ref={ref} size="sm" label="Ajouter une note" onClick={toggle} />}
       >
         <PrimaryButton size="sm" label="Confirmer" onClick={() => setOpen(false)} />
       </Popover>
@@ -263,9 +269,9 @@ export const FermetureRefusee: Story = {
   },
   play: async ({ canvas, canvasElement, args }) => {
     const body = within(canvasElement.ownerDocument.body);
-    const trigger = canvas.getByRole("button", { name: "Commenter" });
+    const trigger = canvas.getByRole("button", { name: "Ajouter une note" });
     await userEvent.click(trigger);
-    const dialog = await body.findByRole("dialog", { name: "Commentaire de régulation" });
+    const dialog = await body.findByRole("dialog", { name: "Note de version" });
     await userEvent.click(canvasElement);
     await expect(args.onOpenChange).toHaveBeenLastCalledWith(false);
     // Refusée : le panneau reste affiché.
@@ -289,9 +295,9 @@ export const AvecUnMenu: Story = {
     return (
       <div style={{ display: "flex", gap: 12 }}>
         <Popover
-          title="Rapport de ponctualité"
+          title="Inventaire des composants"
           onOpenChange={args.onOpenChange}
-          renderTrigger={({ ref, toggle }) => <GhostButton ref={ref} size="sm" label="Rapport" onClick={toggle} />}
+          renderTrigger={({ ref, toggle }) => <GhostButton ref={ref} size="sm" label="Inventaire" onClick={toggle} />}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <span>Dernier export : {last}</span>
@@ -305,8 +311,8 @@ export const AvecUnMenu: Story = {
   },
   play: async ({ canvas, canvasElement, args }) => {
     const body = within(canvasElement.ownerDocument.body);
-    await userEvent.click(canvas.getByRole("button", { name: "Rapport" }));
-    const dialog = await body.findByRole("dialog", { name: "Rapport de ponctualité" });
+    await userEvent.click(canvas.getByRole("button", { name: "Inventaire" }));
+    const dialog = await body.findByRole("dialog", { name: "Inventaire des composants" });
     await userEvent.click(body.getByRole("button", { name: "Exporter" }));
     await userEvent.click(body.getAllByRole("menuitem", { name: "CSV" })[0]);
     await expect(body.getByText(/^Dernier export : /)).not.toHaveTextContent("aucun");
@@ -314,7 +320,7 @@ export const AvecUnMenu: Story = {
     // Défilement de la page : replacé, pas fermé.
     window.dispatchEvent(new Event("scroll"));
     window.dispatchEvent(new Event("resize"));
-    await expect(body.getByRole("dialog", { name: "Rapport de ponctualité" })).toBeVisible();
+    await expect(body.getByRole("dialog", { name: "Inventaire des composants" })).toBeVisible();
     // Le bouton masqué n'est pas un bord : Tab depuis « Exporter » ferme.
     body.getByRole("button", { name: "Exporter" }).focus();
     await userEvent.tab();
@@ -328,19 +334,19 @@ export const AvecUnMenu: Story = {
 export const Ouvert: Story = {
   render: () => (
     <Popover
-      title="Calcul de la ponctualité"
+      title="Hauteurs de contrôle"
       defaultOpen
       renderTrigger={({ ref, toggle }) => (
-        <GhostButton ref={ref} size="sm" icon="help-circle" aria-label="Aide : calcul de la ponctualité" onClick={toggle} />
+        <GhostButton ref={ref} size="sm" icon="help-circle" aria-label="Aide : hauteurs de contrôle" onClick={toggle} />
       )}
     >
-      Part des passages arrivés avec moins de 5 minutes de retard sur l’horaire théorique.
+      Deux tokens fixent la hauteur des contrôles : 29 px pour le gabarit compact, 40 px pour les champs.
     </Popover>
   ),
   play: async ({ canvas, canvasElement }) => {
     const body = within(canvasElement.ownerDocument.body);
-    await expect(await body.findByRole("dialog", { name: "Calcul de la ponctualité" })).toBeVisible();
-    await expect(canvas.getByRole("button", { name: "Aide : calcul de la ponctualité" })).toHaveAttribute("aria-expanded", "true");
+    await expect(await body.findByRole("dialog", { name: "Hauteurs de contrôle" })).toBeVisible();
+    await expect(canvas.getByRole("button", { name: "Aide : hauteurs de contrôle" })).toHaveAttribute("aria-expanded", "true");
   },
 };
 
@@ -350,17 +356,17 @@ export const RetourneAuDessus: Story = {
   decorators: [(Story) => <div style={{ height: "calc(100vh - 32px)", display: "flex", alignItems: "flex-end" }}><Story /></div>],
   render: () => (
     <Popover
-      title="Dernière synchronisation"
+      title="Statut de la release"
       defaultOpen
-      renderTrigger={({ ref, toggle }) => <GhostButton ref={ref} size="sm" label="Synchronisation" onClick={toggle} />}
+      renderTrigger={({ ref, toggle }) => <GhostButton ref={ref} size="sm" label="Release" onClick={toggle} />}
     >
-      Flux GTFS-RT reçu à 14:32, il y a 2 minutes.
+      Release 0.6.0 en relecture : rien n’est publié sur npm.
     </Popover>
   ),
   play: async ({ canvas, canvasElement }) => {
     const body = within(canvasElement.ownerDocument.body);
-    const dialog = await body.findByRole("dialog", { name: "Dernière synchronisation" });
-    const trigger = canvas.getByRole("button", { name: "Synchronisation" });
+    const dialog = await body.findByRole("dialog", { name: "Statut de la release" });
+    const trigger = canvas.getByRole("button", { name: "Release" });
     await waitFor(() => expect(dialog.getBoundingClientRect().bottom).toBeLessThanOrEqual(trigger.getBoundingClientRect().top));
   },
 };
