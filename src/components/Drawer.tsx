@@ -1,0 +1,158 @@
+/**
+ * Drawer component.
+ *
+ * Panneau latéral droit pour consulter le détail d'un élément sans quitter la
+ * liste (≠ Modal, dialogue bloquant). Voile, Échap, clic sur le voile, bouton
+ * fermer, piège à focus et retour du focus sont fournis par les primitives de
+ * surcouche partagées (voir overlay-primitives.ts).
+ */
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { GhostButton } from "./GhostButton";
+import { PrimaryButton } from "./PrimaryButton";
+import { OverlayPortal, useOverlay } from "./overlay-primitives";
+import "./drawer.css";
+import "./scrollbar.css";
+
+/** Action du pied du Drawer. */
+export interface DrawerAction {
+  /** Libellé du bouton. */
+  label: string;
+  /** Clic. */
+  onClick: () => void;
+  /** Style destructif pour l'action principale. */
+  destructive?: boolean;
+}
+
+export interface DrawerProps {
+  /** Contrôle la visibilité. */
+  isOpen: boolean;
+  /** Appelé sur Échap, clic voile ou bouton fermer. */
+  onClose: () => void;
+  /** Titre du panneau. */
+  title: string;
+  /** Sous-titre sous le titre. */
+  subtitle?: string;
+  /** Contenu défilant du corps. */
+  children: ReactNode;
+  /** Action principale du pied → PrimaryButton (destructive → tone="danger"). */
+  primaryAction?: DrawerAction;
+  /** Action secondaire du pied → GhostButton (« Fermer », « Annuler »). */
+  secondaryAction?: DrawerAction;
+  /** Largeur : "md" 480px (défaut), "lg" 720px. */
+  width?: "md" | "lg";
+  /** Classe CSS additionnelle sur le panneau. */
+  className?: string;
+}
+
+// Durée de l'entrée / sortie, cohérente avec la Sidebar (250 ms).
+const TRANSITION_MS = 250;
+
+const CloseIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+);
+
+export const Drawer = ({
+  isOpen,
+  onClose,
+  title,
+  subtitle,
+  children,
+  primaryAction,
+  secondaryAction,
+  width = "md",
+  className,
+}: DrawerProps) => {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const titleId = useId();
+
+  // `mounted` garde le panneau dans le DOM pendant la sortie ; `entered`
+  // pilote le glissement (transform). Les ouvertures/fermetures s'ajustent
+  // pendant le rendu (pattern React), jamais par un setState synchrone en effet.
+  const [mounted, setMounted] = useState(isOpen);
+  const [entered, setEntered] = useState(isOpen);
+
+  if (isOpen && !mounted) setMounted(true);
+  if (!isOpen && entered) setEntered(false);
+
+  // Entrée : une fois monté, passe en position ouverte à la frame suivante.
+  useEffect(() => {
+    if (!(mounted && isOpen)) return;
+    const raf = requestAnimationFrame(() => setEntered(true));
+    return () => cancelAnimationFrame(raf);
+  }, [mounted, isOpen]);
+
+  // Sortie : démontage après l'animation (le setState est asynchrone).
+  useEffect(() => {
+    if (isOpen || !mounted) return;
+    const timer = window.setTimeout(() => setMounted(false), TRANSITION_MS);
+    return () => window.clearTimeout(timer);
+  }, [isOpen, mounted]);
+
+  // Comportement modal commun : seulement tant que réellement ouvert.
+  useOverlay({ isOpen: isOpen && mounted, onClose, surfaceRef: panelRef });
+
+  if (!mounted) return null;
+
+  const showFooter = primaryAction || secondaryAction;
+  const panelClass = [
+    "drawer__panel",
+    `drawer__panel--${width}`,
+    entered ? "drawer__panel--open" : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    <OverlayPortal>
+      <div className={`drawer__scrim${entered ? " drawer__scrim--open" : ""}`} onClick={onClose}>
+        <div
+          ref={panelRef}
+          className={panelClass}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
+          tabIndex={-1}
+          // Pendant la sortie animée (encore monté mais fermé), le panneau est
+          // inerte : il ne retient pas le focus, qui revient au déclencheur.
+          inert={!isOpen || undefined}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* En-tête fixe */}
+          <div className="drawer__header">
+            <div className="drawer__heading">
+              <h2 id={titleId} className="drawer__title">
+                {title}
+              </h2>
+              {subtitle && <p className="drawer__subtitle">{subtitle}</p>}
+            </div>
+            <button className="drawer__close" onClick={onClose} aria-label="Fermer" type="button">
+              <CloseIcon />
+            </button>
+          </div>
+
+          {/* Corps défilant */}
+          <div className="drawer__body cadence-scrollbar">{children}</div>
+
+          {/* Pied fixe */}
+          {showFooter && (
+            <div className="drawer__footer">
+              {secondaryAction && (
+                <GhostButton label={secondaryAction.label} onClick={secondaryAction.onClick} />
+              )}
+              {primaryAction && (
+                <PrimaryButton
+                  label={primaryAction.label}
+                  onClick={primaryAction.onClick}
+                  tone={primaryAction.destructive ? "danger" : "default"}
+                />
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </OverlayPortal>
+  );
+};
