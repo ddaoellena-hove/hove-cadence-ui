@@ -9,6 +9,8 @@ export interface RadioButtonProps {
   innerClassName?: string;
   /** Callback fired when the user clicks the radio button (only when not disabled). */
   onChange?: () => void;
+  /** Nom accessible (sans label visible associé). */
+  "aria-label"?: string;
 }
 
 /**
@@ -20,6 +22,7 @@ export const RadioButton = ({
   className,
   innerClassName,
   onChange,
+  "aria-label": ariaLabel,
 }: RadioButtonProps) => {
   const hasInner = ["hover", "selected", "disabled"].includes(state);
 
@@ -40,6 +43,7 @@ export const RadioButton = ({
     <div
       className={rootClass}
       role="radio"
+      aria-label={ariaLabel}
       aria-checked={state === "selected"}
       aria-disabled={state === "disabled"}
       tabIndex={state === "disabled" ? -1 : 0}

@@ -6,12 +6,14 @@ const meta: Meta<typeof Toggle> = {
   title: "Components/Toggle",
   component: Toggle,
   tags: ["autodocs"],
+  parameters: { a11y: { test: "error" } },
   argTypes: {
     state: {
       options: ["default", "hover", "active", "disabled"],
       control: { type: "select" },
     },
   },
+  args: { "aria-label": "Activer les notifications" },
 };
 
 export default meta;
@@ -31,7 +33,7 @@ export const Default: Story = {
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <Toggle state={state} onChange={(next) => setActive(next)} />
+        <Toggle state={state} aria-label="Activer les notifications" onChange={(next) => setActive(next)} />
       </div>
     );
   },
@@ -59,10 +61,10 @@ export const AllStates: Story = {
         padding: "16px",
       }}
     >
-      <Toggle state="default" />
-      <Toggle state="hover" />
-      <Toggle state="active" />
-      <Toggle state="disabled" />
+      <Toggle state="default" aria-label="Par défaut" />
+      <Toggle state="hover" aria-label="Survolé" />
+      <Toggle state="active" aria-label="Actif" />
+      <Toggle state="disabled" aria-label="Désactivé" />
     </div>
   ),
 };

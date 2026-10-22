@@ -6,12 +6,15 @@ const meta: Meta<typeof Checkbox> = {
   title: "Components/Checkbox",
   component: Checkbox,
   tags: ["autodocs"],
+  parameters: { a11y: { test: "error" } },
   argTypes: {
     state: {
       options: ["unchecked", "hover", "checked", "indeterminate", "disabled", "disabled-checked"],
       control: { type: "select" },
     },
   },
+  // Nom accessible par défaut (les cases de démo n'ont pas de label visible).
+  args: { "aria-label": "Accepter les conditions" },
 };
 
 export default meta;
@@ -31,7 +34,7 @@ export const Default: Story = {
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <Checkbox state={state} onChange={(next) => setChecked(next)} />
+        <Checkbox state={state} aria-label="Accepter les conditions" onChange={(next) => setChecked(next)} />
       </div>
     );
   },
@@ -67,12 +70,12 @@ export const AllStates: Story = {
         padding: "16px",
       }}
     >
-      <Checkbox state="unchecked" />
-      <Checkbox state="hover" />
-      <Checkbox state="checked" />
-      <Checkbox state="indeterminate" />
-      <Checkbox state="disabled" />
-      <Checkbox state="disabled-checked" />
+      <Checkbox state="unchecked" aria-label="Non cochée" />
+      <Checkbox state="hover" aria-label="Survolée" />
+      <Checkbox state="checked" aria-label="Cochée" />
+      <Checkbox state="indeterminate" aria-label="Indéterminée" />
+      <Checkbox state="disabled" aria-label="Désactivée" />
+      <Checkbox state="disabled-checked" aria-label="Désactivée cochée" />
     </div>
   ),
 };

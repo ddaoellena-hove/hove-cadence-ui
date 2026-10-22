@@ -6,12 +6,14 @@ const meta: Meta<typeof RadioButton> = {
   title: "Components/RadioButton",
   component: RadioButton,
   tags: ["autodocs"],
+  parameters: { a11y: { test: "error" } },
   argTypes: {
     state: {
       options: ["default", "hover", "selected", "disabled"],
       control: { type: "select" },
     },
   },
+  args: { "aria-label": "Option" },
 };
 
 export default meta;
@@ -31,7 +33,7 @@ export const Default: Story = {
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <RadioButton state={state} onChange={() => setSelected((s) => !s)} />
+        <RadioButton state={state} aria-label="Option" onChange={() => setSelected((s) => !s)} />
       </div>
     );
   },
@@ -52,6 +54,8 @@ export const Disabled: Story = {
 export const AllStates: Story = {
   render: () => (
     <div
+      role="radiogroup"
+      aria-label="États du bouton radio"
       style={{
         display: "flex",
         alignItems: "center",
@@ -59,10 +63,10 @@ export const AllStates: Story = {
         padding: "16px",
       }}
     >
-      <RadioButton state="default" />
-      <RadioButton state="hover" />
-      <RadioButton state="selected" />
-      <RadioButton state="disabled" />
+      <RadioButton state="default" aria-label="Par défaut" />
+      <RadioButton state="hover" aria-label="Survolé" />
+      <RadioButton state="selected" aria-label="Sélectionné" />
+      <RadioButton state="disabled" aria-label="Désactivé" />
     </div>
   ),
 };

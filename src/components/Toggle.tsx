@@ -9,6 +9,8 @@ export interface ToggleProps {
   thumbClassName?: string;
   /** Callback fired when the user clicks the toggle (only when not disabled). */
   onChange?: (nextActive: boolean) => void;
+  /** Nom accessible (sans label visible associé). */
+  "aria-label"?: string;
 }
 
 /**
@@ -20,6 +22,7 @@ export const Toggle = ({
   className,
   thumbClassName,
   onChange,
+  "aria-label": ariaLabel,
 }: ToggleProps) => {
   const rootClass = ["toggle", state, className].filter(Boolean).join(" ");
   const thumbClass = ["toggle-thumb", thumbClassName].filter(Boolean).join(" ");
@@ -33,6 +36,7 @@ export const Toggle = ({
     <div
       className={rootClass}
       role="switch"
+      aria-label={ariaLabel}
       aria-checked={state === "active"}
       aria-disabled={state === "disabled"}
       tabIndex={state === "disabled" ? -1 : 0}
