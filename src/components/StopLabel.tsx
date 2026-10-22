@@ -1,12 +1,13 @@
 /**
  * StopLabel component.
  *
- * Libellé d'un arrêt : nom lisible (Inter), identifiant technique (Spline Sans
- * Mono, atténué) et lignes desservies. Prévu pour une cellule de DataTable ou
- * une option d'Autocomplete. Le nom est tronqué par ellipse, son texte complet
+ * Libellé d'un arrêt : nom lisible (Inter), identifiant technique dans un
+ * Badge mono, et lignes desservies. Prévu pour une cellule de DataTable ou une
+ * option d'Autocomplete. Le nom est tronqué par ellipse, son texte complet
  * reste disponible en infobulle native (title).
  */
 import type { ReactNode } from "react";
+import { Badge } from "./Badge";
 import "./stop-label.css";
 
 export interface StopLabelProps {
@@ -35,8 +36,8 @@ export const StopLabel = ({ name, id, city, lines, className }: StopLabelProps) 
           {city && <span className="stop-label__city">{city}</span>}
         </span>
         {id && (
-          <span className="stop-label__id" title={id}>
-            {id}
+          <span className="stop-label__id">
+            <Badge label={id} mono />
           </span>
         )}
       </span>
