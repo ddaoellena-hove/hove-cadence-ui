@@ -51,6 +51,7 @@
   --cadence-color-scrollbar-thumb: rgba(0, 40, 48, 0.2);        /* Curseur des barres de défilement (cadence-scrollbar) */
   --cadence-color-scrollbar-thumb-hover: rgba(0, 40, 48, 0.36); /* … au survol */  /* Bordures appuyées, états disabled, contour de PrimaryButton outline */
   --cadence-color-divider: #f0f0f0;        /* Séparateurs internes (colonnes, footers) */
+  --cadence-color-skeleton: var(--cadence-color-surface-alt, #eef1f4); /* Fond des squelettes de chargement (Skeleton, DataTable, Card) */
 
   /* ── Typographie ───────────────────────────────────────────────────────── */
   --cadence-font-sans: "Inter", Helvetica, sans-serif;

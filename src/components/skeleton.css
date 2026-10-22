@@ -1,0 +1,61 @@
+/* ── Skeleton ──────────────────────────────────────────────────────────────
+   Forme animée de chargement. Mêmes fond, rayon et pulsation que les anciens
+   squelettes de DataTable et Card (rendu identique après adoption). */
+
+.skeleton {
+  animation: cadence-skeleton-pulse 1.2s ease-in-out infinite;
+  background: var(--cadence-color-skeleton, #eef1f4);
+  border-radius: var(--cadence-radius-sm, 6px);
+  display: block;
+}
+
+/* ── Texte : empilement de lignes ── */
+.skeleton--text {
+  animation: none; /* ce sont les lignes qui s'animent */
+  background: transparent;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.skeleton__line {
+  animation: cadence-skeleton-pulse 1.2s ease-in-out infinite;
+  background: var(--cadence-color-skeleton, #eef1f4);
+  border-radius: var(--cadence-radius-sm, 6px);
+  display: block;
+  height: 12px;
+  width: 100%;
+}
+
+/* ── Rectangle ── */
+.skeleton--rect {
+  height: 12px;
+  width: 100%;
+}
+
+/* ── Cercle ── */
+.skeleton--circle {
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+}
+
+@keyframes cadence-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* Pas d'animation si l'utilisateur limite les mouvements. */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  .skeleton__line {
+    animation: none;
+  }
+}

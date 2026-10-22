@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Icons, type IconName } from "./Icons";
 import { Indicator, type IndicatorVariant } from "./Indicator";
 import { PrimaryButton } from "./PrimaryButton";
+import { Skeleton } from "./Skeleton";
 import {
   buildSparklinePoints,
   describeDelta,
@@ -163,8 +164,8 @@ export const Card = (props: CardProps) => {
       {hasFigures &&
         (loading ? (
           <div className="card__body card__body--loading">
-            <span className="card__skeleton card__skeleton--value" />
-            <span className="card__skeleton card__skeleton--delta" />
+            <Skeleton variant="rect" width={120} height={30} />
+            <Skeleton variant="rect" width={80} height={14} />
           </div>
         ) : (
           <div className="card__body">

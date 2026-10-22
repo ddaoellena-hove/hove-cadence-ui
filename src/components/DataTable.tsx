@@ -18,6 +18,7 @@ import {
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Checkbox } from "./Checkbox";
+import { Skeleton } from "./Skeleton";
 import { SortIcon } from "./SortIcon";
 import {
   compareValues,
@@ -388,7 +389,7 @@ export function DataTable<T extends object>({
           {selectable && <td role="cell" className="data-table__cell data-table__cell--select" />}
           {visibleColumns.map((col) => (
             <td key={col.id} role="cell" className={cellClass(col)}>
-              <span className="data-table__skeleton" />
+              <Skeleton variant="rect" width="70%" height={12} />
             </td>
           ))}
         </tr>

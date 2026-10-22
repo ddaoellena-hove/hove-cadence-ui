@@ -221,38 +221,11 @@
 }
 
 /* ── Chargement ──────────────────────────────────────────────────────────── */
-.card__skeleton {
-  animation: card-pulse 1.2s ease-in-out infinite;
-  background: var(--cadence-color-surface-alt, #eef1f4);
-  border-radius: var(--cadence-radius-sm, 6px);
-  display: block;
-}
-
-.card__skeleton--value {
-  height: 30px;
-  width: 120px;
-}
-
-.card__skeleton--delta {
-  height: 14px;
-  width: 80px;
-}
-
+/* La valeur et la variation sont remplacées par des Skeleton (variant="rect"). */
 .card__body--loading {
   align-items: flex-start;
   flex-direction: column;
   gap: 8px;
-}
-
-@keyframes card-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .card__skeleton {
-    animation: none;
-  }
 }
 
 /* ── Texte réservé aux lecteurs d'écran ──────────────────────────────────── */

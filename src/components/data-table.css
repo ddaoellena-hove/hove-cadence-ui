@@ -184,25 +184,7 @@
 }
 
 /* ── États : chargement et vide ──────────────────────────────────────────── */
-.data-table__skeleton {
-  animation: data-table-pulse 1.2s ease-in-out infinite;
-  background: var(--cadence-color-surface-alt, #eef1f4);
-  border-radius: var(--cadence-radius-sm, 6px);
-  display: block;
-  height: 12px;
-  width: 70%;
-}
-
-@keyframes data-table-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .data-table__skeleton {
-    animation: none;
-  }
-}
+/* Les lignes squelettes utilisent le composant Skeleton (variant="rect"). */
 
 .data-table__empty {
   color: var(--cadence-color-label, #1a3e45);
