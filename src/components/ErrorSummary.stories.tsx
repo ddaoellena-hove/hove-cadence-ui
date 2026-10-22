@@ -4,6 +4,7 @@ import { expect, userEvent, within } from "storybook/test";
 import { ErrorSummary, type SummaryError } from "./ErrorSummary";
 import { TextInput } from "./TextInput";
 import { PrimaryButton } from "./PrimaryButton";
+import { inertProps } from "./inert-props";
 
 const meta: Meta<typeof ErrorSummary> = {
   title: "Components/ErrorSummary", component: ErrorSummary, tags: ["autodocs"],
@@ -56,7 +57,7 @@ export const CibleParIdEtConteneur: Story = {
       <input type="hidden" value="source" readOnly />
       <button type="button" hidden>Source masquée</button>
       <fieldset disabled><button type="button">Source indisponible</button></fieldset>
-      <div inert><button type="button">Source inactive</button></div>
+      <div {...inertProps(true)}><button type="button">Source inactive</button></div>
       <PrimaryButton label="Parcourir les sources" />
     </div>
   </div>,
