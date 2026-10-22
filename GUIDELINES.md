@@ -2567,7 +2567,7 @@ Historique d'événements ponctuels. Liste ordonnée avec icône, état **textue
 
 ### TimePicker
 
-Heure seule : champ compact affichant HH:mm et une icône horloge. Un clic (ou Entrée/Espace sur le champ focalisé) ouvre un panneau ancré comme celui de `DatePicker`. Le panneau contient deux cases **Heures / Minutes** éditables au clavier et leurs flèches, reprenant le module horaire partagé avec `DatePicker withTime`. Aucune conversion via Date : `25:30` reste une heure de service.
+Heure seule. **Variante champ** : deux cases **Heures / Minutes** éditables directement au clavier, séparées d'un « : » fixe, à l'allure d'un `TextInput` (survol, focus). Cliquer le champ place le curseur pour saisir — **il n'ouvre pas le panneau** ; seule l'icône horloge à droite (un `GhostButton` sans infobulle) ouvre un panneau ancré de réglage par flèches (en lecture seule). **Variante bouton** : déclencheur outline sm ouvrant un panneau éditable (cases + flèches). Module horaire partagé avec `DatePicker withTime`. Aucune conversion via Date : `25:30` reste une heure de service.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
@@ -2575,7 +2575,7 @@ Heure seule : champ compact affichant HH:mm et une icône horloge. Un clic (ou E
 | `aria-label` | `string` | `"Heure"` | Nom en l’absence de label, notamment en variante bouton |
 | `value` | `string` | requis | Heure valide `HH:mm` ou `""` |
 | `onChange` | `(value: string) => void` | requis | Heure normalisée validée, jamais un brouillon invalide |
-| `variant` | `"field" \| "button"` | `"field"` | Champ compact ou bouton outline sm ouvrant le même panneau horaire |
+| `variant` | `"field" \| "button"` | `"field"` | Champ éditable (allure TextInput) ou bouton outline sm ouvrant le panneau |
 | `allowOvernight` | `boolean` | `false` | Plage 00:00–47:59 au lieu de 00:00–23:59 |
 | `min`, `max` | `string` | bornes du mode | Bornes inclusives HH:mm |
 | `minuteStep` | `1 \| 5 \| 10 \| 15 \| 30` | `1` | Pas des flèches de minutes ; saisie manuelle libre à la minute |
@@ -2587,12 +2587,12 @@ Heure seule : champ compact affichant HH:mm et une icône horloge. Un clic (ou E
 | `className` | `string` | — | Classe additionnelle |
 | `ref` | `Ref<HTMLInputElement>` | — | Case des heures ; sa validité reflète l’heure complète |
 
-- **Champ** : déclencheur de 40 px avec label, heure et icône horloge ; le module horaire est affiché uniquement dans le panneau ouvert. Ce déclencheur est un bouton visuellement présenté comme un champ, comme DatePicker. La saisie clavier s’effectue dans le panneau.
-- **Bouton** : déclencheur outline sm, comme DatePicker. Les deux variantes ouvrent le panneau avec le focus sur les heures ; les changements (saisie et flèches) restent en brouillon jusqu’à « Valider » ou Entrée, qui normalisent aussi (`9` et `5` deviennent `09:05`). « Annuler », Échap, clic extérieur ou sortie au clavier annulent les modifications. Validation/annulation explicite rend le focus au déclencheur.
+- **Champ** : conteneur de 40 px à l’allure d’un `TextInput` (survol, focus), contenant les deux cases **HH : mm** éditables au clavier et un « : » fixe, puis l’horloge à droite. La saisie est **directe dans le champ** : taper ne l’ouvre pas. Entrée ou la sortie du champ valident et normalisent (`9`/`5` → `09:05`) ; Échap annule la saisie en cours. Le panneau ouvert par l’horloge n’affiche que les flèches (cases en lecture seule).
+- **Bouton** : déclencheur outline sm, comme DatePicker ; son panneau est éditable (cases + flèches), focus sur les heures à l’ouverture. Les changements (saisie et flèches) restent en brouillon jusqu’à « Valider » ou Entrée. « Annuler », Échap, clic extérieur ou sortie au clavier annulent les modifications. Validation/annulation rend le focus au déclencheur (l’horloge en variante champ).
 - ↑/↓ modifie l’unité focalisée : une heure ou `minuteStep` minutes. Les minutes peuvent passer à l’heure suivante (23:55 + 15 min → 24:10 si autorisé). Les bornes ne bouclent pas. Depuis un éditeur vide, une flèche initialise la borne basse.
 - Un collage HH:mm dans l’une des cases renseigne les deux. Vider les deux cases puis valider efface une heure facultative ; une seule case vide constitue une saisie incomplète.
 - Échap ferme le panneau sans modifier la valeur dans les deux variantes. L’événement est consommé avant le Modal/Drawer parent.
-- Les inputs utilisent `role="spinbutton"` et des noms distincts (« Heures — Départ », « Minutes — Départ »). Dans les deux variantes, l’éditeur reste monté mais caché quand fermé ; `checkValidity()` sur la ref invalide ouvre le panneau, comme une soumission HTML standard. Pour le focus via ErrorSummary, privilégier une cible conteneur incluant le bouton lorsque le panneau est fermé.
+- Les inputs utilisent `role="spinbutton"` et des noms distincts (« Heures — Départ », « Minutes — Départ »). En variante champ, les cases sont **toujours visibles** (saisie directe) ; en variante bouton, l’éditeur reste monté mais caché quand fermé. `checkValidity()` sur la ref invalide reflète l’heure complète. Pour le focus via ErrorSummary, privilégier une cible conteneur incluant le champ.
 - Dans un formulaire `noValidate`, vérifier `checkValidity()` avant de lire la valeur contrôlée. L’application calcule les contraintes entre début et fin.
 - `min`/`max` invalides sont ignorés ; un intervalle inversé revient aux bornes du mode. Aucune gestion de fuseau ou changement d’heure. Le plafond 47:59 est un choix du composant, pas une couverture de tous les formats d’échange.
 
