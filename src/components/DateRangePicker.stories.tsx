@@ -175,8 +175,8 @@ const InFilterBar = () => {
         search={{ value: query, onChange: setQuery, placeholder: "Rechercher une perturbation…" }}
         quickFilters={
           <>
-            <Dropdown options={LINE_OPTIONS} value={line} onChange={setLine} />
-            <DateRangePicker aria-label="Période" value={period} onChange={setPeriod} months={1} referenceDate={REFERENCE} />
+            <Dropdown variant="button" aria-label="Ligne" options={LINE_OPTIONS} value={line} onChange={setLine} />
+            <DateRangePicker variant="button" aria-label="Période" value={period} onChange={setPeriod} months={1} referenceDate={REFERENCE} />
           </>
         }
         activeFilters={period.start && period.end ? [{ id: "period", label: formatRange(period.start, period.end) }] : []}

@@ -116,8 +116,8 @@ const SupervisionPage = () => {
         }}
         quickFilters={
           <>
-            <Dropdown label="Ligne" options={LINE_OPTIONS} value={line} onChange={(id) => { setLine(id); resetPage(); }} />
-            <Dropdown label="Sévérité" options={SEVERITY_OPTIONS} value={severity} onChange={(id) => { setSeverity(id); resetPage(); }} />
+            <Dropdown variant="button" aria-label="Ligne" options={LINE_OPTIONS} value={line} onChange={(id) => { setLine(id); resetPage(); }} />
+            <Dropdown variant="button" aria-label="Sévérité" options={SEVERITY_OPTIONS} value={severity} onChange={(id) => { setSeverity(id); resetPage(); }} />
           </>
         }
         activeFilters={activeFilters}

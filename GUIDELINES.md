@@ -34,7 +34,7 @@ Règles impératives pour générer du code avec ce design system :
 6. **Le CSS custom est limité au layout.** `display: flex`, `gap`, `padding`, `margin`, largeurs : OK en style inline. Couleurs, polices, bordures, ombres custom : interdit — les composants et tokens couvrent ces besoins.
 7. **Partir des [recettes](#recettes-de-pages-complètes)** pour toute page nouvelle, puis adapter. Ne pas réinventer la structure.
 8. **Un seul `PrimaryButton` plein par vue.** Plusieurs `GhostButton` sont autorisés. 3e action d'un groupe : `Link hideArrow`. `SecondaryButton` est déprécié.
-9. **Toujours passer `label`** sur les champs de formulaire (`TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker`, `CounterInput`, `TimePicker`). Exceptions, qui prennent `aria-label` à la place : la variante bouton (`variant="button"` de `DatePicker`, `DateRangePicker`, `Dropdown`, `TimePicker`) et le filtre rapide `DateRangePicker` d'une `FilterBar`.
+9. **Toujours passer `label`** sur les champs de formulaire (`TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker`, `CounterInput`, `TimePicker`). Exception, qui prend `aria-label` à la place : la variante bouton (`variant="button"` de `DatePicker`, `DateRangePicker`, `Dropdown`, `TimePicker`), notamment pour les filtres rapides d'une `FilterBar`.
 10. **Imports** : composants depuis `@ddaoellena/cadence-ui`, styles via un unique `import "@ddaoellena/cadence-ui/style.css"`, polices via les `<link>` de la section [Installation](#installation--setup).
 11. **Libellés en français correct, accents UTF-8 obligatoires.** Tout texte visible (labels, titres, boutons, placeholders, messages) s'écrit avec ses accents — jamais de français « aplati » en ASCII. Les fichiers source sont en UTF-8 : `é è ê à ç û É À` s'écrivent tels quels, sans entité HTML ni échappement unicode.
 
@@ -254,7 +254,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Saisie de texte long (multi-lignes) | `TextArea` | — |
 | Valeur numérique avec +/− | `CounterInput` | `TextInput type="number"` (interdit) |
 | Choix dans une liste courte (≥ 3 options, sans recherche) | `Dropdown` | `Autocomplete` (longue liste à filtrer) |
-| Période, date ou choix dans un dashboard | `DateRangePicker` / `DatePicker` / `Dropdown` avec `variant="button"` (à privilégier) | Variante champ (formulaire, `FilterBar`), `PrimaryButton outline` (action, pas de valeur) |
+| Période, date ou choix dans un dashboard | `DateRangePicker` / `DatePicker` / `Dropdown` avec `variant="button"` (à privilégier) | Variante champ (formulaire) ; dans une `FilterBar`, toujours la variante bouton ; `PrimaryButton outline` (action, pas de valeur) |
 | Choix dans une longue liste avec recherche au clavier | `Autocomplete` | `Dropdown` (liste courte) |
 | Choix exclusif 2-4 options **dans un formulaire** | `SegmentedControl` | — |
 | Bascule entre vues / modes d'affichage | `SegmentedControl` | `Tab` (navigation de page) |
@@ -664,7 +664,7 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 
 ### Règles
 
-- ✅ Toujours passer la prop `label` sur `TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker`, `CounterInput` et `TimePicker` — c'est le seul moyen de garantir la cohérence visuelle. Exceptions, qui prennent `aria-label` à la place : `DateRangePicker` en filtre rapide d'une `FilterBar`, et `DatePicker` / `DateRangePicker` / `Dropdown` / `TimePicker` en `variant="button"` dans un dashboard.
+- ✅ Toujours passer la prop `label` sur `TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker`, `CounterInput` et `TimePicker` — c'est le seul moyen de garantir la cohérence visuelle. Exception, qui prend `aria-label` à la place : `DatePicker` / `DateRangePicker` / `Dropdown` / `TimePicker` en `variant="button"` (dashboard, filtres rapides d'une `FilterBar`).
 - ✅ Une période → un seul `DateRangePicker`, jamais deux `DatePicker` « Début » / « Fin » (sauf saisie avec heures, non gérée par `DateRangePicker` en v1).
 - ✅ Utiliser la prop `helperText` de `TextInput`/`TextArea` pour les instructions.
 - ✅ Afficher les erreurs avec `state="error"` + message dans `helperText`.
