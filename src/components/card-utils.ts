@@ -1,48 +1,15 @@
-// Fonctions pures de Card (internes, non exportées par index.ts).
+// Fonctions pures de Card (internes, non exportées par index.ts). Le
+// formatage fr-FR vit dans chart-format.ts, partagé avec les graphiques.
 
-export type KpiGoodDirection = "up" | "down" | "neutral";
-export type KpiDeltaUnit = "%" | "pt" | "";
-export type KpiDeltaTone = "positive" | "negative" | "neutral";
-
-// Vrai signe moins typographique (U+2212) et espace fine insécable avant l'unité
-const MINUS = "−";
-const NNBSP = " ";
-
-const withTypographicMinus = (text: string): string => text.replace("-", MINUS);
-
-/** Valeur principale : nombre formaté en fr-FR, chaîne affichée telle quelle. */
-export const formatKpiValue = (
-  value: number | string,
-  format: Intl.NumberFormatOptions = { maximumFractionDigits: 1 },
-): string =>
-  typeof value === "number" ? withTypographicMinus(new Intl.NumberFormat("fr-FR", format).format(value)) : value;
-
-/** Variation signée : « +1,8 % », « −0,6 pt », « 0 % ». */
-export const formatDelta = (value: number, unit: KpiDeltaUnit = "%"): string => {
-  const number = new Intl.NumberFormat("fr-FR", { signDisplay: "exceptZero", maximumFractionDigits: 1 }).format(value);
-  return `${withTypographicMinus(number)}${unit ? `${NNBSP}${unit}` : ""}`;
-};
-
-/** Couleur de la variation selon le sens favorable de l'indicateur. */
-export const getDeltaTone = (value: number, goodDirection: KpiGoodDirection): KpiDeltaTone => {
-  if (value === 0 || goodDirection === "neutral") return "neutral";
-  const isUp = value > 0;
-  return isUp === (goodDirection === "up") ? "positive" : "negative";
-};
-
-/** Phrase lue par les lecteurs d'écran : « en baisse de 12 % vs hier, favorable ». */
-export const describeDelta = (
-  value: number,
-  unit: KpiDeltaUnit,
-  goodDirection: KpiGoodDirection,
-  label?: string,
-): string => {
-  const amount = formatDelta(Math.abs(value), unit).replace("+", "");
-  const trend = value === 0 ? "stable" : `en ${value > 0 ? "hausse" : "baisse"} de ${amount}`;
-  const tone = getDeltaTone(value, goodDirection);
-  const verdict = tone === "positive" ? ", favorable" : tone === "negative" ? ", défavorable" : "";
-  return `${trend}${label ? ` ${label}` : ""}${verdict}`;
-};
+export {
+  describeDelta,
+  formatDelta,
+  formatKpiValue,
+  getDeltaTone,
+  type DeltaTone as KpiDeltaTone,
+  type DeltaUnit as KpiDeltaUnit,
+  type GoodDirection as KpiGoodDirection,
+} from "./chart-format";
 
 /**
  * Tracé SVG d'une mini-courbe dans une boîte width × height, avec une marge

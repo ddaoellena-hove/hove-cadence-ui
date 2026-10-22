@@ -1,0 +1,19 @@
+/* ── BarChart ────────────────────────────────────────────────────────────── */
+/* Cadre, axes, légende et tableau : chart-frame.css (ChartFrame). */
+
+/* Liseré blanc entre les segments d'une pile et entre barres groupées */
+.bar-chart__bar rect:first-child {
+  stroke: var(--cadence-color-white, #ffffff);
+  stroke-width: 1;
+}
+
+.bar-chart__hover {
+  fill: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
+}
+
+.bar-chart__value {
+  fill: var(--cadence-color-label, #1a3e45);
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-size: 11px;
+  font-weight: 500;
+}
