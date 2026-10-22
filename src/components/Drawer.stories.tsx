@@ -54,14 +54,14 @@ function DrawerDemo() {
               <Badge label={selected.cause} />
             </div>
             <dl style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: "8px 16px", margin: 0, fontSize: 13 }}>
-              <dt style={{ color: "var(--cadence-color-text-muted)" }}>Ligne</dt>
+              <dt style={{ color: "var(--cadence-color-text-secondary)" }}>Ligne</dt>
               <dd style={{ margin: 0 }}>{selected.line}</dd>
-              <dt style={{ color: "var(--cadence-color-text-muted)" }}>Arrêts impactés</dt>
+              <dt style={{ color: "var(--cadence-color-text-secondary)" }}>Arrêts impactés</dt>
               <dd style={{ margin: 0 }}>{selected.impactedStops}</dd>
-              <dt style={{ color: "var(--cadence-color-text-muted)" }}>Début</dt>
+              <dt style={{ color: "var(--cadence-color-text-secondary)" }}>Début</dt>
               <dd style={{ margin: 0 }}>{dateFormat.format(selected.start)}</dd>
             </dl>
-            <p style={{ color: "var(--cadence-color-text-muted)", fontSize: 13, lineHeight: 1.6, margin: 0 }}>
+            <p style={{ color: "var(--cadence-color-text-secondary)", fontSize: 13, lineHeight: 1.6, margin: 0 }}>
               Consultez le détail de la perturbation sans quitter la liste. Les actions de modification restent
               accessibles dans le pied du panneau.
             </p>

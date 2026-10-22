@@ -54,7 +54,7 @@ export const Dismissible: Story = {
           />
         ))}
         {badges.length === 0 && (
-          <span style={{ fontFamily: "Inter, Helvetica", fontSize: 12, color: "#809397" }}>
+          <span style={{ fontFamily: "Inter, Helvetica", fontSize: 12, color: "var(--cadence-color-text-secondary, #64757a)" }}>
             Tous les badges ont été supprimés.
           </span>
         )}
