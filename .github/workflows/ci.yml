@@ -31,6 +31,7 @@ jobs:
           npx tsc -b --noEmit
           npx vitest run
           npm run build:lib
+          npm run smoke:dist
       - name: React 18
         if: matrix.react == 18
         run: npm run test:react18
