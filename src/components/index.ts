@@ -12,6 +12,7 @@ export * from './Dropdown';
 export type { TriggerVariant } from './button-trigger-utils';
 export * from './FilterBar';
 export * from './GhostButton';
+export * from './LineChart';
 export * from './Link';
 export * from './Modal';
 export * from './Checkbox';

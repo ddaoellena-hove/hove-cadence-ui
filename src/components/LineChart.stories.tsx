@@ -1,0 +1,205 @@
+import { useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, fn, userEvent, waitFor, within } from "storybook/test";
+import { LineChart } from "./LineChart";
+import {
+  dailyPunctuality,
+  hourlyDelays,
+  punctualityByMode,
+  STRIKE_END,
+  STRIKE_START,
+  tripsByMode,
+} from "../stories/fixtures/transport";
+
+const meta: Meta<typeof LineChart> = {
+  title: "Components/LineChart",
+  component: LineChart,
+  tags: ["autodocs"],
+  parameters: {
+    // Les violations a11y font échouer les tests de ce composant
+    a11y: { test: "error" },
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ maxWidth: 760, padding: 8 }}>
+        <Story />
+      </div>
+    ),
+  ],
+};
+
+export default meta;
+type Story = StoryObj<typeof LineChart>;
+
+const delaySeries = [{ id: "delay", label: "Retard moyen", data: hourlyDelays }];
+
+/** Retards moyens par heure sur 7 jours : seuil d'alerte et bande « Grève 16/10 ». */
+export const RetardsParHeure: Story = {
+  name: "Retards par heure (seuil + grève)",
+  args: {
+    title: "Retard moyen par heure",
+    description: "Du mercredi 14 au mardi 20 octobre 2026, toutes lignes",
+    unit: "min",
+    goodDirection: "down",
+    series: delaySeries,
+    thresholds: [{ value: 5, label: "Seuil d'alerte 5 min" }],
+    annotations: [{ at: [STRIKE_START, STRIKE_END], label: "Grève 16/10" }],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const plot = canvas.getByRole("group", { name: "Retard moyen par heure" });
+    await expect(plot).toHaveAccessibleDescription("Du mercredi 14 au mardi 20 octobre 2026, toutes lignes");
+
+    // Clavier : « Voir les données » puis le tracé ; le focus active le premier point
+    await userEvent.tab();
+    await expect(canvas.getByRole("button", { name: "Voir les données" })).toHaveFocus();
+    await userEvent.tab();
+    await expect(plot).toHaveFocus();
+    const live = plot.querySelector("[aria-live]") as HTMLElement;
+    await waitFor(() => expect(live).toHaveTextContent(/^mercredi 14 octobre à 05:00 — Retard moyen : /));
+    await userEvent.keyboard("{ArrowRight}");
+    await expect(live).toHaveTextContent(/^mercredi 14 octobre à 06:00/);
+    await userEvent.keyboard("{End}");
+    await expect(live).toHaveTextContent(/^mardi 20 octobre à 23:00/);
+    // Le tooltip suit, dans un portail
+    await expect(document.body.querySelector(".chart-tooltip")).not.toBeNull();
+    await userEvent.keyboard("{Escape}");
+    await expect(live).toHaveTextContent("");
+
+    // Pendant la grève, le tooltip signale l'annotation et le seuil franchi
+    await userEvent.keyboard("{Home}");
+    for (let i = 0; i < 2 * 19 + 3; i++) await userEvent.keyboard("{ArrowRight}");
+    await expect(live).toHaveTextContent(/vendredi 16 octobre à 08:00.*Grève 16\/10.*Seuil d'alerte 5 min franchi/);
+
+    // Le seuil est libellé et marqué « franchi »
+    await expect(canvasElement.querySelector(".line-chart__threshold--breached")).not.toBeNull();
+  },
+};
+
+/** Ponctualité sur 30 jours en aire, objectif 95 % (une baisse est défavorable). */
+export const PonctualiteEnAire: Story = {
+  name: "Ponctualité sur 30 jours (aire)",
+  args: {
+    title: "Ponctualité",
+    description: "Du 21 septembre au 20 octobre 2026",
+    variant: "area",
+    unit: "%",
+    yDomain: [85, 100],
+    goodDirection: "up",
+    series: [{ id: "punctuality", label: "Ponctualité", data: dailyPunctuality }],
+    thresholds: [{ value: 95, label: "Objectif 95 %" }],
+    annotations: [{ at: new Date(2026, 9, 16), label: "Grève" }],
+  },
+};
+
+/** Trois séries : couleur, forme de marqueur et motif de trait distincts ; légende cliquable. */
+export const PonctualiteParMode: Story = {
+  name: "Ponctualité par mode (3 séries)",
+  args: {
+    title: "Ponctualité par mode",
+    description: "Du 21 septembre au 20 octobre 2026",
+    unit: "%",
+    yDomain: [85, 100],
+    series: punctualityByMode,
+    thresholds: [{ value: 95, label: "Objectif 95 %" }],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const rer = canvas.getByRole("button", { name: "RER" });
+    await expect(rer).toHaveAttribute("aria-pressed", "true");
+    await userEvent.click(rer);
+    await expect(rer).toHaveAttribute("aria-pressed", "false");
+    await expect(canvasElement.querySelectorAll(".line-chart__line")).toHaveLength(2);
+  },
+};
+
+/** Aires empilées : courses réalisées par mode. */
+export const CoursesEmpilees: Story = {
+  name: "Courses par mode (aires empilées)",
+  args: {
+    title: "Courses réalisées par mode",
+    description: "En milliers, du 14 au 20 octobre 2026",
+    variant: "area",
+    stacked: true,
+    unit: "k",
+    series: tripsByMode,
+    annotations: [{ at: new Date(2026, 9, 16), label: "Grève" }],
+  },
+};
+
+/** Mode compact, sans axes, pour une Card. */
+export const Compact: Story = {
+  args: {
+    title: "Retard moyen, 7 jours",
+    compact: true,
+    unit: "min",
+    goodDirection: "down",
+    series: [{ id: "delay", label: "Retard moyen", data: hourlyDelays.filter((_, i) => i % 6 === 0) }],
+    thresholds: [{ value: 5, label: "Seuil 5 min" }],
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ width: 240 }}>
+        <Story />
+      </div>
+    ),
+  ],
+};
+
+/** Alternative tabulaire : présente dans le DOM, affichée par « Voir les données ». */
+export const VoirLesDonnees: Story = {
+  name: "Voir les données",
+  args: { ...PonctualiteEnAire.args },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const table = canvas.getByRole("table", { name: "Ponctualité" });
+    await expect(table.querySelectorAll("tbody tr")).toHaveLength(30);
+    await expect(table.closest(".chart__sr-only")).not.toBeNull();
+    await userEvent.click(canvas.getByRole("button", { name: "Voir les données" }));
+    await expect(table.closest(".chart__sr-only")).toBeNull();
+    await expect(canvas.getByRole("rowheader", { name: "lundi 21 septembre 2026" })).toBeInTheDocument();
+    await expect(canvas.getByRole("columnheader", { name: "Ponctualité (%)" })).toBeInTheDocument();
+  },
+};
+
+/** Le graphique suit la largeur de son conteneur (ResizeObserver). */
+export const Redimensionnement: Story = {
+  render: (args) => {
+    const [width, setWidth] = useState(600);
+    return (
+      <div>
+        <button type="button" onClick={() => setWidth(360)}>
+          Réduire à 360 px
+        </button>
+        <div style={{ width }} data-testid="conteneur">
+          <LineChart {...args} />
+        </div>
+      </div>
+    );
+  },
+  args: { ...PonctualiteEnAire.args },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const svg = canvasElement.querySelector(".chart__svg") as SVGSVGElement;
+    await waitFor(() => expect(svg.getAttribute("width")).toBe("600"));
+    await userEvent.click(canvas.getByRole("button", { name: "Réduire à 360 px" }));
+    await waitFor(() => expect(svg.getAttribute("width")).toBe("360"));
+  },
+};
+
+/** États : chargement, vide, erreur avec « Réessayer ». */
+export const Chargement: Story = { args: { title: "Retard moyen par heure", series: [], state: "loading" } };
+
+export const Vide: Story = { args: { title: "Retard moyen par heure", series: [], state: "empty" } };
+
+const onRetry = fn();
+
+export const Erreur: Story = {
+  args: { title: "Retard moyen par heure", series: [], state: "error", onRetry },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("alert")).toHaveTextContent("Impossible de charger les données.");
+    await userEvent.click(canvas.getByRole("button", { name: "Réessayer" }));
+    await expect(onRetry).toHaveBeenCalledTimes(1);
+  },
+};

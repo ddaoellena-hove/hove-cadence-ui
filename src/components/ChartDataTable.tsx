@@ -11,7 +11,13 @@ interface ChartDataTableProps {
 
 /** Alternative tabulaire d'un graphique (interne) : vrai <table>, toujours dans le DOM. */
 export const ChartDataTable = ({ caption, columns, rows, numeric = [], visible }: ChartDataTableProps) => (
-  <div className={visible ? "chart-table-wrap" : "chart__sr-only"}>
+  // Affiché, il peut défiler : zone focusable et nommée, atteignable au clavier
+  <div
+    className={visible ? "chart-table-wrap" : "chart__sr-only"}
+    tabIndex={visible ? 0 : undefined}
+    role={visible ? "region" : undefined}
+    aria-label={visible ? `Données : ${caption}` : undefined}
+  >
     <table className="chart-table">
       <caption>{caption}</caption>
       <thead>
