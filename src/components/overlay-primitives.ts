@@ -27,7 +27,7 @@ const FOCUSABLE_SELECTOR = [
 /** Éléments focusables visibles de la surface, dans l'ordre du DOM. */
 const getFocusable = (root: HTMLElement): HTMLElement[] =>
   Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
-    (el) => el.getClientRects().length > 0,
+    (el) => el.tabIndex >= 0 && !el.closest("[inert]") && !el.matches(":disabled") && getComputedStyle(el).visibility !== "hidden" && el.getClientRects().length > 0,
   );
 
 /**
@@ -50,27 +50,31 @@ const lockScroll = (): (() => void) => {
   };
 };
 
-/**
- * Rend inerte tout le reste de la page : chaque enfant direct de `body` sauf
- * celui qui contient la surface (le nœud du portail). `inert` retire focus,
- * clics et lecture AT ; `aria-hidden` sert de repli. On ne touche qu'aux nœuds
- * qui ne l'étaient pas déjà (surcouches empilées).
- */
-const setBackgroundInert = (surface: HTMLElement): (() => void) => {
+/** Une seule surcouche possède le clavier et le fond à un instant donné. */
+const surfaces: HTMLElement[] = [];
+let restoreBackground: (() => void) | undefined;
+let unlockPage: (() => void) | undefined;
+const isTopSurface = (surface: HTMLElement | null) => surfaces.at(-1) === surface;
+
+const refreshBackground = () => {
+  restoreBackground?.();
+  restoreBackground = undefined;
+  const surface = surfaces.at(-1);
+  if (!surface) return;
   const host = Array.from(document.body.children).find((el) => el.contains(surface));
-  const changed = (Array.from(document.body.children) as HTMLElement[]).filter(
-    (el) => el !== host && !el.hasAttribute("inert"),
-  );
-  changed.forEach((el) => {
+  const previous = Array.from(document.body.children)
+    .filter((el) => el !== host)
+    .map((el) => ({ el, inert: el.getAttribute("inert"), hidden: el.getAttribute("aria-hidden") }));
+  previous.forEach(({ el }) => {
     el.setAttribute("inert", "");
     el.setAttribute("aria-hidden", "true");
   });
-  return () => {
-    changed.forEach((el) => {
-      el.removeAttribute("inert");
-      el.removeAttribute("aria-hidden");
-    });
-  };
+  restoreBackground = () => previous.forEach(({ el, inert, hidden }) => {
+    if (inert === null) el.removeAttribute("inert");
+    else el.setAttribute("inert", inert);
+    if (hidden === null) el.removeAttribute("aria-hidden");
+    else el.setAttribute("aria-hidden", hidden);
+  });
 };
 
 export interface UseOverlayOptions {
@@ -104,17 +108,24 @@ export const useOverlay = ({ isOpen, onClose, surfaceRef, closeOnEscape = true }
     if (!surface) return;
 
     const trigger = document.activeElement as HTMLElement | null;
-    const unlockScroll = lockScroll();
-    const restoreInert = setBackgroundInert(surface);
+    if (surfaces.length === 0) unlockPage = lockScroll();
+    surfaces.push(surface);
+    refreshBackground();
 
     const focusables = getFocusable(surface);
     (focusables[0] ?? surface).focus();
 
     return () => {
-      restoreInert();
-      unlockScroll();
-      // Rend le focus au déclencheur s'il est toujours dans le document.
-      if (trigger && document.contains(trigger)) trigger.focus();
+      const wasTop = isTopSurface(surface);
+      surfaces.splice(surfaces.indexOf(surface), 1);
+      refreshBackground();
+      if (surfaces.length === 0) { unlockPage?.(); unlockPage = undefined; }
+      // Une fermeture en arrière-plan ne doit pas voler le focus au dialogue actif.
+      if (wasTop && trigger?.isConnected && !trigger.closest("[inert]")) trigger.focus();
+      else if (wasTop) {
+        const next = surfaces.at(-1);
+        if (next) (getFocusable(next)[0] ?? next).focus();
+      }
     };
   }, [isOpen, surfaceRef]);
 
@@ -122,12 +133,7 @@ export const useOverlay = ({ isOpen, onClose, surfaceRef, closeOnEscape = true }
   useEffect(() => {
     if (!isOpen) return;
     const handleKey = (e: KeyboardEvent) => {
-      if (closeOnEscape && e.key === "Escape") {
-        e.stopPropagation();
-        onCloseRef.current();
-        return;
-      }
-      if (e.key !== "Tab") return;
+      if (e.key !== "Tab" || !isTopSurface(surfaceRef.current)) return;
       const surface = surfaceRef.current;
       if (!surface) return;
       const focusables = getFocusable(surface);
@@ -147,8 +153,21 @@ export const useOverlay = ({ isOpen, onClose, surfaceRef, closeOnEscape = true }
         first.focus();
       }
     };
+    // Échap est traité après le contrôle actif : un champ peut annuler son
+    // brouillon, ou un menu se fermer, sans fermer aussi le dialogue parent.
+    const handleEscape = (e: KeyboardEvent) => {
+      if (isTopSurface(surfaceRef.current) && closeOnEscape && e.key === "Escape" && !e.defaultPrevented) {
+        e.preventDefault();
+        e.stopPropagation();
+        onCloseRef.current();
+      }
+    };
     document.addEventListener("keydown", handleKey, true);
-    return () => document.removeEventListener("keydown", handleKey, true);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("keydown", handleKey, true);
+      document.removeEventListener("keydown", handleEscape);
+    };
   }, [isOpen, closeOnEscape, surfaceRef]);
 };
 

@@ -87,3 +87,7 @@ import { Meta } from "@storybook/addon-docs/blocks";
 <div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas utiliser <code>Tab</code> pour de la navigation entre pages — uniquement pour des vues au sein d'une même URL.</span></div>
 
 </div>
+
+## Parcours à plusieurs niveaux
+
+Utiliser **SegmentedControl** (apparence de l’ancien Alt) pour choisir la vue principale, puis **SecondaryTab** dans un **TabList level="secondary"** pour ses sous-vues. Le SegmentedControl reste un groupe autonome, sans TabList autour. Voir la story Components/SecondaryTab « Deux niveaux (SegmentedControl + SecondaryTab) ».

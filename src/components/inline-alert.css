@@ -1,0 +1,93 @@
+/* ── InlineAlert ───────────────────────────────────────────────────────────
+   Bandeau dans le flux. Fond et texte par paires de tokens --cadence-status-*
+   (contraste AA). Icône colorée comme le texte. */
+
+.inline-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border-radius: var(--cadence-radius-lg, 10px);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+}
+
+/* ── Types (fond + texte) ── */
+.inline-alert--information {
+  background: var(--cadence-status-info-bg, #eff6ff);
+  color: var(--cadence-status-info-fg, #1d4ed8);
+}
+.inline-alert--success {
+  background: var(--cadence-status-completed-bg, #dcfce7);
+  color: var(--cadence-status-completed-fg, #15803d);
+}
+.inline-alert--warning {
+  background: var(--cadence-status-warning-bg, #fff7ed);
+  color: var(--cadence-status-warning-fg, #c2410c);
+}
+.inline-alert--error {
+  background: var(--cadence-status-critical-bg, #fee2e2);
+  color: var(--cadence-status-critical-fg, #b91c1c);
+}
+
+.inline-alert__icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: inherit;
+}
+
+.inline-alert__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.inline-alert__title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: inherit;
+}
+
+/* Le corps en encre pour une lecture confortable (le bandeau porte la couleur). */
+.inline-alert__text {
+  color: var(--cadence-color-primary, #002830);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.inline-alert__actions {
+  margin-top: 6px;
+}
+
+.inline-alert__close {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: var(--cadence-radius-sm, 6px);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 120ms ease, background-color 120ms ease;
+}
+
+.inline-alert__close:hover {
+  opacity: 1;
+  background: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
+}
+
+.inline-alert__close:focus-visible {
+  outline: none;
+  opacity: 1;
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+}

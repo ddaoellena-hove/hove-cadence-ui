@@ -22,7 +22,7 @@ export interface SecondaryTabProps {
 
 /**
  * SecondaryTab — onglet de sous-navigation (niveau 2), à placer sous une rangée
- * de `Tab`. Style ghost (comme `GhostButton`) : pastille douce sur l'onglet
+ * de `SegmentedControl`. Style ghost (comme `GhostButton`) : pastille douce sur l'onglet
  * actif, inactifs en gris, compteur optionnel. Composant item-level : on rend un
  * `<SecondaryTab>` par onglet dans une rangée.
  */

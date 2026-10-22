@@ -1,4 +1,6 @@
-import { useState, useRef, useEffect, useLayoutEffect, useId, type KeyboardEvent } from "react";
+import { TimeFields } from "./TimeFields";
+import { SegmentedControl } from "./SegmentedControl";
+import { useState, useRef, useEffect, useId, type KeyboardEvent } from "react";
 import { PrimaryButton } from "./PrimaryButton";
 import { ButtonTriggerContent } from "./ButtonTrigger";
 import { buttonTriggerClass, type TriggerVariant } from "./button-trigger-utils";
@@ -27,7 +29,7 @@ export interface DatePickerProps {
   /** Label for the confirm button when withTime is true */
   labelConfirm?: string;
   /**
-   * When provided, renders a SegmentedControlAlt inside the popover header.
+   * When provided, renders a SegmentedControl inside the popover header.
    * The parent controls which tab is active via `segmentedValue` + `onSegmentChange`.
    */
   segmentedOptions?: DatePickerSegmentedOption[];
@@ -42,58 +44,6 @@ export interface DatePickerProps {
   variant?: TriggerVariant;
   /** Nom accessible sans `label` visible (variante bouton) : « Date ». */
   "aria-label"?: string;
-}
-
-/** Minimal inline SegmentedControlAlt used only inside the popover */
-function InternalSegmented({
-  options,
-  value: valueProp,
-  onChange,
-}: {
-  options: DatePickerSegmentedOption[];
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const [pillStyle, setPillStyle] = useState<{ left: number; width: number }>({
-    left: 0,
-    width: 0,
-  });
-
-  useLayoutEffect(() => {
-    const idx = options.findIndex((o) => o.value === valueProp);
-    const el = tabRefs.current[idx];
-    if (!el) return;
-    setPillStyle({ left: el.offsetLeft, width: el.offsetWidth });
-  }, [valueProp, options]);
-
-  return (
-    <div className="dp-segmented" role="group" aria-label="Groupe d'onglets">
-      <span
-        className="dp-segmented__pill"
-        style={{ left: pillStyle.left, width: pillStyle.width }}
-        aria-hidden="true"
-      />
-      {options.map((opt, idx) => (
-        <button
-          key={opt.value}
-          ref={(el) => {
-            tabRefs.current[idx] = el;
-          }}
-          type="button"
-          role="radio"
-          aria-checked={opt.value === valueProp}
-          className={`dp-segmented__tab${opt.value === valueProp ? " dp-segmented__tab--active" : ""}`}
-          onClick={() => {
-            if (opt.value !== valueProp) onChange(opt.value);
-          }}
-          tabIndex={opt.value === valueProp ? 0 : -1}
-        >
-          {opt.label}
-        </button>
-      ))}
-    </div>
-  );
 }
 
 export const DatePicker = ({
@@ -325,7 +275,7 @@ export const DatePicker = ({
             segmentedValue !== undefined &&
             onSegmentChange && (
               <div className="date-picker__segmented-header">
-                <InternalSegmented
+                <SegmentedControl aria-label="Période du calendrier"
                   options={segmentedOptions}
                   value={segmentedValue}
                   onChange={onSegmentChange}
@@ -359,49 +309,8 @@ export const DatePicker = ({
           {withTime && (
             <>
               <div className="date-picker__time-section">
-                <div className="date-picker__time-col">
-                  <button
-                    type="button"
-                    className="date-picker__time-arrow"
-                    onClick={() => cycleHour(1)}
-                    aria-label="Augmenter l'heure"
-                  >
-                    ▲
-                  </button>
-                  <div className="date-picker__time-box">
-                    {String(hour).padStart(2, "0")}
-                  </div>
-                  <button
-                    type="button"
-                    className="date-picker__time-arrow"
-                    onClick={() => cycleHour(-1)}
-                    aria-label="Diminuer l'heure"
-                  >
-                    ▼
-                  </button>
-                </div>
-                <span className="date-picker__time-sep">:</span>
-                <div className="date-picker__time-col">
-                  <button
-                    type="button"
-                    className="date-picker__time-arrow"
-                    onClick={() => cycleMinute(15)}
-                    aria-label="Augmenter les minutes"
-                  >
-                    ▲
-                  </button>
-                  <div className="date-picker__time-box">
-                    {String(minute).padStart(2, "0")}
-                  </div>
-                  <button
-                    type="button"
-                    className="date-picker__time-arrow"
-                    onClick={() => cycleMinute(-15)}
-                    aria-label="Diminuer les minutes"
-                  >
-                    ▼
-                  </button>
-                </div>
+                <TimeFields hour={String(hour).padStart(2, "0")} minute={String(minute).padStart(2, "0")}
+                  onStep={(unit, direction) => unit === "hour" ? cycleHour(direction) : cycleMinute(direction * 15)} />
               </div>
 
               <div className="date-picker__footer">

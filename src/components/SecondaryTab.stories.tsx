@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
 import { SecondaryTab } from "./SecondaryTab";
-import { Tab } from "./Tab";
+import { SegmentedControl } from "./SegmentedControl";
 import { TabList } from "./TabList";
 
 const meta: Meta<typeof SecondaryTab> = {
@@ -83,32 +83,18 @@ export const SubTabBar: Story = {
 };
 
 /**
- * Hiérarchie à deux niveaux : rangée de `Tab` (niveau page) + rangée de
+ * Hiérarchie à deux niveaux : `SegmentedControl` (vue principale) + rangée de
  * `SecondaryTab` (sous-filtres de la vue sélectionnée).
  */
 export const TwoLevels: Story = {
-  name: "Two levels (Tab + SecondaryTab)",
+  name: "Deux niveaux (SegmentedControl + SecondaryTab)",
   render: () => {
     const [primary, setPrimary] = useState("datasets");
     const [secondary, setSecondary] = useState("published");
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 12, maxWidth: 520 }}>
-        {/* Niveau 1 — Tab, avec séparateur pleine largeur */}
-        <div style={{ borderBottom: "1px solid var(--cadence-color-border, #e5e5e5)" }}>
-          <TabList aria-label="Section">
-            {[
-              { id: "datasets", label: "Jeux de données" },
-              { id: "stops", label: "Arrêts" },
-            ].map((t) => (
-              <Tab
-                key={t.id}
-                label={t.label}
-                variant={primary === t.id ? "active" : "default"}
-                onClick={() => setPrimary(t.id)}
-              />
-            ))}
-          </TabList>
-        </div>
+        <SegmentedControl aria-label="Section" value={primary} onChange={setPrimary}
+          options={[{ value: "datasets", label: "Jeux de données" }, { value: "stops", label: "Arrêts" }]} />
 
         {/* Niveau 2 — SecondaryTab */}
         <TabList aria-label="Statut de publication" level="secondary">
@@ -119,6 +105,8 @@ export const TwoLevels: Story = {
           ].map((s) => (
             <SecondaryTab
               key={s.id}
+              id={`section-${s.id}`}
+              controls="section-content"
               label={s.label}
               count={s.count}
               variant={secondary === s.id ? "active" : "default"}
@@ -126,7 +114,19 @@ export const TwoLevels: Story = {
             />
           ))}
         </TabList>
+        <div role="tabpanel" id="section-content" aria-labelledby={`section-${secondary}`} tabIndex={0}>
+          {primary === "datasets" ? "Jeux de données" : "Arrêts"} — {secondary === "published" ? "Publiés" : secondary === "planned" ? "Planifiés" : "Brouillons"}
+        </div>
       </div>
     );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("radio", { name: "Arrêts" }));
+    await userEvent.click(canvas.getByRole("tab", { name: /^Planifiés/ }));
+    await expect(canvas.getByRole("tabpanel")).toHaveTextContent("Arrêts — Planifiés");
+    await userEvent.keyboard("{ArrowRight}");
+    await expect(canvas.getByRole("tabpanel")).toHaveTextContent("Arrêts — Brouillons");
+    await expect(canvas.getByRole("radio", { name: "Arrêts" })).toBeChecked();
   },
 };

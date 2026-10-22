@@ -40,12 +40,15 @@
   --cadence-color-danger-active-overlay: rgba(218, 30, 40, 0.12); /* Appui d'un GhostButton danger */
 
   /* ── Couleurs — accent interactif (sélection) ──────────────────────────── */
-  --cadence-color-accent: #1b6cff;         /* Élément actif / sélectionné : Sidebar, options de menu, SecondaryButton rempli */
+  --cadence-color-accent: #1b6cff;         /* Élément actif / sélectionné : Sidebar, options de menu, SecondaryButton rempli ; remplissage de ProgressBar */
   --cadence-color-accent-subtle: #f0f6ff;  /* Fond de survol d'un élément actif (Sidebar) */
 
   /* ── Couleurs — surfaces & bordures ────────────────────────────────────── */
   --cadence-color-white: #ffffff;          /* Surfaces de premier plan */
+  --cadence-color-segmented-track: #e6f0fa;
+  --cadence-color-segmented-track-disabled: #dde8f0;
   --cadence-color-surface-alt: #eef1f4;    /* Fonds de wrapper (TableCard, Badge) */
+  --cadence-color-surface-subtle: #fafafa; /* Fond de carte discret sur fond blanc (fichiers de FileUpload) */
   --cadence-color-border: #e5e5e5;         /* Bordures par défaut */
   --cadence-color-border-strong: #bfc9cb;
   --cadence-color-scrollbar-thumb: rgba(0, 40, 48, 0.2);        /* Curseur des barres de défilement (cadence-scrollbar) */

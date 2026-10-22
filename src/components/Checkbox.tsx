@@ -48,7 +48,10 @@ export const Checkbox = ({
       tabIndex={isDisabled ? -1 : 0}
       onClick={handleClick}
       onKeyDown={(e) => {
-        if (e.key === " " || e.key === "Enter") handleClick();
+        if (e.key === " " || e.key === "Enter") {
+          e.preventDefault();
+          handleClick();
+        }
       }}
     >
       {hasInner && <div className={innerClass} />}

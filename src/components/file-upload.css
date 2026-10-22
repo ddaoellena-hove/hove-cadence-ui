@@ -1,0 +1,210 @@
+/* ── FileUpload ────────────────────────────────────────────────────────────
+   Zone de dépôt + liste de fichiers avec état. */
+
+.file-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  width: 100%;
+}
+
+/* ── Zone de dépôt ── */
+.file-upload__zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 28px 20px;
+  border: 1.5px dashed var(--cadence-color-border-strong, #bfc9cb);
+  border-radius: var(--cadence-radius-lg, 10px);
+  background: var(--cadence-color-white, #ffffff);
+  text-align: center;
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.file-upload__zone--dragging {
+  border-color: var(--cadence-color-accent, #1b6cff);
+  background: var(--cadence-color-accent-subtle, #f0f6ff);
+}
+
+.file-upload__zone-icon {
+  color: var(--cadence-color-icon-muted, #69797d);
+}
+
+.file-upload__zone-text {
+  margin: 0;
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 13px;
+}
+
+.file-upload__hint {
+  margin: 4px 0 0;
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 12px;
+}
+
+/* Input natif masqué visuellement mais accessible. */
+.file-upload__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Erreurs de validation ── */
+.file-upload__errors {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.file-upload__error-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--cadence-color-danger-text, #b91c1c);
+  font-size: 12px;
+}
+
+/* ── Liste des fichiers : une carte par fichier ── */
+.file-upload__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.file-upload__file {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 20px 20px;
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-lg, 10px);
+  background: var(--cadence-color-surface-subtle, #fafafa);
+}
+
+.file-upload__file--error {
+  border-color: var(--cadence-color-danger-border, #ed8e93);
+}
+
+/* Intitulé d'état en capitales (le texte source reste en casse normale).
+   Gris placeholder : 4,5:1 sur surface-subtle (icon-muted n'y fait que 4,3:1). */
+.file-upload__file-caption {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--cadence-color-placeholder, #737373);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.file-upload__file--error .file-upload__file-caption {
+  color: var(--cadence-color-danger-text, #b91c1c);
+}
+
+.file-upload__file-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-left: 12px;
+}
+
+/* Picto document : dégradé ardoise, coin replié clair. */
+.file-upload__glyph {
+  flex-shrink: 0;
+}
+
+.file-upload__glyph-top {
+  stop-color: var(--cadence-color-border-strong, #bfc9cb);
+}
+
+.file-upload__glyph-bottom {
+  stop-color: var(--cadence-color-icon-muted, #69797d);
+}
+
+.file-upload__glyph-fold {
+  fill: var(--cadence-color-border, #e5e5e5);
+}
+
+.file-upload__file--error .file-upload__glyph-bottom {
+  stop-color: var(--cadence-color-danger-border, #ed8e93);
+}
+
+.file-upload__file-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.file-upload__file-name {
+  color: var(--cadence-color-primary, #002830);
+  font-size: 13px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-upload__file-size {
+  color: var(--cadence-color-placeholder, #737373);
+  font-size: 12px;
+}
+
+/* Corbeille : bouton outline danger élargi, comme la maquette. */
+.file-upload__delete.base-button--icon-only {
+  flex-shrink: 0;
+  width: 60px;
+}
+
+.file-upload__dismiss {
+  flex-shrink: 0;
+  color: var(--cadence-color-icon-muted, #69797d);
+}
+
+/* Progression : barre fine sur piste blanche (remplissage accent par défaut), pourcentage à droite. */
+.file-upload__file-progress {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.file-upload__file-progress .progress-bar {
+  flex: 1;
+}
+
+.file-upload__file-progress .progress-bar__track {
+  height: 4px;
+  background: var(--cadence-color-white, #ffffff);
+}
+
+.file-upload__file-percent {
+  flex-shrink: 0;
+  min-width: 32px;
+  color: var(--cadence-color-placeholder, #737373);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.file-upload__file-error {
+  margin: 0;
+  color: var(--cadence-color-danger-text, #b91c1c);
+  font-size: 12px;
+}

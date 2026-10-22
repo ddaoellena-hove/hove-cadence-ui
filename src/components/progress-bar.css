@@ -1,0 +1,82 @@
+/* ── ProgressBar ───────────────────────────────────────────────────────────
+   Piste neutre, remplissage selon la teinte. Animation d'indéterminé coupée
+   sous prefers-reduced-motion. */
+
+.progress-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  width: 100%;
+}
+
+/* ── En-tête (libellé + valeur) ── */
+.progress-bar__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.progress-bar__label {
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.progress-bar__value {
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Piste ── */
+.progress-bar__track {
+  position: relative;
+  overflow: hidden;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--cadence-color-surface-alt, #eef1f4);
+}
+
+/* ── Remplissage ── */
+.progress-bar__fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--cadence-color-accent, #1b6cff);
+  transition: width 240ms ease;
+}
+
+.progress-bar--success .progress-bar__fill {
+  background: var(--cadence-color-success, #24a148);
+}
+
+.progress-bar--danger .progress-bar__fill {
+  background: var(--cadence-color-danger, #da1e28);
+}
+
+/* ── Indéterminé : navette glissante ── */
+.progress-bar--indeterminate .progress-bar__fill {
+  width: 40%;
+  animation: progress-bar-slide 1.4s ease-in-out infinite;
+}
+
+@keyframes progress-bar-slide {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-bar__fill {
+    transition: none;
+  }
+  .progress-bar--indeterminate .progress-bar__fill {
+    animation: none;
+    width: 100%;
+    opacity: 0.4;
+  }
+}

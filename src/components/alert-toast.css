@@ -104,31 +104,33 @@
 }
 
 /* ── Progress bar (bottom of card) ── */
-.alert-toast__progress-track {
-  height: 6px;
-  background-color: var(--cadence-color-border, #e5e5e5);
+/* La barre est un ProgressBar ; on préserve l'aspect d'origine (piste grise,
+   coins carrés, couleur par type) en surchargeant ses éléments internes. */
+.alert-toast__progress {
   margin: 8px 0 0;
-  overflow: hidden;
-  border-radius: 0;
-  width: 100%;
 }
 
-.alert-toast__progress-fill {
-  height: 100%;
+.alert-toast__progress .progress-bar__track {
+  height: 6px;
+  background-color: var(--cadence-color-border, #e5e5e5);
+  border-radius: 0;
+}
+
+.alert-toast__progress .progress-bar__fill {
   border-radius: 0;
   transition: width 0.3s ease;
 }
 
-.alert-toast--information .alert-toast__progress-fill {
+.alert-toast--information .alert-toast__progress .progress-bar__fill {
   background-color: var(--cadence-color-info, #0f62fe);
 }
-.alert-toast--success .alert-toast__progress-fill {
+.alert-toast--success .alert-toast__progress .progress-bar__fill {
   background-color: var(--cadence-color-success, #24a148);
 }
-.alert-toast--warning .alert-toast__progress-fill {
+.alert-toast--warning .alert-toast__progress .progress-bar__fill {
   background-color: var(--cadence-color-warning, #f1c21b);
 }
-.alert-toast--error .alert-toast__progress-fill {
+.alert-toast--error .alert-toast__progress .progress-bar__fill {
   background-color: var(--cadence-color-danger, #da1e28);
 }
 

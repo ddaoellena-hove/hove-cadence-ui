@@ -1,27 +1,37 @@
+import React from "react";
+import { expect, userEvent, within } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { SegmentedControl } from "./SegmentedControl";
 
-const twoOptions = [
-  { value: "section-1", label: "Section 1" },
-  { value: "section-2", label: "Section 2" },
+const twoTabs = [
+  { value: "tab-1", label: "Tab 1" },
+  { value: "tab-2", label: "Tab 2" },
 ];
 
-const threeOptions = [
-  { value: "section-1", label: "Section 1" },
-  { value: "section-2", label: "Section 2" },
-  { value: "section-3", label: "Section 3" },
+const threeTabs = [
+  { value: "tab-1", label: "Tab 1" },
+  { value: "tab-2", label: "Tab 2" },
+  { value: "tab-3", label: "Tab 3" },
+];
+
+const fourTabs = [
+  { value: "tab-1", label: "Tab 1" },
+  { value: "tab-2", label: "Tab 2" },
+  { value: "tab-3", label: "Tab 3" },
+  { value: "tab-4", label: "Tab 4" },
 ];
 
 const meta: Meta<typeof SegmentedControl> = {
   title: "Components/SegmentedControl",
   component: SegmentedControl,
   tags: ["autodocs"],
+  parameters: { a11y: { test: "error" } },
   argTypes: {
     disabled: { control: { type: "boolean" } },
     "aria-label": { control: { type: "text" } },
   },
   decorators: [
-    (Story) => (
+    (Story: React.ComponentType) => (
       <div style={{ padding: 24 }}>
         <Story />
       </div>
@@ -33,60 +43,74 @@ export default meta;
 
 type Story = StoryObj<typeof SegmentedControl>;
 
-export const TwoSegments: Story = {
+export const TwoTabs: Story = {
   args: {
-    options: twoOptions,
-    defaultValue: "section-1",
+    options: twoTabs,
+    defaultValue: "tab-1",
   },
 };
 
-export const ThreeSegments: Story = {
+export const ThreeTabs: Story = {
   args: {
-    options: threeOptions,
-    defaultValue: "section-1",
+    options: threeTabs,
+    defaultValue: "tab-1",
   },
 };
 
 export const SecondActive: Story = {
   args: {
-    options: threeOptions,
-    defaultValue: "section-2",
+    options: threeTabs,
+    defaultValue: "tab-2",
   },
 };
 
 export const ThirdActive: Story = {
   args: {
-    options: threeOptions,
-    defaultValue: "section-3",
+    options: threeTabs,
+    defaultValue: "tab-3",
   },
 };
 
-export const UnequalLengths: Story = {
+export const FourTabs: Story = {
   args: {
-    options: [
-      { value: "scenario", label: "Scénario de mobilité" },
-      { value: "library",  label: "Bibliothèque" },
-    ],
-    defaultValue: "scenario",
-  },
-};
-
-export const UnequalLengthsThree: Story = {
-  args: {
-    options: [
-      { value: "planned",   label: "Perturbations planifiées" },
-      { value: "current",   label: "En cours" },
-      { value: "history",   label: "Historique" },
-    ],
-    defaultValue: "planned",
+    options: fourTabs,
+    defaultValue: "tab-1",
   },
 };
 
 export const Disabled: Story = {
   args: {
-    options: twoOptions,
-    defaultValue: "section-1",
+    options: threeTabs,
+    defaultValue: "tab-1",
     disabled: true,
   },
 };
 
+export const CustomLabels: Story = {
+  args: {
+    options: [
+      { value: "day", label: "Jour" },
+      { value: "week", label: "Semaine" },
+      { value: "month", label: "Mois" },
+    ],
+    defaultValue: "week",
+  },
+};
+
+export const Clavier: Story = {
+  args: { options: threeTabs, "aria-label": "Vue" },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const radios = canvas.getAllByRole("radio");
+    await userEvent.click(radios[0]);
+    await userEvent.keyboard("{ArrowRight}{ArrowRight}");
+    await expect(radios[2]).toHaveFocus();
+    await expect(radios[2]).toBeChecked();
+    await userEvent.keyboard("{ArrowRight}");
+    await expect(radios[0]).toHaveFocus();
+    await userEvent.keyboard("{End}");
+    await expect(radios[2]).toBeChecked();
+    await userEvent.keyboard("{Home}");
+    await expect(radios[0]).toBeChecked();
+  },
+};

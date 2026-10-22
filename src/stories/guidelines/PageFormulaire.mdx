@@ -91,7 +91,7 @@ Identique à la page dashboard : breadcrumb + titre en `--cadence-font-display`.
 
   <br/><br/>
   <div className="label">Champs</div>
-  Composants : <code>TextInput</code>, <code>Dropdown</code>, <code>SegmentedControlAlt</code>, <code>DatePicker</code>, <code>CounterInput</code>, <code>TextArea</code> — toujours avec <code>label</code>
+  Composants : <code>TextInput</code>, <code>Dropdown</code>, <code>SegmentedControl</code>, <code>DatePicker</code>, <code>CounterInput</code>, <code>TextArea</code> — toujours avec <code>label</code>
 </div>
 
 ```tsx
@@ -110,7 +110,7 @@ Identique à la page dashboard : breadcrumb + titre en `--cadence-font-display`.
       <Dropdown label="Cause" options={causes} value={cause} onChange={setCause} />
     </div>
   </div>
-  <SegmentedControlAlt
+  <SegmentedControl
     aria-label="Type"
     options={[{ value: "planned", label: "Planifié" }, { value: "unplanned", label: "Non planifié" }]}
     value={type}
@@ -163,7 +163,7 @@ La synthèse (récapitulatif, vérification, prévisualisation) vient **sous** l
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Les panneaux de premier niveau (formulaire, synthèse) s'empilent verticalement dans un conteneur <code>max-width: 720px</code>.</span></div>
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Gap de <code>20px</code> entre champs, <code>12px</code> entre champs côte à côte, <code>32px</code> entre sections.</span></div>
 <div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Titres de section en <code>16px</code>, weight 600, casse normale.</span></div>
-<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Utiliser <code>SegmentedControlAlt</code> (jamais <code>SegmentedControl</code>) dans les sections de formulaire.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Utiliser <code>SegmentedControl</code> dans les sections de formulaire.</span></div>
 <div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne jamais placer deux panneaux de premier niveau côte à côte (formulaire à gauche, synthèse ou carte à droite).</span></div>
 <div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Pas de titres de section en MAJUSCULES 13px — c'est le style des en-têtes de colonnes (<code>TableHeader</code>), pas des sections.</span></div>
 

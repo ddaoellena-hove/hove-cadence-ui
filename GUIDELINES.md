@@ -34,7 +34,7 @@ Règles impératives pour générer du code avec ce design system :
 6. **Le CSS custom est limité au layout.** `display: flex`, `gap`, `padding`, `margin`, largeurs : OK en style inline. Couleurs, polices, bordures, ombres custom : interdit — les composants et tokens couvrent ces besoins.
 7. **Partir des [recettes](#recettes-de-pages-complètes)** pour toute page nouvelle, puis adapter. Ne pas réinventer la structure.
 8. **Un seul `PrimaryButton` plein par vue.** Plusieurs `GhostButton` sont autorisés. 3e action d'un groupe : `Link hideArrow`. `SecondaryButton` est déprécié.
-9. **Toujours passer `label`** sur les champs de formulaire (`TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker`, `CounterInput`). Exceptions, qui prennent `aria-label` à la place : la variante bouton (`variant="button"` de `DatePicker`, `DateRangePicker`, `Dropdown`) et le filtre rapide `DateRangePicker` d'une `FilterBar`.
+9. **Toujours passer `label`** sur les champs de formulaire (`TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker`, `CounterInput`, `TimePicker`). Exceptions, qui prennent `aria-label` à la place : la variante bouton (`variant="button"` de `DatePicker`, `DateRangePicker`, `Dropdown`, `TimePicker`) et le filtre rapide `DateRangePicker` d'une `FilterBar`.
 10. **Imports** : composants depuis `@ddaoellena/cadence-ui`, styles via un unique `import "@ddaoellena/cadence-ui/style.css"`, polices via les `<link>` de la section [Installation](#installation--setup).
 11. **Libellés en français correct, accents UTF-8 obligatoires.** Tout texte visible (labels, titres, boutons, placeholders, messages) s'écrit avec ses accents — jamais de français « aplati » en ASCII. Les fichiers source sont en UTF-8 : `é è ê à ç û É À` s'écrivent tels quels, sans entité HTML ni échappement unicode.
 
@@ -121,10 +121,12 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-color-success` | `#24a148` | Confirmations, états valides |
 | `--cadence-color-info` | `#0f62fe` | Accent « information » d'`AlertToast` |
 | `--cadence-color-warning` | `#f1c21b` | Accent « avertissement » d'`AlertToast`. ⚠️ 1,7:1 sur blanc : jamais en couleur de texte |
-| `--cadence-color-accent` | `#1b6cff` | Élément actif / sélectionné (Sidebar, options de menu). ⚠️ Réservé aux états : jamais pour une action |
+| `--cadence-color-accent` | `#1b6cff` | Élément actif / sélectionné (Sidebar, options de menu), remplissage d'une `ProgressBar` en cours. ⚠️ Réservé aux états : jamais pour une action |
 | `--cadence-color-accent-subtle` | `#f0f6ff` | Survol d'un élément actif (Sidebar), ligne sélectionnée (`DataTable`) |
 | `--cadence-color-white` | `#ffffff` | Surfaces de premier plan |
+| `--cadence-color-segmented-track` / `-disabled` | `#e6f0fa` / `#dde8f0` | Piste du SegmentedControl unique |
 | `--cadence-color-surface-alt` | `#eef1f4` | Fonds de wrapper (TableCard, Badge), jours d'une période (`DateRangePicker`) |
+| `--cadence-color-surface-subtle` | `#fafafa` | Fond de carte discret sur fond blanc (fichiers de `FileUpload`) |
 | `--cadence-color-border` | `#e5e5e5` | Bordures par défaut |
 | `--cadence-color-border-strong` | `#bfc9cb` | Bordures appuyées, états disabled |
 | `--cadence-color-scrollbar-thumb` | `rgba(0, 40, 48, 0.2)` | Curseur des barres de défilement (`cadence-scrollbar`) ; `-hover` : `rgba(0, 40, 48, 0.36)` |
@@ -223,6 +225,9 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 
 | Intention | Composant | Ne pas confondre avec |
 |---|---|---|
+| Période, jours habituels et exceptions de circulation | `ServiceCalendar` | `DateRangePicker` (période seule) |
+| Succession des arrêts et horaires d’une course | `RouteStopList` | `Stepper` (étapes d’un processus) |
+| Examiner les erreurs d’un import | Recette `Offre et qualité / Rapport qualité` | `ErrorSummary` (erreurs des champs d’un formulaire) |
 | Action principale de la vue (une seule) | `PrimaryButton` | `GhostButton` (secondaire) |
 | Action secondaire, action inline de formulaire | `GhostButton` | `SecondaryButton` (déprécié) ; `Link` (3e action) |
 | 3e action d'un groupe, action dans une phrase | `Link hideArrow` | `GhostButton` (action secondaire) |
@@ -234,10 +239,10 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Choix dans une liste courte (≥ 3 options, sans recherche) | `Dropdown` | `Autocomplete` (longue liste à filtrer) |
 | Période, date ou choix dans un dashboard | `DateRangePicker` / `DatePicker` / `Dropdown` avec `variant="button"` (à privilégier) | Variante champ (formulaire, `FilterBar`), `PrimaryButton outline` (action, pas de valeur) |
 | Choix dans une longue liste avec recherche au clavier | `Autocomplete` | `Dropdown` (liste courte) |
-| Choix exclusif 2-4 options **dans un formulaire** | `SegmentedControlAlt` | `SegmentedControl` (réservé navigation) |
+| Choix exclusif 2-4 options **dans un formulaire** | `SegmentedControl` | — |
 | Bascule entre vues / modes d'affichage | `SegmentedControl` | `Tab` (navigation de page) |
 | Navigation entre vues d'une même page (niveau page) | `Tab` | `SegmentedControl`, `SecondaryTab` (sous-niveau) |
-| Sous-navigation dans une vue (filtres/statuts, avec compteurs) | `SecondaryTab` | `Tab` (niveau page) |
+| Sous-navigation dans un parcours à plusieurs niveaux | `SecondaryTab` sous `SegmentedControl` | Toujours dans `TabList level="secondary"` |
 | Date (avec ou sans heure) | `DatePicker` | — |
 | Période (début → fin), avec préréglages | `DateRangePicker` | deux `DatePicker` côte à côte |
 | Option booléenne dans un formulaire (validée à la soumission) | `Checkbox` | `Toggle` |
@@ -274,6 +279,20 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Classement (lignes les plus impactées) | `BarList` | `BarChart orientation="horizontal"` (plusieurs séries) |
 | Comparaison de catégories (barres empilées / groupées) | `BarChart` | `BarList` (classement à une valeur) ; `DataVisualization` est déprécié |
 | Mini-courbe dans une carte d'indicateur | `Card trend` (ou `LineChart compact`) | — |
+| Identité de ligne (code et couleur GTFS) | `LineBadge` | `Badge` (étiquette générique) |
+| Nom, commune et identifiant d'arrêt | `StopLabel` | — |
+| Message persistant dans la page | `InlineAlert` | `Toaster` (notification éphémère) |
+| Sections dépliables | `Accordion` | `TabList` (navigation) |
+| Étapes d'un import ou formulaire | `Stepper` | `ProgressBar` (avancement d'un traitement) |
+| Déposer/sélectionner des fichiers | `FileUpload` | L'app assure l'envoi et la validation métier |
+| Progression déterminée ou indéterminée | `ProgressBar` | `Gauge` (mesure, pas un traitement) |
+| Proportion unique, objectif | `Gauge` | `Card` (KPI chiffré) |
+| Choisir portée et format d'export | `ExportMenu` | L'app fabrique le fichier |
+| Masquer/réordonner les colonnes | `ColumnManager` | `DataTable` applique l'état |
+| Heure seule, y compris service après minuit | `TimePicker` | `DatePicker withTime` (date calendaire + heure) |
+| Résumé d'erreurs avec accès aux champs | `ErrorSummary` | `InlineAlert` (message sans navigation de formulaire) |
+| Métadonnées label/valeur d'un détail ou d'une synthèse | `DescriptionList` | `DataTable` (plusieurs lignes d'un même type) |
+| Historique d'événements datés et attribués | `ActivityFeed` | `Timeline` (périodes sur une échelle de temps, reportée) |
 | Icône seule | `Icons` | — |
 
 ---
@@ -567,8 +586,9 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 | `CounterInput` | Valeur numérique bornée avec +/−. |
 | `Dropdown` | Choix parmi une liste fixe et courte (3 à ~10 options). |
 | `Autocomplete` | Choix dans une longue liste, avec recherche au clavier. Sélection simple ou multiple (`multiple`). |
-| `SegmentedControlAlt` | 2 à 4 options mutuellement exclusives. **À privilégier dans les formulaires.** |
+| `SegmentedControl` | 2 à 4 options mutuellement exclusives. **À privilégier dans les formulaires.** |
 | `DatePicker` | Sélection d'une date (option heure avec `withTime`). |
+| `TimePicker` | Heure seule ou heure de service après minuit (`allowOvernight`). |
 | `DateRangePicker` | Sélection d'une période (début → fin) avec préréglages ; jours entiers. |
 | `Checkbox` | Option booléenne indépendante, ou sélection multiple. |
 | `RadioButton` | Sélection exclusive parmi 2 à 5 options courtes. |
@@ -583,8 +603,7 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 - ✅ Utiliser la prop `helperText` de `TextInput`/`TextArea` pour les instructions.
 - ✅ Afficher les erreurs avec `state="error"` + message dans `helperText`.
 - ✅ Grouper les champs connexes avec un titre de section.
-- ✅ Dans un formulaire, toujours `SegmentedControlAlt` — le `SegmentedControl` classique est réservé à la navigation.
-- ❌ Ne pas utiliser `SegmentedControl` dans un formulaire.
+- ✅ Utiliser `SegmentedControl` pour les choix exclusifs de 2 à 4 options, dans les formulaires comme pour changer de vue.
 - ❌ Ne pas mélanger `Checkbox` et `RadioButton` dans la même liste.
 - ❌ Ne pas utiliser `Toggle` pour des choix qui nécessitent une confirmation.
 - ❌ Ne jamais ajouter un `<label>` HTML custom autour d'un champ — utiliser la prop `label` du composant.
@@ -599,6 +618,12 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 
 ---
 
+### Imports et formulaires à étapes
+
+Combiner `Stepper`, `FileUpload`, `ProgressBar` et `InlineAlert` : l'app gère lecture, validation et transfert. Une étape terminée peut être revisitée via `onStepClick`. Une erreur de soumission est résumée en haut par `ErrorSummary`, qui donne accès aux champs par id ou ref. Conserver aussi le message d’erreur propre à chaque champ. La recette **Recettes/Parcours transport → Import réseau et reprise après erreur** couvre ce parcours.
+
+Pour une sélection multiple avec recherche et groupes, utiliser **`Autocomplete multiple`** (déjà disponible), sans créer un deuxième sélecteur. La sélection globale peut être une action de composition si le produit l'exige.
+
 ## Navigation
 
 ### Rôle de chaque composant
@@ -610,7 +635,7 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 | `Breadcrumbs` | Localisation dans l'arborescence + navigation ascendante. | Au-dessus du titre |
 | `Dropdown` `variant="button"` | Sélecteur de contexte dans le breadcrumb (produit/module), passé en `content` d'un item. | Dans le breadcrumb |
 | `TabList` + `Tab` | Navigation entre vues au sein d'une même page. `TabList` porte `role="tablist"` et le clavier (←/→, Début / Fin). | Sous le titre de page |
-| `TabList level="secondary"` + `SecondaryTab` | Sous-navigation (filtres/statuts, avec compteurs) à l'intérieur d'une vue ouverte via un `Tab`. | Sous la rangée de `Tab` |
+| `TabList level="secondary"` + `SecondaryTab` | Sous-navigation (filtres/statuts, avec compteurs) à l'intérieur d'une vue choisie avec `SegmentedControl`. | Sous le `SegmentedControl` |
 
 ### Règles
 
@@ -638,7 +663,7 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 - ✅ Une rangée d'onglets est **toujours** dans un `TabList` nommé (`aria-label`) : un `role="tab"` hors d'un `role="tablist"` est invalide, et c'est `TabList` qui gère le clavier (seul l'onglet actif est tabulable, ←/→ et Début / Fin pour changer d'onglet). Un `Tab` seul émet un avertissement en développement.
 - ✅ Relier chaque onglet à son panneau : `id` + `controls` sur le `Tab`, et côté panneau `role="tabpanel"`, `id`, `aria-labelledby` (id de l'onglet), `tabIndex={0}`.
 - ✅ L'onglet actif se marque avec `variant="active"` sur `Tab`.
-- ✅ Pour un second niveau de navigation (sous-filtres/statuts d'une vue), utiliser `SecondaryTab` dans un `TabList level="secondary"`, sous la rangée de `Tab` — plus compact, avec compteur optionnel.
+- ✅ Pour un second niveau de navigation (sous-filtres/statuts d'une vue), utiliser `SecondaryTab` dans un `TabList level="secondary"`, sous le `SegmentedControl` — plus compact, avec compteur optionnel.
 - ❌ Ne jamais décaler ou centrer la `Sidebar` — toujours ancrée au bord gauche, jamais tronquée en hauteur.
 - ❌ Ne pas recréer le squelette à la main (Sidebar en `position: fixed`, contenu décalé par `marginLeft`) : utiliser `AppLayout`.
 - ❌ Ne pas ajouter de barre supérieure au-dessus du conteneur : le titre de la page est la première ligne du contenu.
@@ -708,7 +733,13 @@ Le code complet est dans la [recette 2](#recette-2--page-liste-avec-sélection-m
 
 ---
 
+### Colonnes et export
+
+`ColumnManager` pilote `hiddenColumnIds` et `columnOrder` de `DataTable`. `ExportMenu` expose sélection/page/résultat et CSV/Excel : ne proposer que les formats réellement implémentés. La recette **Liste de perturbations** télécharge un CSV local qui respecte les colonnes visibles et le tri de la page.
+
 ## Statuts & étiquettes
+
+`LineBadge` représente une ligne, `StopLabel` un arrêt. Ne pas confondre couleurs de ligne (données GTFS) et couleurs de statut. Pour un panneau de détails, utiliser `DescriptionList` (sémantique `<dl>/<dt>/<dd>`, densité et repli mobile), `StopLabel` et `Accordion`. Un historique d’événements se présente avec `ActivityFeed` ; l’app fournit l’ordre, les dates et le fuseau.
 
 Deux composants proches mais distincts :
 
@@ -802,7 +833,13 @@ Une `Card` est **interactive** soit par `onClick` (toute la carte mène à la li
 
 ---
 
+### Proportion unique
+
+`Gauge` complète les KPI : arc/anneau, sens favorable et seuils libellés. Employer une `Card` pour une valeur seule ; `ProgressBar` pour l'avancement d'une tâche.
+
 ## Feedback
+
+`InlineAlert` affiche un message persistant dans le flux (information, succès, avertissement ou erreur). `ProgressBar` affiche l'avancement et `FileUpload` réutilise cette barre pour les envois. Une progression n'annonce pas à elle seule la réussite du traitement.
 
 ### Choisir le bon composant
 
@@ -813,7 +850,8 @@ Une `Card` est **interactive** soit par `onClick` (toute la carte mène à la li
 | Avertissement non bloquant | `AlertToast type="warning"` |
 | Info contextuelle sur un élément UI | `TooltipTrigger` |
 | Explication d'un bouton désactivé | `TooltipTrigger` accolé au bouton `disabled` |
-| Erreur de validation d'un champ | `TextInput state="error"` + `helperText` |
+| Erreur de validation d'un champ | `TextInput state="error"` + `helperText`, ou `TimePicker error` |
+| Plusieurs erreurs à la soumission | `ErrorSummary` + erreurs locales des champs |
 | Confirmation avant action irréversible | `Modal size="small"` |
 
 ### Règles
@@ -1018,7 +1056,7 @@ export const ScenarioListPage = () => {
 Formulaire en sections, largeur contenue, soumission en bas à droite. Les **panneaux de premier niveau** (formulaire puis synthèse) s'empilent verticalement ; le multi-colonnes n'apparaît qu'**à l'intérieur** des sections. Voir [Composition des panneaux](#composition-des-panneaux-sur-une-page-formulaire).
 
 ```tsx
-import { PageHeader, TextInput, TextArea, Dropdown, DatePicker, CounterInput, SegmentedControlAlt, TableCard, PrimaryButton, Link, GhostButton } from "@ddaoellena/cadence-ui";
+import { PageHeader, TextInput, TextArea, Dropdown, DatePicker, CounterInput, SegmentedControl, TableCard, PrimaryButton, Link, GhostButton } from "@ddaoellena/cadence-ui";
 
 export const ScenarioFormPage = () => (
   // Conteneur de page : flexDirection "column" → les panneaux de premier niveau s'empilent
@@ -1042,7 +1080,7 @@ export const ScenarioFormPage = () => (
             <Dropdown label="Cause" options={causeOptions} value={cause} onChange={setCause} placeholder="Sélectionner" />
           </div>
         </div>
-        <SegmentedControlAlt
+        <SegmentedControl
           options={[{ value: "planned", label: "Planifiée" }, { value: "immediate", label: "Immédiate" }]}
           value={mode}
           onChange={setMode}
@@ -1346,6 +1384,20 @@ export const AnalysisDashboard = () => {
 
 ---
 
+### Recette 8 — Détail d'une perturbation
+
+Story **Recettes/Parcours transport → Détail d’une perturbation** : `AppLayout` + `Sidebar` + `PageHeader`, liste `DataTable`, ouverture d'un `Drawer`, `InlineAlert`, `Accordion`, `LineBadge` et `StopLabel`. Les métadonnées utilisent `DescriptionList` et l’historique local utilise `ActivityFeed`. La prise en compte est un état local de démonstration. Aucun backend ni historique réel n'est fourni.
+
+### Recette 9 — Import réseau et correction des erreurs
+
+Story **Recettes/Parcours transport → Import réseau et reprise après erreur** : `Stepper`, `TextInput`, `FileUpload`, résumé d'erreurs (`ErrorSummary` + refs), `Autocomplete multiple`, vérification et `ProgressBar`.
+
+La démonstration lit un CSV UTF-8 et contrôle uniquement les en-têtes `stop_id`/`stop_name` (virgule ou point-virgule). Elle simule ensuite le traitement local. Elle ne remplace ni un parseur CSV complet ni un validateur GTFS. Les timers sont nettoyés au démontage ; l'app de production doit gérer ses propres requêtes, annulations et reprises.
+
+### Recette 10 — Planification d'un service de nuit
+
+Story **Recettes/Planification de service → Service de nuit et validation** : deux `TimePicker allowOvernight`, validation native et comparaison début/fin par l'app, `ErrorSummary` pour revenir au champ fautif, puis `DescriptionList` et `ActivityFeed` après enregistrement local. `25:30` est conservé comme heure de service, sans conversion de date. Le formulaire utilise `noValidate` et appelle donc explicitement `checkValidity()` avant d'enregistrer.
+
 ## Référence API des composants
 
 **Source de vérité des props.** Si une prop n'est pas listée ici, elle n'existe pas — ne pas en inventer. Convention : les props sans défaut indiqué sont `undefined` ; ⚠️ signale les pièges courants.
@@ -1556,7 +1608,8 @@ Tableau dense pour les gros volumes. Vrai `<table>` (rôles ARIA explicites), en
 | `getRowId` | `(row: T) => string` | **requis** | Identifiant unique et stable |
 | `aria-label` | `string` | **requis** | Nom accessible du tableau |
 | `density` | `"compact" \| "comfortable"` | `"comfortable"` | 36px / 48px par ligne |
-| `hiddenColumnIds` | `string[]` | `[]` | Colonnes masquées (le menu de colonnes est fourni par l'app) |
+| `hiddenColumnIds` | `string[]` | `[]` | Colonnes masquées (pilotées notamment par `ColumnManager`) |
+| `columnOrder` | `string[]` | — | Ordre des ids ; les colonnes absentes restent à la fin |
 | `sort` | `{ id, desc }[]` | — | Tri contrôlé. Sans `sort` : géré en interne |
 | `defaultSort` | `{ id, desc }[]` | `[]` | Tri initial en mode non contrôlé |
 | `onSortChange` | `(sort) => void` | — | Clic : asc → desc → aucun ; Maj+clic : multi-colonnes |
@@ -1616,7 +1669,7 @@ Autres props : `series` `{ label, data, color? }[]` → `{ id, label, data, colo
 | `minDate`, `maxDate` | `Date` | — | Bornes (jours hors bornes désactivés) |
 | `withTime` | `boolean` | `false` | Heures/minutes + bouton de validation |
 | `labelConfirm` | `string` | `"Valider"` | Libellé du bouton de validation (`withTime`) |
-| `segmentedOptions` | `{ value, label }[]` | — | SegmentedControlAlt dans le popover (contrôlé via `segmentedValue` + `onSegmentChange`) |
+| `segmentedOptions` | `{ value, label }[]` | — | SegmentedControl dans le popover (contrôlé via `segmentedValue` + `onSegmentChange`) |
 | `variant` | `"field" \| "button"` | `"field"` | `"button"` : déclencheur en `PrimaryButton outline size="sm"` (icône, valeur, chevron). **À privilégier dans un dashboard** ; `"field"` dans un formulaire |
 | `aria-label` | `string` | — | Nom accessible sans `label` visible (variante bouton) : « Date » → annoncé « Date : 20/10/2026 » |
 
@@ -1790,14 +1843,15 @@ Clavier : le tracé est focusable ; ←/→ passent d'une abscisse à l'autre, D
 |---|---|---|---|
 | `isOpen` | `boolean` | **requis** | Visibilité |
 | `onClose` | `() => void` | **requis** | Backdrop, ×, Échap |
-| `title` | `string` | — | Titre (header sombre) |
+| `title` | `string` | — | Titre (header sombre), relié par un identifiant unique |
+| `aria-label` | `string` | `"Dialogue"` | Nom accessible sans titre visible ; fournir un libellé précis |
 | `children` | `ReactNode` | **requis** | Corps (scrollable si long) |
 | `primaryAction` | `{ label, onClick, destructive? }` | — | Bouton droit du pied : `PrimaryButton` (`destructive` → `tone="danger"`) |
 | `secondaryAction` | `{ label, onClick }` | — | Bouton gauche du pied : `GhostButton` |
 | `size` | `"small" \| "medium" \| "large"` | `"medium"` | 400 / 560 / 800 px |
 | `hideCloseButton` | `boolean` | `false` | — |
 
-Comportements intégrés : fermeture sur Échap, scroll du body verrouillé, footer fixe quand le corps scrolle.
+Comportements intégrés : fermeture sur Échap, scroll du body et du conteneur AppLayout verrouillé, footer fixe quand le corps scrolle. Avec plusieurs Modal/Drawer, seul le dernier ouvert gère Échap et le piège à focus. Fermer une surcouche en arrière-plan conserve le verrouillage et le focus de celle au premier plan. Les attributs `inert` et `aria-hidden` préexistants sont restaurés à la fermeture. Les contrôles masqués, désactivés (y compris par un fieldset) ou hors tabulation sont exclus du cycle Tab.
 
 ### PageHeader
 
@@ -1917,7 +1971,7 @@ Champ de recherche de 29px, la hauteur des boutons `sm`, avec la même bordure `
 
 ### SecondaryTab
 
-Onglet de sous-navigation (niveau 2), sous une rangée de `Tab`. Style ghost (pastille douce sur l'onglet actif, inactifs en gris `--cadence-color-icon-muted`), avec compteur optionnel. Un `<SecondaryTab>` par onglet, dans un `TabList level="secondary"`.
+Onglet de sous-navigation (niveau 2), sous un `SegmentedControl`. Style ghost (pastille douce sur l'onglet actif, inactifs en gris `--cadence-color-icon-muted`), avec compteur optionnel. Un `<SecondaryTab>` par onglet, dans un `TabList level="secondary"`.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
@@ -1931,9 +1985,9 @@ Onglet de sous-navigation (niveau 2), sous une rangée de `Tab`. Style ghost (pa
 
 ⚠️ Toujours dans un `TabList level="secondary"` ; hors `TabList`, avertissement en développement.
 
-### SegmentedControl / SegmentedControlAlt
+### SegmentedControl
 
-API identique pour les deux (`SegmentedControl` = navigation, `SegmentedControlAlt` = formulaires) :
+Composant unique : apparence de l’ancien Alt, pour les formulaires et les bascules de vue. Dans un parcours à plusieurs niveaux, associer `SegmentedControl` au premier niveau et `SecondaryTab` dans un `TabList level="secondary"` au second. Le groupe utilise `role="radiogroup"`, sans `TabList` autour de lui. Les flèches déplacent le focus et la sélection ; Début/Fin atteignent les extrémités.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
@@ -1942,7 +1996,9 @@ API identique pour les deux (`SegmentedControl` = navigation, `SegmentedControlA
 | `defaultValue` | `string` | — | Mode non contrôlé |
 | `onChange` | `(value: string) => void` | — | — |
 | `disabled` | `boolean` | `false` | — |
-| `aria-label` | `string` | — | Nom accessible du groupe |
+| `aria-label` | `string` | `"Choix"` | Fournir un nom précis du groupe |
+| `className` | `string` | — | Classe additionnelle |
+| `ref` | `Ref<HTMLDivElement>` | — | Conteneur du groupe |
 
 ### Sidebar
 
@@ -2191,4 +2247,316 @@ Panneau latéral droit pour consulter le détail d'un élément **sans quitter l
 | `secondaryAction` | `{ label; onClick }` | — | Pied → `GhostButton` |
 | `width` | `"md" \| "lg"` | `"md"` | 480px / 720px |
 
+Le panneau partage avec `Modal` la gestion des surcouches superposées : seule celle au premier plan possède le clavier ; le fond reste verrouillé jusqu’à la fermeture de la dernière.
+
 ⚠️ Mêmes règles d'actions que `Modal` : `GhostButton` (secondaire) + `PrimaryButton` (principale), jamais deux boutons pleins.
+
+### ProgressBar
+
+Progression déterminée (0–100, bornée) ou indéterminée (valeur absente/non finie). Animation désactivée sous `prefers-reduced-motion`. `role="progressbar"` sur la piste ; nom accessible par label, `aria-label`, ou « Progression ».
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `value` | `number` | — | 0–100 ; absente → indéterminée |
+| `label` | `string` | — | Libellé visible |
+| `showValue` | `boolean` | `false` | Pourcentage visible en mode déterminé |
+| `tone` | `"default" \| "success" \| "danger"` | `"default"` | Teinte du remplissage : `default` = `--cadence-color-accent` (`#1b6cff`, progression en cours), `success`, `danger` |
+| `aria-label` | `string` | `"Progression"` | Nom en l'absence de label |
+| `className` | `string` | — | Classe additionnelle |
+| `ref` | `Ref<HTMLDivElement>` | — | Conteneur racine |
+
+Réutilisée par `AlertToast` et `FileUpload`. Une progression n'est pas une notification : l'app annonce aussi le succès ou l'échec avec `InlineAlert` ou `Toaster`.
+
+### InlineAlert
+
+Message persistant dans le flux. Erreur : `role="alert"` ; autres types : `role="status"`. Fermeture contrôlée par l'app.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `type` | `"information" \| "success" \| "warning" \| "error"` | **requis** | Type sémantique |
+| `title` | `string` | — | Titre facultatif |
+| `children` | `ReactNode` | **requis** | Corps du message |
+| `action` | `{ label: string; onClick: () => void }` | — | Action secondaire |
+| `dismissible` | `boolean` | `false` | Affiche « Fermer » |
+| `onDismiss` | `() => void` | — | L'app retire l'alerte au clic |
+| `className` | `string` | — | Classe additionnelle |
+
+Pour un résumé d’erreurs de soumission, utiliser `ErrorSummary`, qui réutilise `InlineAlert` et `Link` et prend en charge le focus. Voir la recette d’import.
+
+### LineBadge
+
+Identité d'une ligne : pastille (code court ≤ 3 caractères hors espaces) ou pilule. Nom accessible « Ligne 13, métro » (`role="img"`). Le mode est annoncé ; aucun pictogramme de mode n'est rendu.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `code` | `string` | **requis** | Code court de ligne |
+| `mode` | `"metro" \| "rer" \| "train" \| "tram" \| "bus" \| "car" \| "bateau" \| "navette"` | — | Mode annoncé |
+| `color` | `string` | encre | Fond hexadécimal 3/6 caractères, avec ou sans `#` (GTFS). Invalide → repli encre |
+| `textColor` | `string` | calculée | Hexadécimal fourni par l'app. Sans valeur : blanc/encre, puis noir si nécessaire pour AA |
+| `size` | `"sm" \| "md"` | `"md"` | Hauteur 18 / 22px |
+| `className` | `string` | — | Classe additionnelle |
+
+⚠️ Exception à « tokens uniquement » : les couleurs de ligne sont des données métier. Une `textColor` explicite est respectée ; l'app doit vérifier son contraste. Les couleurs CSS nommées, RGB et alpha ne sont pas acceptées.
+
+### StopLabel
+
+Nom, commune et identifiant d'arrêt, avec lignes facultatives. Texte complet conservé dans le DOM et attribut `title` natif sur nom/id ; ce n'est pas une infobulle Cadence interactive.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `name` | `string` | **requis** | Nom de l'arrêt |
+| `id` | `string` | — | Identifiant technique, en mono ; n'est pas un id DOM |
+| `city` | `string` | — | Commune |
+| `lines` | `ReactNode` | — | Ex. plusieurs `LineBadge` |
+| `className` | `string` | — | Classe additionnelle |
+
+### Accordion
+
+Panneaux disclosure avec boutons natifs, `aria-expanded`, `aria-controls`, régions nommées et panneaux fermés `inert`. Animation coupée sous `prefers-reduced-motion`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `items` | `AccordionItem[]` | **requis** | `{ id: string; title: ReactNode; content: ReactNode; defaultOpen?: boolean }` |
+| `mode` | `"single" \| "multiple"` | `"single"` | Un ou plusieurs panneaux ouverts |
+| `className` | `string` | — | Classe additionnelle |
+
+Les ids doivent être uniques. `defaultOpen` s'applique au montage ; en mode `single`, seul le premier défaut est retenu. L'état d'ouverture est interne. Ne pas placer d'action interactive dans `title` (déjà contenu dans un bouton).
+
+### Stepper
+
+Liste ordonnée d'étapes. État explicite en texte (terminée, en cours, à venir, en erreur) et `aria-current="step"`. Les étapes terminées sont navigables si `onStepClick` est fourni.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `steps` | `StepperStep[]` | **requis** | `{ id: string; label: string; description?: string; state: StepState }` |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Horizontal empilé sous 480px |
+| `onStepClick` | `(id: string) => void` | — | Retour vers une étape terminée |
+| `className` | `string` | — | Classe additionnelle |
+
+`StepState` : `"upcoming" | "current" | "completed" | "error"`. L'app fournit une seule étape courante et gère validation/navigation ; le composant ne valide aucun champ.
+
+### FileUpload
+
+Zone de dépôt avec bouton « Parcourir » (`PrimaryButton outline size="sm"`), validation locale du format et de la taille, liste de fichiers contrôlée et erreurs annoncées. Ne réalise aucun transfert réseau.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `accept` | `string` | — | Extensions et/ou MIME séparés par virgules ; jokers MIME (`image/*`) acceptés |
+| `multiple` | `boolean` | `false` | Sinon seul le premier fichier valide est transmis |
+| `maxSize` | `number` | — | Taille maximale en octets, par fichier |
+| `onFiles` | `(files: File[]) => void` | — | Fichiers valides ; l'app gère lecture et envoi |
+| `files` | `UploadFile[]` | `[]` | Liste affichée, contrôlée |
+| `onRemove` | `(id: string) => void` | — | Retrait demandé à l'app |
+| `className` | `string` | — | Classe additionnelle |
+
+`UploadFile` : `id: string`, `name: string`, `size: number`, `status: "pending" | "uploading" | "success" | "error"`, `progress?: number` (0–100 ; absente pendant l'envoi → indéterminée), `error?: string` (message de l'app).
+
+Chaque fichier est une carte (fond `surface-subtle`, bordure, rayon `lg`) : intitulé d'état en capitales (« Fichier importé », « Fichier en cours d’import », « Fichier en attente », « Échec de l’import »), picto document, nom et taille. Action de droite, si `onRemove` est fourni : corbeille `PrimaryButton outline tone="danger"` pour un fichier importé (« Supprimer … »), croix `GhostButton` sinon (« Annuler l’import de … » pendant l'envoi, « Retirer … » en attente ou en échec). Pendant l'envoi : barre fine accent et pourcentage à droite (absent si la progression est indéterminée).
+
+⚠️ `accept`/`maxSize` ne valident pas le contenu du fichier. L'app/serveur assure le contrôle métier (ex. schéma GTFS), la sécurité et l'annulation d'un envoi lors du retrait. Les états sont aussi écrits en texte, indépendamment des icônes. L'input natif est hors tabulation ; le bouton visible donne accès au sélecteur.
+
+### ExportMenu
+
+Menu de portée × format, partagé avec la primitive interne d'`ActionMenu`. L'app fabrique et télécharge le fichier ; le menu ne sérialise aucune donnée.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `counts` | `ExportScopeCounts` | **requis** | `{ selection?: number; page?: number; total?: number }` ; absente → portée masquée, ≤ 0 → désactivée |
+| `formats` | `ExportFormat[]` | `["csv", "excel"]` | Formats effectivement pris en charge par l'app |
+| `loading` | `boolean` | `false` | Déclencheur en chargement, actions désactivées |
+| `onExport` | `(args: { scope: ExportScope; format: ExportFormat }) => void` | **requis** | Demande d'export |
+| `className` | `string` | — | Classe additionnelle |
+
+`ExportScope` : `"selection" | "page" | "all"`. `ExportFormat` : `"csv" | "excel"`. Chaque option annonce sa portée via une description accessible. La sélection peut être limitée au résultat filtré par l'app (comme la recette de supervision). Exporter une page exige de respecter le tri appliqué.
+
+### ColumnManager
+
+Panneau non modal en portail : visibilité, déplacement par boutons et réinitialisation des colonnes. Focus à l'ouverture, Échap et sortie par Tab rendent le focus au déclencheur. Le défilement interne reste possible.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `columns` | `ColumnManagerColumn[]` | **requis** | `{ id: string; label: string }` |
+| `visibleIds` | `string[]` | **requis** | Colonnes visibles |
+| `order` | `string[]` | **requis** | Ordre partiel ou complet ; doublons/inconnus ignorés, absentes ajoutées à la fin |
+| `onChange` | `(next: { visibleIds: string[]; order: string[] }) => void` | **requis** | État contrôlé |
+| `className` | `string` | — | Classe additionnelle |
+
+Brancher `DataTable.hiddenColumnIds` sur le complément de `visibleIds`, et `DataTable.columnOrder` sur `order`. « Réinitialiser » restaure toutes les colonnes dans l'ordre de `columns`. L'app assure leur persistance si souhaité.
+
+### Gauge
+
+Proportion unique en arc 270° ou anneau. Valeur formatée en français, indicateur textuel d'objectif atteint/non atteint ou niveau intermédiaire. Valeur graphique bornée à [0, max] ; nombre brut conservé. Pas d'animation sous `prefers-reduced-motion`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `value` | `number` | **requis** | Valeur brute |
+| `max` | `number` | `100` | Maximum strictement positif |
+| `unit` | `string` | — | Unité affichée |
+| `thresholds` | `GaugeThreshold[]` | — | `{ value: number; label: string }` |
+| `goodDirection` | `"up" \| "down" \| "neutral"` | `"up"` | Sens favorable |
+| `shape` | `"arc" \| "ring"` | `"arc"` | Forme |
+| `className` | `string` | — | Classe additionnelle |
+
+Avec `up` : sous le premier seuil → défavorable, à partir du dernier → favorable, entre les deux → intermédiaire. Avec `down` : jusqu'au premier → favorable, au-dessus du dernier → défavorable. Sans seuil ou avec `neutral`, pas de jugement. Valeur/max non finis ou max ≤ 0 → nom accessible « Donnée indisponible », piste vide. Ce composant n'a pas les états `loading`/`error` de `ChartFrame` : les gérer dans la composition avec `Skeleton`/`InlineAlert`.
+
+### ErrorSummary
+
+Pour une cible conteneur, le lien cherche un contrôle visible et utilisable ; les champs cachés, contrôles désactivés et descendants inertes sont ignorés. Une cible focalisable avec `tabIndex={-1}` reste prise en charge.
+
+Résumé d'erreurs après soumission, basé sur `InlineAlert` et `Link`. Région nommée par un titre `<h2>`, focusable par ref ; ne rend rien lorsque `errors` est vide. Le composant ne calcule pas la validité des champs.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `errors` | `SummaryError[]` | **requis** | `{ id: string; message: string; target?: string \| RefObject<HTMLElement \| null> }` |
+| `title` | `string` | `"Corrigez les champs suivants"` | Titre de la région |
+| `focusOnMount` | `boolean` | `true` | Focus à la première apparition d'erreurs (et après passage de vide à non vide) |
+| `className` | `string` | — | Classe additionnelle |
+| `ref` | `Ref<HTMLDivElement>` | — | Permet de refocaliser le résumé à chaque nouvelle soumission invalide |
+
+`target` est un id DOM (sans `#`) ou une ref. Si la cible est un conteneur (ex. zone `FileUpload`), le premier bouton/champ actif est focalisé. Sans cible, l'erreur est du texte simple. Une cible absente du DOM ne provoque pas d'erreur ; l'app doit néanmoins fournir des cibles valides et accessibles. Les `id` d'erreur sont uniques et ne sont pas des ids DOM.
+
+⚠️ Ne pas utiliser pour chaque frappe ni pour une erreur réseau générique (`InlineAlert`). Garder les erreurs au niveau de chaque champ (`state="error"` pour `TextInput`, `error` pour `TimePicker`). Le résumé n'associe pas lui-même les erreurs aux champs. Un contrôle natif ne soumet pas un formulaire invalide : avec un formulaire `noValidate`, l'app doit calculer ses erreurs et/ou appeler `checkValidity()`.
+
+```tsx
+const field = useRef<HTMLInputElement>(null);
+const summary = useRef<HTMLDivElement>(null);
+<ErrorSummary ref={summary} errors={[
+  { id: "name", message: "Renseignez le nom du réseau.", target: field },
+]} />
+<TextInput ref={field} label="Nom du réseau" state="error" helperText="Ce champ est requis." />
+```
+
+### DescriptionList
+
+Liste sémantique de propriétés (`dl` / `dt` / `dd`) pour un détail, un panneau ou une synthèse de formulaire. Sans items, ne rend rien. Le mode horizontal s'empile sous 480px ; les valeurs longues se replient sans élargir le conteneur.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `items` | `DescriptionItem[]` | **requis** | `{ id: string; label: ReactNode; value?: ReactNode }` |
+| `aria-label` | `string` | — | Nom accessible de la liste |
+| `layout` | `"horizontal" \| "stacked"` | `"horizontal"` | Label/valeur côte à côte, ou superposés |
+| `density` | `"comfortable" \| "compact"` | `"comfortable"` | Espacement vertical 16 / 8px |
+| `emptyValue` | `string` | `"Non renseigné"` | Repli pour null, undefined et chaîne vide |
+| `className` | `string` | — | Classe additionnelle |
+
+`false` devient « Non », `true` « Oui », `0` reste affiché. Les dates/nombres sont formatés par l'app avant de les transmettre. Les `id` sont uniques et servent de clés React. Une valeur peut contenir `LineBadge`, `StopLabel`, `Indicator` ou une action `Link`.
+
+```tsx
+<DescriptionList density="compact" items={[
+  { id: "name", label: "Réseau", value: "Bordeaux Métropole" },
+  { id: "line", label: "Ligne", value: <LineBadge code="A" mode="tram" /> },
+]} />
+```
+
+### ActivityFeed
+
+Historique d'événements ponctuels. Liste ordonnée avec icône, état **textuel**, auteur facultatif, date absolue et description. Ne trie pas les données et ne les récupère pas : l'app contrôle l'ordre, la pagination éventuelle et l'autorisation d'accès.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `items` | `ActivityItem[]` | **requis** | Voir ci-dessous |
+| `aria-label` | `string` | **requis** | Nom de la région |
+| `loading` | `boolean` | `false` | `aria-busy`, squelette et annonce de chargement ; masque temporairement les items |
+| `emptyTitle` | `string` | `"Aucune activité"` | Titre de l'`EmptyState` intégré |
+| `timeZone` | `string` | `"UTC"` | Fuseau IANA valide ; passer celui du produit explicitement |
+| `className` | `string` | — | Classe additionnelle |
+
+**`ActivityItem`** : `id: string` (unique), `title: string`, `date: Date`, `author?: string`, `description?: ReactNode`, `tone?: ActivityTone` (défaut `"neutral"`), `icon?: IconName` (surcharge de l'icône par défaut).
+
+`ActivityTone` : `"neutral" | "success" | "warning" | "danger"`. Les états affichés sont « Information », « Succès », « Avertissement », « Erreur ». Dates formatées en `fr-FR`, avec `<time dateTime={date.toISOString()}>` ; une Date invalide affiche « Date indisponible ». Pas de temps relatif ni de mise à jour périodique. Le fuseau par défaut UTC garantit le même rendu serveur/client ; une configuration IANA invalide doit être corrigée par l'app.
+
+⚠️ Ce composant ne remplace ni une frise de périodes (`Timeline`, toujours reportée), ni un journal d'audit serveur. Une erreur de récupération se compose avec `InlineAlert`/`EmptyState variant="error"`.
+
+### TimePicker
+
+Heure seule : champ compact affichant HH:mm et une icône horloge. Un clic (ou Entrée/Espace sur le champ focalisé) ouvre un panneau ancré comme celui de `DatePicker`. Le panneau contient deux cases **Heures / Minutes** éditables au clavier et leurs flèches, reprenant le module horaire partagé avec `DatePicker withTime`. Aucune conversion via Date : `25:30` reste une heure de service.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `label` | `string` | — | Label visible en variante champ ; à fournir pour un formulaire |
+| `aria-label` | `string` | `"Heure"` | Nom en l’absence de label, notamment en variante bouton |
+| `value` | `string` | requis | Heure valide `HH:mm` ou `""` |
+| `onChange` | `(value: string) => void` | requis | Heure normalisée validée, jamais un brouillon invalide |
+| `variant` | `"field" \| "button"` | `"field"` | Champ compact ou bouton outline sm ouvrant le même panneau horaire |
+| `allowOvernight` | `boolean` | `false` | Plage 00:00–47:59 au lieu de 00:00–23:59 |
+| `min`, `max` | `string` | bornes du mode | Bornes inclusives HH:mm |
+| `minuteStep` | `1 \| 5 \| 10 \| 15 \| 30` | `1` | Pas des flèches de minutes ; saisie manuelle libre à la minute |
+| `disabled` | `boolean` | `false` | Désactive les contrôles |
+| `required` | `boolean` | `false` | Interdit une heure vide, validité native |
+| `helperText` | `string` | — | Instruction, remplacée par l’erreur |
+| `error` | `string` | — | Erreur métier prioritaire |
+| `id` | `string` | généré | Id DOM de la case des heures |
+| `className` | `string` | — | Classe additionnelle |
+| `ref` | `Ref<HTMLInputElement>` | — | Case des heures ; sa validité reflète l’heure complète |
+
+- **Champ** : déclencheur de 40 px avec label, heure et icône horloge ; le module horaire est affiché uniquement dans le panneau ouvert. Ce déclencheur est un bouton visuellement présenté comme un champ, comme DatePicker. La saisie clavier s’effectue dans le panneau.
+- **Bouton** : déclencheur outline sm, comme DatePicker. Les deux variantes ouvrent le panneau avec le focus sur les heures ; les changements (saisie et flèches) restent en brouillon jusqu’à « Valider » ou Entrée, qui normalisent aussi (`9` et `5` deviennent `09:05`). « Annuler », Échap, clic extérieur ou sortie au clavier annulent les modifications. Validation/annulation explicite rend le focus au déclencheur.
+- ↑/↓ modifie l’unité focalisée : une heure ou `minuteStep` minutes. Les minutes peuvent passer à l’heure suivante (23:55 + 15 min → 24:10 si autorisé). Les bornes ne bouclent pas. Depuis un éditeur vide, une flèche initialise la borne basse.
+- Un collage HH:mm dans l’une des cases renseigne les deux. Vider les deux cases puis valider efface une heure facultative ; une seule case vide constitue une saisie incomplète.
+- Échap ferme le panneau sans modifier la valeur dans les deux variantes. L’événement est consommé avant le Modal/Drawer parent.
+- Les inputs utilisent `role="spinbutton"` et des noms distincts (« Heures — Départ », « Minutes — Départ »). Dans les deux variantes, l’éditeur reste monté mais caché quand fermé ; `checkValidity()` sur la ref invalide ouvre le panneau, comme une soumission HTML standard. Pour le focus via ErrorSummary, privilégier une cible conteneur incluant le bouton lorsque le panneau est fermé.
+- Dans un formulaire `noValidate`, vérifier `checkValidity()` avant de lire la valeur contrôlée. L’application calcule les contraintes entre début et fin.
+- `min`/`max` invalides sont ignorés ; un intervalle inversé revient aux bornes du mode. Aucune gestion de fuseau ou changement d’heure. Le plafond 47:59 est un choix du composant, pas une couverture de tous les formats d’échange.
+
+```tsx
+<TimePicker label="Fin de service" value={end} onChange={setEnd} allowOvernight minuteStep={15} />
+<TimePicker variant="button" aria-label="Départ" value={start} onChange={setStart} />
+```
+
+Migration : les props existantes restent utilisables ; le DOM passe d’un champ HH:mm unique à deux cases. La ref/id cible les heures du panneau ; le label visible est associé au déclencheur. Les tests doivent ouvrir le panneau avant de cibler les cases. Le module interne `TimeFields` n’est pas exporté.
+
+
+## Compositions métier transport
+
+- `ServiceCalendar` pour éditer une règle de circulation : période inclusive, semaine type, exceptions explicites. Aucune déduction des jours fériés ou vacances scolaires.
+- `RouteStopList` pour lire la succession de passages d’une course. Réutilise `StopLabel` et accepte un `LineBadge` en en-tête.
+- Recette **Offre et qualité** : premier niveau `SegmentedControl` (« Offre / Qualité »), second niveau `SecondaryTab` dans `TabList level="secondary"`. L’onglet Offre montre le calendrier puis les courses ; Qualité compose le rapport décrit ci-dessous.
+- **DataQualityReport est une recette interne, pas un export de la bibliothèque.** Elle compose `InlineAlert`, `FilterBar`, `DataTable`, `Drawer`, `DescriptionList` et `EmptyState`. L’application fournit les constats et décide quels niveaux bloquent l’import. Le résumé global reste indépendant du filtre ; aucun résultat de recherche ne signifie pas absence d’erreurs.
+
+### ServiceCalendar
+
+Éditeur contrôlé, sans enregistrement réseau. Réutilise `DateRangePicker`, `DatePicker`, `Checkbox`, `SegmentedControl` et `GhostButton`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `label` | `string` | requis | Titre et nom accessible de la section |
+| `value` | `ServiceCalendarValue` | requis | État complet du calendrier |
+| `onChange` | `(value: ServiceCalendarValue) => void` | requis | Nouvel état après édition |
+| `disabled` | `boolean` | `false` | Désactive tous les contrôles d’édition |
+| `className` | `string` | — | Classe additionnelle |
+
+`ServiceCalendarValue` : `startDate` et `endDate` sont des dates civiles `YYYY-MM-DD` (ou `""` pendant la saisie), `weekdays` un tableau de `ServiceWeekday` (1 lundi à 7 dimanche), `exceptions` un tableau de `ServiceException` `{ date: string; type: "added" | "removed" }`. Une seule exception par date et des jours uniques doivent être fournis.
+
+Les bornes sont inclusives. Une exception prend priorité sur la semaine type à l’intérieur de la période ; hors période, le service ne circule pas. Un calendrier sans jour régulier peut circuler seulement aux dates ajoutées. Aucun fuseau ni UTC n’est utilisé pour convertir les clés : les pickers utilisent des Date locales, adaptées en clés civiles à leur frontière.
+
+- La date d’exception proposée initialement est le début de la période. Choisir une date puis « Appliquer l’exception » ajoute ou remplace son effet, sans doublon ; le bouton de retrait supprime l’exception.
+- Un aperçu indique si la date choisie circule selon le calendrier actuel. Ce n’est pas un calcul de fréquence ou de nombre de courses.
+- Une période absente/inversée est signalée ; l’ajout d’une exception hors période est refusé.
+- Réduire la période ne supprime pas les exceptions existantes : celles hors période sont signalées pour correction. L’application reste responsable de la validation avant enregistrement ; le composant ne bloque pas une soumission de formulaire externe.
+- Les utilitaires de calendrier sont internes : seuls le composant et ses types sont exportés.
+
+```tsx
+<ServiceCalendar label="Circulation" value={calendar} onChange={setCalendar} />
+```
+
+### RouteStopList
+
+Liste ordonnée de passages, sans tri implicite ni conversion d’horaires. Les services nocturnes conservent leur notation, par exemple `24:20`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `label` | `string` | requis | Titre et nom accessible de la section |
+| `stops` | `RouteStop[]` | requis | Passages dans l’ordre d’affichage |
+| `line` | `ReactNode` | — | Identité de ligne, généralement `LineBadge` |
+| `loading` | `boolean` | `false` | Squelette à la place de la liste, région occupée |
+| `onStopSelect` | `(stop: RouteStop) => void` | — | Ajoute un bouton « Voir l’arrêt » à chaque passage |
+| `className` | `string` | — | Classe additionnelle |
+
+`RouteStop` : `id` (identifiant unique du **passage**) et `name` requis ; `stopId`, `city`, `arrival`, `departure`, `note` optionnels (strings), `lines` optionnel (ReactNode), `skipped` optionnel (boolean, défaut faux).
+
+- Une boucle peut répéter le même `stopId`, avec des `id` de passage distincts.
+- Le premier et le dernier passage sont signalés « Origine » et « Terminus » ; un passage unique porte les deux mentions.
+- `skipped` affiche « Non desservi » et masque ses horaires pour éviter de les présenter comme utilisables. `note` peut préciser le motif.
+- En l’absence d’arrivée et de départ, affiche « Horaire non renseigné ». Les horaires fournis sont affichés tels quels, sans validation, calcul de retard ou conversion en heure civile.
+- La liste vide utilise `EmptyState`. Pour une erreur de récupération, composer un `InlineAlert` ou `EmptyState variant="error"` au niveau de l’application.
+- Adapté à la consultation de courses courtes à moyennes ; pas de virtualisation ni de carte géographique.

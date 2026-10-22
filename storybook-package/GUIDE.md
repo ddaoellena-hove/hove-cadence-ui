@@ -276,7 +276,6 @@ export default function AppLayout() {
 | `Dropdown` | `{ Dropdown }` | `options`, `value`, `placeholder`, `disabled`, `onChange` |
 | `DatePicker` | `{ DatePicker }` | `value`, `onChange`, `disabled` |
 | `SegmentedControl` | `{ SegmentedControl }` | `options`, `value`, `onChange` |
-| `SegmentedControlAlt` | `{ SegmentedControlAlt }` | `options`, `value`, `onChange` |
 
 ### Navigation
 
@@ -475,3 +474,5 @@ R : Oui. Installe seulement `hove-cadence-ui` et importe `hove-cadence-ui/style.
 
 **Q : Les styles Uxum Grotesque ne s'appliquent pas.**  
 R : Les fichiers de police `.otf` doivent être servis depuis `/fonts/` dans ton projet. Copie-les dans `public/fonts/` et ajoute les `@font-face` dans ton CSS global.
+
+Navigation à plusieurs niveaux : `SegmentedControl` (apparence Alt conservée) puis `SecondaryTab` dans `TabList level="secondary"`. L’export `SegmentedControlAlt` est supprimé ; utiliser `SegmentedControl`.

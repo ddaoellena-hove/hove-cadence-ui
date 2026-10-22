@@ -182,3 +182,33 @@ export const DansUnDataTable: Story = {
   name: "Dans un DataTable",
   render: () => <DataTableDemo />,
 };
+
+export const ClavierEtDialogue: Story = {
+  render: () => <TableCardDemo />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+    const trigger = canvas.getByRole("button", { name: "Plus d'actions" });
+    trigger.focus();
+    await userEvent.keyboard("{ArrowUp}");
+    const remove = await body.findByRole("menuitem", { name: "Supprimer" });
+    await expect(remove).toHaveFocus();
+    await userEvent.keyboard("{Enter}");
+    const dialog = await body.findByRole("dialog", { name: "Supprimer la course" });
+    await expect(dialog).toBeInTheDocument();
+    await userEvent.keyboard("{Escape}");
+    await expect(trigger).toHaveFocus();
+  },
+};
+
+export const ToutesDesactivees: Story = {
+  args: { items: [{ id: "locked", label: "Indisponible", disabled: true, onSelect: () => { throw new Error("Action désactivée exécutée"); } }] },
+  play: async ({ canvasElement }) => {
+    const body = within(document.body);
+    await userEvent.click(within(canvasElement).getByRole("button", { name: "Plus d'actions" }));
+    const menu = await body.findByRole("menu");
+    await expect(menu).toHaveFocus();
+    await userEvent.keyboard("{Enter}{Escape}");
+    await expect(body.queryByRole("menu")).not.toBeInTheDocument();
+  },
+};

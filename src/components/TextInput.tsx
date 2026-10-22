@@ -88,9 +88,11 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
       if (internalState === "hover") setInternalState("enabled");
     };
 
+    const visualState = isDisabled ? "disabled" : stateProp === "error" || stateProp === "success" ? stateProp : internalState;
+
     const rootClass = [
       "text-input",
-      `text-input--${internalState}`,
+      `text-input--${visualState}`,
       className,
     ]
       .filter(Boolean)
@@ -98,7 +100,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
 
     const fieldClass = [
       "text-input__field",
-      `text-input__field--${internalState}`,
+      `text-input__field--${visualState}`,
     ].join(" ");
 
     return (
@@ -125,14 +127,14 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
             onFocus={handleFocus}
             onBlur={handleBlur}
             aria-label={ariaLabel ?? label}
-            aria-invalid={internalState === "error" || undefined}
+            aria-invalid={stateProp === "error" || undefined}
             aria-describedby={helperText ? `${inputId}-helper` : undefined}
           />
         </div>
         {helperText && (
           <p
             id={`${inputId}-helper`}
-            className={`text-input__helper text-input__helper--${internalState}`}
+            className={`text-input__helper text-input__helper--${visualState}`}
           >
             {helperText}
           </p>

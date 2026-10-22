@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useId, useRef } from "react";
 import { GhostButton } from "./GhostButton";
 import { PrimaryButton } from "./PrimaryButton";
 import { OverlayPortal, useOverlay } from "./overlay-primitives";
@@ -21,6 +21,8 @@ export interface ModalProps {
   onClose: () => void;
   /** Modal heading. */
   title?: string;
+  /** Nom accessible lorsque le titre visuel est absent. */
+  "aria-label"?: string;
   /** Body content. */
   children: React.ReactNode;
   /**
@@ -54,6 +56,7 @@ export const Modal = ({
   isOpen,
   onClose,
   title,
+  "aria-label": ariaLabel,
   children,
   primaryAction,
   secondaryAction,
@@ -62,6 +65,7 @@ export const Modal = ({
 }: ModalProps) => {
   // Échap, piège à focus, retour du focus, verrouillage du défilement et inert :
   // comportement commun mutualisé avec Drawer (voir overlay-primitives.ts).
+  const titleId = useId();
   const frameRef = useRef<HTMLDivElement>(null);
   useOverlay({ isOpen, onClose, surfaceRef: frameRef });
 
@@ -77,7 +81,8 @@ export const Modal = ({
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-labelledby={title ? "modal-title" : undefined}
+      aria-labelledby={title ? titleId : undefined}
+      aria-label={title ? undefined : ariaLabel || "Dialogue"}
     >
       {/* ── Frame (#002830, padding 3px) ── */}
       <div
@@ -90,7 +95,7 @@ export const Modal = ({
         {showHeader && (
           <div className="modal__header">
             {title && (
-              <h2 id="modal-title" className="modal__title">
+              <h2 id={titleId} className="modal__title">
                 {title}
               </h2>
             )}

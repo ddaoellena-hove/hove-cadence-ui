@@ -1,5 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, userEvent, within } from "storybook/test";
 import { TextInput } from "./TextInput";
 
 const meta: Meta<typeof TextInput> = {
@@ -95,5 +96,18 @@ export const NoLabel: Story = {
     label: "",
     placeholder: "Search…",
     "aria-label": "Search",
+  },
+};
+
+/** Une erreur métier doit rester annoncée pendant la correction du champ. */
+export const ErreurAuFocus: Story = {
+  args: { label: "Nom du réseau", state: "error", helperText: "Renseignez le nom du réseau." },
+  parameters: { a11y: { test: "error" } },
+  play: async ({ canvasElement }) => {
+    const input = within(canvasElement).getByRole("textbox", { name: "Nom du réseau" });
+    await userEvent.click(input);
+    await expect(input).toHaveAttribute("aria-invalid", "true");
+    await expect(input).toHaveAccessibleDescription("Renseignez le nom du réseau.");
+    await expect(input.closest(".text-input")).toHaveClass("text-input--error");
   },
 };

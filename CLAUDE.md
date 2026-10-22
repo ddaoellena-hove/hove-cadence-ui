@@ -6,6 +6,8 @@ Repo local : /Users/ddao-ellena/hove-cadence-ui
 ## À lire en premier
 `GUIDELINES.md` est la source de vérité (composants, props, tokens, règles). Lis-le au début de chaque session. Si une info manque, demande — n'invente pas de prop ni de composant.
 
+Pour reprendre le travail en cours, lire aussi [`docs/HANDOFF.md`](docs/HANDOFF.md) : état local non commité, décisions, résultats de tests et limites connues.
+
 ## Stack
 React 19 · TypeScript ~6 (strict) · Vite 8 · Storybook 10 (`@storybook/react-vite`). Icônes : `@untitledui/icons` (SVG inline).
 
@@ -23,7 +25,7 @@ React 19 · TypeScript ~6 (strict) · Vite 8 · Storybook 10 (`@storybook/react-
 3. Mettre à jour `GUIDELINES.md` : table « Intention → composant », section de domaine, et fiche API (toutes les props, défauts, pièges ⚠️).
 
 ## Vérifier
-- `npx tsc --noEmit`
+- `npx tsc -b --noEmit`
 - `npm run build:lib`  (⚠️ build de la LIB ; `npm run build` est l'app démo et écrase `dist/`)
 - `npx eslint <fichiers touchés>`  (le lint global est bruité par `storybook-static/` et les stories générées — ne juge que les fichiers touchés)
 - Aucune URL `animaapp` ne doit subsister.

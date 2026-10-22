@@ -1,0 +1,5 @@
+.error-summary { min-width: 0; border-radius: var(--cadence-radius-lg, 10px); }
+.error-summary:focus { outline: 2px solid var(--cadence-focus-color, #1a3e45); outline-offset: 4px; }
+.error-summary__title { margin: 0 0 8px; font: inherit; font-weight: 600; color: inherit; }
+.error-summary__list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+.error-summary__list .link { white-space: normal; text-align: left; overflow-wrap: anywhere; }

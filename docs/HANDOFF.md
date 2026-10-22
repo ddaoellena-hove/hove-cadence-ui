@@ -1,0 +1,107 @@
+# Relais de développement — 22 octobre 2026
+
+## Démarrage pour un nouvel agent
+
+1. Lire `CLAUDE.md`, puis `GUIDELINES.md` à la racine : conventions, API et règles visuelles.
+2. Lire ce document et vérifier `git status --short` et `git branch --show-current` : l’état ci-dessous est une photographie datée.
+3. Consulter les rapports liés avant de refaire un audit ou d’ajouter un composant. Le code et les stories actuels précisent le comportement réel ; les propositions historiques ne remplacent pas les guidelines.
+
+## Objectif et état de livraison
+
+L’utilisateur prépare le design system React `@ddaoellena/cadence-ui` pour la 1.0. Il a demandé l’analyse de l’existant, des composants jugés nécessaires, puis un nouvel audit et des améliorations. Ces lots ont été réalisés localement. Aucune tâche d’implémentation explicitement demandée n’est laissée en cours ; les étapes proposées plus bas sont des recommandations.
+
+- Branche utilisée : `feat/additional-components` ; version du manifeste : `0.5.0`.
+- Le travail contient de nombreuses modifications non commitées et des fichiers non suivis, dont les nouveaux composants et rapports. Un clone du dépôt distant seul ne récupère pas ce travail : transmettre le dossier de travail complet ou préparer un commit relu.
+- Aucun commit, push, changement de version ou publication npm n’a été effectué pendant ces lots.
+- Les fichiers `.claude/settings.local.json`, `.claude/launch.json`, `.mcp.json`, `story-ui-considerations.md` et `story-ui-docs/` étaient déjà présents/modifiés ; leur contenu ne fait pas partie de nos corrections. Ne pas les écraser ni les inclure aveuglément dans un commit.
+- Storybook est la vitrine du projet, habituellement sur le port 6006 ; vérifier le serveur existant avant d’en lancer un autre. `App.tsx` reste le squelette Vite.
+
+## Travail effectué et points d’entrée
+
+| Lot | Contenu | Documentation |
+|---|---|---|
+| Composants additionnels et premier audit | ProgressBar, InlineAlert, LineBadge, StopLabel, Accordion, Stepper, FileUpload, ExportMenu, ColumnManager, Gauge ; corrections de menus, colonnes, validation de fichiers, contraste et clavier | [Rapport initial](audits/additional-components-2026-10-22.md) |
+| Compléments avant 1.0 | ErrorSummary, DescriptionList, ActivityFeed, TimePicker ; exports, CSS, stories, API et recettes métier | [Périmètre et captures](proposals/pre-1.0-complements.md) |
+| Audit des interactions | Pile Modal/Drawer, Échap, focus, scroll, restauration du fond, nom accessible de Modal et cibles ErrorSummary | [Rapport complémentaire](audits/interactions-2026-10-22.md) |
+
+Fichiers centraux :
+
+- `src/components/index.ts` : API publique ; `GUIDELINES.md` : API documentée ; `CHANGELOG.md` : changements regroupés sous 0.5.0 non publiée.
+- `src/components/overlay-primitives.ts` : gestion partagée des surcouches ; `Modal.stories.tsx` : tests de superposition et de confirmation dans un Drawer.
+- `src/components/menu-core.tsx` : comportement partagé d’ActionMenu et ExportMenu.
+- `src/stories/ListeDePerturbations.stories.tsx` : supervision, colonnes, téléchargement CSV local.
+- `src/stories/ParcoursTransport.stories.tsx` : détail et import réseau avec reprise après erreur.
+- `src/stories/PlanificationService.stories.tsx` : horaires nocturnes, validation, synthèse et historique.
+
+## Décisions à préserver
+
+- Réutiliser les composants et tokens ; ne pas créer un autre multi-select : `Autocomplete multiple` existe.
+- TimePicker conserve une chaîne d’heure de service, sans Date ni conversion de fuseau. Mode ordinaire jusqu’à 23:59, mode nocturne jusqu’à 47:59. Seule une valeur validée remonte par onChange ; vérifier la validité native dans un formulaire noValidate.
+- ErrorSummary centralise les erreurs fournies par l’application, sans les calculer. Ses cibles peuvent être un id ou une ref.
+- ActivityFeed affiche des événements ponctuels, dans l’ordre fourni ; fuseau UTC par défaut, fuseau métier explicite conseillé. Ce n’est pas un journal d’audit serveur ni une frise de périodes.
+- Timeline reste reportée faute de périmètre d’interaction défini.
+- Les recettes utilisent des données locales ; l’import simule sa progression, sans transfert réseau ni validation GTFS complète.
+- Un contrôle enfant peut consommer Échap avant Modal/Drawer ; seule la surcouche au premier plan traite ensuite le clavier.
+
+## Validation connue
+
+Dernier audit : suite globale **653 tests réussis dans 91 fichiers**, puis ajout d’un scénario Modal dans Drawer validé avec les **12 stories Modal**. Cela couvre 654 tests distincts ; ne pas présenter ce résultat comme une exécution globale unique de 654 tests.
+
+TypeScript, lint ciblé, builds bibliothèque et Storybook réussis. `git diff --check` propre. Les nouvelles stories du dernier audit ont l’accessibilité automatisée bloquante. Les anciennes stories ne bénéficient pas toutes de cette exigence.
+
+Au lot précédent : inspection visuelle bureau/mobile, absence de débordement sur les vues vérifiées, imports ESM/CommonJS et déclarations des quatre composants contrôlés, `npm pack --dry-run` inspecté. Les captures sont dans `docs/proposals/assets/pre-1.0/`. Ces vérifications ne valent pas un test de chaque composant sur chaque navigateur.
+
+Commandes reproductibles depuis la racine :
+
+```sh
+npm test
+npx tsc -b --noEmit
+npx eslint <fichiers-modifiés>
+npm run build:lib
+npm run build-storybook
+git diff --check
+```
+
+`<fichiers-modifiés>` est à remplacer par les chemins concernés. Utiliser npm ; une installation requiert `--legacy-peer-deps`. Les tests Storybook utilisent Chromium Playwright. Ne pas lancer `npm run build` pour préparer la bibliothèque : ce build de l’application écrase `dist/`. Le lint global est bruité par des fichiers générés et des avertissements historiques.
+
+## Prochaines étapes conseillées avant 1.0
+
+1. Vérifier le paquet dans des applications consommatrices séparées sous React 18 et React 19, avec imports ESM/CommonJS, styles et typage.
+2. Étendre les tests d’intégration aux menus en portail dans des dialogues ; tester manuellement les parcours au lecteur d’écran et sur les navigateurs cibles.
+3. Nettoyer les avertissements React des exemples : la suite globale émet encore deux messages de champs contrôlés sans onChange ; les fichiers responsables restent à identifier. Les avertissements de dépréciation sont également encore présents.
+4. Préparer la migration des API dépréciées documentées au changelog, relire le diff et constituer des commits cohérents en préservant les fichiers de configuration locaux.
+5. Décider explicitement de la version et de la publication avec l’utilisateur. Rien dans le travail réalisé ne constitue une autorisation de publier sur npm.
+
+Ce relais complète les rapports ; il ne certifie pas un audit exhaustif de sécurité, d’accessibilité ou de compatibilité React 18.
+
+## Mise à jour — unification du SegmentedControl
+
+Demande utilisateur suivante réalisée : conserver uniquement l’apparence Alt, sous le nom public `SegmentedControl`. Les fichiers et exports `SegmentedControlAlt` sont supprimés ; migrer les imports/types vers `SegmentedControl`. Props conservées. DatePicker réutilise désormais le composant unique. Pour les parcours à plusieurs niveaux : `SegmentedControl` puis `SecondaryTab` dans `TabList level="secondary"`. La story `SecondaryTab/TwoLevels` illustre cette règle. Les propositions historiques peuvent encore citer les deux anciennes variantes ; les guidelines actuelles priment.
+
+Validation après cette unification : **648 tests réussis dans 90 fichiers** sur une exécution globale (le catalogue perd les stories du composant supprimé), 23 tests ciblés réussis, TypeScript et lint ciblé réussis, builds bibliothèque/Storybook réussis. Exports ESM/CommonJS vérifiés : SegmentedControl présent, Alt absent. Inspection visuelle de la story à deux niveaux effectuée. Ces résultats remplacent les comptes précédents pour l’état courant.
+
+## Mise à jour — premier lot métier transport
+
+À la suite des propositions métier, le premier lot est implémenté : `ServiceCalendar`, `RouteStopList` exportés, et recette `OffreEtQualite.stories.tsx` contenant le rapport qualité. Voir [le périmètre, les limites et les captures](proposals/transport-business.md) et les fiches API ajoutées à `GUIDELINES.md`.
+
+Dernière suite globale : **663 tests réussis dans 94 fichiers** ; 15 tests ciblés couvrent le nouveau lot. Le rapport qualité ne valide aucun fichier et les données restent locales. Les trois autres propositions (DisruptionScopePicker, ScheduleComparison, DataFreshness) restent pour un lot ultérieur. La version reste 0.5.0, sans publication. Les nouveaux fichiers et les captures sont aussi à transmettre dans le dossier local ou à inclure dans un commit relu.
+
+## Mise à jour — refonte du TimePicker
+
+Présentation remplacée à la demande de l’utilisateur : module interne `TimeFields` partagé avec DatePicker, deux cases Heures/Minutes éditables pour TimePicker, flèches verticales et collage HH:mm. Nouvelle variante bouton avec brouillon, validation/annulation, focus et validité native. Ref/id maintenant sur les heures ; recette de planification et sélecteurs des tests adaptés. Voir [le document de refonte](proposals/time-picker-redesign.md), ses captures et la fiche API dans GUIDELINES.md. Les anciennes captures de planification dans les premiers rapports sont historiques.
+
+Validation après refonte horaire : **667 tests réussis dans 94 fichiers**, TypeScript, lint ciblé et les deux builds réussis. Ces résultats remplacent les comptes précédents pour l’état courant.
+
+
+## Mise à jour — TimePicker dans un champ avec panneau
+
+Correction de présentation demandée après la refonte : la variante champ est désormais un déclencheur compact (heure + horloge), ouvrant le panneau comme DatePicker. Les deux variantes ont maintenant une validation explicite ; aucune flèche ne publie avant Valider/Entrée. Les tests ouvrent le champ avant de saisir, et ErrorSummary cible le conteneur du champ dans la recette de planification. Voir la fiche TimePicker actuelle et l’ajout au document de refonte. Les descriptions plus anciennes de l’éditeur directement visible dans la page sont obsolètes.
+
+Validation du dernier ajustement : **667 tests réussis dans 94 fichiers**, TypeScript, lint ciblé et les deux builds réussis. Captures du champ fermé/ouvert dans `docs/proposals/assets/time-picker/field-closed.png` et `field-open.png`.
+
+
+## Mise à jour — focus des stories TimePicker
+
+Le changement de champ actif en consultation provenait des fonctions play qui exécutaient automatiquement clics et saisies dans le Canvas. Dans `TimePicker.stories.tsx`, le helper `testOnly` conserve ces fonctions uniquement lorsque `import.meta.env.MODE === "test"`. Les démonstrations restent au repos dans Storybook ; Vitest continue d’exécuter les 12 stories avec leurs scénarios et contrôles d’accessibilité. Aucun changement au composant TimePicker pour cette correction.
+
+Vérification navigateur : aucun déplacement de focus au chargement de la story, saisie manuelle des minutes conservée après attente, validation de 09:45. Pour exécuter les scénarios automatisés : `npx vitest run --project storybook src/components/TimePicker.stories.tsx`.

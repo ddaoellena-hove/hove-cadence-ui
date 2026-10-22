@@ -2,6 +2,75 @@
 
 ## 0.5.0 (non publiée)
 
+### FileUpload : cartes fichier
+
+- Bouton « Parcourir » en `PrimaryButton outline size="sm"`.
+- Chaque fichier devient une carte : intitulé d’état en capitales, picto document, nom et taille. Corbeille `PrimaryButton outline tone="danger"` (« Supprimer … ») une fois importé, croix `GhostButton` sinon (« Annuler l’import de … » pendant l’envoi). Barre fine accent et pourcentage pendant l’envoi.
+- Les libellés d’état changent (« En attente » → « Fichier en attente », « Terminé » → « Fichier importé », etc.) : adapter les sélecteurs de test qui les ciblent.
+- Nouveau token `--cadence-color-surface-subtle` (`#fafafa`).
+
+### ProgressBar : remplissage accent
+
+- Le remplissage par défaut (`tone="default"`) passe de l’encre `--cadence-color-primary` à `--cadence-color-accent` (`#1b6cff`). `success` et `danger` sont inchangés ; `AlertToast` garde sa barre à la couleur de sa variante.
+
+### Stories TimePicker : focus stable
+
+- Les scénarios d’interaction sont exécutés uniquement en mode test (Vitest). Consulter une story ne déclenche plus de clics et de saisies automatiques qui déplacent le focus ou modifient sa valeur.
+
+### Ouverture du TimePicker depuis un champ
+
+- Variante champ compacte (heure et icône horloge) ouvrant le même panneau ancré que la variante bouton, conformément au fonctionnement de DatePicker.
+- Saisie clavier dans le panneau Heures/Minutes ; les deux variantes conservent le brouillon jusqu’à Valider/Entrée. Annulation sur Échap, clic extérieur ou sortie au clavier.
+- Recette de planification et accès via ErrorSummary adaptés aux champs fermés.
+
+### Refonte du TimePicker
+
+- Présentation du module horaire de DatePicker : cases Heures/Minutes, flèches par unité, saisie et collage HH:mm au clavier. Module interne TimeFields partagé.
+- Variante `button` outline sm : panneau avec validation explicite, annulation, Échap et retour du focus. Validation native également prise en charge lorsque le panneau est fermé.
+- Heures nocturnes, bornes, erreurs et pas de minutes conservés. Ref/id désormais sur la case des heures ; recettes et tests adaptés.
+
+### Premier lot métier transport
+
+- `ServiceCalendar` : période inclusive, semaine type, exceptions ajoutées/retirées, remplacement par date, aperçu de circulation et signalement des exceptions hors période. État contrôlé en dates civiles.
+- `RouteStopList` : passages ordonnés, origine/terminus, horaires nocturnes, arrêts non desservis, boucles, chargement et état vide.
+- Recette « Offre et qualité » : navigation SegmentedControl + SecondaryTab, calendrier et course nocturne ; rapport qualité avec bilan global, filtres, recherche et détail en Drawer. Données locales, sans analyse GTFS ni backend.
+- Types publics, stories avec contrôles d’accessibilité bloquants, tests des règles de calendrier et documentation des limites.
+
+### Unification du SegmentedControl
+
+- L’apparence de `SegmentedControlAlt` devient l’unique `SegmentedControl` ; ancienne implémentation supprimée. Migration : remplacer les imports et types `SegmentedControlAlt*` par `SegmentedControl*` (props conservées). L’export Alt est supprimé.
+- Formulaires et bascules de vue utilisent le même composant. Les parcours à plusieurs niveaux associent `SegmentedControl` et `SecondaryTab` (dans un `TabList level="secondary"`).
+- DatePicker réutilise ce composant au lieu d’une copie interne. Groupe radio, focus déplacé avec les flèches, Début/Fin, mesure du segment au redimensionnement et mouvement réduit.
+
+### Audit complémentaire des interactions
+
+- `Modal` : identifiants de titre uniques et prop `aria-label` pour les dialogues sans titre visible.
+- `Modal`/`Drawer` : gestion commune de la pile, Échap limité au premier plan, restauration exacte de `inert`/`aria-hidden` et verrouillage du scroll jusqu’à la dernière fermeture, même dans un ordre différent de l’ouverture.
+- Piège à focus : exclusion des contrôles masqués, hors tabulation ou désactivés par un fieldset.
+- `ErrorSummary` : les liens vers un conteneur ignorent les champs cachés, désactivés et inertes pour atteindre le premier contrôle utilisable.
+- Scénarios de régression navigateur pour ces interactions.
+
+### Compléments avant 1.0
+
+- **`ErrorSummary`** : résumé de soumission invalide, région nommée et focalisable, liens vers un champ ou une zone par id/ref. Réutilisé dans l'import réseau.
+- **`DescriptionList`** : métadonnées sémantiques, densité compacte/confortable, disposition horizontale/empilée, repli mobile et valeur vide explicite. Intégré au détail et à la vérification d'import.
+- **`ActivityFeed`** : historique d'événements avec auteur, date absolue/fuseau explicite, état textuel, chargement et état vide. Intégré au détail de perturbation.
+- **`TimePicker`** : heure seule HH:mm, mode de service jusqu'à 47:59, bornes, pas, clavier, annulation et erreurs. Validité HTML synchronisée pour empêcher la soumission d'un brouillon invalide. Nouvelle recette de planification nocturne associant les quatre composants.
+- `Modal`/`Drawer` traitent Échap après le contrôle actif : un premier Échap peut annuler le brouillon d’heure sans fermer le dialogue, un second le ferme.
+- Stories avec tests d'interaction et accessibilité bloquante, tests des utilitaires d'heure et documentation API. Aucune dépendance ajoutée ; manifeste inchangé.
+
+### Composants additionnels et audit du 22 octobre 2026
+
+- Dix composants exportés et documentés : `ProgressBar`, `InlineAlert`, `LineBadge`, `StopLabel`, `Accordion`, `Stepper`, `FileUpload`, `ExportMenu`, `ColumnManager`, `Gauge`.
+- `DataTable.columnOrder` ; `AlertToast` réutilise `ProgressBar` ; `ActionMenu` et `ExportMenu` partagent une primitive de menu interne.
+- Corrections de focus/clavier des menus (y compris passage vers une modale et menu entièrement désactivé), défilement interne et bornage des panneaux à l'écran.
+- `ColumnManager` complète un ordre partiel, ignore doublons/inconnus et reçoit le focus à l'ouverture. `Accordion` respecte le mode single dès le montage.
+- `FileUpload` : jokers MIME, extensions composées, taille limite à zéro, erreurs dans une liste HTML valide, états textuels, progression indéterminée sans valeur.
+- `LineBadge` : couleurs GTFS sans `#` normalisées, repli noir pour assurer AA lorsque blanc/encre ne suffisent pas. `Gauge` : libellé d'objectif atteint/non atteint, nombres français, avertissement contrasté et mouvement réduit.
+- `Stepper` : états textuels et empilement sur petit écran. `Checkbox` évite de faire défiler la page à l'activation par Espace. `TextInput` conserve erreur/succès au focus et utilise un texte d'aide contrasté.
+- Recette de supervision avec colonnes et téléchargement CSV ; nouvelles recettes de détail de perturbation et d'import local avec correction d'erreurs. `Autocomplete multiple` est réutilisé.
+- README remplacé par la documentation du projet et rapport d'audit ajouté. Aucun changement de version ni publication npm.
+
 ### Data viz v2
 
 - **`LineChart`** (nouveau) : évolution d'une à huit séries, temporelles (axe de dates fr-FR adapté à l'étendue) ou catégorielles ; aires empilées ou non ; `thresholds` libellés (côté défavorable signalé selon `goodDirection`) ; `annotations` (trait ou bande datés) ; tooltip partagé ; navigation ←/→ au clavier avec annonce ; mode `compact` pour une `Card`.

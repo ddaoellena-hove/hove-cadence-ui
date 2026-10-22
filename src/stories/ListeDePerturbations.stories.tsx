@@ -7,8 +7,12 @@ import { Dropdown } from "../components/Dropdown";
 import { FilterBar } from "../components/FilterBar";
 import { Link } from "../components/Link";
 import { Pagination } from "../components/Pagination";
-import { GhostButton } from "../components/GhostButton";
-import { PrimaryButton } from "../components/PrimaryButton";
+import { ColumnManager } from "../components/ColumnManager";
+import { ExportMenu } from "../components/ExportMenu";
+import { InlineAlert } from "../components/InlineAlert";
+import { EmptyState } from "../components/EmptyState";
+import { PageHeader } from "../components/PageHeader";
+import { compareValues } from "../components/data-table-utils";
 import { DISRUPTION_COLUMNS } from "./data/columns";
 import { SEVERITY_LABELS, generateDisruptions } from "./data/transport";
 
@@ -37,6 +41,9 @@ const SupervisionPage = () => {
   const [pageSize, setPageSize] = useState(50);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
+  const [columnState, setColumnState] = useState({ visibleIds: DISRUPTION_COLUMNS.map((c) => c.id), order: DISRUPTION_COLUMNS.map((c) => c.id) });
+  const [exportMessage, setExportMessage] = useState("");
+
   // Toute modification des filtres ramène à la première page
   const resetPage = () => setPage(1);
 
@@ -63,13 +70,40 @@ const SupervisionPage = () => {
     resetPage();
   };
 
-  const allFilteredSelected = selectedIds.length === filtered.length && filtered.length > 0;
+  const filteredSelection = filtered.filter((row) => selectedIds.includes(row.id));
+  const allFilteredSelected = filteredSelection.length === filtered.length && filtered.length > 0;
+  const sorted = [...filtered].sort((a, b) => {
+    for (const criterion of sort) {
+      const column = DISRUPTION_COLUMNS.find((c) => c.id === criterion.id);
+      if (!column) continue;
+      const result = compareValues(column.accessor(a), column.accessor(b));
+      if (result !== 0) return criterion.desc ? -result : result;
+    }
+    return 0;
+  });
+  const pageRows = sorted.slice((page - 1) * pageSize, page * pageSize);
+  const exportCsv = (scope: "selection" | "page" | "all") => {
+    const rows = scope === "selection" ? filteredSelection : scope === "page" ? pageRows : sorted;
+    const cols = columnState.order.map((id) => DISRUPTION_COLUMNS.find((c) => c.id === id)!)
+      .filter((c) => columnState.visibleIds.includes(c.id));
+    const escape = (value: unknown) => `"${String(value ?? "").replaceAll('"', '""')}"`;
+    const csv = [cols.map((c) => escape(c.header)).join(";"), ...rows.map((row) => cols.map((c) => {
+      const value = c.accessor(row);
+      return escape(value instanceof Date ? value.toLocaleString("fr-FR") : value);
+    }).join(";"))].join("\r\n");
+    const url = URL.createObjectURL(new Blob(["\ufeff", csv], { type: "text/csv;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `perturbations-${scope}.csv`;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setExportMessage(`${numberFormat.format(rows.length)} perturbation(s) exportée(s) en CSV.`);
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <h1 style={{ fontFamily: "var(--cadence-font-display)", fontSize: 28, fontWeight: 500, color: "var(--cadence-color-primary)", margin: 0 }}>
-        Perturbations
-      </h1>
+      <PageHeader title="Perturbations" subtitle="Réseau de démonstration · données locales" sticky={false} />
+      {exportMessage && <InlineAlert type="success" dismissible onDismiss={() => setExportMessage("")}>{exportMessage}</InlineAlert>}
 
       <FilterBar
         search={{
@@ -82,8 +116,8 @@ const SupervisionPage = () => {
         }}
         quickFilters={
           <>
-            <Dropdown options={LINE_OPTIONS} value={line} onChange={(id) => { setLine(id); resetPage(); }} />
-            <Dropdown options={SEVERITY_OPTIONS} value={severity} onChange={(id) => { setSeverity(id); resetPage(); }} />
+            <Dropdown label="Ligne" options={LINE_OPTIONS} value={line} onChange={(id) => { setLine(id); resetPage(); }} />
+            <Dropdown label="Sévérité" options={SEVERITY_OPTIONS} value={severity} onChange={(id) => { setSeverity(id); resetPage(); }} />
           </>
         }
         activeFilters={activeFilters}
@@ -95,7 +129,11 @@ const SupervisionPage = () => {
           resetPage();
         }}
         resultCount={filtered.length}
-        actions={<GhostButton size="sm" iconStart="download-02" label="Exporter" />}
+        actions={<>
+          <ColumnManager columns={DISRUPTION_COLUMNS.map((c) => ({ id: c.id, label: c.header }))}
+            visibleIds={columnState.visibleIds} order={columnState.order} onChange={setColumnState} />
+          <ExportMenu counts={{ selection: filteredSelection.length, page: pageRows.length, total: filtered.length }} formats={["csv"]} onExport={({ scope }) => exportCsv(scope)} />
+        </>}
       />
 
       {/* ── Barre de sélection (visible si ≥ 1 sélection) ── */}
@@ -113,16 +151,15 @@ const SupervisionPage = () => {
             )}
             <Link hideArrow size="sm" onClick={() => setSelectedIds([])}>Tout désélectionner</Link>
           </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" />
-            <PrimaryButton size="sm" iconStart="trash" label="Clôturer" tone="danger" />
-          </div>
+
         </div>
       )}
 
       <DataTable
         aria-label="Perturbations"
         columns={DISRUPTION_COLUMNS}
+        hiddenColumnIds={DISRUPTION_COLUMNS.filter((c) => !columnState.visibleIds.includes(c.id)).map((c) => c.id)}
+        columnOrder={columnState.order}
         data={filtered}
         getRowId={(d) => d.id}
         sort={sort}
@@ -136,7 +173,7 @@ const SupervisionPage = () => {
         selectedIds={selectedIds}
         onSelectionChange={setSelectedIds}
         maxHeight="calc(100vh - 320px)"
-        emptyState="Aucune perturbation ne correspond à ces filtres."
+        emptyState={<EmptyState size="inline" variant="no-results" title="Aucune perturbation" description="Modifiez ou effacez les filtres pour afficher des résultats." />}
       />
 
       <Pagination

@@ -69,6 +69,8 @@ export interface DataTableProps<T> {
   density?: "compact" | "comfortable";
   /** Ids des colonnes masquées. */
   hiddenColumnIds?: string[];
+  /** Ordre d'affichage des colonnes (ids). Les colonnes absentes restent à la fin. */
+  columnOrder?: string[];
   /** Tri contrôlé. Sans `sort`, le tri est géré en interne. */
   sort?: DataTableSort[];
   /** Tri initial en mode non contrôlé. */
@@ -143,6 +145,7 @@ export function DataTable<T extends object>({
   "aria-label": ariaLabel,
   density = "comfortable",
   hiddenColumnIds = EMPTY_IDS,
+  columnOrder,
   sort: sortProp,
   defaultSort = EMPTY_SORT,
   onSortChange,
@@ -173,8 +176,12 @@ export function DataTable<T extends object>({
   // ── Colonnes visibles et grille ──
   const visibleColumns = useMemo(() => {
     const hidden = new Set(hiddenColumnIds);
-    return columns.filter((col) => !hidden.has(col.id));
-  }, [columns, hiddenColumnIds]);
+    const visible = columns.filter((col) => !hidden.has(col.id));
+    if (!columnOrder || columnOrder.length === 0) return visible;
+    // Réordonne selon columnOrder ; les colonnes absentes gardent leur place à la fin.
+    const rank = new Map(columnOrder.map((id, i) => [id, i]));
+    return [...visible].sort((a, b) => (rank.get(a.id) ?? Infinity) - (rank.get(b.id) ?? Infinity));
+  }, [columns, hiddenColumnIds, columnOrder]);
 
   const gridTemplateColumns = [
     ...(selectable ? [`${SELECT_COLUMN_WIDTH}px`] : []),

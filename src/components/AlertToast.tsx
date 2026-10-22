@@ -12,6 +12,7 @@ import { AlertCircle } from "@untitledui/icons/AlertCircle";
 import { XClose } from "@untitledui/icons/XClose";
 import { GhostButton } from "./GhostButton";
 import { PrimaryButton } from "./PrimaryButton";
+import { ProgressBar } from "./ProgressBar";
 import "./alert-toast.css";
 
 /** Visual type of the toast, controls the accent color and status icon. */
@@ -163,14 +164,10 @@ export const AlertToast = ({
         </div>
       )}
 
-      {/* Full-width progress bar — outside flex row, spans entire card width */}
+      {/* Full-width progress bar — outside flex row, spans entire card width.
+          Rendue par ProgressBar ; le style par type est préservé en CSS. */}
       {showProgress && (
-        <div className="alert-toast__progress-track" aria-hidden="true">
-          <div
-            className="alert-toast__progress-fill"
-            style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
-          />
-        </div>
+        <ProgressBar value={progress} aria-label="Progression" className="alert-toast__progress" />
       )}
     </div>
   );

@@ -1,0 +1,91 @@
+/* ── Accordion ─────────────────────────────────────────────────────────────
+   Disclosure. Panneau animé par grid-template-rows (0fr → 1fr), coupé sous
+   prefers-reduced-motion. */
+
+.accordion {
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  border-top: 1px solid var(--cadence-color-divider, #f0f0f0);
+}
+
+.accordion__item {
+  border-bottom: 1px solid var(--cadence-color-divider, #f0f0f0);
+}
+
+.accordion__heading {
+  margin: 0;
+  font: inherit;
+}
+
+.accordion__trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 4px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--cadence-color-primary, #002830);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.accordion__trigger:hover {
+  color: var(--cadence-color-label, #1a3e45);
+}
+
+.accordion__trigger:focus-visible {
+  outline: none;
+  border-radius: var(--cadence-radius-sm, 6px);
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+}
+
+.accordion__title {
+  min-width: 0;
+}
+
+.accordion__chevron {
+  flex-shrink: 0;
+  color: var(--cadence-color-icon-muted, #69797d);
+  transition: transform 200ms ease;
+}
+
+.accordion__item--open .accordion__chevron {
+  transform: rotate(180deg);
+}
+
+/* ── Panneau animé ── */
+.accordion__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 220ms ease;
+}
+
+.accordion__item--open .accordion__panel {
+  grid-template-rows: 1fr;
+}
+
+.accordion__content {
+  overflow: hidden;
+  color: var(--cadence-color-primary, #002830);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* Rembourrage sous le contenu seulement quand ouvert (évite un saut à 0fr). */
+.accordion__item--open .accordion__content {
+  padding-bottom: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accordion__panel {
+    transition: none;
+  }
+  .accordion__chevron {
+    transition: none;
+  }
+}

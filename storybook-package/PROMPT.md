@@ -57,7 +57,7 @@ Ne jamais surcharger la font-family des composants du design system.
 
 AlertToast, Avatar, Breadcrumbs, Checkbox, DataVisualization, DatePicker,
 Dropdown, Header, Icons, Link, NavigationDropdown, PrimaryButton, RadioButton,
-RichRadioButton, SecondaryButton, SegmentedControl, SegmentedControlAlt,
+RichRadioButton, SecondaryButton, SegmentedControl,
 Sidebar, Tab, TextInput, Toggle, Tooltip, TooltipTrigger
 
 ## Règles de développement
@@ -69,3 +69,5 @@ Sidebar, Tab, TextInput, Toggle, Tooltip, TooltipTrigger
 5. Nommer les classes CSS en BEM : .block__element--modifier.
 6. Ne pas dupliquer des styles déjà couverts par le design system.
 ```
+
+Pour un parcours à plusieurs niveaux, associer SegmentedControl au premier niveau et SecondaryTab dans TabList level="secondary" au second. SegmentedControl est unique et convient aussi aux choix de formulaire.
