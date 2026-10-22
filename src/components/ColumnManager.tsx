@@ -2,14 +2,17 @@
  * ColumnManager component.
  *
  * Popover de gestion des colonnes d'un DataTable : visibilité (Checkbox) et
- * ordre (boutons monter/descendre — pas de glisser-déposer seul), plus
- * « Réinitialiser ». Contrôlé. Le DataTable consomme `visibleIds` (via
+ * ordre, plus « Réinitialiser ». Contrôlé. Ordre modifiable par glisser-déposer
+ * de la poignée (pointeur : souris et tactile, avec repère de dépôt), au
+ * clavier sur la poignée (↑ / ↓, nouvelle position annoncée), ou par les
+ * boutons monter/descendre — alternative sans glisser. Le DataTable consomme `visibleIds` (via
  * `hiddenColumnIds`) et `order` (via `columnOrder`).
  */
-import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import { createPortal } from "react-dom";
 import { ChevronUp } from "@untitledui/icons/ChevronUp";
 import { ChevronDown } from "@untitledui/icons/ChevronDown";
+import { DotsGrid } from "@untitledui/icons/DotsGrid";
 import { GhostButton } from "./GhostButton";
 import { Checkbox } from "./Checkbox";
 import { layerAboveOverlay } from "./overlay-primitives";
@@ -42,6 +45,10 @@ export const ColumnManager = ({ columns, visibleIds, order, onChange, className 
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const panelId = useId();
+  const hintId = useId();
+  // Glisser en cours : ligne saisie et point d'insertion (0 … n, avant la ligne n).
+  const [drag, setDrag] = useState<{ from: number; insert: number } | null>(null);
+  const [announcement, setAnnouncement] = useState("");
 
   const byId = new Map(columns.map((c) => [c.id, c]));
   // Colonnes dans l'ordre courant (celles connues).
@@ -111,17 +118,79 @@ export const ColumnManager = ({ columns, visibleIds, order, onChange, className 
     onChange({ visibleIds: columns.filter((c) => next.has(c.id)).map((c) => c.id), order: ordered.map((c) => c.id) });
   };
 
-  const move = (index: number, delta: -1 | 1) => {
-    const target = index + delta;
-    if (target < 0 || target >= ordered.length) return;
+  /** Déplace la colonne `from` à l'index `to` et remet le focus sur la ligne déplacée. */
+  const moveTo = (from: number, to: number, focus: "control" | "handle" = "control") => {
+    if (to < 0 || to >= ordered.length || to === from) return;
     const nextOrder = ordered.map((c) => c.id);
-    [nextOrder[index], nextOrder[target]] = [nextOrder[target], nextOrder[index]];
+    const [moved] = nextOrder.splice(from, 1);
+    nextOrder.splice(to, 0, moved);
     onChange({ visibleIds, order: nextOrder });
+    setAnnouncement(`${byId.get(moved)?.label ?? moved} déplacée en position ${to + 1} sur ${ordered.length}`);
     // Le bouton activé peut devenir désactivé en bout de liste.
     requestAnimationFrame(() => {
-      const row = panelRef.current?.querySelectorAll(".column-manager__row")[target];
-      row?.querySelector<HTMLElement>("[role=checkbox], input, button:not(:disabled)")?.focus();
+      const row = panelRef.current?.querySelectorAll(".column-manager__row")[to];
+      const selector = focus === "handle" ? ".column-manager__handle" : "[role=checkbox], input, button:not(:disabled)";
+      row?.querySelector<HTMLElement>(selector)?.focus();
     });
+  };
+
+  const move = (index: number, delta: -1 | 1) => moveTo(index, index + delta);
+
+  // ── Glisser-déposer (pointeur) ──
+  /** Point d'insertion sous le pointeur : avant la première ligne dont le milieu est plus bas. */
+  const insertionAt = (clientY: number) => {
+    const rows = Array.from(panelRef.current?.querySelectorAll<HTMLElement>(".column-manager__row") ?? []);
+    const index = rows.findIndex((row) => {
+      const r = row.getBoundingClientRect();
+      return clientY < r.top + r.height / 2;
+    });
+    return index === -1 ? rows.length : index;
+  };
+
+  const onHandlePointerDown = (index: number) => (e: PointerEvent<HTMLButtonElement>) => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    // Capture : la poignée reçoit les déplacements même hors de sa zone.
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      // Pointeur synthétique ou déjà relâché : le glisser reste possible.
+    }
+    e.currentTarget.focus();
+    setDrag({ from: index, insert: index });
+  };
+
+  const onHandlePointerMove = (e: PointerEvent<HTMLButtonElement>) => {
+    if (!drag) return;
+    const insert = insertionAt(e.clientY);
+    if (insert !== drag.insert) setDrag({ ...drag, insert });
+  };
+
+  const onHandlePointerUp = () => {
+    if (!drag) return;
+    // Insertion après la ligne saisie : l'index final perd une position.
+    const to = drag.insert > drag.from ? drag.insert - 1 : drag.insert;
+    setDrag(null);
+    moveTo(drag.from, to, "handle");
+  };
+
+  const onHandleKeyDown = (index: number) => (e: KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+      e.preventDefault();
+      moveTo(index, index + (e.key === "ArrowUp" ? -1 : 1), "handle");
+    } else if (e.key === "Escape" && drag) {
+      e.preventDefault();
+      e.stopPropagation();
+      setDrag(null);
+    }
+  };
+
+  /** Classe du repère de dépôt : trait au-dessus de la ligne, ou sous la dernière. */
+  const dropClass = (index: number) => {
+    if (!drag || drag.insert === drag.from || drag.insert === drag.from + 1) return "";
+    if (drag.insert === index) return " column-manager__row--drop-before";
+    if (drag.insert === ordered.length && index === ordered.length - 1) return " column-manager__row--drop-after";
+    return "";
   };
 
   const reset = () => {
@@ -164,7 +233,23 @@ export const ColumnManager = ({ columns, visibleIds, order, onChange, className 
             </div>
             <ul className="column-manager__list">
               {ordered.map((col, index) => (
-                <li key={col.id} className="column-manager__row">
+                <li
+                  key={col.id}
+                  className={`column-manager__row${drag?.from === index ? " column-manager__row--dragging" : ""}${dropClass(index)}`}
+                >
+                  <button
+                    type="button"
+                    className="column-manager__handle"
+                    aria-label={`Déplacer ${col.label}`}
+                    aria-describedby={hintId}
+                    onPointerDown={onHandlePointerDown(index)}
+                    onPointerMove={onHandlePointerMove}
+                    onPointerUp={onHandlePointerUp}
+                    onPointerCancel={() => setDrag(null)}
+                    onKeyDown={onHandleKeyDown(index)}
+                  >
+                    <DotsGrid size={16} aria-hidden="true" />
+                  </button>
                   <Checkbox
                     state={visible.has(col.id) ? "checked" : "unchecked"}
                     aria-label={`Afficher la colonne ${col.label}`}
@@ -194,6 +279,10 @@ export const ColumnManager = ({ columns, visibleIds, order, onChange, className 
                 </li>
               ))}
             </ul>
+            <p id={hintId} className="column-manager__hint">
+              Glissez la poignée, ou utilisez les flèches haut et bas sur la poignée, pour réordonner.
+            </p>
+            <p className="column-manager__sr" role="status">{announcement}</p>
           </div>,
           document.body,
         )}

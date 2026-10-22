@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { ColumnManager, type ColumnManagerColumn } from "./ColumnManager";
 
 const meta: Meta<typeof ColumnManager> = {
@@ -68,5 +68,96 @@ export const Defaut: Story = {
     await userEvent.keyboard("{Escape}");
     await expect(body.queryByRole("dialog")).not.toBeInTheDocument();
     await expect(canvas.getByRole("button", { name: "Colonnes" })).toHaveFocus();
+  },
+};
+
+/** Démo contrôlée : l'ordre transmis par onChange est affiché sous le bouton. */
+function ReorderDemo() {
+  const [visibleIds, setVisible] = useState(COLUMNS.map((c) => c.id));
+  const [order, setOrder] = useState(COLUMNS.map((c) => c.id));
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      <span data-testid="order" style={{ fontFamily: "var(--cadence-font-sans)", fontSize: 13 }}>
+        Ordre : {order.join(", ")} · visibles : {visibleIds.length}
+      </span>
+      <ColumnManager
+        columns={COLUMNS}
+        visibleIds={visibleIds}
+        order={order}
+        onChange={(next) => {
+          setVisible(next.visibleIds);
+          setOrder(next.order);
+        }}
+      />
+    </div>
+  );
+}
+
+const pointer = (type: string, target: Element, clientY: number) =>
+  target.dispatchEvent(new PointerEvent(type, { bubbles: true, cancelable: true, pointerId: 1, button: 0, isPrimary: true, clientY }));
+
+const rowMiddle = (row: Element) => {
+  const r = row.getBoundingClientRect();
+  return r.top + r.height / 2;
+};
+
+/**
+ * Glisser-déposer : saisir la poignée, repère de dépôt pendant le
+ * déplacement, nouvel ordre transmis au relâchement. La visibilité reste
+ * indépendante.
+ */
+export const GlisserDeposer: Story = {
+  name: "Glisser-déposer",
+  render: () => <ReorderDemo />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+    await userEvent.click(canvas.getByRole("button", { name: "Colonnes" }));
+    const dialog = await body.findByRole("dialog");
+    const rows = () => Array.from(dialog.querySelectorAll(".column-manager__row"));
+
+    // « Ligne » glissée sous « Sévérité » (3e ligne).
+    const handle = body.getByRole("button", { name: "Déplacer Ligne" });
+    pointer("pointerdown", handle, rowMiddle(rows()[0]));
+    await waitFor(() => expect(rows()[0]).toHaveClass("column-manager__row--dragging"));
+    pointer("pointermove", handle, rowMiddle(rows()[2]) + 6);
+    await waitFor(() => expect(rows()[3]).toHaveClass("column-manager__row--drop-before"));
+    pointer("pointerup", handle, rowMiddle(rows()[2]) + 6);
+    await waitFor(() => expect(canvas.getByTestId("order")).toHaveTextContent("Ordre : stop, severity, line, start, impacted"));
+    await expect(dialog.querySelector(".column-manager__row--drop-before, .column-manager__row--dragging")).toBeNull();
+
+    // Jusqu'en bas : repère sous la dernière ligne.
+    const startHandle = body.getByRole("button", { name: "Déplacer Début" });
+    pointer("pointerdown", startHandle, rowMiddle(rows()[3]));
+    await waitFor(() => expect(rows()[3]).toHaveClass("column-manager__row--dragging"));
+    pointer("pointermove", startHandle, rows()[4].getBoundingClientRect().bottom + 4);
+    await waitFor(() => expect(rows()[4]).toHaveClass("column-manager__row--drop-after"));
+    pointer("pointerup", startHandle, rows()[4].getBoundingClientRect().bottom + 4);
+    await waitFor(() => expect(canvas.getByTestId("order")).toHaveTextContent("Ordre : stop, severity, line, impacted, start"));
+
+    // La visibilité reste pilotée par les cases.
+    await userEvent.click(body.getByRole("checkbox", { name: /Arrêts impactés/ }));
+    await expect(canvas.getByTestId("order")).toHaveTextContent("visibles : 4");
+  },
+};
+
+/** Clavier : ↑ / ↓ sur la poignée déplacent la colonne, position annoncée, focus conservé. */
+export const ReordonnerAuClavier: Story = {
+  name: "Réordonner au clavier",
+  render: () => <ReorderDemo />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+    await userEvent.click(canvas.getByRole("button", { name: "Colonnes" }));
+    const dialog = await body.findByRole("dialog");
+    const handle = body.getByRole("button", { name: "Déplacer Sévérité" });
+    await expect(handle).toHaveAccessibleDescription(/flèches haut et bas/);
+    handle.focus();
+    await userEvent.keyboard("{ArrowUp}");
+    await expect(canvas.getByTestId("order")).toHaveTextContent("Ordre : line, severity, stop, start, impacted");
+    await expect(within(dialog).getByRole("status")).toHaveTextContent("Sévérité déplacée en position 2 sur 5");
+    await waitFor(() => expect(body.getByRole("button", { name: "Déplacer Sévérité" })).toHaveFocus());
+    await userEvent.keyboard("{ArrowDown}{ArrowDown}");
+    await expect(canvas.getByTestId("order")).toHaveTextContent("Ordre : line, stop, start, severity, impacted");
   },
 };

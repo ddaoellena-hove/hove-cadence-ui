@@ -2495,7 +2495,7 @@ Menu de portée × format, partagé avec la primitive interne d'`ActionMenu`. L'
 
 ### ColumnManager
 
-Panneau non modal en portail : visibilité, déplacement par boutons et réinitialisation des colonnes. Focus à l'ouverture, Échap et sortie par Tab rendent le focus au déclencheur. Le défilement interne reste possible.
+Panneau non modal en portail : visibilité, ordre et réinitialisation des colonnes. Ordre modifiable de trois façons : glisser-déposer de la poignée (souris et tactile, trait accent à la position de dépôt, ligne saisie estompée), ↑ / ↓ au clavier sur la poignée (nouvelle position annoncée, focus conservé), ou boutons Monter / Descendre, l'alternative sans glisser. Le nouvel ordre est transmis par `onChange`. Focus à l'ouverture, Échap et sortie par Tab rendent le focus au déclencheur. Le défilement interne reste possible.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
