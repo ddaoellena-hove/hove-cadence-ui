@@ -281,6 +281,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Classement (lignes les plus impactées) | `BarList` | `BarChart orientation="horizontal"` (plusieurs séries) |
 | Comparaison de catégories (barres empilées / groupées) | `BarChart` | `BarList` (classement à une valeur) ; `DataVisualization` est déprécié |
 | Mini-courbe dans une carte d'indicateur | `Card trend` (ou `LineChart compact`) | — |
+| Tendance dans une cellule de `DataTable` ou une ligne de liste | `Sparkline` | `LineChart compact` (axe, tooltip, seuils) ; `Card trend` (déjà intégré à la carte) |
 | Identité de ligne (code et couleur GTFS) | `LineBadge` | `Badge` (étiquette générique) |
 | Nom, commune et identifiant d'arrêt | `StopLabel` | — |
 | Message persistant dans la page | `InlineAlert` | `Toaster` (notification éphémère) |
@@ -814,6 +815,7 @@ Une `Card` est **interactive** soit par `onClick` (toute la carte mène à la li
 | Quelles lignes sont les plus touchées ? | `BarList` |
 | Comment se répartissent des catégories, série par série ? | `BarChart` (`layout="stacked" | "grouped"`, `orientation="vertical" | "horizontal"`) |
 | Une valeur clé et sa tendance en haut de page ? | `Card` (`value`, `delta`, `trend`) |
+| La tendance de chaque ligne d'un tableau ? | `Sparkline` dans une cellule de `DataTable` |
 
 ### Palette
 
@@ -2396,6 +2398,27 @@ Panneau non modal en portail : visibilité, déplacement par boutons et réiniti
 | `className` | `string` | — | Classe additionnelle |
 
 Brancher `DataTable.hiddenColumnIds` sur le complément de `visibleIds`, et `DataTable.columnOrder` sur `order`. « Réinitialiser » restaure toutes les colonnes dans l'ordre de `columns`. L'app assure leur persistance si souhaité.
+
+### Sparkline
+
+Mini-courbe sans axe ni interaction, pour une cellule de `DataTable`, une ligne de liste ou une `Card` (qui l'utilise pour `trend`). Point final marqué. Nom accessible (`role="img"`) résumant la tendance : « Tendance en hausse : de 2,1 min à 3,9 min sur 7 points ».
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `values` | `number[]` | **requis** | Ordre chronologique. Valeurs non finies ignorées ; moins de 2 valeurs → rien n'est rendu |
+| `color` | `"ink" \| 1 \| … \| 8` | `"ink"` | Encre `--cadence-color-label` ou série `--cadence-dataviz-series-N` |
+| `width` / `height` | `number` | `80` / `32` | Taille en px |
+| `showLastPoint` | `boolean` | `true` | Point sur la dernière valeur |
+| `unit` | `string` | — | Unité du résumé accessible |
+| `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | Format fr-FR du résumé |
+| `aria-label` | `string` | résumé automatique | Remplace le résumé |
+| `decorative` | `boolean` | `false` | `aria-hidden` : la valeur est déjà écrite à côté |
+| `className` | `string` | — | Classe additionnelle |
+
+- ✅ Dans une cellule de tableau, garder la valeur actuelle dans sa propre colonne : la `Sparkline` montre la forme, pas le chiffre.
+- ✅ Une même couleur pour toutes les lignes d'un tableau (`color={1}` ou encre) : la couleur ne distingue pas les lignes.
+- ❌ Pas de seuil, d'axe ni de tooltip : passer à `LineChart compact` ou `LineChart`.
+- ❌ Ne pas l'utiliser seule pour porter un statut : un écart à l'objectif reste un `Indicator`.
 
 ### Gauge
 

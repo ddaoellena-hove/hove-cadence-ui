@@ -1,0 +1,30 @@
+/* ── Sparkline ─────────────────────────────────────────────────────────────
+   Mini-courbe : trait arrondi, point final. Couleur par modificateur. */
+
+.sparkline {
+  display: block;
+  flex-shrink: 0;
+  color: var(--cadence-color-label, #1a3e45);
+  overflow: visible;
+}
+
+.sparkline__line {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+.sparkline__dot {
+  fill: currentColor;
+}
+
+.sparkline--series-1 { color: var(--cadence-dataviz-series-1, #6b3fd6); }
+.sparkline--series-2 { color: var(--cadence-dataviz-series-2, #1a91e8); }
+.sparkline--series-3 { color: var(--cadence-dataviz-series-3, #007d79); }
+.sparkline--series-4 { color: var(--cadence-dataviz-series-4, #b36b00); }
+.sparkline--series-5 { color: var(--cadence-dataviz-series-5, #a0185e); }
+.sparkline--series-6 { color: var(--cadence-dataviz-series-6, #f04e4e); }
+.sparkline--series-7 { color: var(--cadence-dataviz-series-7, #5a2d82); }
+.sparkline--series-8 { color: var(--cadence-dataviz-series-8, #55606e); }

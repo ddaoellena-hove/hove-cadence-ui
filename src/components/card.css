@@ -156,21 +156,9 @@
   font-weight: 400;
 }
 
+/* Mini-courbe : composant Sparkline (sparkline.css), encre par défaut. */
 .card__sparkline {
-  display: block;
   flex-shrink: 0;
-}
-
-.card__sparkline-line {
-  fill: none;
-  stroke: var(--cadence-color-label, #1a3e45);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.5;
-}
-
-.card__sparkline-dot {
-  fill: var(--cadence-color-label, #1a3e45);
 }
 
 /* ── Description ─────────────────────────────────────────────────────────── */

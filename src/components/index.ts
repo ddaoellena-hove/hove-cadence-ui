@@ -67,3 +67,4 @@ export * from './ActivityFeed';
 export * from './TimePicker';
 export * from './ServiceCalendar';
 export * from './RouteStopList';
+export * from './Sparkline';

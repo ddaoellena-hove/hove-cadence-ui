@@ -3,8 +3,8 @@ import { Icons, type IconName } from "./Icons";
 import { Indicator, type IndicatorVariant } from "./Indicator";
 import { PrimaryButton } from "./PrimaryButton";
 import { Skeleton } from "./Skeleton";
+import { Sparkline } from "./Sparkline";
 import {
-  buildSparklinePoints,
   describeDelta,
   formatDelta,
   formatKpiValue,
@@ -80,26 +80,6 @@ interface CardActionProps {
 // une zone cliquable n'est pas accessible
 export type CardProps = CardBaseProps & (CardClickableProps | CardActionProps);
 
-// Boîte de la mini-courbe (px)
-const SPARK_WIDTH = 80;
-const SPARK_HEIGHT = 32;
-
-const Sparkline = ({ values }: { values: number[] }) => {
-  const points = buildSparklinePoints(values, SPARK_WIDTH, SPARK_HEIGHT);
-  const last = points[points.length - 1];
-  return (
-    <svg
-      className="card__sparkline"
-      width={SPARK_WIDTH}
-      height={SPARK_HEIGHT}
-      viewBox={`0 0 ${SPARK_WIDTH} ${SPARK_HEIGHT}`}
-      aria-hidden="true"
-    >
-      <polyline className="card__sparkline-line" points={points.map((p) => `${p.x},${p.y}`).join(" ")} />
-      <circle className="card__sparkline-dot" cx={last.x} cy={last.y} r={2.5} />
-    </svg>
-  );
-};
 
 /**
  * Carte de tableau de bord : titre, statut, valeur chiffrée et son évolution,
@@ -189,7 +169,7 @@ export const Card = (props: CardProps) => {
                 </p>
               )}
             </div>
-            {trend && trend.length > 1 && <Sparkline values={trend} />}
+            {trend && trend.length > 1 && <Sparkline values={trend} decorative className="card__sparkline" />}
           </div>
         ))}
 
