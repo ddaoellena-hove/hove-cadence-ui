@@ -58,8 +58,9 @@
   padding: 0;
 }
 
+/* Placeholder dans le gris de la loupe (#69797d, AA 4,6:1 sur blanc) */
 .search-input__input::placeholder {
-  color: var(--cadence-color-placeholder, #737373);
+  color: var(--cadence-color-icon-muted, #69797d);
   font-weight: 400;
   opacity: 1;
 }
