@@ -3,7 +3,6 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import { FilterBar, type FilterBarActiveFilter } from "./FilterBar";
 import { Dropdown } from "./Dropdown";
-import { SegmentedControl } from "./SegmentedControl";
 import { GhostButton } from "./GhostButton";
 
 const meta: Meta<typeof FilterBar> = {
@@ -28,9 +27,9 @@ const LINE_OPTIONS = [
 ];
 
 const PERIOD_OPTIONS = [
-  { value: "today", label: "Aujourd'hui" },
-  { value: "week", label: "7 jours" },
-  { value: "month", label: "30 jours" },
+  { id: "today", label: "Aujourd'hui" },
+  { id: "week", label: "7 jours" },
+  { id: "month", label: "30 jours" },
 ];
 
 const INITIAL_FILTERS: FilterBarActiveFilter[] = [
@@ -116,8 +115,9 @@ const FullBar = () => {
       search={{ value: query, onChange: setQuery, placeholder: "Rechercher une perturbation…" }}
       quickFilters={
         <>
-          <Dropdown options={LINE_OPTIONS} value={line} onChange={setLine} />
-          <SegmentedControl options={PERIOD_OPTIONS} value={period} onChange={setPeriod} aria-label="Période" />
+          {/* Filtres rapides en variante bouton : même gabarit que la recherche */}
+          <Dropdown variant="button" aria-label="Ligne" options={LINE_OPTIONS} value={line} onChange={setLine} />
+          <Dropdown variant="button" aria-label="Période" options={PERIOD_OPTIONS} value={period} onChange={setPeriod} />
         </>
       }
       activeFilters={filters}
@@ -136,4 +136,14 @@ const FullBar = () => {
 export const Complete: Story = {
   name: "Complète",
   render: () => <FullBar />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // Recherche et filtres rapides : même hauteur (29px, gabarit des boutons sm)
+    const search = canvasElement.querySelector(".search-input") as HTMLElement;
+    const height = Math.round(search.getBoundingClientRect().height);
+    await expect(height).toBe(29);
+    for (const name of [/^Ligne : /, /^Période : /]) {
+      await expect(Math.round(canvas.getByRole("button", { name }).getBoundingClientRect().height)).toBe(height);
+    }
+  },
 };

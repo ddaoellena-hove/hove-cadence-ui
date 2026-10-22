@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { Badge } from "./Badge";
 import { GhostButton } from "./GhostButton";
-import { TextInput } from "./TextInput";
+import { SearchInput } from "./SearchInput";
 import { formatResultCount } from "./filter-bar-utils";
 import "./filter-bar.css";
 
@@ -80,14 +80,8 @@ const DebouncedSearch = ({
 
   return (
     <div className="filter-bar__search" role="search" onKeyDown={handleKeyDown}>
-      <TextInput
-        label=""
-        aria-label={ariaLabel}
-        type="search"
-        placeholder={placeholder}
-        value={draft}
-        onChange={(e) => setDraft(e.target.value)}
-      />
+      {/* Même gabarit que les filtres en variante bouton (pilule 29px) */}
+      <SearchInput aria-label={ariaLabel} placeholder={placeholder} value={draft} onChange={setDraft} />
     </div>
   );
 };

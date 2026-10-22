@@ -1,5 +1,10 @@
 # Changelog — @ddaoellena/cadence-ui
 
+## Non publié
+
+- **`SearchInput`** (nouveau) : champ de recherche au gabarit des boutons `sm` (pilule de 29px, bordure et relief de `PrimaryButton outline`, texte 12px), avec loupe et bouton « effacer » ; Échap vide le champ. Il s'aligne sur les filtres en `variant="button"`.
+- **`FilterBar`** : la recherche est un `SearchInput` au lieu d'un `TextInput` de 40px. Même API (`search`), même temporisation de 300 ms.
+
 ## 0.4.0 — 2026-10-21
 
 ### Nouveau layout d'application
