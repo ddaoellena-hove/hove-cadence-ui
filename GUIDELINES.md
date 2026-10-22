@@ -233,6 +233,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | 3e action d'un groupe, action dans une phrase | `Link hideArrow` | `GhostButton` (action secondaire) |
 | Navigation inline, action tertiaire discrète | `Link` | — |
 | Petite action par ligne de liste (icône) | `GhostButton size="sm"` icône seule (`icon` + `aria-label`, infobulle intégrée) | `PrimaryButton` (trop appuyé dans une ligne) |
+| Action avec libellé dans une ligne de `DataTable` (« Consulter ») | `PrimaryButton outline size="sm"` | `GhostButton` avec libellé (se lit comme du texte dans la ligne) |
 | Saisie de texte libre (1 ligne) | `TextInput` | — |
 | Saisie de texte long (multi-lignes) | `TextArea` | — |
 | Valeur numérique avec +/− | `CounterInput` | `TextInput type="number"` (interdit) |
@@ -364,6 +365,7 @@ Le multi-colonnes est un outil de **densité locale**, pas un outil de **découp
 | 2 — secondaire (dashboard) | `PrimaryButton outline` | Les actions secondaires d'un **dashboard** (en-tête de page, barre au-dessus d'une liste) : contour visible, repérable d'un coup d'œil sur une page chargée. | « Exporter », « Filtres », « Paramètres » |
 | 3 — tertiaire | `Link hideArrow` | La 3e action d'un groupe, ou une action dans une phrase. | « Enregistrer comme brouillon » |
 | Par ligne | `GhostButton size="sm"` icône seule | Petite action icône dans une ligne de liste (`TableCard`), infobulle au survol. | Dupliquer, modifier, supprimer |
+| Par ligne, avec libellé | `PrimaryButton outline size="sm"` | Action textuelle dans une cellule de `DataTable` : le contour la détache des valeurs de la ligne. | « Consulter », « Ouvrir » |
 
 `PrimaryButton` (plein ou `outline`) et `GhostButton` ont **la même API et les mêmes dimensions** (voir la [Référence API](#primarybutton--ghostbutton)) : seul le rendu change, ce qui les aligne au pixel dans un groupe.
 
@@ -701,6 +703,7 @@ Le code complet du layout est dans la [recette 1](#recette-1--layout-dapplicatio
 
 - ✅ `virtualized` est **explicite** : il impose une hauteur bornée (`maxHeight`, défaut 560px) et des lignes de hauteur fixe ; Ctrl+F et l'impression ne voient que les lignes montées.
 - ✅ Le contenu des cellules tient sur une ligne (texte tronqué avec ellipse) : la hauteur de ligne est celle de la densité.
+- ✅ Action avec libellé dans une cellule (« Consulter ») : `PrimaryButton outline size="sm"`. Un `GhostButton` avec libellé n'a ni fond ni bordure au repos et se confond avec les valeurs de la ligne. Les actions icône seule restent en `GhostButton size="sm"`.
 - ❌ Ne pas combiner `virtualized` et `Pagination`.
 
 ### Densité

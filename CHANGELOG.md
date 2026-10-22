@@ -6,6 +6,10 @@
 
 - Le composant épouse ses segments (`width: fit-content; max-width: 100%`) et ne s’étire plus dans une colonne flex ou une grille, comme le faisait la recette « Offre et qualité ». Règle ajoutée aux guidelines : jamais pleine largeur.
 
+### Actions avec libellé dans une ligne de DataTable
+
+- Règle ajoutée aux guidelines : une action textuelle dans une cellule de `DataTable` est un `PrimaryButton outline size="sm"`, plus visible qu’un `GhostButton` parmi les valeurs de la ligne. Recette « Détail d’une perturbation » adaptée (« Consulter »).
+
 ### FileUpload : cartes fichier
 
 - Bouton « Parcourir » en `PrimaryButton outline size="sm"`.

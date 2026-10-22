@@ -27,7 +27,7 @@ const DetailPage = () => {
       getRowId={(row) => row.id} columns={[
         { id: "line", header: "Ligne", accessor: (row) => row.line.code, width: 100, cell: (row) => <LineBadge {...row.line} /> },
         { id: "title", header: "Perturbation", accessor: (row) => row.title, minWidth: 240 },
-        { id: "actions", header: "Détail", accessor: () => "", width: 100, cell: () => <GhostButton size="sm" label="Consulter" onClick={() => setOpen(true)} /> },
+        { id: "actions", header: "Détail", accessor: () => "", width: 100, cell: () => <PrimaryButton outline size="sm" label="Consulter" onClick={() => setOpen(true)} /> },
       ]} />
     <Drawer isOpen={open} onClose={() => setOpen(false)} title="Travaux entre Châtelet et Nation" subtitle="Ligne 1 · 22 octobre 2026, de 09:00 à 17:00"
       primaryAction={acknowledged ? undefined : { label: "Prendre en compte", onClick: () => { setAcknowledged(true); setOpen(false); } }}
