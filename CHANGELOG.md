@@ -9,7 +9,8 @@ Version mineure, sans rupture d’API. La 0.5.0 n’a pas été publiée sur npm
 - **Portabilité hors Vite** : `LineBadge` lisait `import.meta.env.DEV`, propre à Vite ; à la construction de la lib il valait `false` et l’avertissement de contraste ne s’affichait jamais. Les avertissements de développement passent par un garde unique (`process.env.NODE_ENV`, remplacé par le bundler de l’app) qui ne plante plus quand `process` est absent (ESM chargé sans bundler). Un test interdit `import.meta` dans le code des composants.
 - **`inert` sous React 18** : `Accordion` (panneau fermé) et `Drawer` (en sortie) passaient `inert={true}`, ignoré par React 18 : le contenu fermé restait focusable et lu. L’attribut est désormais rendu sous React 18 et 19 ; le typage compile avec `@types/react` 18 et 19.
 - **Menus et popovers dans une surcouche** : `ActionMenu`, `ExportMenu` et `ColumnManager`, rendus en portail, passaient sous le voile d’une `Modal` ou d’un `Drawer` dont ils étaient ouverts. Ils prennent la couche juste au-dessus.
-- **Annonce des toasts** : `AlertToast` portait `role="alert"` et `aria-live="polite"`. `error` et `warning` gardent `role="alert"` ; `success` et `information` passent en `role="status"`.
+- **Annonce des toasts** : `AlertToast` portait `role="alert"` et `aria-live="polite"`. Annonce immédiate pour `error` et `warning`, polie pour `success` et `information`. Le `Toaster` rend toujours (même vide) deux régions live permanentes qui portent ces annonces ; les cartes de la pile n'ont plus de rôle, d'où une annonce unique et fiable.
+- **`LineBadge`** : l'avertissement de contraste et le liseré ne pouvaient jamais se déclencher (sans `textColor`, la couleur calculée atteint toujours 4,5:1). Un avertissement de développement signale désormais une `textColor` fournie (route_text_color) sous 4,5:1 ; le liseré est retiré.
 - **Couches** : `Toaster` utilise `--cadence-z-toast` au lieu de `z-index: 1100` en dur. Un test interdit les couches numériques dans les CSS des composants.
 - **`BarChart`** : halo blanc sous les valeurs affichées (`showValues`), comme les libellés de seuil de `LineChart`.
 - **`SegmentedControl`** : il épouse ses segments (`width: fit-content; max-width: 100%`) et ne s’étire plus dans une colonne flex ou une grille, comme le faisait la recette « Offre et qualité ».
@@ -17,9 +18,9 @@ Version mineure, sans rupture d’API. La 0.5.0 n’a pas été publiée sur npm
 
 ### Ajouté
 
-- **`Sparkline`** : mini-courbe pour une cellule de `DataTable` ou une ligne de liste, couleur encre ou série dataviz, nom accessible résumant la tendance. `Card` l’utilise pour `trend` (rendu inchangé).
-- **`CopyableText`** : identifiant technique en mono avec bouton de copie, retour « Copié » annoncé.
-- **`Popover`** : panneau non modal ancré à un bouton pour une aide riche, un mini-formulaire ou un détail (focus, Échap, clic extérieur, sortie au clavier).
+- **`Sparkline`** : mini-courbe pour une cellule de `DataTable` ou une ligne de liste, couleur encre ou série dataviz, nom accessible résumant la tendance (avec minimum et maximum quand un pic dépasse les extrémités). `Card` l’utilise pour `trend` (rendu inchangé).
+- **`CopyableText`** : identifiant technique en mono avec bouton de copie, retour « Copié » annoncé (y compris pour une seconde copie rapprochée), repli `execCommand` hors contexte sécurisé.
+- **`Popover`** : panneau non modal ancré à un bouton pour une aide riche, un mini-formulaire ou un détail (focus, Échap, clic extérieur, sortie au clavier). Replacé (et non fermé) au défilement et au redimensionnement, compatible avec un menu en portail dans son contenu et avec le mode contrôlé.
 - **CI React 18** : `npm run test:react18` (React 18 et ses types installés sans toucher `package.json`, puis `tsc`, Vitest et build de la lib) et workflow GitHub en matrice React 18 / 19.
 
 ### Documentation
