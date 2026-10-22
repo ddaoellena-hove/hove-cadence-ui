@@ -232,6 +232,7 @@ export const Menu = ({ items, label, align = "end", renderTrigger, className }: 
             className={`menu__surface cadence-scrollbar${pos?.up ? " menu__surface--up" : ""}`}
             role="menu"
             aria-label={label}
+            data-cadence-floating=""
             style={{
               position: "fixed",
               left: pos?.left ?? -9999,

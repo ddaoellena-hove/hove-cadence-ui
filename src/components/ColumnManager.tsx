@@ -140,6 +140,7 @@ export const ColumnManager = ({ columns, visibleIds, order, onChange, className 
             className="column-manager__panel cadence-scrollbar"
             role="dialog"
             aria-labelledby={titleId}
+            data-cadence-floating=""
             style={{ position: "fixed", left: pos?.left ?? -9999, top: pos?.top ?? -9999, zIndex: pos?.zIndex, visibility: pos ? "visible" : "hidden" }}
             onKeyDown={(e) => {
               if (e.key === "Escape") {

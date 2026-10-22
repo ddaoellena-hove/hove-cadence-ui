@@ -9,6 +9,7 @@ import { DescriptionList } from "./DescriptionList";
 import { LineBadge } from "./LineBadge";
 import { Link } from "./Link";
 import { Modal } from "./Modal";
+import { ExportMenu } from "./ExportMenu";
 
 const meta: Meta<typeof Popover> = {
   title: "Components/Popover",
@@ -233,5 +234,92 @@ export const DansUneModal: Story = {
     // Échap suivant : la Modal se ferme.
     await userEvent.keyboard("{Escape}");
     await waitFor(() => expect(body.queryByRole("dialog", { name: "Modifier la perturbation" })).toBeNull());
+  },
+};
+
+/**
+ * Contrôlé : le parent refuse une fermeture (clic extérieur) tant que la
+ * saisie n'est pas confirmée, puis ferme lui-même ; le focus revient au
+ * déclencheur.
+ */
+export const FermetureRefusee: Story = {
+  name: "Contrôlé : fermeture refusée puis fermeture par le parent",
+  args: { onOpenChange: fn() },
+  render: function Refusal(args) {
+    const [open, setOpen] = useState(false);
+    return (
+      <Popover
+        title="Commentaire de régulation"
+        open={open}
+        onOpenChange={(next) => {
+          args.onOpenChange?.(next);
+          if (next) setOpen(true); // fermeture ignorée : il faut confirmer
+        }}
+        renderTrigger={({ ref, toggle }) => <GhostButton ref={ref} size="sm" label="Commenter" onClick={toggle} />}
+      >
+        <PrimaryButton size="sm" label="Confirmer" onClick={() => setOpen(false)} />
+      </Popover>
+    );
+  },
+  play: async ({ canvas, canvasElement, args }) => {
+    const body = within(canvasElement.ownerDocument.body);
+    const trigger = canvas.getByRole("button", { name: "Commenter" });
+    await userEvent.click(trigger);
+    const dialog = await body.findByRole("dialog", { name: "Commentaire de régulation" });
+    await userEvent.click(canvasElement);
+    await expect(args.onOpenChange).toHaveBeenLastCalledWith(false);
+    // Refusée : le panneau reste affiché.
+    await expect(dialog).toBeVisible();
+    await userEvent.click(body.getByRole("button", { name: "Confirmer" }));
+    await expect(body.queryByRole("dialog")).toBeNull();
+    await waitFor(() => expect(trigger).toHaveFocus());
+  },
+};
+
+/**
+ * Menu en portail dans le contenu, dernier contrôle masqué : choisir une
+ * option ne ferme pas le Popover ; le défilement le replace sans le fermer ;
+ * Tab depuis le dernier contrôle visible ferme.
+ */
+export const AvecUnMenu: Story = {
+  name: "Avec un menu, défilement et contrôle masqué",
+  args: { onOpenChange: fn() },
+  render: function WithMenu(args) {
+    const [last, setLast] = useState("aucun");
+    return (
+      <div style={{ display: "flex", gap: 12 }}>
+        <Popover
+          title="Rapport de ponctualité"
+          onOpenChange={args.onOpenChange}
+          renderTrigger={({ ref, toggle }) => <GhostButton ref={ref} size="sm" label="Rapport" onClick={toggle} />}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span>Dernier export : {last}</span>
+            <ExportMenu counts={{ page: 25, total: 412 }} onExport={({ scope, format }) => setLast(`${scope} ${format}`)} />
+            <button type="button" hidden>Réessayer</button>
+          </div>
+        </Popover>
+        <GhostButton size="sm" label="Après" />
+      </div>
+    );
+  },
+  play: async ({ canvas, canvasElement, args }) => {
+    const body = within(canvasElement.ownerDocument.body);
+    await userEvent.click(canvas.getByRole("button", { name: "Rapport" }));
+    const dialog = await body.findByRole("dialog", { name: "Rapport de ponctualité" });
+    await userEvent.click(body.getByRole("button", { name: "Exporter" }));
+    await userEvent.click(body.getAllByRole("menuitem", { name: "CSV" })[0]);
+    await expect(body.getByText(/^Dernier export : /)).not.toHaveTextContent("aucun");
+    await expect(dialog).toBeInTheDocument();
+    // Défilement de la page : replacé, pas fermé.
+    window.dispatchEvent(new Event("scroll"));
+    window.dispatchEvent(new Event("resize"));
+    await expect(body.getByRole("dialog", { name: "Rapport de ponctualité" })).toBeVisible();
+    // Le bouton masqué n'est pas un bord : Tab depuis « Exporter » ferme.
+    body.getByRole("button", { name: "Exporter" }).focus();
+    await userEvent.tab();
+    await expect(body.queryByRole("dialog")).toBeNull();
+    await expect(canvas.getByRole("button", { name: "Après" })).toHaveFocus();
+    await expect(args.onOpenChange).toHaveBeenLastCalledWith(false);
   },
 };

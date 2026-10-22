@@ -2157,7 +2157,7 @@ Panneau non modal ancré à un bouton, pour du contenu libre et interactif : aid
 | `width` | `number` | `320` | Largeur en px (bornée à la fenêtre) |
 | `className` | `string` | — | Classe du panneau |
 
-Clavier et focus : à l'ouverture, focus sur le premier élément focusable du contenu (sinon sur le panneau). Échap et « Fermer » ferment et rendent le focus au déclencheur ; Maj+Tab avant le premier élément aussi ; Tab après le dernier ferme et passe à l'élément qui suit le déclencheur. Clic extérieur, défilement de la page et redimensionnement ferment. Dans une `Modal`, Échap ne ferme que le `Popover`. Le déclencheur reçoit `aria-haspopup="dialog"`, `aria-expanded` et `aria-controls`.
+Clavier et focus : à l'ouverture, focus sur le premier élément focusable du contenu (sinon sur le panneau). Échap et « Fermer » ferment et rendent le focus au déclencheur ; Maj+Tab avant le premier élément aussi ; Tab après le dernier ferme et passe à l'élément qui suit le déclencheur. Le clic extérieur ferme ; un menu en portail ouvert depuis le contenu (`ActionMenu`, `ExportMenu`, `ColumnManager`) ne compte pas comme extérieur. Le défilement et le redimensionnement replacent le panneau sans le fermer (clavier virtuel sur mobile). Seuls les éléments affichés comptent pour la sortie au clavier. Fermé par le parent (mode contrôlé) alors que le focus y était, le focus revient au déclencheur ; une fermeture refusée par le parent laisse le panneau affiché. Dans une `Modal`, Échap ne ferme que le `Popover`. Le déclencheur reçoit `aria-haspopup="dialog"`, `aria-expanded` et `aria-controls`.
 
 ```tsx
 <Popover

@@ -10,8 +10,8 @@
  * `role="dialog"` nommé par son titre. Focus déplacé dans le panneau à
  * l'ouverture ; Échap, le bouton Fermer ou une sortie au clavier (Tab après le
  * dernier élément, Maj+Tab avant le premier) ferment : Échap, Fermer et Maj+Tab
- * rendent le focus au déclencheur, Tab l'amène à l'élément qui le suit. Clic extérieur, défilement de la page ou redimensionnement
- * ferment aussi. À ne pas confondre avec Tooltip (lecture seule, sans focus).
+ * rendent le focus au déclencheur, Tab l'amène à l'élément qui le suit. Le clic extérieur ferme aussi ;
+ * défilement et redimensionnement replacent le panneau. À ne pas confondre avec Tooltip (lecture seule, sans focus).
  */
 import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode, type Ref } from "react";
 import { createPortal } from "react-dom";
@@ -51,16 +51,40 @@ export interface PopoverProps {
   className?: string;
 }
 
+interface PopoverPosition {
+  left: number;
+  top: number;
+  zIndex?: string;
+}
+
 const MARGIN = 8;
 const GAP = 6;
 const FOCUSABLE =
   'a[href], button:not(:disabled), input:not(:disabled):not([type="hidden"]), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])';
 
+/** Position sous (ou au-dessus du) déclencheur, bornée à la fenêtre. */
+const placePanel = (trigger: HTMLElement, panel: HTMLElement, align: "start" | "end"): PopoverPosition => {
+  const t = trigger.getBoundingClientRect();
+  const p = panel.getBoundingClientRect();
+  const vw = document.documentElement.clientWidth;
+  const vh = document.documentElement.clientHeight;
+  const wanted = align === "end" ? t.right - p.width : t.left;
+  const left = Math.max(MARGIN, Math.min(wanted, vw - p.width - MARGIN));
+  const below = t.bottom + GAP;
+  const top = below + p.height <= vh - MARGIN ? below : Math.max(MARGIN, t.top - p.height - GAP);
+  return { left, top, zIndex: layerAboveOverlay(trigger) };
+};
+
+/** Atteignable au clavier : rendu (ni display: none ni hidden) et hors zone inerte. */
+const isTabbable = (el: HTMLElement) => el.getClientRects().length > 0 && !el.closest("[inert]");
+
+/** Éléments tabulables d'un conteneur, dans l'ordre du document. */
+const tabbablesIn = (root: ParentNode | null | undefined): HTMLElement[] =>
+  Array.from(root?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []).filter(isTabbable);
+
 /** Élément tabulable suivant le déclencheur dans la page (hors panneau). */
 const nextTabbable = (from: HTMLElement, panel: HTMLElement | null): HTMLElement | undefined => {
-  const all = Array.from(document.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
-    (el) => !panel?.contains(el) && !el.closest("[inert]") && el.getClientRects().length > 0,
-  );
+  const all = tabbablesIn(document).filter((el) => !panel?.contains(el));
   return all.find((el) => from.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING && !from.contains(el));
 };
 
@@ -88,16 +112,21 @@ export const Popover = ({
 }: PopoverProps) => {
   const [openState, setOpenState] = useState(defaultOpen);
   const open = openProp ?? openState;
-  const [pos, setPos] = useState<{ left: number; top: number; zIndex?: string } | null>(null);
+  const [pos, setPos] = useState<PopoverPosition | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
   const panelId = useId();
 
+  // Focus dans le panneau au moment où il disparaît : à rendre au déclencheur,
+  // y compris quand le parent ferme un Popover contrôlé.
+  const focusInside = useRef(false);
+
+  // En mode contrôlé, le parent peut refuser la fermeture : on ne touche pas
+  // à la position, le panneau reste visible tant que `open` est vrai.
   const setOpen = (next: boolean) => {
     if (openProp === undefined) setOpenState(next);
     onOpenChange?.(next);
-    if (!next) setPos(null);
   };
 
   const close = (returnFocus = true) => {
@@ -117,51 +146,65 @@ export const Popover = ({
 
   // Positionnement une fois le panneau monté (masqué tant qu'il n'est pas placé).
   useLayoutEffect(() => {
-    if (!open) return;
-    const t = triggerRef.current?.getBoundingClientRect();
-    const p = panelRef.current?.getBoundingClientRect();
-    if (!t || !p) return;
-    const vw = document.documentElement.clientWidth;
-    const vh = document.documentElement.clientHeight;
-    const wanted = align === "end" ? t.right - p.width : t.left;
-    const left = Math.max(MARGIN, Math.min(wanted, vw - p.width - MARGIN));
-    const below = t.bottom + GAP;
-    const top = below + p.height <= vh - MARGIN ? below : Math.max(MARGIN, t.top - p.height - GAP);
-    setPos({ left, top, zIndex: layerAboveOverlay(triggerRef.current) });
+    const trigger = triggerRef.current;
+    const panel = panelRef.current;
+    if (!open || !trigger || !panel) return;
+    setPos(placePanel(trigger, panel, align));
   }, [open, align]);
 
-  // Focus initial : premier élément focusable, sinon le panneau lui-même.
+  // Focus initial : premier élément tabulable du contenu, sinon le panneau.
   useEffect(() => {
     if (!open || !pos) return;
     const panel = panelRef.current;
     if (!panel || panel.contains(document.activeElement)) return;
-    const body = panel.querySelector(".popover__body");
-    (body?.querySelector<HTMLElement>(FOCUSABLE) ?? panel).focus();
+    (tabbablesIn(panel.querySelector(".popover__body"))[0] ?? panel).focus();
   }, [open, pos]);
 
-  // Clic extérieur, défilement de la page, redimensionnement.
+  // Fermé alors que le focus y était (fermeture par le parent, clic sur une
+  // zone vide) : le focus, tombé sur <body>, revient au déclencheur.
+  useEffect(() => {
+    if (open || !focusInside.current) return;
+    focusInside.current = false;
+    const active = document.activeElement;
+    if (!active || active === document.body) triggerRef.current?.focus();
+  }, [open]);
+
+  // Clic extérieur : ferme. Défilement et redimensionnement : replacent le
+  // panneau sans le fermer (sur mobile, le clavier virtuel qui s'ouvre sur un
+  // champ du panneau redimensionne et fait défiler la page).
   useEffect(() => {
     if (!open) return;
     const onDown = (e: MouseEvent) => {
-      const target = e.target as Node;
+      const target = e.target;
+      if (!(target instanceof Node)) return;
       if (triggerRef.current?.contains(target) || panelRef.current?.contains(target)) return;
+      // Surface flottante ouverte depuis le contenu (menu en portail, autre
+      // popover) : ce n'est pas un clic extérieur.
+      if (target instanceof Element && target.closest("[data-cadence-floating]")) return;
       close(false);
     };
-    const onScroll = (e: Event) => {
+    let frame = 0;
+    const onMove = (e: Event) => {
       if (e.target instanceof Node && panelRef.current?.contains(e.target)) return;
-      close(Boolean(panelRef.current?.contains(document.activeElement)));
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const trigger = triggerRef.current;
+        const panel = panelRef.current;
+        if (trigger && panel) setPos(placePanel(trigger, panel, align));
+      });
     };
     document.addEventListener("mousedown", onDown);
-    window.addEventListener("scroll", onScroll, true);
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("scroll", onMove, true);
+    window.addEventListener("resize", onMove);
     return () => {
+      cancelAnimationFrame(frame);
       document.removeEventListener("mousedown", onDown);
-      window.removeEventListener("scroll", onScroll, true);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("scroll", onMove, true);
+      window.removeEventListener("resize", onMove);
     };
-    // close ne dépend que de setters et de refs stables
+    // close ne lit que des refs et des setters
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+  }, [open, align]);
 
   return (
     <>
@@ -175,6 +218,13 @@ export const Popover = ({
             role="dialog"
             aria-labelledby={titleId}
             tabIndex={-1}
+            data-cadence-floating=""
+            onFocus={() => {
+              focusInside.current = true;
+            }}
+            onBlur={(e) => {
+              if (e.relatedTarget && !e.currentTarget.contains(e.relatedTarget as Node)) focusInside.current = false;
+            }}
             style={{ width, position: "fixed", left: pos?.left ?? -9999, top: pos?.top ?? -9999, zIndex: pos?.zIndex, visibility: pos ? "visible" : "hidden" }}
             onKeyDown={(e) => {
               if (e.key === "Escape") {
@@ -186,7 +236,7 @@ export const Popover = ({
               }
               if (e.key === "Tab") {
                 const panel = panelRef.current;
-                const controls = Array.from(panel?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []);
+                const controls = tabbablesIn(panel);
                 const active = document.activeElement;
                 const leaving =
                   controls.length === 0 ||
