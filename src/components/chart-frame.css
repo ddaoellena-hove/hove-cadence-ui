@@ -1,0 +1,218 @@
+/* ── Cadre commun des graphiques (ChartFrame) ────────────────────────────── */
+.chart {
+  color: var(--cadence-color-primary, #002830);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  gap: 12px;
+  min-width: 0;
+  width: 100%;
+}
+
+.chart--compact {
+  gap: 0;
+}
+
+.chart__header {
+  align-items: flex-start;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.chart__heading {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.chart__title {
+  color: var(--cadence-color-primary, #002830);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.chart__description {
+  color: var(--cadence-color-icon-muted, #69797d);
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* ── États ── */
+.chart__skeleton {
+  animation: chart-pulse 1.2s ease-in-out infinite;
+  background: var(--cadence-color-surface-alt, #eef1f4);
+  border-radius: var(--cadence-radius-md, 8px);
+  width: 100%;
+}
+
+@keyframes chart-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.chart__message {
+  align-items: center;
+  background: var(--cadence-color-surface-alt, #eef1f4);
+  border-radius: var(--cadence-radius-md, 8px);
+  color: var(--cadence-color-label, #1a3e45);
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  gap: 8px;
+  justify-content: center;
+  padding: 16px;
+  text-align: center;
+}
+
+.chart__message p {
+  margin: 0;
+}
+
+.chart__message--error {
+  color: var(--cadence-status-critical-fg, #b91c1c);
+}
+
+/* ── Zone de tracé ── */
+.chart__plot {
+  border-radius: var(--cadence-radius-sm, 6px);
+  outline: none;
+  position: relative;
+  width: 100%;
+}
+
+.chart__plot:focus-visible {
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+}
+
+.chart__svg {
+  display: block;
+  overflow: visible;
+}
+
+.chart__grid-line {
+  stroke: var(--cadence-color-divider, #f0f0f0);
+  stroke-width: 1;
+}
+
+.chart__axis-label {
+  fill: var(--cadence-color-icon-muted, #69797d);
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-size: 11px;
+}
+
+.chart__axis-label--date {
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+}
+
+.chart__axis-line {
+  stroke: var(--cadence-color-border, #e5e5e5);
+}
+
+/* ── Légende ── */
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.chart-legend__item {
+  align-items: center;
+  background: none;
+  border: none;
+  border-radius: var(--cadence-radius-sm, 6px);
+  color: var(--cadence-color-label, #1a3e45);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: inherit;
+  font-size: 12px;
+  gap: 6px;
+  padding: 2px 4px;
+}
+
+.chart-legend__item:hover {
+  background: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
+}
+
+.chart-legend__item:focus-visible {
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+  outline: none;
+}
+
+/* Série masquée : libellé barré, marqueur estompé */
+.chart-legend__item[aria-pressed="false"] {
+  color: var(--cadence-color-icon-muted, #69797d);
+  text-decoration: line-through;
+}
+
+.chart-legend__item[aria-pressed="false"] .chart-marker-icon {
+  opacity: 0.35;
+}
+
+.chart-marker-icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+/* ── Alternative tabulaire ── */
+.chart-table {
+  border-collapse: collapse;
+  font-size: 12px;
+  width: 100%;
+}
+
+.chart-table caption {
+  color: var(--cadence-color-label, #1a3e45);
+  font-weight: 600;
+  padding-bottom: 6px;
+  text-align: left;
+}
+
+.chart-table th,
+.chart-table td {
+  border-bottom: 1px solid var(--cadence-color-divider, #f0f0f0);
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.chart-table th {
+  color: var(--cadence-color-label, #1a3e45);
+  font-weight: 600;
+}
+
+.chart-table td.chart-table__number {
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.chart-table-wrap {
+  max-height: 320px;
+  overflow: auto;
+}
+
+/* Masqué visuellement, lu par les lecteurs d'écran */
+.chart__sr-only {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chart__skeleton {
+    animation: none;
+  }
+}

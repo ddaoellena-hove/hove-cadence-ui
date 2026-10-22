@@ -46,7 +46,7 @@ const SERIES_COLORS = [
   "var(--CAI-dv-series-1)", /* #6B3FD6 Violet */
   "var(--CAI-dv-series-2)", /* #1A91E8 Bleu */
   "var(--CAI-dv-series-3)", /* #007D79 Teal */
-  "var(--CAI-dv-series-4)", /* #F1A21B Ambre */
+  "var(--CAI-dv-series-4)", /* #B36B00 Ambre */
   "var(--CAI-dv-series-5)", /* #A0185E Magenta */
   "var(--CAI-dv-series-6)", /* #F04E4E Corail */
   "var(--CAI-dv-series-7)", /* #5A2D82 Violet foncé */

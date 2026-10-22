@@ -1,0 +1,63 @@
+/* ── Tooltip commun des graphiques (portail) ─────────────────────────────── */
+.chart-tooltip {
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-md, 8px);
+  box-shadow: var(--cadence-shadow-lg, 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1));
+  color: var(--cadence-color-primary, #002830);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  max-width: 280px;
+  min-width: 160px;
+  padding: 8px 10px;
+  pointer-events: none;
+  position: fixed;
+  z-index: var(--cadence-z-popover, 100);
+}
+
+.chart-tooltip__title {
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.chart-tooltip__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.chart-tooltip__row {
+  align-items: center;
+  display: flex;
+  font-size: 12px;
+  gap: 6px;
+}
+
+.chart-tooltip__label {
+  color: var(--cadence-color-label, #1a3e45);
+  flex: 1;
+  min-width: 0;
+}
+
+.chart-tooltip__value {
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.chart-tooltip__row--alert .chart-tooltip__value {
+  color: var(--cadence-dataviz-threshold-breach, #b91c1c);
+}
+
+.chart-tooltip__note {
+  border-top: 1px solid var(--cadence-color-divider, #f0f0f0);
+  color: var(--cadence-color-icon-muted, #69797d);
+  font-size: 11px;
+  margin: 6px 0 0;
+  padding-top: 6px;
+}

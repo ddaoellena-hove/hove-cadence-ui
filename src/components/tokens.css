@@ -89,6 +89,31 @@
   --cadence-product-traffic-report: #2f2f3b;  /* Fond de la Sidebar — Traffic Report (ardoise) */
   --cadence-product-insights: #3b2f2f;        /* Fond de la Sidebar — Insights (brun) */
 
+  /* ── Data visualisation ────────────────────────────────────────────────── */
+  /* Séries : ordre d'assignation. Contraste sur blanc ≥ 3:1 (traits, marqueurs). */
+  --cadence-dataviz-series-1: #6b3fd6;  /* Violet       — 6,35:1, série principale */
+  --cadence-dataviz-series-2: #1a91e8;  /* Bleu         — 3,35:1 */
+  --cadence-dataviz-series-3: #007d79;  /* Teal         — 4,99:1 */
+  --cadence-dataviz-series-4: #b36b00;  /* Ambre        — 4,18:1 (ex-#f1a21b, 2,12:1) */
+  --cadence-dataviz-series-5: #a0185e;  /* Magenta      — 7,53:1 */
+  --cadence-dataviz-series-6: #f04e4e;  /* Corail       — 3,56:1 */
+  --cadence-dataviz-series-7: #5a2d82;  /* Violet foncé — 9,85:1 */
+  --cadence-dataviz-series-8: #55606e;  /* Ardoise      — 6,39:1, neutre / divers */
+  /* Rampe séquentielle (Heatmap) : teinte pétrole unique, clarté croissante
+     (lisible en daltonisme et en niveaux de gris). Contraste sur blanc. */
+  --cadence-dataviz-seq-1: #eaf4f5;  /* 1,12:1 — texte encre */
+  --cadence-dataviz-seq-2: #c6e2e5;  /* 1,36:1 — texte encre */
+  --cadence-dataviz-seq-3: #94c8ce;  /* 1,84:1 — texte encre */
+  --cadence-dataviz-seq-4: #5fa9b1;  /* 2,69:1 — texte encre */
+  --cadence-dataviz-seq-5: #2f8892;  /* 4,15:1 — texte blanc */
+  --cadence-dataviz-seq-6: #0f6670;  /* 6,66:1 — texte blanc */
+  --cadence-dataviz-seq-7: #004650;  /* 10,54:1 — texte blanc */
+  /* Seuils et annotations */
+  --cadence-dataviz-threshold: #1a3e45;         /* 11,55:1 — ligne de seuil tiretée + libellé */
+  --cadence-dataviz-threshold-breach: #b91c1c;  /* 6,47:1 — côté défavorable d'un seuil */
+  --cadence-dataviz-annotation: #55606e;        /* 6,39:1 — trait / bord de bande annotée + libellé */
+  --cadence-dataviz-annotation-band: rgba(85, 96, 110, 0.08);  /* remplissage d'une bande annotée */
+
   /* ── Élévation ─────────────────────────────────────────────────────────── */
   /* Ombres portées partagées. Les reliefs internes (inset) des boutons et du
      Toggle restent propres à chaque composant. */
