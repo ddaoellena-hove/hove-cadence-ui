@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, within } from "storybook/test";
+import { expect, spyOn, within } from "storybook/test";
 import { LineBadge } from "./LineBadge";
 import { LINES } from "../stories/data/network";
 
@@ -46,4 +46,28 @@ export const Tailles: Story = {
       <LineBadge code="13" mode="metro" color="#6EC4E8" textColor="#000000" size="md" />
     </div>
   ),
+};
+
+/**
+ * Donnée GTFS peu contrastée (route_text_color blanc sur jaune) : respectée
+ * telle quelle, avec un avertissement en développement. Omettre `textColor`
+ * pour obtenir une couleur calculée lisible.
+ */
+export const TexteFournitPeuContraste: Story = {
+  name: "route_text_color peu contrasté",
+  // Démontre une donnée non conforme : le contrôle de contraste est attendu en échec.
+  parameters: { a11y: { config: { rules: [{ id: "color-contrast", enabled: false }] } } },
+  beforeEach: () => {
+    const warn = spyOn(console, "warn").mockImplementation(() => {});
+    return () => warn.mockRestore();
+  },
+  render: () => (
+    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+      <LineBadge code="7" mode="bus" color="#FFCD00" textColor="#FFFFFF" />
+      <LineBadge code="7" mode="bus" color="#FFCD00" />
+    </div>
+  ),
+  play: async () => {
+    await expect(console.warn).toHaveBeenCalledWith(expect.stringMatching(/route_text_color #ffffff sur #ffcd00/i));
+  },
 };

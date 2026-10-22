@@ -2355,7 +2355,7 @@ Identité d'une ligne : pastille (code court ≤ 3 caractères hors espaces) ou 
 | `size` | `"sm" \| "md"` | `"md"` | Hauteur 18 / 22px |
 | `className` | `string` | — | Classe additionnelle |
 
-⚠️ Exception à « tokens uniquement » : les couleurs de ligne sont des données métier. Une `textColor` explicite est respectée ; l'app doit vérifier son contraste. Les couleurs CSS nommées, RGB et alpha ne sont pas acceptées.
+⚠️ Exception à « tokens uniquement » : les couleurs de ligne sont des données métier. Sans `textColor`, la couleur calculée (blanc, encre ou noir) atteint toujours 4,5:1. Une `textColor` explicite est respectée telle quelle ; sous 4,5:1, un avertissement est émis en développement (une fois par couple de couleurs) : corriger la donnée, ou omettre `textColor`. Les couleurs CSS nommées, RGB et alpha ne sont pas acceptées.
 
 ### CopyableText
 

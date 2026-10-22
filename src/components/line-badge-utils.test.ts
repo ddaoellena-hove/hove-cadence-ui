@@ -40,3 +40,18 @@ it("normalise les couleurs GTFS sans dièse et rejette les couleurs invalides", 
   expect(normalizeLineColor("#abc")).toBe("#abc");
   expect(normalizeLineColor("invalid")).toBeNull();
 });
+
+describe("pickTextColor : AA garanti", () => {
+  // Blanc atteint 4,5:1 jusqu'à une luminance de 0,183, le noir dès 0,175 :
+  // une des trois couleurs (blanc, encre, noir) suffit toujours.
+  it("pour toute la rampe de gris et 5 000 couleurs pseudo-aléatoires", () => {
+    const hex = (n: number) => n.toString(16).padStart(2, "0");
+    const samples: string[] = [];
+    for (let g = 0; g < 256; g++) samples.push(`#${hex(g)}${hex(g)}${hex(g)}`);
+    let seed = 42;
+    const next = () => (seed = (seed * 1103515245 + 12345) % 2 ** 31) % 256;
+    for (let i = 0; i < 5000; i++) samples.push(`#${hex(next())}${hex(next())}${hex(next())}`);
+    const failing = samples.filter((c) => !pickTextColor(c).ok);
+    expect(failing).toEqual([]);
+  });
+});

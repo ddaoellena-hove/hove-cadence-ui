@@ -4,12 +4,14 @@
  * Pastille d'identité d'une ligne de transport. ⚠️ Seule exception à la règle
  * « tokens uniquement » : la couleur vient des données (GTFS route_color /
  * route_text_color), jamais d'un token. Sans `textColor`, la couleur du texte
- * est calculée pour atteindre 4,5:1 (voir line-badge-utils).
+ * est calculée et atteint toujours 4,5:1 (blanc, encre ou noir : voir
+ * line-badge-utils). Une `textColor` fournie est respectée telle quelle ; si
+ * elle n'atteint pas 4,5:1, un avertissement est émis en développement.
  */
 import { useEffect, type CSSProperties } from "react";
-import { normalizeLineColor, pickTextColor } from "./line-badge-utils";
+import { AA_RATIO, contrastRatio, normalizeLineColor, pickTextColor } from "./line-badge-utils";
+import { warnOnce } from "./button-compat";
 import "./line-badge.css";
-import { isDevMode } from "./dev-mode";
 
 export type LineMode = "metro" | "rer" | "train" | "tram" | "bus" | "car" | "bateau" | "navette";
 
@@ -46,20 +48,23 @@ export const LineBadge = ({ code, mode, color: colorProp, textColor: textColorPr
   // Forme ronde pour un code court, pilule au-delà.
   const round = code.replace(/\s/g, "").length <= 3;
 
-  // Couleur de texte : fournie (on fait confiance aux données), sinon calculée.
-  const computed = color && !textColor ? pickTextColor(color) : null;
-  const resolvedText = textColor ?? computed?.color;
-  // Contraste insuffisant même au mieux : liseré pour détacher du fond.
-  const needsOutline = Boolean(computed && !computed.ok);
+  // Couleur de texte : fournie (on fait confiance aux données), sinon calculée
+  // (toujours AA).
+  const resolvedText = textColor ?? (color ? pickTextColor(color).color : undefined);
 
-  // Avertissement en développement si aucune couleur de texte n'atteint AA.
+  // Données GTFS dont le route_text_color ne contraste pas assez : on le
+  // respecte, mais on le signale en développement (une fois par couple).
   useEffect(() => {
-    if (isDevMode() && needsOutline && color) {
-      console.warn(
-        `[cadence-ui] LineBadge : aucune couleur de texte n'atteint 4,5:1 sur ${color} (ligne « ${code} »). Un liseré est ajouté ; fournissez un route_text_color plus contrasté.`,
-      );
-    }
-  }, [needsOutline, color, code]);
+    if (!color || !textColor) return;
+    const ratio = contrastRatio(color, textColor);
+    if (ratio >= AA_RATIO) return;
+    warnOnce(
+      "LineBadge",
+      `contrast:${color}/${textColor}`,
+      `route_text_color ${textColor} sur ${color} (ligne « ${code} ») : ${ratio.toFixed(2).replace(".", ",")}:1, sous le seuil AA de 4,5:1. Corrigez la donnée, ou omettez textColor pour qu'une couleur lisible soit calculée.`,
+      false,
+    );
+  }, [color, textColor, code]);
 
   const style: CSSProperties | undefined = color
     ? { background: color, color: resolvedText }
@@ -70,7 +75,6 @@ export const LineBadge = ({ code, mode, color: colorProp, textColor: textColorPr
     `line-badge--${size}`,
     round ? "line-badge--round" : "line-badge--pill",
     color ? "" : "line-badge--default",
-    needsOutline ? "line-badge--outline" : "",
     className,
   ]
     .filter(Boolean)

@@ -47,11 +47,6 @@
   color: var(--cadence-color-white, #ffffff);
 }
 
-/* ── Liseré de secours (contraste insuffisant) ── */
-.line-badge--outline {
-  box-shadow: inset 0 0 0 1px var(--cadence-color-border-strong, #bfc9cb);
-}
-
 .line-badge__code {
   display: block;
 }
