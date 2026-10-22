@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Modal } from "./Modal";
 import { PrimaryButton } from "./PrimaryButton";
 import { TextInput } from "./TextInput";
@@ -251,6 +252,54 @@ export const WithForm: Story = {
         </Modal>
       </div>
     );
+  },
+};
+
+/**
+ * Gestion du focus (primitives de surcouche) : à l'ouverture le focus entre
+ * dans le dialogue et y reste piégé (Tab boucle) ; Échap ferme et rend le
+ * focus au bouton déclencheur.
+ */
+export const FocusManagement: Story = {
+  name: "Gestion du focus",
+  render: () => {
+    const [open, setOpen] = useState(false);
+    return (
+      <div style={{ padding: 24, minHeight: 300 }}>
+        <PrimaryButton label="Ouvrir la modale" onClick={() => setOpen(true)} />
+        <Modal
+          isOpen={open}
+          onClose={() => setOpen(false)}
+          title="Confirmer l'action"
+          size="small"
+          primaryAction={{ label: "Confirmer", onClick: () => setOpen(false) }}
+          secondaryAction={{ label: "Annuler", onClick: () => setOpen(false) }}
+        >
+          Cette action est irréversible.
+        </Modal>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+    const opener = canvas.getByRole("button", { name: "Ouvrir la modale" });
+
+    // Ouverture : le focus entre dans le dialogue.
+    await userEvent.click(opener);
+    const dialog = await body.findByRole("dialog");
+    await waitFor(() => expect(dialog.contains(document.activeElement)).toBe(true));
+
+    // Piège à focus : plusieurs Tab restent dans le dialogue.
+    for (let i = 0; i < 5; i++) {
+      await userEvent.tab();
+      await expect(dialog.contains(document.activeElement)).toBe(true);
+    }
+
+    // Échap ferme et rend le focus au déclencheur.
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(body.queryByRole("dialog")).not.toBeInTheDocument());
+    await expect(opener).toHaveFocus();
   },
 };
 

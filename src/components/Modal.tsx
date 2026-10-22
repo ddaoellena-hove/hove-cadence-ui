@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useRef } from "react";
 import { GhostButton } from "./GhostButton";
 import { PrimaryButton } from "./PrimaryButton";
+import { OverlayPortal, useOverlay } from "./overlay-primitives";
 import "./modal.css";
 import "./scrollbar.css";
 
@@ -59,25 +60,10 @@ export const Modal = ({
   size = "medium",
   hideCloseButton = false,
 }: ModalProps) => {
-  // Close on Escape
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
-  }, [isOpen, onClose]);
-
-  // Lock body scroll while open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isOpen]);
+  // Échap, piège à focus, retour du focus, verrouillage du défilement et inert :
+  // comportement commun mutualisé avec Drawer (voir overlay-primitives.ts).
+  const frameRef = useRef<HTMLDivElement>(null);
+  useOverlay({ isOpen, onClose, surfaceRef: frameRef });
 
   if (!isOpen) return null;
 
@@ -85,6 +71,7 @@ export const Modal = ({
   const showFooter = primaryAction || secondaryAction;
 
   return (
+    <OverlayPortal>
     <div
       className="modal-overlay"
       onClick={onClose}
@@ -94,6 +81,8 @@ export const Modal = ({
     >
       {/* ── Frame (#002830, padding 3px) ── */}
       <div
+        ref={frameRef}
+        tabIndex={-1}
         className={`modal modal--${size}`}
         onClick={(e) => e.stopPropagation()}
       >
@@ -139,5 +128,6 @@ export const Modal = ({
         </div>
       </div>
     </div>
+    </OverlayPortal>
   );
 };
