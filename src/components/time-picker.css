@@ -1,6 +1,6 @@
 .time-picker { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-width: 0; font-family: var(--cadence-font-sans, Inter, sans-serif); }
 .time-picker__label { color: var(--cadence-color-label, #1a3e45); font-size: 13px; font-weight: 600; line-height: 1.4; }
-.time-picker__message { margin: 0; color: var(--cadence-color-label, #1a3e45); font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+.time-picker__message { margin: 0; color: var(--cadence-color-label, #1a3e45); font-size: var(--cadence-font-size-caption, 11px); line-height: 1.5; overflow-wrap: anywhere; }
 .time-picker--error .time-picker__message { color: var(--cadence-color-danger-text, #b91c1c); }
 .time-picker--button { display: inline-flex; }
 

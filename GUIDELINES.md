@@ -148,6 +148,7 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-font-sans` | Inter | Texte d'interface |
 | `--cadence-font-display` | Uxum Grotesque → Space Grotesk | Titres |
 | `--cadence-font-mono` | Spline Sans Mono | Valeurs numériques |
+| `--cadence-font-size-caption` | `11px` | Petits textes : aide sous un champ (`TextInput`, `TextArea`, `TimePicker`), fil d'Ariane (`Breadcrumbs`) |
 | `--cadence-radius-sm` | `6px` | Petits éléments : badges, boutons d'icône |
 | `--cadence-radius-md` | `8px` | Contenus internes |
 | `--cadence-radius-lg` | `10px` | Champs et cards |

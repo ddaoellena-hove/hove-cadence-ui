@@ -81,6 +81,7 @@
   --cadence-font-sans: "Inter", Helvetica, sans-serif;
   --cadence-font-display: "Uxum Grotesque", "Space Grotesk", "Georgia", sans-serif;
   --cadence-font-mono: "Spline Sans Mono", monospace;
+  --cadence-font-size-caption: 11px;  /* Petits textes : aide sous un champ, fil d'Ariane */
 
   /* ── Rayons ────────────────────────────────────────────────────────────── */
   /* Référence pour les nouveaux composants — les existants migrent au fil de l'eau. */
