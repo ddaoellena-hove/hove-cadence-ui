@@ -13,6 +13,7 @@ import { XClose } from "@untitledui/icons/XClose";
 import { GhostButton } from "./GhostButton";
 import { PrimaryButton } from "./PrimaryButton";
 import { ProgressBar } from "./ProgressBar";
+import { ToastAnnouncedContext } from "./toast-announce-context";
 import "./alert-toast.css";
 
 /** Visual type of the toast, controls the accent color and status icon. */
@@ -117,7 +118,9 @@ export const AlertToast = ({
   // Erreur / avertissement : role="alert" (annonce immédiate) ; succès /
   // information : role="status" (annonce polie). Pas d'aria-live en plus : le
   // rôle l'implique déjà, et deux politiques contradictoires se court-circuitent.
-  const role = type === "error" || type === "warning" ? "alert" : "status";
+  // Dans le Toaster, ses régions permanentes annoncent : pas de rôle ici.
+  const announcedByToaster = React.useContext(ToastAnnouncedContext);
+  const role = announcedByToaster ? undefined : type === "error" || type === "warning" ? "alert" : "status";
 
   return (
     <div className={rootClass} style={{ ...style, flexWrap: "wrap" }} role={role}>

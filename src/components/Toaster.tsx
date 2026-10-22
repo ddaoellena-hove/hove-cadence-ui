@@ -6,6 +6,7 @@ import {
   type CSSProperties,
 } from "react";
 import { AlertToast } from "./AlertToast";
+import { ToastAnnouncedContext } from "./toast-announce-context";
 import { toastStore, type ToastItem } from "./toast-store";
 import "./toaster.css";
 
@@ -23,6 +24,17 @@ export interface ToasterProps {
 
 const EMPTY: ToastItem[] = [];
 
+const isUrgent = (t: ToastItem) => t.type === "error" || t.type === "warning";
+// Titre par défaut d'AlertToast si l'app n'en donne pas.
+const TYPE_LABEL: Record<NonNullable<ToastItem["type"]>, string> = {
+  information: "Information",
+  success: "Succès",
+  warning: "Avertissement",
+  error: "Erreur",
+};
+const announcement = (t: ToastItem) =>
+  [t.title || TYPE_LABEL[t.type ?? "information"], t.description].filter(Boolean).join(". ");
+
 /**
  * Toaster — zone d'affichage des toasts, à monter une seule fois (racine de
  * l'app). En bas à droite, les notifications s'empilent avec un effet de
@@ -30,6 +42,11 @@ const EMPTY: ToastItem[] = [];
  * Les toasts non-`error` se ferment seuls (pause pendant le survol).
  *
  * Déclencher des toasts avec `useToast()` ou la fonction `toast()`.
+ *
+ * Annonces : deux régions live permanentes (polie pour succès / information,
+ * immédiate pour avertissement / erreur) reçoivent le texte de chaque nouveau
+ * toast. Une région insérée déjà remplie n'est pas annoncée de façon fiable :
+ * elles existent donc avant le premier toast, et les cartes n'ont pas de rôle.
  */
 export function Toaster({ className }: ToasterProps) {
   const toasts = useSyncExternalStore(toastStore.subscribe, toastStore.getSnapshot, () => EMPTY);
@@ -81,9 +98,10 @@ export function Toaster({ className }: ToasterProps) {
     [],
   );
 
-  if (toasts.length === 0) return null;
+  // Rendu même sans toast : les régions live doivent exister avant la première
+  // annonce. Pile vide → hauteur nulle.
 
-  const frontH = heights[toasts[0].id] ?? 0;
+  const frontH = toasts.length > 0 ? (heights[toasts[0].id] ?? 0) : 0;
   const totalH = toasts.reduce((sum, t, i) => sum + (heights[t.id] ?? 0) + (i > 0 ? GAP : 0), 0);
 
   // depth 0 = premier plan (en bas) ; depth croissant = vers l'arrière.
@@ -112,6 +130,13 @@ export function Toaster({ className }: ToasterProps) {
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
     >
+      <div className="toaster__announcer" role="status">
+        {toasts.filter((t) => !isUrgent(t)).map((t) => <p key={t.id}>{announcement(t)}</p>)}
+      </div>
+      <div className="toaster__announcer" role="alert">
+        {toasts.filter(isUrgent).map((t) => <p key={t.id}>{announcement(t)}</p>)}
+      </div>
+      <ToastAnnouncedContext.Provider value={true}>
       {toasts.map((item, depth) => (
         <div key={item.id} ref={measure(item.id)} className="toaster__item" style={styleFor(depth)}>
           <AlertToast
@@ -124,6 +149,7 @@ export function Toaster({ className }: ToasterProps) {
           />
         </div>
       ))}
+      </ToastAnnouncedContext.Provider>
     </div>
   );
 }

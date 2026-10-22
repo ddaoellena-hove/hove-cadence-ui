@@ -1471,7 +1471,7 @@ Squelette d'application : la `Sidebar` à gauche et le contenu de la page dans u
 | `onDismiss` | `() => void` | — | Clic sur ×. ⚠️ Pas de prop `onClose`. |
 | `className`, `style` | — | — | Échappatoires |
 
-Annonce aux lecteurs d'écran selon le type : `error` et `warning` → `role="alert"` (immédiate) ; `success` et `information` → `role="status"` (polie). Le `Toaster` n'ajoute pas de région live : chaque toast est annoncé une seule fois.
+Annonce aux lecteurs d'écran selon le type : `error` et `warning` → immédiate (`role="alert"`) ; `success` et `information` → polie (`role="status"`). Dans le `Toaster`, deux régions live permanentes (montées avant le premier toast) portent ces annonces, et les cartes affichées n'ont pas de rôle : chaque toast est annoncé une fois, de façon fiable. Un `AlertToast` monté seul porte lui-même son rôle ; inséré déjà rempli, il peut ne pas être annoncé — passer par `useToast`.
 
 ### Autocomplete
 
