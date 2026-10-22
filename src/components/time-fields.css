@@ -9,3 +9,12 @@
 .time-fields__box[aria-invalid="true"] { border-color: var(--cadence-color-danger-text, #b91c1c); }
 .time-fields__box:focus-visible, .time-fields__arrow:focus-visible { outline: 2px solid var(--cadence-focus-color, #1a3e45); outline-offset: 2px; }
 .time-fields__sep { position: absolute; left: -18px; top: 60px; color: var(--cadence-color-primary, #002830); font: 600 20px/1 var(--cadence-font-sans, Inter); }
+
+/* ── Variante « inline » : cases éditables HH : mm dans un champ ── */
+.time-fields--inline { display: inline-flex; align-items: center; gap: 1px; }
+.time-fields--inline .time-fields__box { box-sizing: content-box; width: 2.75ch; height: auto; min-width: 0; padding: 4px 3px; border: 0; border-radius: 4px; background: transparent; text-align: center; letter-spacing: normal; font: 500 14px/1 var(--cadence-font-sans, Inter); color: var(--cadence-color-primary, #002830); }
+.time-fields--inline .time-fields__box::placeholder { color: var(--cadence-color-placeholder, #737373); font-weight: 400; }
+/* Le champ porte le halo de focus : on signale juste la case active. */
+.time-fields--inline .time-fields__box:focus, .time-fields--inline .time-fields__box:focus-visible { outline: none; background: var(--cadence-color-surface-alt, #eef1f4); }
+.time-fields--inline .time-fields__box:disabled { background: transparent; color: var(--cadence-color-text-disabled, #808080); }
+.time-fields__sep--inline { position: static; left: auto; top: auto; color: var(--cadence-color-primary, #002830); font: 500 14px/1 var(--cadence-font-sans, Inter); }
