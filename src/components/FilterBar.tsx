@@ -80,7 +80,7 @@ const DebouncedSearch = ({
 
   return (
     <div className="filter-bar__search" role="search" onKeyDown={handleKeyDown}>
-      {/* Même gabarit que les filtres en variante bouton (pilule 29px) */}
+      {/* Même hauteur que les filtres en variante bouton (29px), forme de champ */}
       <SearchInput aria-label={ariaLabel} placeholder={placeholder} value={draft} onChange={setDraft} />
     </div>
   );

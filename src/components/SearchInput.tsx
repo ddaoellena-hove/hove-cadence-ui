@@ -18,10 +18,11 @@ export interface SearchInputProps {
 }
 
 /**
- * Champ de recherche au gabarit des boutons `sm` (pilule de 29px, bordure et
- * relief de `PrimaryButton outline`) : s'aligne sur les filtres d'une
- * `FilterBar` ou d'un en-tête de dashboard. Loupe à gauche, bouton « effacer »
- * dès qu'il y a du texte ; Échap vide aussi le champ.
+ * Champ de recherche de 29px, la hauteur des boutons `sm` : s'aligne sur les
+ * filtres d'une `FilterBar` ou d'un en-tête de dashboard, mais garde une forme
+ * de champ (coins de 8px, léger creux) pour ne pas être pris pour un bouton.
+ * Loupe à gauche, bouton « effacer » dès qu'il y a du texte ; Échap vide aussi
+ * le champ.
  */
 export const SearchInput = ({
   value,

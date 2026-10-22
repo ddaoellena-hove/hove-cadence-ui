@@ -1,17 +1,15 @@
 /* ── SearchInput ─────────────────────────────────────────────────────────── */
-/* Gabarit des boutons sm (base-button.css) et bordure / relief de
-   PrimaryButton outline (primary-button.css) : même hauteur et même forme que
-   les filtres en variante bouton qui l'entourent. */
+/* Même hauteur (29px) et même bordure que les boutons sm et les filtres en
+   variante bouton, pour s'aligner sur eux ; mais une forme de champ pour s'en
+   distinguer : coins de 8px au lieu de la pilule, et un léger creux (ombre
+   interne en haut) là où les boutons ont un relief. */
 .search-input {
   align-items: center;
   background-color: var(--cadence-color-white, #ffffff);
   border: 1px solid var(--cadence-color-border-strong, #bfc9cb);
-  border-radius: 999px;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.8),
-    inset 0 -1px 0 rgba(0, 40, 48, 0.05),
-    inset 0 -8px 10px -8px rgba(0, 40, 48, 0.06),
-    0 1px 1px rgba(0, 40, 48, 0.05);
+  border-radius: var(--cadence-radius-md, 8px);
+  /* Creux : ombre interne en haut (champ de saisie), pas de relief (bouton) */
+  box-shadow: inset 0 1px 2px rgba(0, 40, 48, 0.08);
   box-sizing: border-box;
   color: var(--cadence-color-primary, #002830);
   display: flex;
@@ -73,12 +71,12 @@
   appearance: none;
 }
 
-/* ── Bouton « effacer » : rond de 21px, voile au survol comme un GhostButton ── */
+/* ── Bouton « effacer » : carré arrondi de 21px, voile au survol comme un GhostButton ── */
 .search-input__clear {
   align-items: center;
   background: transparent;
   border: none;
-  border-radius: 50%;
+  border-radius: var(--cadence-radius-sm, 6px);
   color: var(--cadence-color-icon-muted, #69797d);
   cursor: pointer;
   display: inline-flex;

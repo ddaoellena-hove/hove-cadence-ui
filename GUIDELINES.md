@@ -488,7 +488,7 @@ Une période, une date ou un choix dans une liste se placent dans l'en-tête ave
 
 ### Contrôles d'une liste
 
-Au-dessus d'une liste filtrable, utiliser `FilterBar` (recherche, filtres rapides, filtres actifs). Sa recherche est un `SearchInput` : pilule de 29px, même gabarit que les filtres en `variant="button"` et les boutons `sm` qui l'entourent. Hors `FilterBar`, une recherche placée à côté de boutons ou de filtres est aussi un `SearchInput`, jamais un `TextInput` (40px). Un tri hors `DataTable` se fait avec un `GhostButton size="sm" iconStart="switch-vertical-01"`, hors du flux des boutons d'action.
+Au-dessus d'une liste filtrable, utiliser `FilterBar` (recherche, filtres rapides, filtres actifs). Sa recherche est un `SearchInput` : même hauteur (29px) et même bordure que les filtres en `variant="button"` et les boutons `sm` qui l'entourent, mais une forme de champ (coins de 8px, léger creux) qui la distingue des pilules des boutons. Hors `FilterBar`, une recherche placée à côté de boutons ou de filtres est aussi un `SearchInput`, jamais un `TextInput` (40px). Un tri hors `DataTable` se fait avec un `GhostButton size="sm" iconStart="switch-vertical-01"`, hors du flux des boutons d'action.
 
 ### Placement systématique
 
@@ -1469,7 +1469,7 @@ Barre au-dessus d'une liste : ligne 1 = recherche · filtres rapides · actions 
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `search` | `{ value, onChange, placeholder?, "aria-label"? }` | — | `SearchInput` (pilule 29px, loupe, bouton effacer). `onChange` est appelé 300 ms après la dernière frappe (ou sur Entrée) ; `value` reste contrôlée. Défauts : `"Rechercher…"` / `"Rechercher"` |
+| `search` | `{ value, onChange, placeholder?, "aria-label"? }` | — | `SearchInput` (29px, coins de 8px, loupe, bouton effacer). `onChange` est appelé 300 ms après la dernière frappe (ou sur Entrée) ; `value` reste contrôlée. Défauts : `"Rechercher…"` / `"Rechercher"` |
 | `quickFilters` | `ReactNode` | — | Slot : `Dropdown variant="button"`, `DateRangePicker variant="button"` (même hauteur que la recherche), avec `aria-label` |
 | `activeFilters` | `{ id, label }[]` | `[]` | Affichés en `Badge dismissible` |
 | `onRemoveFilter` | `(id: string) => void` | — | Croix d'un badge. Sans callback, les badges ne sont pas supprimables |
@@ -1629,7 +1629,7 @@ Carte cliquable avec icône + label + description + carré de coche. Sélection 
 
 ### SearchInput
 
-Champ de recherche au gabarit des boutons `sm` : pilule de 29px, bordure `--cadence-color-border-strong` et relief de `PrimaryButton outline`, texte 12px. Loupe à gauche ; bouton « Effacer la recherche » (×) dès qu'il y a du texte ; Échap vide aussi le champ (vide, Échap n'est pas intercepté). Prend toute la largeur de son parent.
+Champ de recherche de 29px, la hauteur des boutons `sm`, avec la même bordure `--cadence-color-border-strong` : il s'aligne sur les filtres. Pour ne pas être pris pour un bouton, il a une forme de champ : coins de 8px (`--cadence-radius-md`) au lieu de la pilule, et un léger creux (ombre interne en haut) là où les boutons ont un relief. Texte 12px. Loupe à gauche ; bouton « Effacer la recherche » (×) dès qu'il y a du texte ; Échap vide aussi le champ (vide, Échap n'est pas intercepté). Prend toute la largeur de son parent.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
