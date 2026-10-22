@@ -1,0 +1,63 @@
+/* ── EmptyState ────────────────────────────────────────────────────────────
+   État vide centré. "page" remplace la recette 4 ; "inline" s'insère dans un
+   DataTable, une Card ou un graphique. */
+
+.empty-state {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  gap: 12px;
+  text-align: center;
+}
+
+/* ── Tailles ── */
+.empty-state--page {
+  padding: 48px 24px;
+}
+
+.empty-state--inline {
+  padding: 24px 16px;
+}
+
+/* ── Illustration décorative ── */
+.empty-state__illustration {
+  color: var(--cadence-color-icon-neutral, #737373);
+  display: flex;
+  margin-bottom: 4px;
+}
+
+.empty-state--inline .empty-state__illustration {
+  margin-bottom: 0;
+}
+
+/* ── Titre ── */
+.empty-state__title {
+  color: var(--cadence-color-primary, #002830);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.empty-state--inline .empty-state__title {
+  font-size: 14px;
+}
+
+/* ── Description ── */
+/* Couleur sombre (label) et non text-muted : AA à 13px (text-muted = 3,2:1). */
+.empty-state__description {
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 420px;
+}
+
+/* ── Actions ── */
+.empty-state__actions {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
