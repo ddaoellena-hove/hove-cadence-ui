@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { ChartMarkerIcon } from "./ChartMarker";
 import type { MarkerShape } from "./chart-palette";
 
@@ -6,6 +7,8 @@ export interface ChartLegendItem {
   label: string;
   color: string;
   marker: MarkerShape;
+  /** Pastille à la place du marqueur (motif de barre). */
+  icon?: ReactNode;
   hidden?: boolean;
 }
 
@@ -27,12 +30,12 @@ export const ChartLegend = ({ items, onToggle }: ChartLegendProps) => (
             aria-pressed={!item.hidden}
             onClick={() => onToggle(item.id)}
           >
-            <ChartMarkerIcon shape={item.marker} color={item.color} />
+            {item.icon ?? <ChartMarkerIcon shape={item.marker} color={item.color} />}
             {item.label}
           </button>
         ) : (
           <span className="chart-legend__item">
-            <ChartMarkerIcon shape={item.marker} color={item.color} />
+            {item.icon ?? <ChartMarkerIcon shape={item.marker} color={item.color} />}
             {item.label}
           </span>
         )}

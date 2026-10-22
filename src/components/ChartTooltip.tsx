@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { ChartMarkerIcon } from "./ChartMarker";
 import type { MarkerShape } from "./chart-palette";
@@ -10,6 +10,8 @@ export interface ChartTooltipRow {
   value: string;
   color?: string;
   marker?: MarkerShape;
+  /** Pastille à la place du marqueur (motif de barre). */
+  icon?: ReactNode;
   /** Valeur mise en avant (seuil franchi…). */
   tone?: "default" | "alert";
 }
@@ -58,7 +60,7 @@ export const ChartTooltip = ({ x, y, title, rows, note }: ChartTooltipProps) => 
       <ul className="chart-tooltip__rows">
         {rows.map((row) => (
           <li key={row.id} className={`chart-tooltip__row${row.tone === "alert" ? " chart-tooltip__row--alert" : ""}`}>
-            {row.marker && row.color && <ChartMarkerIcon shape={row.marker} color={row.color} />}
+            {row.icon ?? (row.marker && row.color && <ChartMarkerIcon shape={row.marker} color={row.color} />)}
             <span className="chart-tooltip__label">{row.label}</span>
             <span className="chart-tooltip__value">{row.value}</span>
           </li>

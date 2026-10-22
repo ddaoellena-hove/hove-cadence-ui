@@ -36,6 +36,8 @@ interface ChartFrameProps extends ChartCommonProps {
   table?: (visible: boolean) => ReactNode;
   /** Sans en-tête visible ni légende (LineChart compact) : le titre reste pour les lecteurs d'écran. */
   compact?: boolean;
+  /** En-tête masqué visuellement (titre lu), légende conservée. */
+  hideHeader?: boolean;
   /** Classe propre au graphique (« line-chart »…). */
   kind: string;
   children: ReactNode;
@@ -60,6 +62,7 @@ export const ChartFrame = ({
   legend,
   table,
   compact = false,
+  hideHeader = false,
   kind,
   children,
 }: ChartFrameProps) => {
@@ -76,7 +79,7 @@ export const ChartFrame = ({
       aria-describedby={description ? descriptionId : undefined}
       aria-busy={state === "loading" || undefined}
     >
-      <div className={compact ? "chart__sr-only" : "chart__header"}>
+      <div className={compact || hideHeader ? "chart__sr-only" : "chart__header"}>
         <div className="chart__heading">
           <Heading id={titleId} className="chart__title">
             {title}
@@ -87,7 +90,7 @@ export const ChartFrame = ({
             </p>
           )}
         </div>
-        {ready && table && !compact && (
+        {ready && table && !compact && !hideHeader && (
           <GhostButton
             size="sm"
             iconStart={showTable ? "eye-off" : "eye"}

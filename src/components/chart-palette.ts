@@ -24,3 +24,14 @@ export const SEQ_STEPS = 7;
 
 /** Couleur du pas n (1 à 7) de la rampe séquentielle. */
 export const sequentialColor = (step: number) => `var(--cadence-dataviz-seq-${step})`;
+
+// Motifs des barres (ChartPattern) : série 1 unie, puis une texture par série
+export type PatternKind = "solid" | "diagonal" | "dots" | "horizontal" | "diagonal-back" | "vertical" | "grid" | "cross";
+
+const PATTERNS: PatternKind[] = ["solid", "diagonal", "dots", "horizontal", "diagonal-back", "vertical", "grid", "cross"];
+
+/** Motif de la série n (0 à 7). */
+export const seriesPattern = (index: number): PatternKind => PATTERNS[index % PATTERNS.length];
+
+/** Identifiant SVG valide à partir d'un useId React. */
+export const svgId = (raw: string) => raw.replace(/[^a-zA-Z0-9_-]/g, "");

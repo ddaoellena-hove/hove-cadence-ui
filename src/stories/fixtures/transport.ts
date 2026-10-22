@@ -119,3 +119,30 @@ export const topImpactedLines = [
   { id: "b38", label: "Bus 38", value: 9, delta: { value: 13 } },
   { id: "l9", label: "Ligne 9", value: 7, delta: { value: -3 } },
 ];
+
+/** Jours de la semaine du 14 octobre 2026 (mercredi → mardi). */
+export const WEEK_DAYS = ["mer. 14", "jeu. 15", "ven. 16", "sam. 17", "dim. 18", "lun. 19", "mar. 20"];
+
+/** Perturbations par cause et par jour (grève le vendredi 16). */
+export const disruptionsByCause = [
+  { id: "works", label: "Travaux", data: [6, 5, 4, 9, 11, 6, 5] },
+  { id: "technical", label: "Incident technique", data: [8, 11, 7, 5, 4, 9, 10] },
+  { id: "passenger", label: "Malaise voyageur", data: [4, 3, 5, 6, 3, 4, 2] },
+  { id: "strike", label: "Mouvement social", data: [null, null, 18, null, null, null, null] },
+];
+
+/** Perturbations par mode, sur les 4 dernières semaines. */
+export const WEEKS = ["S39", "S40", "S41", "S42"];
+export const disruptionsByModeWeekly = [
+  { id: "metro", label: "Métro", data: [34, 29, 41, 38] },
+  { id: "rer", label: "RER", data: [22, 27, 25, 46] },
+  { id: "bus", label: "Bus", data: [51, 48, 55, 62] },
+];
+
+/** Retard cumulé (min) par ligne et par cause, semaine du 14 octobre. */
+export const LINES_RANKED = ["Ligne 13", "RER B", "Ligne 4", "RER A", "Ligne 7", "Bus 91"];
+export const delayByLineAndCause = [
+  { id: "works", label: "Travaux", data: [120, 210, 95, 60, 80, 40] },
+  { id: "technical", label: "Incident technique", data: [340, 280, 160, 190, 120, 35] },
+  { id: "passenger", label: "Malaise voyageur", data: [90, 60, 45, 70, 30, 10] },
+];
