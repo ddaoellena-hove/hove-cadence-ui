@@ -126,7 +126,7 @@
   position: sticky;
   top: 0;
   z-index: 1;
-  background: var(--cadence-color-text-muted, #809397);
+  background: var(--cadence-color-text-secondary, #64757a);
   color: var(--cadence-color-white, #ffffff);
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   font-size: 11px;
@@ -157,6 +157,11 @@
 
 .autocomplete__option--highlighted:not(:disabled) {
   background: var(--cadence-color-divider, #f0f0f0);
+}
+
+/* Option survolée : description à l'encre label (AA sur fond divider). */
+.autocomplete__option--highlighted .autocomplete__option-description {
+  color: var(--cadence-color-label, #1a3e45);
 }
 
 .autocomplete__option--selected {

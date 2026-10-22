@@ -1,4 +1,4 @@
-import React, { useId, useRef } from "react";
+import React, { useId, useLayoutEffect, useRef, useState } from "react";
 import { GhostButton } from "./GhostButton";
 import { PrimaryButton } from "./PrimaryButton";
 import { OverlayPortal, useOverlay } from "./overlay-primitives";
@@ -69,6 +69,16 @@ export const Modal = ({
   const frameRef = useRef<HTMLDivElement>(null);
   useOverlay({ isOpen, onClose, surfaceRef: frameRef });
 
+  // Corps qui défile : rendu focusable pour défiler au clavier, seulement dans
+  // ce cas (sinon il s'ajouterait inutilement à l'ordre de tabulation).
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const [scrollable, setScrollable] = useState(false);
+  useLayoutEffect(() => {
+    const body = bodyRef.current;
+    if (!isOpen || !body) return;
+    setScrollable(body.scrollHeight > body.clientHeight + 1);
+  }, [isOpen, children]);
+
   if (!isOpen) return null;
 
   const showHeader = title || !hideCloseButton;
@@ -114,7 +124,9 @@ export const Modal = ({
 
         {/* ── Inner — fond blanc, border-radius 9px ── */}
         <div className="modal__inner">
-          <div className="modal__body cadence-scrollbar">{children}</div>
+          <div ref={bodyRef} className="modal__body cadence-scrollbar" tabIndex={scrollable ? 0 : undefined}>
+            {children}
+          </div>
 
           {showFooter && (
             <div className="modal__footer">

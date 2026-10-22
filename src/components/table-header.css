@@ -48,3 +48,21 @@
 .table-header__cell--sortable:hover .table-header__sort-icon path {
   transition: fill 120ms ease;
 }
+
+/* Rangée ARIA sans boîte : les cellules restent des enfants flex du conteneur. */
+.table-header__row {
+  display: contents;
+}
+
+/* Nom d'une colonne sans titre : lu, jamais affiché. */
+.table-header__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

@@ -64,7 +64,7 @@ const InfoCard = ({ label, children }: { label: string; children: React.ReactNod
           fontFamily: "Inter, Helvetica",
           fontSize: 11,
           fontWeight: 600,
-          color: "#737373",
+          color: "var(--cadence-color-label)",
           textTransform: "uppercase" as const,
           letterSpacing: "0.5px",
         }}

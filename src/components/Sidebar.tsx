@@ -242,6 +242,14 @@ const LogoutIcon = () => (
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
+// Nom de produit : rend unique le nom de la navigation (plusieurs Sidebar
+// côte à côte dans une démonstration, par exemple).
+const PRODUCT_NAME: Record<SidebarProduct, string> = {
+  datahub: "Datahub",
+  "traffic-report": "Traffic Report",
+  insights: "Navitia Insights",
+};
+
 export const Sidebar = ({
   product,
   clientName,
@@ -312,7 +320,7 @@ export const Sidebar = ({
       <p className="sidebar__client">{clientName}</p>
 
       {/* ── Navigation ── */}
-      <nav className="sidebar__nav" aria-label="Navigation principale">
+      <nav className="sidebar__nav" aria-label={`Navigation principale ${PRODUCT_NAME[product]}`}>
         {sections.map((section) => {
           const isCollapsible = Boolean(section.items?.length);
           const isOpen = openSections[section.id] ?? false;

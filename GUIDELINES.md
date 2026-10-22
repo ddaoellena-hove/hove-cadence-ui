@@ -2155,6 +2155,7 @@ Conteneur `role="tablist"` d'une rangée de `Tab` ou de `SecondaryTab`. *Roving 
 | `iconElement` | `ReactNode` | — | SVG custom (16×16) — prioritaire sur `icon` |
 | `checkboxState` | `"unchecked" \| "checked" \| "indeterminate"` | `"unchecked"` | — |
 | `onCheckboxChange` | `(checked: boolean) => void` | — | — |
+| `checkboxLabel` | `string` | « Sélectionner {title} » | Nom accessible de la case (sinon « Sélectionner la ligne ») |
 | `actions` | `ReactNode` | — | Slot — des `GhostButton size="sm"` icône seule (`icon` + `aria-label`, `tone="danger"` pour supprimer) |
 | `columns` | `TableCardColumn[]` | `[]` | `{ key, content, width? \| flex? }` — `width` px fixe **ou** `flex` (jamais les deux) |
 | `state` | `"default" \| "selected" \| "disabled"` | `"default"` | `selected` = fond bleu du wrapper |
@@ -2163,9 +2164,9 @@ Conteneur `role="tablist"` d'une rangée de `Tab` ou de `SecondaryTab`. *Roving 
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `columns` | `TableHeaderColumn[]` | **requis** | `{ key, label, sortable?, sortDirection?, onSort?, width? \| flex? }` |
+| `columns` | `TableHeaderColumn[]` | **requis** | `{ key, label, ariaLabel?, sortable?, sortDirection?, onSort?, width? \| flex? }` — `ariaLabel` nomme une colonne sans libellé (défaut « Sélection ») |
 
-`sortDirection` : `"asc" \| "desc" \| "none"`. Les `width`/`flex` doivent refléter ceux des `TableCard` en dessous (+ colonne spacer initiale ≈ 220).
+`sortDirection` : `"asc" \| "desc" \| "none"`. Rendu ARIA : `role="table"` (« En-têtes de colonnes ») > `row` > `columnheader`. Les `width`/`flex` doivent refléter ceux des `TableCard` en dessous (+ colonne spacer initiale ≈ 220).
 
 ### TextArea
 

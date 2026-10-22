@@ -110,7 +110,7 @@
 .text-area__helper--hover,
 .text-area__helper--focus,
 .text-area__helper--disabled {
-  color: var(--cadence-color-text-muted, #809397);
+  color: var(--cadence-color-label, #1a3e45);
 }
 
 .text-area__helper--error {
@@ -118,5 +118,5 @@
 }
 
 .text-area__helper--success {
-  color: var(--cadence-color-success, #24a148);
+  color: var(--cadence-status-completed-fg, #15803d);
 }

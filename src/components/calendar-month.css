@@ -114,7 +114,8 @@
 }
 
 .date-picker__day--outside {
-  color: var(--cadence-color-border-strong, #bfc9cb);
+  /* Jour d'un mois voisin, cliquable : texte secondaire AA, distinct du mois affiché. */
+  color: var(--cadence-color-text-secondary, #64757a);
 }
 
 .date-picker__day--today {

@@ -94,7 +94,7 @@
 }
 
 .date-picker__trigger-text--placeholder {
-  color: var(--cadence-color-border-strong, #bfc9cb);
+  color: var(--cadence-color-placeholder, #737373);
   font-weight: 400;
 }
 
