@@ -170,35 +170,45 @@ Les couleurs sont ordonnées par priorité d'assignation : la première série d
 <div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne pas modifier la teinte ou la luminosité d'une couleur pour créer des variantes — utiliser l'opacité (<code>0.3</code>) pour les zones de fond.</span></div>
 <div className="rule dont"><span className="rule-icon">✗</span><span className="rule-text">Ne jamais juxtaposer <code>#6B3FD6</code> et <code>#5A2D82</code> dans le même graphique sans légende claire — trop proches visuellement.</span></div>
 
+<div className="g h2">Choisir le bon graphique</div>
+
+<table>
+  <thead>
+    <tr><th>Question</th><th>Composant</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Comment une mesure évolue-t-elle dans le temps ? Franchit-elle un objectif ?</td><td><code>LineChart</code> (seuils, annotations)</td></tr>
+    <tr><td>Quand les perturbations se concentrent-elles (jour × heure) ?</td><td><code>Heatmap</code> (rampe séquentielle)</td></tr>
+    <tr><td>Quelles lignes sont les plus touchées ?</td><td><code>BarList</code></td></tr>
+    <tr><td>Comment se répartissent des catégories, série par série ?</td><td><code>DataVisualization</code></td></tr>
+  </tbody>
+</table>
+
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Le sens ne repose jamais sur la couleur seule : formes de marqueurs et motifs de trait par série, seuils et annotations libellés, cellules vides hachurées.</span></div>
+<div className="rule do"><span className="rule-icon">✓</span><span className="rule-text">Intensités (heatmap) : rampe <code>--cadence-dataviz-seq-1..7</code>, une teinte pétrole à clarté croissante, lisible en daltonisme.</span></div>
+
 <div className="g h2">Tokens CSS</div>
+
+Les couleurs vivent dans <code>tokens.css</code> sous <code>--cadence-dataviz-*</code>. Les anciens noms <code>--CAI-dv-series-1..8</code> restent valides (alias).
 
 ```css
 :root {
-  --dv-color-1: #6B3FD6;  /* Violet       — série 1 */
-  --dv-color-2: #1A91E8;  /* Bleu         — série 2 */
-  --dv-color-3: #007D79;  /* Teal         — série 3 */
-  --dv-color-4: #B36B00;  /* Ambre        — série 4 / alertes */
-  --dv-color-5: #A0185E;  /* Magenta      — série 5 */
-  --dv-color-6: #F04E4E;  /* Corail       — incidents critiques */
-  --dv-color-7: #5A2D82;  /* Violet foncé — série 7 */
-  --dv-color-8: #55606E;  /* Ardoise      — neutre / divers */
+  --cadence-dataviz-series-1: #6b3fd6;  /* Violet       — 6,35:1 */
+  --cadence-dataviz-series-2: #1a91e8;  /* Bleu         — 3,35:1 */
+  --cadence-dataviz-series-3: #007d79;  /* Teal         — 4,99:1 */
+  --cadence-dataviz-series-4: #b36b00;  /* Ambre        — 4,18:1 (ex-#f1a21b) */
+  --cadence-dataviz-series-5: #a0185e;  /* Magenta      — 7,53:1 */
+  --cadence-dataviz-series-6: #f04e4e;  /* Corail       — 3,56:1 */
+  --cadence-dataviz-series-7: #5a2d82;  /* Violet foncé — 9,85:1 */
+  --cadence-dataviz-series-8: #55606e;  /* Ardoise      — 6,39:1 */
+
+  --cadence-dataviz-seq-1: #eaf4f5;     /* … rampe séquentielle … */
+  --cadence-dataviz-seq-7: #004650;
+
+  --cadence-dataviz-threshold: #1a3e45;
+  --cadence-dataviz-threshold-breach: #b91c1c;
+  --cadence-dataviz-annotation: #55606e;
 }
-```
-
-```ts
-// Tableau exportable pour les librairies de charts (Recharts, D3, Chart.js…)
-export const DV_COLORS = [
-  "#6B3FD6",
-  "#1A91E8",
-  "#007D79",
-  "#B36B00",
-  "#A0185E",
-  "#F04E4E",
-  "#5A2D82",
-  "#55606E",
-] as const;
-
-export type DvColor = typeof DV_COLORS[number];
 ```
 
 </div>

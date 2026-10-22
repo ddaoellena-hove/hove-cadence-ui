@@ -15,9 +15,10 @@ Design system React pour les produits Hove (transport public). Ce document est l
 9. [Navigation](#navigation)
 10. [Listes & tableaux](#listes--tableaux)
 11. [Statuts & étiquettes](#statuts--étiquettes)
-12. [Feedback](#feedback)
-13. [Recettes de pages complètes](#recettes-de-pages-complètes)
-14. [Référence API des composants](#référence-api-des-composants)
+12. [Data visualisation](#data-visualisation)
+13. [Feedback](#feedback)
+14. [Recettes de pages complètes](#recettes-de-pages-complètes)
+15. [Référence API des composants](#référence-api-des-composants)
 
 ---
 
@@ -128,6 +129,10 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-color-border-strong` | `#bfc9cb` | Bordures appuyées, états disabled |
 | `--cadence-color-scrollbar-thumb` | `rgba(0, 40, 48, 0.2)` | Curseur des barres de défilement (`cadence-scrollbar`) ; `-hover` : `rgba(0, 40, 48, 0.36)` |
 | `--cadence-color-divider` | `#f0f0f0` | Séparateurs internes |
+| `--cadence-dataviz-series-1..8` | violet, bleu, teal, ambre `#b36b00`, magenta, corail, violet foncé, ardoise | Séries des graphiques, dans cet ordre ; toutes ≥ 3:1 sur blanc. Anciens noms `--CAI-dv-series-*` en alias |
+| `--cadence-dataviz-seq-1..7` | `#eaf4f5` → `#004650` | Rampe séquentielle (`Heatmap`), teinte pétrole à clarté croissante |
+| `--cadence-dataviz-threshold` / `-threshold-breach` | `#1a3e45` / `#b91c1c` | Ligne de seuil / côté défavorable d'un seuil |
+| `--cadence-dataviz-annotation` / `-annotation-band` | `#55606e` / `rgba(85, 96, 110, 0.08)` | Trait ou bord d'annotation / remplissage d'une bande annotée |
 | `--cadence-font-sans` | Inter | Texte d'interface |
 | `--cadence-font-display` | Uxum Grotesque → Space Grotesk | Titres |
 | `--cadence-font-mono` | Spline Sans Mono | Valeurs numériques |
@@ -260,7 +265,11 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Fil d'Ariane | `Breadcrumbs` | — |
 | Sélecteur de contexte dans le breadcrumb (produit/module) | `Dropdown` `variant="button"` | `Dropdown` `variant="field"` (formulaires) |
 | Identité utilisateur (initiales / photo) | `Avatar` | — |
-| Graphique en barres | `DataVisualization` | — |
+| Évolution dans le temps (retards, ponctualité, volumes) | `LineChart` | `DataVisualization` (comparaison de catégories) |
+| Motif jour × heure, ligne × jour | `Heatmap` | `LineChart` (une seule dimension temporelle) |
+| Classement (lignes les plus impactées) | `BarList` | `DataVisualization horizontal` (plusieurs séries) |
+| Comparaison de catégories (barres empilées / groupées) | `DataVisualization` | `BarList` (classement à une valeur) |
+| Mini-courbe dans une carte d'indicateur | `Card trend` (ou `LineChart compact`) | — |
 | Icône seule | `Icons` | — |
 
 ---
@@ -754,6 +763,41 @@ Une `Card` est **interactive** soit par `onClick` (toute la carte mène à la li
 
 ---
 
+## Data visualisation
+
+### Choisir le bon graphique
+
+| Question | Composant |
+|---|---|
+| Comment une mesure évolue dans le temps ? Franchit-elle un objectif ? | `LineChart` (une à huit séries, aire empilée pour une composition) |
+| Quand les perturbations se concentrent-elles (jour × heure) ? | `Heatmap` |
+| Quelles lignes sont les plus touchées ? | `BarList` |
+| Comment se répartissent des catégories, série par série ? | `DataVisualization` (barres empilées, groupées, horizontales) |
+| Une valeur clé et sa tendance en haut de page ? | `Card` (`value`, `delta`, `trend`) |
+
+### Palette
+
+- ✅ Les séries prennent les couleurs `--cadence-dataviz-series-1..8` **dans l'ordre** : la série principale en 1. Toutes atteignent 3:1 sur blanc (traits et marqueurs).
+- ✅ Chaque série a aussi une **forme de marqueur** et un **motif de trait** (plein, tiret, pointillé…) : le sens ne repose jamais sur la couleur seule.
+- ✅ Les valeurs ordonnées (intensité) utilisent la rampe séquentielle `--cadence-dataviz-seq-1..7` : une seule teinte, clarté croissante, lisible en daltonisme et en niveaux de gris.
+- ❌ Pas de couleur en dur ni de palette maison : un statut (critique, avertissement) reste un `Indicator`, pas une couleur de série.
+
+### Seuils et annotations
+
+- ✅ Un objectif ou un seuil d'alerte est un `threshold` libellé (« Objectif 95 % », « Seuil d'alerte 5 min ») : ligne tiretée `--cadence-dataviz-threshold`. Avec `goodDirection`, les points du mauvais côté passent en `--cadence-dataviz-threshold-breach` et le libellé indique « franchi ».
+- ✅ Un événement daté (grève, travaux, incident) est une `annotation` : trait vertical ou bande, toujours libellée (« Grève 14/10 »), rappelée dans le tooltip.
+- ❌ Pas de seuil sans libellé, pas d'annotation sans date.
+
+### Accessibilité
+
+- ✅ Chaque graphique a un `title` (nom accessible) et, de préférence, une `description` (période, périmètre).
+- ✅ Alternative tabulaire : « Voir les données » affiche un vrai tableau, présent dans le DOM même masqué (`LineChart`, `BarList`) ; la `Heatmap` est elle-même une grille (`role="grid"`) avec en-têtes de lignes et de colonnes.
+- ✅ Clavier : `LineChart` (←/→, Début / Fin, tooltip annoncé), `Heatmap` (flèches, Début / Fin, Ctrl+Début / Fin, Entrée), `BarList` (lignes cliquables = boutons nommés).
+- ✅ États `loading`, `empty`, `error` (avec `onRetry`) plutôt qu'un graphique vide.
+- ✅ Les graphiques suivent la largeur de leur conteneur : jamais de largeur fixe en px. Hauteurs par défaut : `LineChart` 280px (48px en `compact`), `Heatmap` 28px par ligne, `BarList` 32px par ligne.
+
+---
+
 ## Feedback
 
 ### Choisir le bon composant
@@ -1202,6 +1246,81 @@ export const SupervisionDashboard = () => {
 - ✅ `loading` sur chaque carte pendant le rechargement : la grille garde sa taille.
 - ✅ Une carte cliquable ouvre la liste déjà filtrée (`onClick`) — pas de bouton « Voir » en plus.
 
+### Recette 7 — Tableau de bord d'analyse
+
+`PageHeader` (période en variante bouton), une ligne de `Card` indicateurs, l'évolution en `LineChart`, puis le motif jour × heure (`Heatmap`) à côté du classement (`BarList`). Chaque graphique gère ses états à partir de la requête.
+
+```tsx
+import { useState } from "react";
+import { BarList, Card, DateRangePicker, Heatmap, LineChart, PageHeader, type DateRange } from "@ddaoellena/cadence-ui";
+
+export const AnalysisDashboard = () => {
+  const [period, setPeriod] = useState<DateRange>(last7Days());
+  const stats = useAnalysis(period); // { status, kpis, hourlyDelays, strike, cells, topLines, … } côté API
+  const state = stats.status === "pending" ? "loading" : stats.status === "error" ? "error" : "ready";
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      <PageHeader
+        title="Analyse des perturbations"
+        subtitle={`Dernière synchronisation le ${formatDateTime(stats.syncedAt)}`}
+        actions={<DateRangePicker variant="button" aria-label="Période" value={period} onChange={setPeriod} maxDays={92} />}
+      />
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16 }}>
+        <Card headingLevel={2} title="Retard moyen" value={stats.kpis.delay} unit="min" goodDirection="down"
+          delta={{ value: stats.kpis.delayDelta, label: "vs période précédente" }} trend={stats.kpis.delayTrend} loading={state === "loading"} />
+        <Card headingLevel={2} title="Ponctualité" value={stats.kpis.punctuality} unit="%"
+          delta={{ value: stats.kpis.punctualityDelta, unit: "pt" }} loading={state === "loading"} />
+        <Card headingLevel={2} title="Perturbations" value={stats.kpis.disruptions} goodDirection="down"
+          onClick={() => navigate("/perturbations")} loading={state === "loading"} />
+      </div>
+
+      <LineChart
+        headingLevel={2}
+        title="Retard moyen par heure"
+        description="Toutes lignes, sur la période"
+        state={state}
+        onRetry={stats.refetch}
+        unit="min"
+        goodDirection="down"
+        series={[{ id: "delay", label: "Retard moyen", data: stats.hourlyDelays }]}
+        thresholds={[{ value: 5, label: "Seuil d'alerte 5 min" }]}
+        annotations={stats.strike ? [{ at: [stats.strike.start, stats.strike.end], label: stats.strike.label }] : []}
+      />
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: 24 }}>
+        <Heatmap
+          headingLevel={2}
+          title="Perturbations par jour et par heure"
+          state={state}
+          unit="perturbations"
+          xLabels={HOURS}
+          yLabels={WEEKDAYS}
+          cells={stats.cells}
+          onCellClick={(c) => navigate(`/perturbations?jour=${c.y}&heure=${c.x}`)}
+        />
+        <BarList
+          headingLevel={2}
+          title="Lignes les plus impactées"
+          state={state}
+          unit="perturbations"
+          goodDirection="down"
+          items={stats.topLines}
+          limit={5}
+          onShowAll={() => navigate("/lignes")}
+          onItemClick={(item) => navigate(`/lignes/${item.id}`)}
+        />
+      </div>
+    </div>
+  );
+};
+```
+
+- ✅ Un seul `h1` (le `PageHeader`) ; les cartes et les graphiques en `headingLevel={2}`.
+- ✅ La même période pilote tous les blocs ; l'état de la requête (`loading`, `error` + `onRetry`) est passé à chaque graphique.
+- ✅ Grilles fluides (`auto-fill` / `auto-fit`), jamais de largeur fixe : les graphiques suivent leur conteneur.
+
 ---
 
 ## Référence API des composants
@@ -1307,6 +1426,33 @@ Clavier : ↑/↓ pour naviguer, Entrée pour sélectionner l'option surlignée,
 | `onDismiss` | `() => void` | — | Clic sur la croix |
 | `onDragStart`, `onDragEnd` | `(e: DragEvent) => void` | — | Événements de drag |
 
+### BarList
+
+Classement horizontal : libellé, barre proportionnelle (`--cadence-dataviz-series-1`), valeur en mono alignée à droite, variation facultative. Hauteur : 32px par ligne. Props communes des graphiques : `title` (**requis**), `description`, `headingLevel` (3), `state` (`"ready" | "loading" | "empty" | "error"`), `emptyMessage`, `errorMessage`, `onRetry`, `className`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `items` | `{ id, label: ReactNode, ariaLabel?, value, delta?: { value, unit? } }[]` | **requis** | `ariaLabel` obligatoire si `label` n'est pas du texte |
+| `sort` | `"none" \| "desc"` | `"none"` | `"desc"` : tri par valeur décroissante |
+| `unit` | `string` | — | « perturbations », « min » |
+| `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | — |
+| `goodDirection` | `"up" \| "down" \| "neutral"` | `"up"` | Couleur de la variation (comme `Card`) |
+| `limit` | `number` | — | N premières lignes |
+| `onShowAll` | `() => void` | — | Lien « Voir tout (N) », affiché si des lignes sont masquées |
+| `onItemClick` | `(item) => void` | — | Lignes cliquables : boutons nommés « Ligne 13 : 42 perturbations, en hausse de 12 %, défavorable » |
+
+```tsx
+<BarList
+  title="Lignes les plus impactées"
+  unit="perturbations"
+  goodDirection="down"
+  items={top10}
+  limit={5}
+  onShowAll={() => navigate("/lignes")}
+  onItemClick={(item) => navigate(`/lignes/${item.id}`)}
+/>
+```
+
 ### Breadcrumbs
 
 | Prop | Type | Défaut | Description |
@@ -1401,6 +1547,8 @@ Tableau dense pour les gros volumes. Vrai `<table>` (rôles ARIA explicites), en
 | `showValues` | `boolean` | `false` | Valeurs sur les barres |
 | `showTooltip` | `boolean` | `true` | Tooltip au survol |
 
+Couleurs : `--cadence-dataviz-series-1..8` (alias `--CAI-dv-series-*`). Pour une évolution dans le temps, un classement ou un motif jour × heure, préférer `LineChart`, `BarList` ou `Heatmap`.
+
 ### DatePicker
 
 | Prop | Type | Défaut | Description |
@@ -1479,6 +1627,35 @@ Barre au-dessus d'une liste : ligne 1 = recherche · filtres rapides · actions 
 | `className` | `string` | — | — |
 
 
+### Heatmap
+
+Grille à deux catégories (jour × heure, ligne × jour) sur la rampe séquentielle en 7 classes, avec légende et bornes. Cellule sans donnée (`value: null`, différent de 0) : hachures. Hauteur : `rowHeight` par ligne. Props communes : voir `BarList`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `xLabels` | `string[]` | **requis** | Colonnes, dans l'ordre (« 05 h » … « 00 h ») |
+| `yLabels` | `string[]` | **requis** | Lignes, dans l'ordre (« lun. » … « dim. ») |
+| `cells` | `{ x, y, value: number \| null }[]` | **requis** | Une valeur par cellule (absente = pas de donnée) |
+| `domain` | `[number, number]` | `[0, max]` | Bornes de la rampe |
+| `unit` | `string` | — | Tooltip, légende et nom des cellules |
+| `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | — |
+| `onCellClick` | `(cell) => void` | — | Clic ou Entrée sur une cellule renseignée (ouvrir la liste filtrée) |
+| `rowHeight` | `number` | `28` | Hauteur d'une ligne |
+
+Clavier : une seule cellule tabulable ; flèches, Début / Fin (ligne), Ctrl+Début / Fin (grille), Entrée ; tooltip au survol et au focus. Quand la place manque, une étiquette de colonne sur deux ou trois est masquée visuellement (toujours lue).
+
+```tsx
+<Heatmap
+  title="Perturbations par jour et par heure"
+  description="4 dernières semaines"
+  unit="perturbations"
+  xLabels={hours}
+  yLabels={days}
+  cells={cells}
+  onCellClick={(c) => navigate(`/perturbations?jour=${c.y}&heure=${c.x}`)}
+/>
+```
+
 ### Icons
 
 SVG inline issu de `@untitledui/icons` — aucune requête réseau. L'icône suit `currentColor` : par défaut elle prend la couleur du texte parent.
@@ -1505,6 +1682,38 @@ SVG inline issu de `@untitledui/icons` — aucune requête réseau. L'icône sui
 |---|---|---|---|
 | `variant` | `"active" \| "upcoming" \| "completed" \| "draft" \| "warning" \| "info" \| "critical" \| "nominal"` | **requis** | Statut sémantique (picto + couleurs) |
 | `label` | `string` | label de la variante | Surcharge du libellé |
+
+### LineChart
+
+Évolution d'une à huit séries, temporelles (`x: Date`, axe de dates fr-FR adapté à l'étendue : heures, jours ou mois) ou catégorielles. Tooltip partagé (toutes les séries à l'abscisse survolée), dans un portail. Hauteur par défaut 280px. Props communes : voir `BarList`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `series` | `{ id, label, data: { x: Date \| string, y: number \| null }[] }[]` | **requis** | `y: null` = trou dans la courbe |
+| `variant` | `"line" \| "area"` | `"line"` | — |
+| `stacked` | `boolean` | `false` | Aires empilées (`variant="area"`) |
+| `thresholds` | `{ value, label }[]` | `[]` | Lignes de seuil libellées |
+| `annotations` | `{ at: Date \| string \| [début, fin], label }[]` | `[]` | Trait vertical ou bande libellés |
+| `goodDirection` | `"up" \| "down" \| "neutral"` | `"up"` | Côté défavorable d'un seuil : points en `--cadence-dataviz-threshold-breach`, libellé « franchi » |
+| `unit` | `string` | — | Axe Y, tooltip, tableau |
+| `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | — |
+| `yDomain` | `[number, number]` | 0 → max arrondi | Bornes de l'axe Y |
+| `compact` | `boolean` | `false` | Sans axes ni légende ni titre visible (titre lu) : pour une `Card` |
+| `height` | `number` | `280` (`48` en compact) | Hauteur du tracé |
+
+Clavier : le tracé est focusable ; ←/→ passent d'une abscisse à l'autre, Début / Fin, Échap masque le tooltip ; la valeur est annoncée (`aria-live`). Légende cliquable (masquer une série) dès deux séries. Marqueurs sur tous les points jusqu'à 40 abscisses, au-delà seulement sur les points qui franchissent un seuil.
+
+```tsx
+<LineChart
+  title="Retard moyen par heure"
+  description="7 derniers jours, toutes lignes"
+  unit="min"
+  goodDirection="down"
+  series={[{ id: "delay", label: "Retard moyen", data: hourlyDelays }]}
+  thresholds={[{ value: 5, label: "Seuil d'alerte 5 min" }]}
+  annotations={[{ at: [strikeStart, strikeEnd], label: "Grève 16/10" }]}
+/>
+```
 
 ### Link
 
