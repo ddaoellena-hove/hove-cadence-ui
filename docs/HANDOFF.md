@@ -129,3 +129,19 @@ Activer `.storybook/preview.ts` `a11y.test = 'error'` révélait au départ **�
 3. **API dépréciées encore appelées dans les démos** (~35 occurrences : `PrimaryButton` `destructive`/`size="medium|large"`/`withIcon`, `Link variant="secondary"`, `SecondaryButton`, `DataVisualization`). Migrer les **sites d'appel** (stories/recettes) avant le retrait prévu en 1.0 ; **garder les shims** dans les composants jusque-là.
 
 Validation de ce lot : suite storybook **73 fichiers / 420 tests verts**, `tsc -b`, `build:lib` et `git diff --check` propres. Aucune publication.
+
+## Mise à jour — lot 0.6.0, relecture et harmonisation
+
+Branches locales, rien poussé ni publié : `release/0.6.0` (lot 0.6.0, relecture, tokens de hauteur, ColumnManager glisser-déposer, InlineAlert outline, infobulles retirées), puis `feat/harmonisation` qui en part.
+
+**Fait sur `feat/harmonisation`** (la dette du lot précédent est résorbée) :
+
+- **Tokens partout** : rayons (`--cadence-radius-*`, nouveaux `2xl` et `pill`) et couleurs de tous les CSS de composants via tokens ; nouveaux tokens de focus de champ, voile, fond sombre (Sidebar), surfaces sélectionnées. Test `css-tokens.test.ts` (aucune couleur en dur dans une propriété de couleur, aucun rayon > 5px en dur). Exceptions assumées : ombres décoratives (`box-shadow` internes) et micro-rayons.
+- **A11y** : `.storybook/preview.ts` en `a11y.test: 'error'` pour toute la suite ; les 26 stories en échec sont corrigées dans les composants (TableCard, TableHeader, contrastes, Modal, Sidebar). Les `a11y: { test: "error" }` par fichier sont désormais redondants (inoffensifs).
+- **Avertissements** : les deux `console.error` « value sans onChange » venaient des stories `TextArea` (corrigé). Les avertissements de dépréciation restants proviennent uniquement des stories qui démontrent volontairement les shims (`PrimaryButton` compat, `SecondaryButton`, `DataVisualization`, `Link` secondary) : rien à migrer dans les démos. `storybook-package/` est une copie historique non maintenue.
+- **Composition** : filtres rapides de `FilterBar` en `variant="button"` dans les recettes (un gabarit par rangée).
+- **Factorisation** : `useAnchoredPanel` / `placeAnchored` (overlay-primitives) partagés par Popover, menus et ColumnManager ; les menus ne se ferment plus au défilement.
+
+Validation : 718 tests (103 fichiers) sous React 19 et React 18 (`npm run test:react18`), lint sans erreur, `tsc -b`, `build:lib`, `smoke:dist`, `build-storybook`.
+
+**Reste ouvert** : propositions reportées (Timeline, ColorField, TreeView, DisruptionScopePicker, ScheduleComparison, DataFreshness) ; tests manuels lecteur d'écran et navigateurs cibles ; décision de version et de publication avec l'utilisateur.
