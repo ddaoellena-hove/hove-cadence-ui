@@ -6,6 +6,7 @@ import { Sidebar, type SidebarNavSection, type SidebarProduct } from "./Sidebar"
 import { Icons } from "./Icons";
 import { PrimaryButton } from "./PrimaryButton";
 import { Card } from "./Card";
+import { PageHeader } from "./PageHeader";
 
 const meta: Meta<typeof AppLayout> = {
   title: "Components/AppLayout",
@@ -62,20 +63,7 @@ const AppSidebar = ({ product = "datahub" }: { product?: SidebarProduct }) => {
 /** Contenu de page d'exemple : titre, action principale, cartes. */
 const PageContent = () => (
   <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
-      <h1
-        style={{
-          fontFamily: "var(--cadence-font-display)",
-          fontSize: 28,
-          fontWeight: 500,
-          color: "var(--cadence-color-primary)",
-          margin: 0,
-        }}
-      >
-        Scénarios
-      </h1>
-      <PrimaryButton iconStart="plus" label="Créer un scénario" />
-    </div>
+    <PageHeader title="Scénarios" actions={<PrimaryButton iconStart="plus" label="Créer un scénario" />} />
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16 }}>
       <Card headingLevel={2}
         title="Importer un réseau GTFS"

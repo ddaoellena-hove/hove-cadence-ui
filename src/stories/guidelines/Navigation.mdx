@@ -51,17 +51,17 @@ import { Meta } from "@storybook/addon-docs/blocks";
     />
   }
 >
-  {/* Localisation */}
-  <Breadcrumbs items={[
-    { id: "home", label: "Accueil", href: "#" },
-    { id: "section", label: "Perturbations", href: "#" },
-    { id: "current", label: "Vue détaillée" },
-  ]} />
-
-  {/* Titre de page */}
-  <h1 style={{ fontFamily: "var(--cadence-font-display)", fontSize: 28, fontWeight: 500, color: "var(--cadence-color-primary)" }}>
-    Perturbations non planifiées
-  </h1>
+  {/* Localisation et titre de page */}
+  <PageHeader
+    breadcrumbs={
+      <Breadcrumbs items={[
+        { id: "home", label: "Accueil", href: "#" },
+        { id: "section", label: "Perturbations", href: "#" },
+        { id: "current", label: "Vue détaillée" },
+      ]} />
+    }
+    title="Perturbations non planifiées"
+  />
 
   {/* Navigation intra-page */}
   <TabList aria-label="Vue">
