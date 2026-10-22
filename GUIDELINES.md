@@ -1463,6 +1463,8 @@ Squelette d'application : la `Sidebar` à gauche et le contenu de la page dans u
 | `onDismiss` | `() => void` | — | Clic sur ×. ⚠️ Pas de prop `onClose`. |
 | `className`, `style` | — | — | Échappatoires |
 
+Annonce aux lecteurs d'écran selon le type : `error` et `warning` → `role="alert"` (immédiate) ; `success` et `information` → `role="status"` (polie). Le `Toaster` n'ajoute pas de région live : chaque toast est annoncé une seule fois.
+
 ### Autocomplete
 
 Champ de recherche qui filtre une liste statique en interne. Choix **strict** dans la liste (le texte non validé est réinitialisé à la fermeture). Simple ou multiple via `multiple`.

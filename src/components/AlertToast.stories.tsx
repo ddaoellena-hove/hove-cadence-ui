@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, within } from "storybook/test";
 import { AlertToast } from "./AlertToast";
 
 const meta: Meta<typeof AlertToast> = {
@@ -33,12 +34,22 @@ export const Information: Story = {
     type: "information",
     description: "Les horaires de la ligne A ont été mis à jour.",
   },
+  play: async ({ canvasElement }) => {
+    // Annonce polie : role="status", sans aria-live redondant.
+    const toast = within(canvasElement).getByRole("status");
+    await expect(toast).not.toHaveAttribute("aria-live");
+  },
 };
 
 export const Success: Story = {
   args: {
     type: "success",
     description: "Vos modifications ont été enregistrées.",
+  },
+  play: async ({ canvasElement }) => {
+    // Annonce polie : role="status", sans aria-live redondant.
+    const toast = within(canvasElement).getByRole("status");
+    await expect(toast).not.toHaveAttribute("aria-live");
   },
 };
 
@@ -47,12 +58,22 @@ export const Warning: Story = {
     type: "warning",
     description: "Votre session va bientôt expirer. Pensez à enregistrer votre travail.",
   },
+  play: async ({ canvasElement }) => {
+    // Annonce immédiate : role="alert", sans aria-live redondant.
+    const toast = within(canvasElement).getByRole("alert");
+    await expect(toast).not.toHaveAttribute("aria-live");
+  },
 };
 
 export const Error: Story = {
   args: {
     type: "error",
     description: "Une erreur est survenue. Réessayez ou contactez le support.",
+  },
+  play: async ({ canvasElement }) => {
+    // Annonce immédiate : role="alert", sans aria-live redondant.
+    const toast = within(canvasElement).getByRole("alert");
+    await expect(toast).not.toHaveAttribute("aria-live");
   },
 };
 

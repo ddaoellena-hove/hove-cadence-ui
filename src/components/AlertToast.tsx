@@ -114,8 +114,13 @@ export const AlertToast = ({
     .filter(Boolean)
     .join(" ");
 
+  // Erreur / avertissement : role="alert" (annonce immédiate) ; succès /
+  // information : role="status" (annonce polie). Pas d'aria-live en plus : le
+  // rôle l'implique déjà, et deux politiques contradictoires se court-circuitent.
+  const role = type === "error" || type === "warning" ? "alert" : "status";
+
   return (
-    <div className={rootClass} style={{ ...style, flexWrap: "wrap" }} role="alert" aria-live="polite">
+    <div className={rootClass} style={{ ...style, flexWrap: "wrap" }} role={role}>
       {/* Left accent bar */}
       <div className="alert-toast__accent" aria-hidden="true" />
 
