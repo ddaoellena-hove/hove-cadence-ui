@@ -5,6 +5,7 @@ export * from './AlertToast';
 export * from './Autocomplete';
 export * from './Badge';
 export * from './Avatar';
+export * from './BarList';
 export * from './Breadcrumbs';
 export * from './Card';
 export * from './CounterInput';

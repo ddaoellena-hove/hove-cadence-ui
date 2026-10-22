@@ -1,0 +1,107 @@
+/* ── BarList ─────────────────────────────────────────────────────────────── */
+/* Cadre, tableau et états : chart-frame.css (ChartFrame). */
+.bar-list__items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Libellé · barre · valeur · variation, colonnes alignées d'une ligne à l'autre */
+.bar-list__row {
+  align-items: center;
+  background: none;
+  border: none;
+  border-radius: var(--cadence-radius-sm, 6px);
+  box-sizing: border-box;
+  color: var(--cadence-color-primary, #002830);
+  display: grid;
+  font-family: inherit;
+  font-size: 13px;
+  gap: 12px;
+  grid-template-columns: minmax(80px, 28%) 1fr 56px 72px;
+  min-height: 32px;
+  padding: 4px 6px;
+  text-align: left;
+  width: 100%;
+}
+
+.bar-list__row--button {
+  cursor: pointer;
+}
+
+.bar-list__row--button:hover {
+  background: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
+}
+
+.bar-list__row--button:focus-visible {
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+  outline: none;
+}
+
+.bar-list__label {
+  font-weight: 500;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bar-list__track {
+  background: var(--cadence-color-surface-alt, #eef1f4);
+  border-radius: 3px;
+  display: block;
+  height: 8px;
+  overflow: hidden;
+}
+
+.bar-list__bar {
+  background: var(--cadence-dataviz-series-1, #6b3fd6);
+  border-radius: 3px;
+  display: block;
+  height: 100%;
+}
+
+.bar-list__value {
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  text-align: right;
+}
+
+.bar-list__delta {
+  align-items: center;
+  display: inline-flex;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  gap: 2px;
+  justify-content: flex-end;
+  white-space: nowrap;
+}
+
+/* Couleurs AA : tokens de statut (comme Card) */
+.bar-list__delta--positive {
+  color: var(--cadence-status-completed-fg, #15803d);
+}
+
+.bar-list__delta--negative {
+  color: var(--cadence-status-critical-fg, #b91c1c);
+}
+
+.bar-list__delta--neutral {
+  color: var(--cadence-color-icon-muted, #69797d);
+}
+
+.bar-list__more {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bar-list__bar {
+    transition: width 200ms ease;
+  }
+}
