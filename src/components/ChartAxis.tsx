@@ -9,14 +9,16 @@ interface ChartAxisLeftProps {
   ticks: ChartTick[];
   /** Largeur de la zone de tracé (longueur des lignes de grille). */
   plotWidth: number;
+  /** Lignes de grille horizontales. Défaut true. */
+  grid?: boolean;
 }
 
 /** Axe vertical (interne) : valeurs en mono à gauche, grille horizontale. */
-export const ChartAxisLeft = ({ ticks, plotWidth }: ChartAxisLeftProps) => (
+export const ChartAxisLeft = ({ ticks, plotWidth, grid = true }: ChartAxisLeftProps) => (
   <g aria-hidden="true">
     {ticks.map((tick) => (
       <g key={tick.key}>
-        <line className="chart__grid-line" x1={0} x2={plotWidth} y1={tick.position} y2={tick.position} />
+        {grid && <line className="chart__grid-line" x1={0} x2={plotWidth} y1={tick.position} y2={tick.position} />}
         <text className="chart__axis-label" x={-8} y={tick.position} dy="0.32em" textAnchor="end">
           {tick.label}
         </text>

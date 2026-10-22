@@ -290,7 +290,7 @@ export const BarChart = ({
                 ))}
               </g>
             ) : (
-              <ChartAxisLeft ticks={valueAxisTicks} plotWidth={showGrid ? plotWidth : 0} />
+              <ChartAxisLeft ticks={valueAxisTicks} plotWidth={plotWidth} grid={showGrid} />
             )}
 
             {/* Catégorie active : bande de survol */}
