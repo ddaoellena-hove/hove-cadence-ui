@@ -6,6 +6,12 @@
   display: inline-flex;
 }
 
+/* L'icône « … » est explicite : pas d'infobulle intégrée sur le déclencheur
+   (GhostButton icône seule). Le menu porte déjà le nom accessible. */
+.action-menu .base-button-tip__bubble {
+  display: none;
+}
+
 /* ── Menu (portail, position fixe posée en inline) ── */
 .action-menu__menu {
   z-index: var(--cadence-z-dropdown, 200);
