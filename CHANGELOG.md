@@ -31,6 +31,15 @@
 - **`SearchInput`** (nouveau) : champ de recherche de 29px (la hauteur des boutons `sm`) avec loupe et bouton « effacer » ; Échap vide le champ. Il s'aligne sur les filtres en `variant="button"` (même hauteur, même bordure) mais s'en distingue par une forme de champ : coins de 8px et léger creux, là où les boutons sont des pilules en relief.
 - **`FilterBar`** : la recherche est un `SearchInput` au lieu d'un `TextInput` de 40px. Même API (`search`), même temporisation de 300 ms.
 
+### États & surcouches
+
+- **`Skeleton`** (nouveau) : forme de chargement `text` / `rect` / `circle`, décorative (`aria-hidden` ; le conteneur porte `aria-busy`), pulsation coupée sous `prefers-reduced-motion`. Adopté en interne par `DataTable` (lignes squelettes) et `Card` (`loading`) — **rendu visuel inchangé**.
+- **`EmptyState`** (nouveau) : états `empty` / `no-results` / `error` (ces deux derniers en `role="status"`), tailles `page` / `inline`, action principale (`PrimaryButton`) et secondaire (`GhostButton`). Remplace la recette 4 ; s'insère dans `DataTable.emptyState`.
+- **`ActionMenu`** (nouveau) : menu d'actions par ligne (déclencheur `GhostButton` icône), pattern ARIA `menu`/`menuitem`, clavier complet (flèches, Début/Fin, saisie de la 1re lettre, Échap, Tab). Rendu en portail : non rogné par l'overflow d'un `DataTable`, y compris en colonne collée à droite. Items `tone="danger"`, `divider`, `disabled`.
+- **`Drawer`** (nouveau) : panneau latéral droit (`md` 480px / `lg` 720px) pour le détail d'un élément sans quitter la liste ; voile, Échap, clic voile, bouton fermer, piège à focus et retour du focus ; entrée/sortie en `transform` (250 ms), coupées sous `prefers-reduced-motion`.
+- **`Modal`** : passe sur les primitives de surcouche partagées (piège à focus et retour du focus désormais corrects). **API et rendu inchangés.**
+- **Tokens** : `--cadence-color-skeleton` (aliasé sur `--cadence-color-surface-alt`).
+
 ## 0.4.0 — 2026-10-21
 
 ### Nouveau layout d'application

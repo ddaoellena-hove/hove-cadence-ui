@@ -256,7 +256,11 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Navigation dans un résultat paginé | `Pagination` | — |
 | Recherche + filtres rapides + filtres actifs au-dessus d'une liste | `FilterBar` | un `TextInput` + `Badge` assemblés à la main |
 | Recherche seule (en-tête de dashboard, barre d'outils) | `SearchInput` | `TextInput` (champ de formulaire, 40px) |
-| Dialogue bloquant (confirmation, formulaire court) | `Modal` | `AlertToast` (non bloquant) |
+| Dialogue bloquant (confirmation, formulaire court) | `Modal` | `AlertToast` (non bloquant) ; `Drawer` (non bloquant, détail) |
+| Détail d'un élément sans quitter la liste | `Drawer` | `Modal` (dialogue bloquant) |
+| Regrouper plus de 4 actions d'une ligne | `ActionMenu` | `GhostButton` icône seule (≤ 4 actions inline) |
+| Chargement : réserver la place du contenu | `Skeleton` | spinner plein écran |
+| Liste vide, sans résultat, ou erreur de chargement | `EmptyState` | état vide bricolé à la main |
 | Notification temporaire non bloquante | `useToast()` + `Toaster` | `Modal` (bloquant) ; `AlertToast` seul (carte brute, hors pile) |
 | Info contextuelle au survol | `Tooltip` / `TooltipTrigger` | `Modal` |
 | Squelette d'application (navigation + contenu de page) | `AppLayout` | — |
@@ -1091,13 +1095,32 @@ export const ScenarioFormPage = () => (
 
 ### Recette 4 — Empty state
 
+Utiliser le composant `EmptyState` (ne plus assembler l'état vide à la main). `variant`
+choisit la sémantique : `"empty"` (rien encore), `"no-results"` (filtres trop restrictifs),
+`"error"` (chargement échoué) — les deux derniers portent `role="status"`. `size="page"`
+pour une vue entière, `size="inline"` dans un `DataTable`, une `Card` ou un graphique.
+
 ```tsx
-<div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, padding: 48 }}>
-  <p style={{ fontFamily: "var(--cadence-font-sans)", color: "var(--cadence-color-text-muted)", fontSize: 14, margin: 0 }}>
-    Aucun scénario créé pour ce réseau.
-  </p>
-  <PrimaryButton label="Créer le premier scénario" onClick={onCreate} />
-</div>
+// Page vide
+<EmptyState
+  variant="empty"
+  title="Aucun scénario créé pour ce réseau"
+  description="Créez un premier scénario pour commencer à planifier."
+  action={{ label: "Créer le premier scénario", onClick: onCreate }}
+/>
+
+// Sans résultat, dans un DataTable (emptyState accepte un ReactNode)
+<DataTable
+  /* … */
+  emptyState={
+    <EmptyState
+      variant="no-results"
+      size="inline"
+      title="Aucune course ne correspond à ces filtres"
+      action={{ label: "Réinitialiser les filtres", onClick: resetFilters }}
+    />
+  }
+/>
 ```
 
 ### Recette 5 — Page de supervision
@@ -2097,3 +2120,75 @@ toast({ type: "success", title: "Scénario créé" });
 ```
 
 ⚠️ `toast()` est sans effet si aucun `<Toaster />` n'est monté. `AlertToast` reste exporté comme carte brute (hors pile) pour des cas particuliers.
+
+### Skeleton
+
+Forme animée qui réserve la place d'un contenu en cours de chargement. **Décoratif** (`aria-hidden`) : c'est **le conteneur** qui porte `aria-busy="true"` pour annoncer le chargement. Pulsation coupée sous `prefers-reduced-motion`. Adopté en interne par `DataTable` (lignes squelettes) et `Card` (`loading`).
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `variant` | `"text" \| "rect" \| "circle"` | `"text"` | Forme |
+| `lines` | `number` | `3` | `variant="text"` : nombre de lignes (la dernière plus courte) |
+| `width` | `number \| string` | — | Largeur (px si nombre, sinon unité CSS). `circle` : diamètre |
+| `height` | `number \| string` | — | Hauteur (px ou unité CSS). `circle` : = `width` |
+| `className` / `style` | — | — | Échappatoires |
+
+```tsx
+<div aria-busy="true">
+  <Skeleton variant="text" lines={3} />
+</div>
+```
+
+### EmptyState
+
+État vide d'une liste, carte ou graphique. `"no-results"` et `"error"` portent `role="status"` (annoncés sans voler le focus). Remplace la [recette 4](#recette-4--empty-state). Les libellés (titre, description, actions) sont pilotés par l'app.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `variant` | `"empty" \| "no-results" \| "error"` | `"empty"` | Nature de l'état (pilote `role`) |
+| `size` | `"page" \| "inline"` | `"page"` | `page` = centré (48px) ; `inline` = compact (DataTable, Card, graphique) |
+| `title` | `string` | **requis** | Titre |
+| `description` | `string` | — | Texte secondaire |
+| `action` | `{ label; onClick? }` | — | Action principale → `PrimaryButton` |
+| `secondaryAction` | `{ label; onClick? }` | — | Action secondaire → `GhostButton` |
+| `illustration` | `ReactNode` | — | Illustration décorative (aria-hidden) |
+
+⚠️ `DataTable.emptyState` accepte un `ReactNode` : y passer un `<EmptyState size="inline" />`.
+
+### ActionMenu
+
+Menu d'actions par ligne, déclenché par un bouton icône (« … »). À utiliser **au-delà de 4 actions** par ligne, ou dans le slot `actions` d'une `TableCard` / la colonne d'actions d'un `DataTable`. Rendu dans un **portail** (position fixe) : non rogné par l'overflow du tableau, même dans une colonne collée à droite. Pattern ARIA `menu`/`menuitem` ; clavier complet (flèches, Début/Fin, saisie de la 1re lettre, Échap, Tab).
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `items` | `ActionMenuItem[]` | **requis** | Actions du menu |
+| `label` | `string` | `"Plus d'actions"` | Nom accessible du déclencheur icône |
+| `triggerLabel` | `string` | — | Libellé visible (au lieu de l'icône seule) |
+| `triggerIcon` | `IconName` | `"dots-horizontal"` | Icône du déclencheur |
+| `align` | `"start" \| "end"` | `"end"` | Bord d'alignement sous le déclencheur |
+
+**`ActionMenuItem`** : `id`, `label`, `icon?`, `tone?` (`"default" \| "danger"`), `disabled?`, `divider?` (séparateur au-dessus), `onSelect`.
+
+```tsx
+<ActionMenu items={[
+  { id: "edit", label: "Modifier", icon: "edit-02", onSelect: onEdit },
+  { id: "del", label: "Supprimer", icon: "trash", tone: "danger", divider: true, onSelect: askDelete },
+]} />
+```
+
+### Drawer
+
+Panneau latéral droit pour consulter le détail d'un élément **sans quitter la liste** (≠ `Modal`, dialogue bloquant). Voile, Échap, clic sur le voile, bouton fermer, **piège à focus et retour du focus** (primitives de surcouche partagées, également utilisées par `Modal`). Entrée/sortie en `transform` (250 ms, comme la `Sidebar`), coupées sous `prefers-reduced-motion`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `isOpen` | `boolean` | **requis** | Visibilité |
+| `onClose` | `() => void` | **requis** | Échap, clic voile, bouton fermer |
+| `title` | `string` | **requis** | Titre |
+| `subtitle` | `string` | — | Sous-titre |
+| `children` | `ReactNode` | **requis** | Corps défilant (`cadence-scrollbar`) |
+| `primaryAction` | `{ label; onClick; destructive? }` | — | Pied → `PrimaryButton` (`destructive` → `tone="danger"`) |
+| `secondaryAction` | `{ label; onClick }` | — | Pied → `GhostButton` |
+| `width` | `"md" \| "lg"` | `"md"` | 480px / 720px |
+
+⚠️ Mêmes règles d'actions que `Modal` : `GhostButton` (secondaire) + `PrimaryButton` (principale), jamais deux boutons pleins.
