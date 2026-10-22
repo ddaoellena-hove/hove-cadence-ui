@@ -20,6 +20,7 @@ export * from './DataTable';
 export * from './DataVisualization';
 export * from './DatePicker';
 export * from './DateRangePicker';
+export * from './Heatmap';
 export * from './Icons';
 export * from './Indicator';
 export * from './PageHeader';

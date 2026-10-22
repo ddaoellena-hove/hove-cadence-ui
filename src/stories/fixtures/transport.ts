@@ -97,7 +97,7 @@ export const disruptionsByWeekdayHour = (() => {
     SERVICE_HOURS.map((hour, h) => {
       const hourOfDay = h + 5;
       const weekend = d >= 5;
-      // Pas de service la nuit du dimanche (0 h)
+      // Pas de service à 0 h le week-end (samedi et dimanche)
       if (weekend && hourOfDay === 24) return { x: hour, y: day, value: null };
       const peak = Math.exp(-((hourOfDay - 8) ** 2) / 3) * 22 + Math.exp(-((hourOfDay - 18) ** 2) / 4) * 18;
       const strike = d === 2 ? 9 : 0; // grève un mercredi
