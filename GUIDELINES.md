@@ -900,7 +900,7 @@ Toute page de l'app vit dans `AppLayout`. Il place la `Sidebar` à gauche, fondu
 ```tsx
 // AppShell.tsx
 import { useState, type ReactNode } from "react";
-import { AppLayout, Sidebar, Icons } from "@ddaoellena/cadence-ui";
+import { AppLayout, Sidebar, Icons, Toaster } from "@ddaoellena/cadence-ui";
 
 export const AppShell = ({ children }: { children: ReactNode }) => {
   const [reseauId, setReseauId] = useState("bordeaux");
@@ -930,6 +930,8 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
       }
     >
       {children}
+      {/* Une seule pile de notifications pour toute l'app : useToast() partout ailleurs */}
+      <Toaster />
     </AppLayout>
   );
 };
@@ -941,12 +943,12 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
 
 ### Recette 2 — Page liste avec sélection multiple
 
-Liste de `TableCard` avec en-têtes triables, sélection multiple, barre d'actions groupées et confirmation de suppression. Couvre : `TableHeader`, `TableCard`, `GhostButton` (actions par ligne), `Checkbox`, `Modal`, `AlertToast`, `TabList` + `Tab`, tri et filtres.
+Liste de `TableCard` avec en-têtes triables, sélection multiple, barre d'actions groupées et confirmation de suppression. Couvre : `TableHeader`, `TableCard`, `GhostButton` (actions par ligne), `Checkbox`, `Modal`, `useToast` (avec un `<Toaster />` monté à la racine de l'app), `TabList` + `Tab`, tri et filtres.
 
 ```tsx
 import { useState } from "react";
 import {
-  Tab, TabList, PrimaryButton, GhostButton, Link, Checkbox, TableHeader, TableCard, Modal, AlertToast, Indicator,
+  Tab, TabList, PrimaryButton, GhostButton, Link, Checkbox, TableHeader, TableCard, Modal, Indicator, useToast,
 } from "@ddaoellena/cadence-ui";
 
 // Largeurs partagées entre TableHeader et TableCard — NE PAS désynchroniser
@@ -955,7 +957,8 @@ const COL = { date: 110, severity: 110 };
 export const ScenarioListPage = () => {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [toast, setToast] = useState(false);
+  // Le <Toaster /> est monté une seule fois à la racine de l'app (recette 1).
+  const { toast } = useToast();
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [view, setView] = useState<"current" | "upcoming" | "past">("current");
 
@@ -982,7 +985,7 @@ export const ScenarioListPage = () => {
       {selected.size > 0 && (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 0" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <Checkbox state="checked" onChange={() => setSelected(new Set())} />
+            <Checkbox aria-label="Tout désélectionner" state="checked" onChange={() => setSelected(new Set())} />
             <Link hideArrow onClick={() => setSelected(new Set())}>Tout désélectionner</Link>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
@@ -1039,18 +1042,15 @@ export const ScenarioListPage = () => {
         primaryAction={{
           label: "Supprimer",
           destructive: true,
-          onClick: () => { deleteSelected(); setConfirmOpen(false); setToast(true); },
+          onClick: () => {
+            deleteSelected();
+            setConfirmOpen(false);
+            toast({ type: "success", title: "Scénarios supprimés" });
+          },
         }}
       >
         Cette action est irréversible.
       </Modal>
-
-      {/* ── Toast de confirmation ── */}
-      {toast && (
-        <div style={{ position: "fixed", top: 16, right: 16, zIndex: 1100 }}>
-          <AlertToast type="success" title="Scénarios supprimés" dismissible onDismiss={() => setToast(false)} />
-        </div>
-      )}
     </div>
   );
 };
