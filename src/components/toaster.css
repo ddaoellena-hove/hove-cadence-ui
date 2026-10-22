@@ -6,7 +6,7 @@
   right: 24px;
   bottom: 24px;
   width: 360px;
-  z-index: 1100;
+  z-index: var(--cadence-z-toast, 1100);
 }
 
 .toaster__item {

@@ -175,10 +175,10 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-focus-color` | `#1a3e45` | Couleur de l'anneau de focus (appliqué aux boutons, `Link`, `DataTable`, calendriers) |
 | `--cadence-focus-ring` | liseré blanc 2px + anneau 2px | Anneau de focus `box-shadow` (`:focus-visible`) — appliqué aux nouveaux composants et aux boutons |
 | `--cadence-z-sticky` | `100` | Éléments collants (`position: sticky`) dans le contenu |
-| `--cadence-z-popover` | `100` | Popovers et bulles ancrés (DatePicker, tooltips) |
-| `--cadence-z-dropdown` | `200` | Menus déroulants |
-| `--cadence-z-modal` | `1000` | Modale et son voile |
-| `--cadence-z-toast` | `1100` | Toasts en overlay |
+| `--cadence-z-popover` | `100` | Popovers et bulles ancrés (DatePicker, TimePicker, `Popover`, infobulles, tooltips des graphiques) |
+| `--cadence-z-dropdown` | `200` | Menus déroulants et menus en portail (Dropdown, Autocomplete, ActionMenu, ExportMenu, ColumnManager) |
+| `--cadence-z-modal` | `1000` | Modale, `Drawer` et leur voile |
+| `--cadence-z-toast` | `1100` | Pile du `Toaster`, au-dessus des modales |
 
 La story **Foundation/Tokens** affiche tous ces tokens à partir des variables CSS.
 
@@ -187,6 +187,7 @@ La story **Foundation/Tokens** affiche tous ces tokens à partir des variables C
 - ✅ Dans du code applicatif, référencer les tokens (`color: var(--cadence-color-primary)`) plutôt que les hex en dur.
 - ✅ Statut dans du code applicatif → `--cadence-status-*` ; jamais un hex.
 - ✅ Couches : `zIndex: "var(--cadence-z-toast)"` pour un toast, `var(--cadence-z-sticky)` pour un élément collant — pas de valeur inventée.
+- ✅ Échelle des couches, de bas en haut : contenu → `sticky` = `popover` (100) → `dropdown` (200) → `modal` (1000) → `toast` (1100). Un `z-index` de 0 à 2 reste permis pour l'empilement interne d'un composant (pastille, flèche) ; toute couche de page passe par un token (un test le vérifie).
 - ✅ Toute zone qui défile (composant ou app) prend la classe **`cadence-scrollbar`** : barre fine sans fond, curseur arrondi en retrait qui fonce au survol (déjà posée sur `AppLayout`, `DataTable`, le corps de `Modal` et le menu d'`Autocomplete`). La `Sidebar` garde sa barre claire sur fond sombre.
 - ✅ Pour créer un nouveau composant, piocher dans `tokens.css` ; n'ajouter un token que si la valeur a vocation à être partagée.
 - ❌ Ne pas redéfinir les `--cadence-*` au niveau d'un composant — ce sont des valeurs globales du thème.

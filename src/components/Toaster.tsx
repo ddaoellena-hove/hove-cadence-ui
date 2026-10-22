@@ -87,17 +87,18 @@ export function Toaster({ className }: ToasterProps) {
   const totalH = toasts.reduce((sum, t, i) => sum + (heights[t.id] ?? 0) + (i > 0 ? GAP : 0), 0);
 
   // depth 0 = premier plan (en bas) ; depth croissant = vers l'arrière.
+  // zIndex local à la pile : `.toaster` porte la couche --cadence-z-toast.
   const styleFor = (depth: number): CSSProperties => {
     if (expanded) {
       let offset = 0;
       for (let i = 0; i < depth; i++) offset += (heights[toasts[i].id] ?? 0) + GAP;
-      return { transform: `translateY(${-offset}px)`, opacity: 1, zIndex: 1000 - depth, pointerEvents: "auto" };
+      return { transform: `translateY(${-offset}px)`, opacity: 1, zIndex: toasts.length - depth, pointerEvents: "auto" };
     }
     const scale = Math.max(1 - depth * COLLAPSED_SCALE_STEP, 0.8);
     return {
       transform: `translateY(${-depth * COLLAPSED_PEEK}px) scale(${scale})`,
       opacity: depth <= 2 ? 1 : 0,
-      zIndex: 1000 - depth,
+      zIndex: toasts.length - depth,
       pointerEvents: depth === 0 ? "auto" : "none",
     };
   };
