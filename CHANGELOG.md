@@ -2,6 +2,10 @@
 
 ## 0.5.0 (non publiée)
 
+### Actions avec libellé dans une ligne de DataTable
+
+- Règle ajoutée aux guidelines : une action textuelle dans une cellule de `DataTable` est un `PrimaryButton outline size="sm"`, plus visible qu’un `GhostButton` parmi les valeurs de la ligne. Recette « Détail d’une perturbation » adaptée (« Consulter »).
+
 ### FileUpload : cartes fichier
 
 - Bouton « Parcourir » en `PrimaryButton outline size="sm"`.
