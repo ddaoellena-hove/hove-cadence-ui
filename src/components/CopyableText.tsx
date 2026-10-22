@@ -2,9 +2,10 @@
  * CopyableText component.
  *
  * Identifiant technique (arrêt, course, véhicule) en police mono, tronqué si
- * besoin, avec un bouton de copie. Le retour « Copié » (ou « Copie
- * impossible ») est visible et annoncé par une région `role="status"`, puis
- * s'efface après 2 s.
+ * besoin, avec un bouton de copie. Aucune infobulle (ni intégrée au bouton, ni
+ * `title` natif) : le retour « Copié » (ou « Copie impossible ») est écrit à
+ * côté du bouton, l'icône passe en coche, et une région `role="status"`
+ * l'annonce ; il s'efface après 2 s.
  */
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { GhostButton } from "./GhostButton";
@@ -67,7 +68,7 @@ export const CopyableText = ({
 
   return (
     <span className={rootClass}>
-      <span className="copyable-text__value" title={truncate ? value : undefined}>
+      <span className="copyable-text__value">
         {children ?? value}
       </span>
       <GhostButton

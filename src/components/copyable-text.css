@@ -29,6 +29,12 @@
   flex-shrink: 0;
 }
 
+/* Pas d'infobulle intégrée sur le bouton (GhostButton icône seule) : le retour
+   textuel « Copié » suffit, le nom accessible est conservé. */
+.copyable-text .base-button-tip__bubble {
+  display: none;
+}
+
 /* Retour « Copié » : région live toujours rendue (une région masquée en
    display: none n'est pas annoncée de façon fiable), vide au repos. */
 .copyable-text__status {

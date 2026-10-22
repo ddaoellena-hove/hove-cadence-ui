@@ -2204,7 +2204,7 @@ Panneau non modal ancré à un bouton, pour du contenu libre et interactif : aid
 | `width` | `number` | `320` | Largeur en px (bornée à la fenêtre) |
 | `className` | `string` | — | Classe du panneau |
 
-Clavier et focus : à l'ouverture, focus sur le premier élément focusable du contenu (sinon sur le panneau). Échap et « Fermer » ferment et rendent le focus au déclencheur ; Maj+Tab avant le premier élément aussi ; Tab après le dernier ferme et passe à l'élément qui suit le déclencheur. Le clic extérieur ferme ; un menu en portail ouvert depuis le contenu (`ActionMenu`, `ExportMenu`, `ColumnManager`) ne compte pas comme extérieur. Le défilement et le redimensionnement replacent le panneau sans le fermer (clavier virtuel sur mobile). Seuls les éléments affichés comptent pour la sortie au clavier. Fermé par le parent (mode contrôlé) alors que le focus y était, le focus revient au déclencheur ; une fermeture refusée par le parent laisse le panneau affiché. Dans une `Modal`, Échap ne ferme que le `Popover`. Le déclencheur reçoit `aria-haspopup="dialog"`, `aria-expanded` et `aria-controls`.
+Clavier et focus : à l'ouverture, focus sur le premier élément focusable du contenu (sinon sur le panneau). Échap et « Fermer » ferment et rendent le focus au déclencheur ; Maj+Tab avant le premier élément aussi ; Tab après le dernier ferme et passe à l'élément qui suit le déclencheur. Le clic extérieur ferme ; un menu en portail ouvert depuis le contenu (`ActionMenu`, `ExportMenu`, `ColumnManager`) ne compte pas comme extérieur. Le défilement et le redimensionnement replacent le panneau sans le fermer (clavier virtuel sur mobile). Seuls les éléments affichés comptent pour la sortie au clavier. Fermé par le parent (mode contrôlé) alors que le focus y était, le focus revient au déclencheur ; une fermeture refusée par le parent laisse le panneau affiché. Dans une `Modal`, Échap ne ferme que le `Popover`. Le déclencheur reçoit `aria-haspopup="dialog"`, `aria-expanded` et `aria-controls` ; il n'affiche pas d'infobulle au survol (même un `GhostButton` icône seule) : son nom reste porté par `aria-label`, et le panneau prend le relais au clic.
 
 ```tsx
 <Popover
@@ -2406,7 +2406,7 @@ Identité d'une ligne : pastille (code court ≤ 3 caractères hors espaces) ou 
 
 ### CopyableText
 
-Identifiant technique en police mono, tronqué avec ellipse (valeur complète en infobulle native), suivi d'un `GhostButton` de copie. Le retour « Copié » (ou « Copie impossible ») est écrit à côté du bouton et annoncé par une région `role="status"`, puis s'efface après 2 s. Copie via l'API Clipboard, avec repli `execCommand` hors contexte sécurisé.
+Identifiant technique en police mono, tronqué avec ellipse, suivi d'un `GhostButton` de copie. Aucune infobulle : ni bulle au survol du bouton (son nom reste porté par `aria-label`), ni `title` natif sur la valeur (la valeur complète reste dans le DOM, lue et copiée). Le retour « Copié » (ou « Copie impossible ») est écrit à côté du bouton, l'icône passe en coche, une région `role="status"` l'annonce, puis il s'efface après 2 s. Copie via l'API Clipboard, avec repli `execCommand` hors contexte sécurisé.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|

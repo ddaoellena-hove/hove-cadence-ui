@@ -28,8 +28,15 @@ export const CopieReussie: Story = {
     const spy = spyOn(navigator.clipboard, "writeText").mockResolvedValue(undefined);
     return () => spy.mockRestore();
   },
-  play: async ({ canvas, args }) => {
-    await userEvent.click(canvas.getByRole("button", { name: "Copier stop_area:IDFM:482837" }));
+  play: async ({ canvas, canvasElement, args }) => {
+    // Aucune infobulle au survol : ni bulle intégrée, ni title natif.
+    const button = canvas.getByRole("button", { name: "Copier stop_area:IDFM:482837" });
+    await expect(button).not.toHaveAttribute("title");
+    await userEvent.hover(button);
+    const bubble = canvasElement.querySelector(".copyable-text .base-button-tip__bubble");
+    await expect(bubble).not.toBeNull();
+    await expect(bubble).not.toBeVisible();
+    await userEvent.click(button);
     await expect(navigator.clipboard.writeText).toHaveBeenCalledWith("stop_area:IDFM:482837");
     await expect(args.onCopy).toHaveBeenCalledWith("stop_area:IDFM:482837");
     await expect(canvas.getByRole("status")).toHaveTextContent("Copié");
@@ -108,14 +115,15 @@ export const SansMono: Story = {
   },
 };
 
-/** Largeur contrainte : ellipse, valeur complète en infobulle native. */
+/** Largeur contrainte : ellipse, sans infobulle native (la valeur complète reste lue et copiée). */
 export const Tronque: Story = {
   name: "Tronqué",
   args: { value: "vehicle_journey:IDFM:RATP:146243-C00001-1452" },
   decorators: [(Story) => <div style={{ width: 220 }}><Story /></div>],
   play: async ({ canvasElement }) => {
     const text = canvasElement.querySelector(".copyable-text__value") as HTMLElement;
-    await expect(text).toHaveAttribute("title", "vehicle_journey:IDFM:RATP:146243-C00001-1452");
+    await expect(text).not.toHaveAttribute("title");
+    await expect(text).toHaveTextContent("vehicle_journey:IDFM:RATP:146243-C00001-1452");
     await expect(text.scrollWidth).toBeGreaterThan(text.clientWidth);
   },
 };
