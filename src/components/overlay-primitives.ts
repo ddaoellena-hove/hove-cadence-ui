@@ -196,3 +196,12 @@ export const OverlayPortal = ({ children }: { children: ReactNode }): ReactNode 
 
   return node ? createPortal(children, node) : null;
 };
+
+/**
+ * Couche d'un panneau en portail (menu, popover) ouvert depuis une Modal ou un
+ * Drawer : juste au-dessus de la surcouche, sinon il passerait sous son voile.
+ * Hors surcouche : undefined, la couche du CSS (--cadence-z-dropdown /
+ * --cadence-z-popover) s'applique.
+ */
+export const layerAboveOverlay = (trigger: Element | null | undefined): string | undefined =>
+  trigger?.closest('[aria-modal="true"]') ? "calc(var(--cadence-z-modal, 1000) + 1)" : undefined;

@@ -269,7 +269,8 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Chargement : réserver la place du contenu | `Skeleton` | spinner plein écran |
 | Liste vide, sans résultat, ou erreur de chargement | `EmptyState` | état vide bricolé à la main |
 | Notification temporaire non bloquante | `useToast()` + `Toaster` | `Modal` (bloquant) ; `AlertToast` seul (carte brute, hors pile) |
-| Info contextuelle au survol | `Tooltip` / `TooltipTrigger` | `Modal` |
+| Info contextuelle au survol | `Tooltip` / `TooltipTrigger` | `Modal` ; `Popover` (contenu interactif) |
+| Aide riche, mini-formulaire ou détail ancré à un bouton | `Popover` | `Tooltip` (lecture seule, sans focus) ; `Modal` (bloquant) ; `Drawer` (détail long) |
 | Squelette d'application (navigation + contenu de page) | `AppLayout` | — |
 | Navigation principale (sections de l'app) | `Sidebar` | — |
 | Sélecteur de périmètre + profil utilisateur | `Sidebar` (`scope`, `user`) | — |
@@ -2138,6 +2139,47 @@ Conteneur `role="tablist"` d'une rangée de `Tab` ou de `SecondaryTab`. *Roving 
 |---|---|---|---|
 | `state` | `"default" \| "hover" \| "active" \| "disabled"` | `"default"` | ⚠️ Pas de prop `checked` ni `label` — accoler un `<span>` pour le texte |
 | `onChange` | `(nextActive: boolean) => void` | — | — |
+
+### Popover
+
+Panneau non modal ancré à un bouton, pour du contenu libre et interactif : aide contextuelle avec lien, mini-formulaire (seuil, filtre), détail d'un élément. Rendu en portail (position fixe), gardé dans la fenêtre, retourné au-dessus s'il manque de place. Couche `--cadence-z-popover`, ou juste au-dessus d'une `Modal` / d'un `Drawer` d'où il est ouvert. `role="dialog"` nommé par `title`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `title` | `string` | **requis** | Titre du panneau et nom accessible |
+| `hideTitle` | `boolean` | `false` | Titre masqué visuellement (reste le nom) |
+| `children` | `ReactNode \| ({ close }) => ReactNode` | **requis** | Contenu ; la forme fonction reçoit `close` (bouton « Appliquer ») |
+| `renderTrigger` | `({ ref, open, toggle }) => ReactNode` | **requis** | Rend le déclencheur : poser `ref` sur le bouton, câbler `toggle` sur son `onClick` |
+| `open` | `boolean` | — | Ouverture contrôlée |
+| `defaultOpen` | `boolean` | `false` | Ouverture initiale (non contrôlé) |
+| `onOpenChange` | `(open: boolean) => void` | — | Ouverture ou fermeture demandée |
+| `align` | `"start" \| "end"` | `"start"` | Bord du déclencheur sur lequel s'aligner |
+| `width` | `number` | `320` | Largeur en px (bornée à la fenêtre) |
+| `className` | `string` | — | Classe du panneau |
+
+Clavier et focus : à l'ouverture, focus sur le premier élément focusable du contenu (sinon sur le panneau). Échap et « Fermer » ferment et rendent le focus au déclencheur ; Maj+Tab avant le premier élément aussi ; Tab après le dernier ferme et passe à l'élément qui suit le déclencheur. Clic extérieur, défilement de la page et redimensionnement ferment. Dans une `Modal`, Échap ne ferme que le `Popover`. Le déclencheur reçoit `aria-haspopup="dialog"`, `aria-expanded` et `aria-controls`.
+
+```tsx
+<Popover
+  title="Seuil d’alerte"
+  renderTrigger={({ ref, toggle }) => (
+    <PrimaryButton ref={ref} outline size="sm" iconStart="settings-01" label="Seuil d’alerte" onClick={toggle} />
+  )}
+>
+  {({ close }) => (
+    <>
+      <CounterInput label="Retard" unit="min" min={1} max={30} value={draft} onChange={setDraft} />
+      <GhostButton size="sm" label="Annuler" onClick={close} />
+      <PrimaryButton size="sm" label="Appliquer" onClick={() => { apply(draft); close(); }} />
+    </>
+  )}
+</Popover>
+```
+
+- ✅ Déclencheur : un vrai bouton (`GhostButton`, `PrimaryButton outline`) ; icône seule → `aria-label` explicite (« Aide : calcul de la ponctualité »).
+- ✅ Un mini-formulaire garde sa valeur en brouillon et ne l'applique qu'au clic sur « Appliquer » (un seul `PrimaryButton`, plein, dans le panneau).
+- ❌ Pas pour une simple bulle de texte au survol : `Tooltip` / `TooltipTrigger`.
+- ❌ Pas pour un choix dans une liste (`Dropdown`, `Autocomplete`), une liste d'actions (`ActionMenu`) ni un contenu long ou bloquant (`Drawer`, `Modal`).
 
 ### Tooltip
 
