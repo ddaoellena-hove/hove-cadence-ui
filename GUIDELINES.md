@@ -265,10 +265,10 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Fil d'Ariane | `Breadcrumbs` | — |
 | Sélecteur de contexte dans le breadcrumb (produit/module) | `Dropdown` `variant="button"` | `Dropdown` `variant="field"` (formulaires) |
 | Identité utilisateur (initiales / photo) | `Avatar` | — |
-| Évolution dans le temps (retards, ponctualité, volumes) | `LineChart` | `DataVisualization` (comparaison de catégories) |
+| Évolution dans le temps (retards, ponctualité, volumes) | `LineChart` | `BarChart` (comparaison de catégories) |
 | Motif jour × heure, ligne × jour | `Heatmap` | `LineChart` (une seule dimension temporelle) |
-| Classement (lignes les plus impactées) | `BarList` | `DataVisualization horizontal` (plusieurs séries) |
-| Comparaison de catégories (barres empilées / groupées) | `DataVisualization` | `BarList` (classement à une valeur) |
+| Classement (lignes les plus impactées) | `BarList` | `BarChart orientation="horizontal"` (plusieurs séries) |
+| Comparaison de catégories (barres empilées / groupées) | `BarChart` | `BarList` (classement à une valeur) ; `DataVisualization` est déprécié |
 | Mini-courbe dans une carte d'indicateur | `Card trend` (ou `LineChart compact`) | — |
 | Icône seule | `Icons` | — |
 
@@ -305,7 +305,7 @@ Ces valeurs ne sont pas des tokens CSS : ce sont les largeurs fixées par `sideb
 - ✅ Le layout (flex, grid, gap, margins) se fait en style inline ou CSS applicatif — c'est le seul CSS custom autorisé.
 - ✅ La zone de contenu n'a pas de `max-width` : elle occupe toute la largeur du conteneur d'`AppLayout`.
 - ✅ Largeurs de contenu : les formulaires sont limités à `max-width: 720px` (à l'intérieur de la zone de contenu) ; les listes, tableaux et tableaux de bord prennent toute la largeur.
-- ❌ Pas de largeur fixe en px sur les conteneurs de page (grille de `Card`, `DataVisualization`, `TableCard`, `DataTable`) : ils doivent s'étendre quand la Sidebar se replie.
+- ❌ Pas de largeur fixe en px sur les conteneurs de page (grille de `Card`, graphiques, `TableCard`, `DataTable`) : ils doivent s'étendre quand la Sidebar se replie.
 - ❌ Ne pas inventer de valeurs d'espacement hors échelle (pas de `gap: 7px` ou `padding: 13px`).
 
 ### Composition des panneaux sur une page formulaire
@@ -772,13 +772,13 @@ Une `Card` est **interactive** soit par `onClick` (toute la carte mène à la li
 | Comment une mesure évolue dans le temps ? Franchit-elle un objectif ? | `LineChart` (une à huit séries, aire empilée pour une composition) |
 | Quand les perturbations se concentrent-elles (jour × heure) ? | `Heatmap` |
 | Quelles lignes sont les plus touchées ? | `BarList` |
-| Comment se répartissent des catégories, série par série ? | `DataVisualization` (barres empilées, groupées, horizontales) |
+| Comment se répartissent des catégories, série par série ? | `BarChart` (`layout="stacked" | "grouped"`, `orientation="vertical" | "horizontal"`) |
 | Une valeur clé et sa tendance en haut de page ? | `Card` (`value`, `delta`, `trend`) |
 
 ### Palette
 
 - ✅ Les séries prennent les couleurs `--cadence-dataviz-series-1..8` **dans l'ordre** : la série principale en 1. Toutes atteignent 3:1 sur blanc (traits et marqueurs).
-- ✅ Chaque série a aussi une **forme de marqueur** et un **motif de trait** (plein, tiret, pointillé…) : le sens ne repose jamais sur la couleur seule.
+- ✅ Chaque série a aussi une **forme de marqueur** et un **motif de trait** (`LineChart`) ou un **motif de remplissage** (`BarChart` : hachures, points, lignes…), repris dans la légende et le tooltip : le sens ne repose jamais sur la couleur seule.
 - ✅ Les valeurs ordonnées (intensité) utilisent la rampe séquentielle `--cadence-dataviz-seq-1..7` : une seule teinte, clarté croissante, lisible en daltonisme et en niveaux de gris.
 - ❌ Pas de couleur en dur ni de palette maison : un statut (critique, avertissement) reste un `Indicator`, pas une couleur de série.
 
@@ -791,10 +791,10 @@ Une `Card` est **interactive** soit par `onClick` (toute la carte mène à la li
 ### Accessibilité
 
 - ✅ Chaque graphique a un `title` (nom accessible) et, de préférence, une `description` (période, périmètre).
-- ✅ Alternative tabulaire : « Voir les données » affiche un vrai tableau, présent dans le DOM même masqué (`LineChart`, `BarList`) ; la `Heatmap` est elle-même une grille (`role="grid"`) avec en-têtes de lignes et de colonnes.
-- ✅ Clavier : `LineChart` (←/→, Début / Fin, tooltip annoncé), `Heatmap` (flèches, Début / Fin, Ctrl+Début / Fin, Entrée), `BarList` (lignes cliquables = boutons nommés).
+- ✅ Alternative tabulaire : « Voir les données » affiche un vrai tableau, présent dans le DOM même masqué (`LineChart`, `BarChart` avec le total par catégorie, `BarList`) ; la `Heatmap` est elle-même une grille (`role="grid"`) avec en-têtes de lignes et de colonnes.
+- ✅ Clavier : `LineChart` (←/→, Début / Fin, tooltip annoncé), `BarChart` (←/→ ou ↑/↓ d'une catégorie à l'autre), `Heatmap` (flèches, Début / Fin, Ctrl+Début / Fin, Entrée), `BarList` (lignes cliquables = boutons nommés).
 - ✅ États `loading`, `empty`, `error` (avec `onRetry`) plutôt qu'un graphique vide.
-- ✅ Les graphiques suivent la largeur de leur conteneur : jamais de largeur fixe en px. Hauteurs par défaut : `LineChart` 280px (48px en `compact`), `Heatmap` 28px par ligne, `BarList` 32px par ligne.
+- ✅ Les graphiques suivent la largeur de leur conteneur : jamais de largeur fixe en px. Hauteurs par défaut : `LineChart` et `BarChart` vertical 280px (`LineChart compact` : 48px), `BarChart` horizontal 36px par catégorie, `Heatmap` 28px par ligne, `BarList` 32px par ligne.
 
 ---
 
@@ -1426,6 +1426,41 @@ Clavier : ↑/↓ pour naviguer, Entrée pour sélectionner l'option surlignée,
 | `onDismiss` | `() => void` | — | Clic sur la croix |
 | `onDragStart`, `onDragEnd` | `(e: DragEvent) => void` | — | Événements de drag |
 
+### BarChart
+
+Barres empilées ou groupées, verticales ou horizontales : comparaison de catégories, série par série. Chaque série a une couleur (`--cadence-dataviz-series-N`) et un motif (unie, hachures, points, lignes…), repris dans la légende et le tooltip. Tooltip par catégorie (avec le total si empilé), navigation au clavier, « Voir les données » (avec le total). Props communes : voir `BarList`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `categories` | `string[]` | **requis** | Libellés (axe X en vertical, axe Y en horizontal) |
+| `series` | `{ id, label, data: (number \| null)[], color? }[]` | **requis** | Une valeur par catégorie, dans l'ordre ; `color` : token attendu |
+| `layout` | `"stacked" \| "grouped"` | `"stacked"` | Barres empilées ou côte à côte |
+| `orientation` | `"vertical" \| "horizontal"` | `"vertical"` | Horizontal pour des libellés longs ou de nombreuses catégories |
+| `unit` | `string` | — | Tooltip, tableau |
+| `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | — |
+| `showValues` | `boolean` | `false` | Valeur au bout des barres (total de la pile si empilé) |
+| `showLegend` | `boolean` | `true` | Légende cliquable (dès deux séries) |
+| `showGrid` | `boolean` | `true` | Lignes de grille |
+| `hideTitle` | `boolean` | `false` | En-tête masqué visuellement (titre toujours lu), ex. quand une `Card` affiche déjà le titre |
+| `height` | `number` | `280` en vertical ; 36px par catégorie en horizontal | Hauteur du tracé |
+
+Clavier : le tracé est focusable ; ←/→ (vertical) ou ↑/↓ (horizontal) d'une catégorie à l'autre, Début / Fin, Échap masque le tooltip ; la catégorie est annoncée (`aria-live`).
+
+```tsx
+<BarChart
+  title="Perturbations par cause"
+  description="Semaine du 14 octobre 2026"
+  unit="perturbations"
+  categories={["mer. 14", "jeu. 15", "ven. 16", …]}
+  series={[
+    { id: "works", label: "Travaux", data: [6, 5, 4, …] },
+    { id: "technical", label: "Incident technique", data: [8, 11, 7, …] },
+  ]}
+/>
+
+<BarChart title="Retard cumulé par ligne" orientation="horizontal" unit="min" categories={lignes} series={parCause} showValues />
+```
+
 ### BarList
 
 Classement horizontal : libellé, barre proportionnelle (`--cadence-dataviz-series-1`), valeur en mono alignée à droite, variation facultative. Hauteur : 32px par ligne. Props communes des graphiques : `title` (**requis**), `description`, `headingLevel` (3), `state` (`"ready" | "loading" | "empty" | "error"`), `emptyMessage`, `errorMessage`, `onRetry`, `className`.
@@ -1534,20 +1569,17 @@ Tableau dense pour les gros volumes. Vrai `<table>` (rôles ARIA explicites), en
 - ⚠️ La case d'en-tête sélectionne les lignes **affichées** (la page). « Sélectionner les N résultats » se fait dans la barre de sélection de l'app.
 - ⚠️ Pas de `hideable`, de filtre de colonne ni de redimensionnement en v1.
 
-### DataVisualization
+### DataVisualization (déprécié)
 
-| Prop | Type | Défaut | Description |
-|---|---|---|---|
-| `type` | `"stacked-vertical" \| "grouped-vertical" \| "horizontal"` | **requis** | Variante du graphique |
-| `series` | `{ label, data: number[], color? }[]` | **requis** | Une entrée par série |
-| `categories` | `string[]` | **requis** | Labels d'axe |
-| `height` | `number` | `260` | Hauteur SVG (hors légende) |
-| `showLegend` | `boolean` | `true` | — |
-| `showGridLines` | `boolean` | `true` | — |
-| `showValues` | `boolean` | `false` | Valeurs sur les barres |
-| `showTooltip` | `boolean` | `true` | Tooltip au survol |
+⚠️ **Déprécié depuis la 0.5.0, supprimé en 1.0.0** : utiliser `BarChart`. C'est désormais une enveloppe de `BarChart` (avertissement en développement) ; l'API reste valide :
 
-Couleurs : `--cadence-dataviz-series-1..8` (alias `--CAI-dv-series-*`). Pour une évolution dans le temps, un classement ou un motif jour × heure, préférer `LineChart`, `BarList` ou `Heatmap`.
+| Ancien `type` | Équivalent `BarChart` |
+|---|---|
+| `"stacked-vertical"` | `layout="stacked"` (défaut) |
+| `"grouped-vertical"` | `layout="grouped"` |
+| `"horizontal"` | `layout="grouped" orientation="horizontal"` |
+
+Autres props : `series` `{ label, data, color? }[]` → `{ id, label, data, color? }[]` (un `id` par série) ; `height`, `showLegend`, `showValues` inchangés ; `showGridLines` → `showGrid` ; `showTooltip` est ignoré (tooltip toujours actif, au survol et au clavier). ⚠️ `BarChart` exige un `title` : l'enveloppe utilise « Graphique », masqué visuellement.
 
 ### DatePicker
 

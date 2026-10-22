@@ -58,7 +58,9 @@ Internes pour garder la liberté de les faire évoluer ; on exportera ce qui ser
 
 `prefers-reduced-motion` : aucune animation d'entrée ; transitions de survol coupées.
 
-`DataVisualization` : **pas de migration dans ce lot** (API figée, ~730 lignes, risque de régression visuelle). Il lit la palette depuis les nouveaux tokens via les alias. Migration vers `ChartFrame` / `ChartTooltip` / alternative tabulaire proposée pour un lot suivant (0.6).
+> **Mise à jour (après validation)** : la migration est finalement faite dans ce lot — `BarChart` (empilé / groupé, vertical / horizontal) est bâti sur les fondations, et `DataVisualization` devient une enveloppe dépréciée de `BarChart` (suppression en 1.0.0).
+
+`DataVisualization` (proposition initiale) : **pas de migration dans ce lot** (API figée, ~730 lignes, risque de régression visuelle). Il lit la palette depuis les nouveaux tokens via les alias. Migration vers `ChartFrame` / `ChartTooltip` / alternative tabulaire proposée pour un lot suivant (0.6).
 
 ## 3. Tokens de data viz (dans `tokens.css`)
 

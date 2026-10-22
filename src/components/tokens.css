@@ -141,7 +141,7 @@
   /* Couches globales. Les valeurs locales 0/1/2 (empilement interne d'un
      composant) restent en dur. */
   --cadence-z-sticky: 100;     /* Éléments collants (position: sticky) dans le contenu */
-  --cadence-z-popover: 100;    /* Popovers et bulles ancrés : DatePicker, tooltips, DataVisualization */
+  --cadence-z-popover: 100;    /* Popovers et bulles ancrés : DatePicker, tooltips des graphiques */
   --cadence-z-dropdown: 200;   /* Menus déroulants (Dropdown, Autocomplete) */
   --cadence-z-modal: 1000;     /* Voile et dialogue de Modal */
   --cadence-z-toast: 1100;     /* Toasts en overlay, au-dessus des modales (recette 2) */
