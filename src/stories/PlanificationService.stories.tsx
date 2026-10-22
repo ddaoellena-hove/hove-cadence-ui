@@ -56,10 +56,9 @@ export const ServiceDeNuit: Story = {
     await userEvent.click(canvas.getByRole("button", { name: "Enregistrer la plage" }));
     await expect(canvas.getByRole("region", { name: "Corrigez les champs suivants" })).toHaveFocus();
     await userEvent.click(canvas.getByRole("button", { name: "La fin doit suivre le début du service." }));
-    const trigger = canvas.getByRole("button", { name: "Fin de service : 23:00" });
-    await expect(trigger).toHaveFocus();
-    await userEvent.click(trigger);
+    // Le résumé place le focus sur la case des heures du champ fautif (saisie en ligne).
     const end = canvas.getByRole("spinbutton", { name: "Heures — Fin de service" });
+    await expect(end).toHaveFocus();
     await userEvent.clear(end);
     await userEvent.type(end, "25");
     const minutes = canvas.getByRole("spinbutton", { name: "Minutes — Fin de service" });
