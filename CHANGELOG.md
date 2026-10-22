@@ -14,6 +14,10 @@ Version mineure, sans rupture d’API. La 0.5.0 n’a pas été publiée sur npm
 - **Couches** : `Toaster` utilise `--cadence-z-toast` au lieu de `z-index: 1100` en dur. Un test interdit les couches numériques dans les CSS des composants.
 - **`BarChart`** : halo blanc sous les valeurs affichées (`showValues`), comme les libellés de seuil de `LineChart`.
 - **`SegmentedControl`** : il épouse ses segments (`width: fit-content; max-width: 100%`) et ne s’étire plus dans une colonne flex ou une grille, comme le faisait la recette « Offre et qualité ».
+- **Hauteur réelle des champs** : `TextInput`, `Dropdown`, `DatePicker` et `Autocomplete` (en `content-box`) mesuraient 42px au lieu de 40 ; ils passent en `border-box` et s'alignent sur les autres champs. ⚠️ Ces champs perdent 2px de hauteur.
+- **`SegmentedControl`** : hauteur fixée à 40px (onglets à pleine hauteur), alignée sur les champs.
+- **`InlineAlert`** : l'action passe de `GhostButton` à `PrimaryButton outline size="sm"`, plus visible sur le fond teinté.
+- **Infobulles** : plus d'infobulle au survol du déclencheur d'un `Popover` ni du bouton de `CopyableText`, et plus de `title` natif sur la valeur tronquée ; les noms accessibles sont conservés.
 - **Paquet** : `react` et `react-dom` ne sont plus dans `dependencies` (seulement `peerDependencies` `^18 || ^19` et `devDependencies`) ; `@tpitre/story-ui` passe en `devDependencies` ; la condition `types` vient en tête de `exports`.
 
 ### Ajouté
@@ -21,6 +25,8 @@ Version mineure, sans rupture d’API. La 0.5.0 n’a pas été publiée sur npm
 - **`Sparkline`** : mini-courbe pour une cellule de `DataTable` ou une ligne de liste, couleur encre ou série dataviz, nom accessible résumant la tendance (avec minimum et maximum quand un pic dépasse les extrémités). `Card` l’utilise pour `trend` (rendu inchangé).
 - **`CopyableText`** : identifiant technique en mono avec bouton de copie, retour « Copié » annoncé (y compris pour une seconde copie rapprochée), repli `execCommand` hors contexte sécurisé.
 - **`Popover`** : panneau non modal ancré à un bouton pour une aide riche, un mini-formulaire ou un détail (focus, Échap, clic extérieur, sortie au clavier). Replacé (et non fermé) au défilement et au redimensionnement, compatible avec un menu en portail dans son contenu et avec le mode contrôlé.
+- **Tokens de hauteur de contrôle** : `--cadence-control-height-compact` (29px : boutons `sm`, `SearchInput`, déclencheurs `variant="button"`) et `--cadence-control-height-field` (40px : champs d'une ligne, `SegmentedControl`), appliqués par les composants. GUIDELINES : composition sur une rangée et exceptions ; story `Foundation/Hauteurs de contrôle`.
+- **`ColumnManager`** : réordonnancement par glisser-déposer (poignée, repère de dépôt) et au clavier (↑ / ↓ sur la poignée, position annoncée) ; boutons Monter / Descendre conservés.
 - **CI React 18** : `npm run test:react18` (React 18 et ses types installés sans toucher `package.json`, puis `tsc`, Vitest et build de la lib) et workflow GitHub en matrice React 18 / 19.
 
 ### Documentation
