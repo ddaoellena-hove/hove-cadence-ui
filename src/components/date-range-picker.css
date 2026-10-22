@@ -33,7 +33,7 @@
   cursor: pointer;
   display: flex;
   gap: 8px;
-  height: 40px;
+  height: var(--cadence-control-height-field, 40px);
   justify-content: space-between;
   min-width: 260px;
   padding: 0 20px;

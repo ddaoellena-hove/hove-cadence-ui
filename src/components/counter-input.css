@@ -29,7 +29,7 @@
   display: inline-flex;
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   gap: 4px;
-  height: 40px;
+  height: var(--cadence-control-height-field, 40px);
   padding: 0 5px;
   user-select: none;
 }

@@ -50,7 +50,7 @@
 .base-button--sm {
   font-size: 11px;
   gap: 5px;
-  height: 29px;
+  height: var(--cadence-control-height-compact, 29px);
   letter-spacing: -0.22px;
   line-height: 13.2px;
   padding: 0 11px;

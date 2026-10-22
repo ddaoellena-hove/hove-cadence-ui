@@ -29,7 +29,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  min-height: 40px;
+  /* Hauteur de champ au minimum : la ligne s'agrandit avec les valeurs choisies. */
+  box-sizing: border-box; /* le token est la hauteur extérieure, bordure comprise */
+  min-height: var(--cadence-control-height-field, 40px);
   padding: 0 16px;
   transition: border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
 }
@@ -64,7 +66,8 @@
 .autocomplete__input {
   flex: 1;
   min-width: 80px;
-  height: 38px;
+  box-sizing: border-box;
+  height: calc(var(--cadence-control-height-field, 40px) - 2px); /* hauteur du champ moins ses bordures haute et basse */
   border: none;
   outline: none;
   background: transparent;

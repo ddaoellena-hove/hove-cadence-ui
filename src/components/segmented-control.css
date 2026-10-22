@@ -33,6 +33,9 @@
   overflow: hidden;
   padding: 4px;
   position: relative;
+  /* Hauteur de champ : s'aligne avec TextInput, Dropdown… sur une rangée. */
+  box-sizing: border-box;
+  height: var(--cadence-control-height-field, 40px);
   /* Épouse ses segments (« hug ») : une largeur explicite empêche l'étirement
      par un parent flex en colonne ou une grille. Jamais toute la largeur. */
   width: fit-content;
@@ -63,7 +66,9 @@
   line-height: normal;
   min-width: 100px;
   outline: none;
-  padding: 8px 20px;
+  /* Hauteur pleine de la piste (moins son padding) : texte centré verticalement. */
+  align-self: stretch;
+  padding: 0 20px;
   position: relative;
   transition:
     background-color 160ms ease,

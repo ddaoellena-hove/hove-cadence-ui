@@ -69,6 +69,14 @@
   --cadence-radius-lg: 10px;   /* Champs et wrappers : inputs, cards */
   --cadence-radius-xl: 12px;   /* Conteneurs : modale, counter-input */
 
+  /* ── Hauteurs de contrôle ─────────────────────────────────────────────────
+     Deux gabarits pour aligner des contrôles sur une même rangée.
+     compact : barres d'outils et en-têtes de dashboard (boutons sm,
+     SearchInput, déclencheurs variant="button"). field : champs d'une ligne
+     de formulaire et SegmentedControl. */
+  --cadence-control-height-compact: 29px;
+  --cadence-control-height-field: 40px;
+
   /* ── Statuts (Indicator) ───────────────────────────────────────────────── */
   /* Paires texte/fond des 8 variantes d'Indicator. Dans du code applicatif,
      un statut passe toujours par ces tokens, jamais par un hex. */

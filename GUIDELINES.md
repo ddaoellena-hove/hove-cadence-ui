@@ -142,6 +142,8 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-radius-md` | `8px` | Contenus internes |
 | `--cadence-radius-lg` | `10px` | Champs et cards |
 | `--cadence-radius-xl` | `12px` | Conteneurs : modale |
+| `--cadence-control-height-compact` | `29px` | Hauteur des contrôles compacts : boutons `size="sm"`, `SearchInput`, déclencheurs `variant="button"` — voir [Hauteurs de contrôle](#hauteurs-de-contrôle-et-alignement-sur-une-rangée) |
+| `--cadence-control-height-field` | `40px` | Hauteur des champs d'une ligne (`TextInput`, `Dropdown`, `DatePicker`…) et du `SegmentedControl` |
 
 **Statuts** — les 8 variantes d'`Indicator`, une paire texte (`-fg`) / fond (`-bg`) par variante :
 
@@ -335,6 +337,51 @@ Ces valeurs ne sont pas des tokens CSS : ce sont les largeurs fixées par `sideb
 - ✅ Largeurs de contenu : les formulaires sont limités à `max-width: 720px` (à l'intérieur de la zone de contenu) ; les listes, tableaux et tableaux de bord prennent toute la largeur.
 - ❌ Pas de largeur fixe en px sur les conteneurs de page (grille de `Card`, graphiques, `TableCard`, `DataTable`) : ils doivent s'étendre quand la Sidebar se replie.
 - ❌ Ne pas inventer de valeurs d'espacement hors échelle (pas de `gap: 7px` ou `padding: 13px`).
+
+### Hauteurs de contrôle et alignement sur une rangée
+
+Deux tokens fixent la hauteur extérieure (bordure comprise) des contrôles, pour qu'ils s'alignent au pixel sur une même rangée. Les composants les appliquent eux-mêmes : ne jamais redéfinir leur hauteur.
+
+| Token | Valeur | Groupe | Composants |
+|---|---|---|---|
+| `--cadence-control-height-compact` | `29px` | **Compact** : en-tête de dashboard, barre d'outils, `FilterBar`, barre de sélection | `PrimaryButton` / `GhostButton` `size="sm"` (plein, `outline`, icône seule), `SearchInput`, `Dropdown` / `DatePicker` / `DateRangePicker` / `TimePicker` en `variant="button"`, déclencheurs d'`ActionMenu`, `ExportMenu`, `ColumnManager`, `Popover` (boutons `sm`) |
+| `--cadence-control-height-field` | `40px` | **Champ** : formulaire, rangée de critères détaillés | `TextInput`, `Dropdown`, `DatePicker`, `DateRangePicker`, `TimePicker` et `CounterInput` en variante champ, `Autocomplete` (hauteur minimale), `SegmentedControl` |
+
+Principe de composition :
+
+- ✅ Une rangée ne mélange pas les groupes : que du compact (`SearchInput` + boutons `sm` + filtres `variant="button"`), ou que des champs (`TextInput` + `SegmentedControl` + `Dropdown`…).
+- ✅ Rangée compacte : `alignItems: "center"`, `gap: 8`.
+- ✅ Rangée de champs : `alignItems: "flex-end"`, `gap: 12`. Les champs portent leur libellé au-dessus ; le `SegmentedControl` n'en a pas et s'aligne ainsi sur le bas des champs. Un message d'aide (`helperText`) sous un champ décale cet alignement : le réserver à une rangée verticale ou le placer sous la rangée.
+- ❌ Pas de `SearchInput` (29px) à côté d'un `TextInput` (40px), ni de bouton `sm` à côté d'un champ libellé : choisir le gabarit de la rangée.
+- ❌ Pas de `height` ou de `padding` vertical en style inline sur ces composants pour « rattraper » un alignement.
+
+Exceptions, hors de ces deux gabarits :
+
+- `TextArea` et `Autocomplete multiple` avec plusieurs valeurs : hauteur variable (l'`Autocomplete` part de 40px et s'agrandit).
+- `PrimaryButton` / `GhostButton` `size="md"` (34px) : action de début de page ou de fin de formulaire, posée sur sa propre rangée, jamais alignée sur des champs.
+- Contrôles de formulaire sans boîte (`Checkbox`, `Toggle`, `RadioButton`) et cartes riches (`RichCheckbox`, `RichRadioButton`) : hauteur de leur contenu.
+
+```tsx
+// Rangée compacte — en-tête de dashboard : SearchInput + PrimaryButton (29px)
+<div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+  <SearchInput value={query} onChange={setQuery} aria-label="Rechercher un token" placeholder="Rechercher un token…" />
+  <Dropdown variant="button" aria-label="Catégorie" options={categories} value={category} onChange={setCategory} />
+  <PrimaryButton size="sm" iconStart="plus" label="Ajouter un token" />
+</div>
+
+// Rangée de champs — formulaire : TextInput + SegmentedControl (40px), alignés par le bas
+<div style={{ display: "flex", alignItems: "flex-end", gap: 12 }}>
+  <TextInput label="Nom de la vue" value={name} onChange={(e) => setName(e.target.value)} />
+  <SegmentedControl
+    aria-label="Densité"
+    options={[{ value: "comfortable", label: "Confortable" }, { value: "compact", label: "Compacte" }]}
+    value={density}
+    onChange={setDensity}
+  />
+</div>
+```
+
+La story **Foundation/Hauteurs de contrôle** montre ces rangées et vérifie les hauteurs mesurées.
 
 ### Composition des panneaux sur une page formulaire
 

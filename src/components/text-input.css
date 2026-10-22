@@ -24,7 +24,8 @@
   border-radius: 10px;
   display: flex;
   gap: 10px;
-  height: 40px;
+  box-sizing: border-box; /* le token est la hauteur extérieure, bordure comprise */
+  height: var(--cadence-control-height-field, 40px);
   overflow: hidden;
   padding: 0 20px;
   position: relative;
