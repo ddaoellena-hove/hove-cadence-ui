@@ -405,7 +405,7 @@ Il n'y a pas de grande taille : une action importante se distingue par son nivea
 **Fin de formulaire — les trois niveaux**
 
 ```tsx
-<div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end" }}>
+<div style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "flex-end" }}>
   <Link hideArrow onClick={onSaveDraft}>Enregistrer comme brouillon</Link>
   <GhostButton label="Réinitialiser" onClick={onReset} />
   <PrimaryButton label="Créer le scénario" onClick={onSubmit} loading={isSaving} />
@@ -1061,7 +1061,7 @@ export const ScenarioListPage = () => {
 Formulaire en sections, largeur contenue, soumission en bas à droite. Les **panneaux de premier niveau** (formulaire puis synthèse) s'empilent verticalement ; le multi-colonnes n'apparaît qu'**à l'intérieur** des sections. Voir [Composition des panneaux](#composition-des-panneaux-sur-une-page-formulaire).
 
 ```tsx
-import { PageHeader, TextInput, TextArea, Dropdown, DatePicker, CounterInput, SegmentedControl, TableCard, PrimaryButton, Link, GhostButton } from "@ddaoellena/cadence-ui";
+import { PageHeader, TextInput, TextArea, Dropdown, DatePicker, CounterInput, SegmentedControl, DescriptionList, PrimaryButton, Link, GhostButton } from "@ddaoellena/cadence-ui";
 
 export const ScenarioFormPage = () => (
   // Conteneur de page : flexDirection "column" → les panneaux de premier niveau s'empilent
@@ -1098,6 +1098,8 @@ export const ScenarioFormPage = () => (
         <h2 style={{ fontFamily: "var(--cadence-font-sans)", fontSize: 16, fontWeight: 600, color: "var(--cadence-color-primary)", margin: 0 }}>
           Période
         </h2>
+        {/* Exception « saisie avec heures » : DateRangePicker ne gère pas les heures,
+            d'où deux DatePicker withTime. Sans heure → un seul DateRangePicker. */}
         <div style={{ display: "flex", gap: 12 }}>
           <div style={{ flex: 1 }}>
             <DatePicker label="Début" value={start} onChange={setStart} withTime />
@@ -1117,17 +1119,19 @@ export const ScenarioFormPage = () => (
       <h2 style={{ fontFamily: "var(--cadence-font-sans)", fontSize: 16, fontWeight: 600, color: "var(--cadence-color-primary)", margin: 0 }}>
         Récapitulatif
       </h2>
-      <TableCard
-        title="Scénario à créer"
-        columns={[
-          { key: "type", content: <span>{type} · {cause}</span>, flex: 1 },
-          { key: "periode", content: <span>{start} → {end}</span>, width: 220 },
+      <DescriptionList
+        aria-label="Scénario à créer"
+        items={[
+          { id: "title", label: "Titre", value: title },
+          { id: "type", label: "Type et cause", value: type && cause ? `${type} · ${cause}` : undefined },
+          { id: "period", label: "Période", value: start && end ? `${formatDateTime(start)} → ${formatDateTime(end)}` : undefined },
+          { id: "duration", label: "Durée estimée", value: `${duration} min` },
         ]}
       />
     </div>
 
     {/* ══ Soumission ══ */}
-    <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "flex-end" }}>
       <Link hideArrow onClick={onSaveDraft}>Enregistrer comme brouillon</Link>
       <GhostButton label="Réinitialiser" onClick={onReset} />
       <PrimaryButton label="Créer le scénario" onClick={onSubmit} />

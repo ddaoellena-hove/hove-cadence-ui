@@ -126,11 +126,12 @@ La synthèse (récapitulatif, vérification, prévisualisation) vient **sous** l
                color: "var(--cadence-color-primary)", margin: 0 }}>
     Récapitulatif
   </h2>
-  <TableCard
-    title="Scénario à créer"
-    columns={[
-      { key: "type", content: <span>{type} · {cause}</span>, flex: 1 },
-      { key: "periode", content: <span>{start} → {end}</span>, width: 220 },
+  <DescriptionList
+    aria-label="Scénario à créer"
+    items={[
+      { id: "name", label: "Nom du scénario", value: name },
+      { id: "cause", label: "Réseau et cause", value: reseau && cause ? `${reseau} · ${cause}` : undefined },
+      { id: "period", label: "Période", value: start && end ? `${formatDateTime(start)} → ${formatDateTime(end)}` : undefined },
     ]}
   />
 </div>
@@ -145,7 +146,7 @@ La synthèse (récapitulatif, vérification, prévisualisation) vient **sous** l
 </div>
 
 ```tsx
-<div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end" }}>
+<div style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "flex-end" }}>
   {/* 3e action optionnelle */}
   <Link hideArrow onClick={onSaveDraft}>
     Enregistrer comme brouillon

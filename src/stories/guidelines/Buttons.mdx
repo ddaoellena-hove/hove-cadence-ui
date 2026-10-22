@@ -65,12 +65,12 @@ import { Link } from "../../components/Link";
 <p>Dans un groupe, l'engagement croît de gauche à droite : <code>Link</code> → <code>GhostButton</code> → <code>PrimaryButton</code>.</p>
 
 <div style={{ display: "flex", flexDirection: "column", gap: 0, margin: "16px 0", border: "1px solid var(--cadence-color-border)", borderRadius: 10, overflow: "hidden" }}>
-  <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end", padding: 24, background: "var(--cadence-color-white)" }}>
+  <div style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "flex-end", padding: 24, background: "var(--cadence-color-white)" }}>
     <Link hideArrow onClick={() => {}}>Enregistrer comme brouillon</Link>
     <GhostButton label="Réinitialiser" />
     <PrimaryButton label="Créer le scénario" />
   </div>
-  <div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end", padding: 24, background: "var(--cadence-color-surface-alt)" }}>
+  <div style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "flex-end", padding: 24, background: "var(--cadence-color-surface-alt)" }}>
     <Link variant="destructive" hideArrow onClick={() => {}}>Retirer le filtre</Link>
     <GhostButton label="Annuler" />
     <PrimaryButton tone="danger" label="Supprimer" />
@@ -113,7 +113,7 @@ import { Link } from "../../components/Link";
 
 ```tsx
 // Fin de formulaire — les trois niveaux
-<div style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "flex-end" }}>
+<div style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "flex-end" }}>
   <Link hideArrow onClick={onSaveDraft}>Enregistrer comme brouillon</Link>
   <GhostButton label="Réinitialiser" onClick={onReset} />
   <PrimaryButton label="Créer le scénario" onClick={onSubmit} loading={isSaving} />
