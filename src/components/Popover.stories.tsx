@@ -323,3 +323,44 @@ export const AvecUnMenu: Story = {
     await expect(args.onOpenChange).toHaveBeenLastCalledWith(false);
   },
 };
+
+/** État ouvert au repos (defaultOpen), pour la revue visuelle. */
+export const Ouvert: Story = {
+  render: () => (
+    <Popover
+      title="Calcul de la ponctualité"
+      defaultOpen
+      renderTrigger={({ ref, toggle }) => (
+        <GhostButton ref={ref} size="sm" icon="help-circle" aria-label="Aide : calcul de la ponctualité" onClick={toggle} />
+      )}
+    >
+      Part des passages arrivés avec moins de 5 minutes de retard sur l’horaire théorique.
+    </Popover>
+  ),
+  play: async ({ canvas, canvasElement }) => {
+    const body = within(canvasElement.ownerDocument.body);
+    await expect(await body.findByRole("dialog", { name: "Calcul de la ponctualité" })).toBeVisible();
+    await expect(canvas.getByRole("button", { name: "Aide : calcul de la ponctualité" })).toHaveAttribute("aria-expanded", "true");
+  },
+};
+
+/** Déclencheur en bas de la fenêtre : le panneau se retourne au-dessus. */
+export const RetourneAuDessus: Story = {
+  name: "Retourné au-dessus",
+  decorators: [(Story) => <div style={{ height: "calc(100vh - 32px)", display: "flex", alignItems: "flex-end" }}><Story /></div>],
+  render: () => (
+    <Popover
+      title="Dernière synchronisation"
+      defaultOpen
+      renderTrigger={({ ref, toggle }) => <GhostButton ref={ref} size="sm" label="Synchronisation" onClick={toggle} />}
+    >
+      Flux GTFS-RT reçu à 14:32, il y a 2 minutes.
+    </Popover>
+  ),
+  play: async ({ canvas, canvasElement }) => {
+    const body = within(canvasElement.ownerDocument.body);
+    const dialog = await body.findByRole("dialog", { name: "Dernière synchronisation" });
+    const trigger = canvas.getByRole("button", { name: "Synchronisation" });
+    await waitFor(() => expect(dialog.getBoundingClientRect().bottom).toBeLessThanOrEqual(trigger.getBoundingClientRect().top));
+  },
+};

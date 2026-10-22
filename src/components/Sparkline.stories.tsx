@@ -39,6 +39,24 @@ export const Stable: Story = {
   },
 };
 
+/** Pic ou creux au-delà des extrémités : minimum et maximum ajoutés au résumé. */
+export const AvecUnCreux: Story = {
+  name: "Avec un creux",
+  args: { values: [95.4, 95.1, 84.2, 94.8, 95.4], unit: "%" },
+  play: async ({ canvas }) => {
+    await expect(canvas.getByRole("img")).toHaveAccessibleName(/minimum 84,2\s%, maximum 95,4\s%$/);
+  },
+};
+
+/** Sans point final. */
+export const SansPointFinal: Story = {
+  name: "Sans point final",
+  args: { values: [3, 5, 4, 6, 7], showLastPoint: false },
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelector(".sparkline__dot")).toBeNull();
+  },
+};
+
 /** Couleurs de série dataviz (1 à 8), point final masqué. */
 export const Series: Story = {
   name: "Couleurs de série",

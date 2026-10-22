@@ -97,6 +97,17 @@ export const ContenuAbrege: Story = {
   },
 };
 
+/** Texte non technique (mono désactivé), sans troncature. */
+export const SansMono: Story = {
+  name: "Sans police mono, non tronqué",
+  args: { value: "Rapport-qualité-octobre-2026.csv", mono: false, truncate: false },
+  play: async ({ canvasElement }) => {
+    const root = canvasElement.querySelector(".copyable-text");
+    await expect(root).not.toHaveClass("copyable-text--mono");
+    await expect(root).not.toHaveClass("copyable-text--truncate");
+  },
+};
+
 /** Largeur contrainte : ellipse, valeur complète en infobulle native. */
 export const Tronque: Story = {
   name: "Tronqué",
