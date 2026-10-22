@@ -77,11 +77,12 @@ import { Meta, ColorPalette, ColorItem, Typeset } from "@storybook/addon-docs/bl
   }
 
   /* ── Type specimens ── */
+  /* Aligné sur PageHeader (page-header.css) : 22px. */
   .type-page-title {
-    font-family: "Uxum Grotesque", "Georgia", sans-serif;
-    font-size: 28px;
+    font-family: var(--cadence-font-display, "Uxum Grotesque", "Space Grotesk", sans-serif);
+    font-size: 22px;
     font-weight: 500;
-    color: #002830;
+    color: var(--cadence-color-primary, #002830);
     line-height: 1.2;
     margin: 0;
   }
@@ -229,10 +230,10 @@ Le design system Hove utilise trois familles de caractères selon le contexte d'
 
 <div className="specimen">
   <div className="specimen__meta">
-    <p className="specimen__name">Titre de page</p>
+    <p className="specimen__name">Titre de page (<code>PageHeader</code>)</p>
     <ul className="specimen__props">
       <li>Uxum Grotesque</li>
-      <li>28px / 500</li>
+      <li>22px / 500</li>
       <li>#002830</li>
       <li>line-height 1.2</li>
     </ul>
