@@ -9,6 +9,7 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { GhostButton } from "./GhostButton";
 import { PrimaryButton } from "./PrimaryButton";
+import { inertProps } from "./inert-props";
 import { OverlayPortal, useOverlay } from "./overlay-primitives";
 import "./drawer.css";
 import "./scrollbar.css";
@@ -117,7 +118,7 @@ export const Drawer = ({
           tabIndex={-1}
           // Pendant la sortie animée (encore monté mais fermé), le panneau est
           // inerte : il ne retient pas le focus, qui revient au déclencheur.
-          inert={!isOpen || undefined}
+          {...inertProps(!isOpen)}
           onClick={(e) => e.stopPropagation()}
         >
           {/* En-tête fixe */}

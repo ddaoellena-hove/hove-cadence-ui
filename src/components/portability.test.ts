@@ -16,4 +16,9 @@ describe("portabilité des composants", () => {
     const offenders = sources.filter((f) => /\bimport\.meta\b/.test(read(f)));
     expect(offenders).toEqual([]);
   });
+
+  it("aucune prop JSX `inert` (ignorée par React 18) : passer par inertProps()", () => {
+    const offenders = sources.filter((f) => /\binert=\{/.test(read(f)));
+    expect(offenders).toEqual([]);
+  });
 });

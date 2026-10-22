@@ -6,6 +6,7 @@
  * sous prefers-reduced-motion.
  */
 import { useId, useState, type ReactNode } from "react";
+import { inertProps } from "./inert-props";
 import "./accordion.css";
 
 export interface AccordionItem {
@@ -80,7 +81,7 @@ export const Accordion = ({ items, mode = "single", className }: AccordionProps)
               className="accordion__panel"
               // Fermé : inerte (hors focus et lecteurs d'écran) tout en restant
               // dans le DOM pour animer la hauteur.
-              inert={!isOpen || undefined}
+              {...inertProps(!isOpen)}
             >
               <div className="accordion__content">{item.content}</div>
             </div>
