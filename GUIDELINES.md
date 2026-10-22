@@ -601,7 +601,7 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 
 ### Règles
 
-- ✅ Toujours passer la prop `label` sur `TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker` et `CounterInput` — c'est le seul moyen de garantir la cohérence visuelle. Exceptions, qui prennent `aria-label` à la place : `DateRangePicker` en filtre rapide d'une `FilterBar`, et `DatePicker` / `DateRangePicker` / `Dropdown` en `variant="button"` dans un dashboard.
+- ✅ Toujours passer la prop `label` sur `TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker`, `CounterInput` et `TimePicker` — c'est le seul moyen de garantir la cohérence visuelle. Exceptions, qui prennent `aria-label` à la place : `DateRangePicker` en filtre rapide d'une `FilterBar`, et `DatePicker` / `DateRangePicker` / `Dropdown` / `TimePicker` en `variant="button"` dans un dashboard.
 - ✅ Une période → un seul `DateRangePicker`, jamais deux `DatePicker` « Début » / « Fin » (sauf saisie avec heures, non gérée par `DateRangePicker` en v1).
 - ✅ Utiliser la prop `helperText` de `TextInput`/`TextArea` pour les instructions.
 - ✅ Afficher les erreurs avec `state="error"` + message dans `helperText`.
@@ -1654,7 +1654,7 @@ Tableau dense pour les gros volumes. Vrai `<table>` (rôles ARIA explicites), en
 - Tri en mémoire : chaînes à la française (« Ligne 2 » avant « Ligne 10 », sans casse ni accents), nombres, dates ; valeurs vides toujours en dernier.
 - Rendu par défaut : nombres `Intl.NumberFormat("fr-FR")`, dates `JJ/MM/AAAA HH:mm`, booléens « Oui » / « Non », vide « — ».
 - ⚠️ La case d'en-tête sélectionne les lignes **affichées** (la page). « Sélectionner les N résultats » se fait dans la barre de sélection de l'app.
-- ⚠️ Pas de `hideable`, de filtre de colonne ni de redimensionnement en v1.
+- ⚠️ Le masquage et l'ordre des colonnes passent par `ColumnManager` (branché sur `hiddenColumnIds` et `columnOrder`). Il n'y a toujours ni filtre par colonne ni redimensionnement.
 
 ### DataVisualization (déprécié)
 
