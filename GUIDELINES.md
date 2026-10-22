@@ -250,6 +250,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Ligne d'en-têtes de colonnes avec tri (au-dessus de `TableCard`) | `TableHeader` | en-têtes de `DataTable` (intégrés) |
 | Navigation dans un résultat paginé | `Pagination` | — |
 | Recherche + filtres rapides + filtres actifs au-dessus d'une liste | `FilterBar` | un `TextInput` + `Badge` assemblés à la main |
+| Recherche seule (en-tête de dashboard, barre d'outils) | `SearchInput` | `TextInput` (champ de formulaire, 40px) |
 | Dialogue bloquant (confirmation, formulaire court) | `Modal` | `AlertToast` (non bloquant) |
 | Notification temporaire non bloquante | `useToast()` + `Toaster` | `Modal` (bloquant) ; `AlertToast` seul (carte brute, hors pile) |
 | Info contextuelle au survol | `Tooltip` / `TooltipTrigger` | `Modal` |
@@ -487,7 +488,7 @@ Une période, une date ou un choix dans une liste se placent dans l'en-tête ave
 
 ### Contrôles d'une liste
 
-Au-dessus d'une liste filtrable, utiliser `FilterBar` (recherche, filtres rapides, filtres actifs). Un tri hors `DataTable` se fait avec un `GhostButton size="sm" iconStart="switch-vertical-01"`, hors du flux des boutons d'action.
+Au-dessus d'une liste filtrable, utiliser `FilterBar` (recherche, filtres rapides, filtres actifs). Sa recherche est un `SearchInput` : pilule de 29px, même gabarit que les filtres en `variant="button"` et les boutons `sm` qui l'entourent. Hors `FilterBar`, une recherche placée à côté de boutons ou de filtres est aussi un `SearchInput`, jamais un `TextInput` (40px). Un tri hors `DataTable` se fait avec un `GhostButton size="sm" iconStart="switch-vertical-01"`, hors du flux des boutons d'action.
 
 ### Placement systématique
 
@@ -548,7 +549,7 @@ node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry s
 
 | Composant | Quand l'utiliser |
 |---|---|
-| `TextInput` | Texte libre — nom, description, recherche. |
+| `TextInput` | Texte libre — nom, description. Pour une recherche à côté de filtres ou de boutons : `SearchInput`. |
 | `TextArea` | Texte long multi-lignes — descriptions, commentaires. |
 | `CounterInput` | Valeur numérique bornée avec +/−. |
 | `Dropdown` | Choix parmi une liste fixe et courte (3 à ~10 options). |
@@ -1102,7 +1103,7 @@ export const SupervisionPage = () => {
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <FilterBar
         search={{ value: query, onChange: (v) => update(() => setQuery(v)), placeholder: "Rechercher une perturbation…" }}
-        quickFilters={<Dropdown options={lineOptions} value={line} onChange={(id) => update(() => setLine(id))} />}
+        quickFilters={<Dropdown variant="button" aria-label="Ligne" options={lineOptions} value={line} onChange={(id) => update(() => setLine(id))} />}
         activeFilters={line !== "all" ? [{ id: "line", label: line }] : []}
         onRemoveFilter={() => update(() => setLine("all"))}
         resultCount={result?.total}
@@ -1468,8 +1469,8 @@ Barre au-dessus d'une liste : ligne 1 = recherche · filtres rapides · actions 
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `search` | `{ value, onChange, placeholder?, "aria-label"? }` | — | `TextInput` de recherche. `onChange` est appelé 300 ms après la dernière frappe (ou sur Entrée) ; `value` reste contrôlée. Défauts : `"Rechercher…"` / `"Rechercher"` |
-| `quickFilters` | `ReactNode` | — | Slot : `Dropdown`, `SegmentedControl`… |
+| `search` | `{ value, onChange, placeholder?, "aria-label"? }` | — | `SearchInput` (pilule 29px, loupe, bouton effacer). `onChange` est appelé 300 ms après la dernière frappe (ou sur Entrée) ; `value` reste contrôlée. Défauts : `"Rechercher…"` / `"Rechercher"` |
+| `quickFilters` | `ReactNode` | — | Slot : `Dropdown variant="button"`, `DateRangePicker variant="button"` (même hauteur que la recherche), avec `aria-label` |
 | `activeFilters` | `{ id, label }[]` | `[]` | Affichés en `Badge dismissible` |
 | `onRemoveFilter` | `(id: string) => void` | — | Croix d'un badge. Sans callback, les badges ne sont pas supprimables |
 | `onClearAll` | `() => void` | — | « Tout effacer » (`GhostButton size="sm"`), affiché à partir de **2** filtres actifs |
@@ -1477,7 +1478,6 @@ Barre au-dessus d'une liste : ligne 1 = recherche · filtres rapides · actions 
 | `actions` | `ReactNode` | — | Slot à droite : export, menu de colonnes… |
 | `className` | `string` | — | — |
 
-⚠️ Pas d'icône loupe : `TextInput` n'accepte pas d'icône.
 
 ### Icons
 
@@ -1626,6 +1626,30 @@ Carte cliquable avec icône + label + description + carré de coche. Sélection 
 | `state` | `"default" \| "hover" \| "selected" \| "disabled"` | `"default"` | ⚠️ Pas de prop `checked` — piloter via `state` |
 | `size` | `"medium" \| "large"` | `"medium"` | — |
 | `onChange` | `() => void` | — | Clic (le parent gère l'exclusivité) |
+
+### SearchInput
+
+Champ de recherche au gabarit des boutons `sm` : pilule de 29px, bordure `--cadence-color-border-strong` et relief de `PrimaryButton outline`, texte 12px. Loupe à gauche ; bouton « Effacer la recherche » (×) dès qu'il y a du texte ; Échap vide aussi le champ (vide, Échap n'est pas intercepté). Prend toute la largeur de son parent.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `value` | `string` | **requis** | Texte recherché (contrôlé) |
+| `onChange` | `(value: string) => void` | **requis** | Chaque frappe, « effacer » et Échap (avec `""`) |
+| `placeholder` | `string` | `"Rechercher…"` | — |
+| `aria-label` | `string` | `"Rechercher"` | Nom accessible du champ (pas de label visible) |
+| `disabled` | `boolean` | `false` | — |
+| `className` | `string` | — | — |
+
+```tsx
+<div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+  <div style={{ flex: "0 1 320px" }}>
+    <SearchInput value={query} onChange={setQuery} placeholder="Rechercher une perturbation…" />
+  </div>
+  <Dropdown variant="button" aria-label="Ligne" options={lignes} value={ligne} onChange={setLigne} />
+</div>
+```
+
+⚠️ `onChange` est appelé à chaque frappe : pour filtrer côté serveur, temporiser (c'est ce que fait `FilterBar`, 300 ms). Dans une `FilterBar`, passer par sa prop `search` plutôt que de poser un `SearchInput` à la main.
 
 ### SecondaryTab
 

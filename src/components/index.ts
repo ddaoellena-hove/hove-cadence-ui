@@ -28,6 +28,7 @@ export * from './RadioButton';
 export * from './RichCheckbox';
 export * from './RichRadioButton';
 export * from './SecondaryButton';
+export * from './SearchInput';
 export * from './SecondaryTab';
 export * from './SegmentedControl';
 export * from './Sidebar';
