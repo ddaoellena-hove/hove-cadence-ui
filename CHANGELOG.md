@@ -1,14 +1,37 @@
 # Changelog — @ddaoellena/cadence-ui
 
+## 0.6.0 (non publiée)
+
+Version mineure, sans rupture d’API. La 0.5.0 n’a pas été publiée sur npm : une app qui passe de la 0.4.0 à la 0.6.0 reçoit aussi les changements de la section 0.5.0 ci-dessous.
+
+### Corrigé
+
+- **Portabilité hors Vite** : `LineBadge` lisait `import.meta.env.DEV`, propre à Vite ; à la construction de la lib il valait `false` et l’avertissement de contraste ne s’affichait jamais. Les avertissements de développement passent par un garde unique (`process.env.NODE_ENV`, remplacé par le bundler de l’app) qui ne plante plus quand `process` est absent (ESM chargé sans bundler). Un test interdit `import.meta` dans le code des composants.
+- **`inert` sous React 18** : `Accordion` (panneau fermé) et `Drawer` (en sortie) passaient `inert={true}`, ignoré par React 18 : le contenu fermé restait focusable et lu. L’attribut est désormais rendu sous React 18 et 19 ; le typage compile avec `@types/react` 18 et 19.
+- **Menus et popovers dans une surcouche** : `ActionMenu`, `ExportMenu` et `ColumnManager`, rendus en portail, passaient sous le voile d’une `Modal` ou d’un `Drawer` dont ils étaient ouverts. Ils prennent la couche juste au-dessus.
+- **Annonce des toasts** : `AlertToast` portait `role="alert"` et `aria-live="polite"`. `error` et `warning` gardent `role="alert"` ; `success` et `information` passent en `role="status"`.
+- **Couches** : `Toaster` utilise `--cadence-z-toast` au lieu de `z-index: 1100` en dur. Un test interdit les couches numériques dans les CSS des composants.
+- **`BarChart`** : halo blanc sous les valeurs affichées (`showValues`), comme les libellés de seuil de `LineChart`.
+- **`SegmentedControl`** : il épouse ses segments (`width: fit-content; max-width: 100%`) et ne s’étire plus dans une colonne flex ou une grille, comme le faisait la recette « Offre et qualité ».
+- **Paquet** : `react` et `react-dom` ne sont plus dans `dependencies` (seulement `peerDependencies` `^18 || ^19` et `devDependencies`) ; `@tpitre/story-ui` passe en `devDependencies` ; la condition `types` vient en tête de `exports`.
+
+### Ajouté
+
+- **`Sparkline`** : mini-courbe pour une cellule de `DataTable` ou une ligne de liste, couleur encre ou série dataviz, nom accessible résumant la tendance. `Card` l’utilise pour `trend` (rendu inchangé).
+- **`CopyableText`** : identifiant technique en mono avec bouton de copie, retour « Copié » annoncé.
+- **`Popover`** : panneau non modal ancré à un bouton pour une aide riche, un mini-formulaire ou un détail (focus, Échap, clic extérieur, sortie au clavier).
+- **CI React 18** : `npm run test:react18` (React 18 et ses types installés sans toucher `package.json`, puis `tsc`, Vitest et build de la lib) et workflow GitHub en matrice React 18 / 19.
+
+### Documentation
+
+- Titre de page à 22px dans `Typography.mdx`, comme `PageHeader` ; `PageHeader` remplace les `<h1>` faits main (story `AppLayout`, guides Navigation et Page formulaire).
+- Recette 1 : `<Toaster />` monté à la racine. Recette 2 : toast via `useToast`, case « Tout désélectionner » nommée. Recette 3 : synthèse en `DescriptionList`, 8px entre les boutons de soumission, exception « saisie avec heures » explicitée.
+- Échelle des couches `--cadence-z-*` décrite ; annonce des toasts par type.
+- § Formulaires : `TimePicker` dans la règle des labels. `DataTable` : masquage et ordre des colonnes via `ColumnManager`, toujours ni filtre par colonne ni redimensionnement.
+- Action avec libellé dans une ligne de `DataTable` : `PrimaryButton outline size="sm"` (recette « Détail d’une perturbation » adaptée).
+- `SegmentedControl` : jamais pleine largeur.
+
 ## 0.5.0 (non publiée)
-
-### SegmentedControl : largeur au contenu
-
-- Le composant épouse ses segments (`width: fit-content; max-width: 100%`) et ne s’étire plus dans une colonne flex ou une grille, comme le faisait la recette « Offre et qualité ». Règle ajoutée aux guidelines : jamais pleine largeur.
-
-### Actions avec libellé dans une ligne de DataTable
-
-- Règle ajoutée aux guidelines : une action textuelle dans une cellule de `DataTable` est un `PrimaryButton outline size="sm"`, plus visible qu’un `GhostButton` parmi les valeurs de la ligne. Recette « Détail d’une perturbation » adaptée (« Consulter »).
 
 ### FileUpload : cartes fichier
 
