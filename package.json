@@ -15,9 +15,9 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/hove-cadence-ui.js",
-      "require": "./dist/hove-cadence-ui.cjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/hove-cadence-ui.cjs"
     },
     "./style.css": "./dist/style.css"
   },
@@ -47,13 +47,10 @@
   "dependencies": {
     "@tanstack/react-table": "9.2.6",
     "@tanstack/react-virtual": "3.14.13",
-    "@tpitre/story-ui": "^4.16.12",
     "@untitledui/icons": "0.0.23",
     "d3-array": "3.2.4",
     "d3-scale": "4.0.2",
-    "d3-shape": "3.2.0",
-    "react": "^18 || ^19",
-    "react-dom": "^18 || ^19"
+    "d3-shape": "3.2.0"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^5.2.1",
@@ -64,6 +61,7 @@
     "@storybook/addon-onboarding": "^10.4.0",
     "@storybook/addon-vitest": "^10.4.0",
     "@storybook/react-vite": "^10.4.0",
+    "@tpitre/story-ui": "^4.16.12",
     "@types/d3-array": "3.2.2",
     "@types/d3-scale": "4.0.9",
     "@types/d3-shape": "3.2.0",
@@ -80,6 +78,8 @@
     "eslint-plugin-storybook": "^10.4.0",
     "globals": "^17.5.0",
     "playwright": "^1.59.1",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
     "react-live": "^4.1.8",
     "storybook": "^10.4.0",
     "typescript": "~6.0.2",
