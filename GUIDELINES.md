@@ -125,6 +125,16 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-color-accent-subtle` | `#f0f6ff` | Survol d'un élément actif (Sidebar), ligne sélectionnée (`DataTable`) |
 | `--cadence-color-white` | `#ffffff` | Surfaces de premier plan |
 | `--cadence-color-segmented-track` / `-disabled` | `#e6f0fa` / `#dde8f0` | Piste du SegmentedControl unique |
+| `--cadence-color-segmented-hover` | `rgba(255, 255, 255, 0.45)` | Survol d'un segment inactif |
+| `--cadence-color-field-focus` | `#2d5f6b` | Bordure (1,5px) d'un champ focalisé : `TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `TimePicker`, `Autocomplete` |
+| `--cadence-field-focus-ring` | halo 4px `rgba(45, 95, 107, 0.12)` | Halo d'un champ focalisé (`box-shadow`) |
+| `--cadence-color-field-focus-subtle` | `rgba(45, 95, 107, 0.1)` | Jour sélectionné d'un calendrier |
+| `--cadence-color-control-border-active` | `#405e64` | Bordure d'une carte de choix survolée ou cochée (`RichCheckbox`, `RichRadioButton`) |
+| `--cadence-color-selected-surface` | `#c8d6e4` | Fond d'une carte sélectionnée (`TableCard`) |
+| `--cadence-color-scrim` | `rgba(0, 0, 0, 0.5)` | Voile de `Modal` et `Drawer` |
+| `--cadence-color-on-dark` / `-muted` / `-subtle` | blanc à 90 / 60 / 40 % | Texte et icônes sur fond sombre (`Sidebar`) : actif, secondaire, chevron et contour de focus |
+| `--cadence-color-on-dark-hover` / `-active` / `-divider` | blanc à 7 / 15 / 10 % | Survol, élément actif, séparateur sur fond sombre |
+| `--cadence-color-accent-on-dark` | `#3b8eff` | Pastille de notification sur fond sombre (`Sidebar`) |
 | `--cadence-color-surface-alt` | `#eef1f4` | Fonds de wrapper (TableCard, Badge), jours d'une période (`DateRangePicker`) |
 | `--cadence-color-surface-subtle` | `#fafafa` | Fond de carte discret sur fond blanc (fichiers de `FileUpload`) |
 | `--cadence-color-border` | `#e5e5e5` | Bordures par défaut |
@@ -142,6 +152,8 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-radius-md` | `8px` | Contenus internes |
 | `--cadence-radius-lg` | `10px` | Champs et cards |
 | `--cadence-radius-xl` | `12px` | Conteneurs : modale |
+| `--cadence-radius-2xl` | `16px` | Grandes cartes riches (`RichCheckbox` / `RichRadioButton` large) |
+| `--cadence-radius-pill` | `999px` | Pilules et cercles : boutons, `SearchInput`, `Toggle`, halos ronds |
 | `--cadence-control-height-compact` | `29px` | Hauteur des contrôles compacts : boutons `size="sm"`, `SearchInput`, déclencheurs `variant="button"` — voir [Hauteurs de contrôle](#hauteurs-de-contrôle-et-alignement-sur-une-rangée) |
 | `--cadence-control-height-field` | `40px` | Hauteur des champs d'une ligne (`TextInput`, `Dropdown`, `DatePicker`…) et du `SegmentedControl` |
 
@@ -192,6 +204,7 @@ La story **Foundation/Tokens** affiche tous ces tokens à partir des variables C
 - ✅ Échelle des couches, de bas en haut : contenu → `sticky` = `popover` (100) → `dropdown` (200) → `modal` (1000) → `toast` (1100). Un `z-index` de 0 à 2 reste permis pour l'empilement interne d'un composant (pastille, flèche) ; toute couche de page passe par un token (un test le vérifie). Un menu ou un `Popover` en portail ouvert depuis une `Modal` ou un `Drawer` passe automatiquement juste au-dessus de la surcouche.
 - ✅ Toute zone qui défile (composant ou app) prend la classe **`cadence-scrollbar`** : barre fine sans fond, curseur arrondi en retrait qui fonce au survol (déjà posée sur `AppLayout`, `DataTable`, le corps de `Modal` et le menu d'`Autocomplete`). La `Sidebar` garde sa barre claire sur fond sombre.
 - ✅ Pour créer un nouveau composant, piocher dans `tokens.css` ; n'ajouter un token que si la valeur a vocation à être partagée.
+- ✅ Dans le CSS d'un composant, couleurs et rayons passent **toujours** par un token (`var(--cadence-…, repli)`). Seules exceptions : les ombres décoratives propres à un composant (reliefs `box-shadow` internes) et les micro-rayons de 5px ou moins. Un test (`css-tokens.test.ts`) le vérifie.
 - ❌ Ne pas redéfinir les `--cadence-*` au niveau d'un composant — ce sont des valeurs globales du thème.
 
 ---
