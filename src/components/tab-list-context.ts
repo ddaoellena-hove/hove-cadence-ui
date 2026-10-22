@@ -1,19 +1,18 @@
 import { createContext, useContext } from "react";
+import { isDevMode } from "./dev-mode";
 
 // Contexte de TabList : indique à Tab / SecondaryTab qu'ils sont dans un
 // conteneur role="tablist" (roving tabindex, pas d'avertissement).
 
 export const TabListContext = createContext(false);
 
-// Remplacé par le bundler de l'app (comme dans button-compat.ts)
-declare const process: { env: { NODE_ENV?: string } };
 
 const warned = new Set<string>();
 
 /** Vrai dans un TabList ; sinon avertit une fois par composant, en développement. */
 export const useInTabList = (component: "Tab" | "SecondaryTab") => {
   const inside = useContext(TabListContext);
-  if (!inside && process.env.NODE_ENV !== "production" && !warned.has(component)) {
+  if (!inside && isDevMode() && !warned.has(component)) {
     warned.add(component);
     console.warn(
       `[cadence-ui] <${component}> rendu hors d'un <TabList> : role="tab" exige un conteneur role="tablist". ` +

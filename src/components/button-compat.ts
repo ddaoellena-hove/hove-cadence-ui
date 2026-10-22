@@ -5,6 +5,7 @@
 
 import type { IconName } from "./Icons";
 import type { ActionButtonBaseProps, ActionButtonContentProps, ActionButtonSize } from "./action-button-types";
+import { isDevMode } from "./dev-mode";
 
 export type LegacyWithIcon = "left" | "no" | "only" | "right";
 export type LegacySize = "medium" | "large";
@@ -148,8 +149,6 @@ export const resolveButtonProps = (
 
 // ── Avertissements (développement uniquement, une fois par prop) ───────────
 
-// Remplacé par le bundler de l'application (React exige déjà cette définition)
-declare const process: { env: { NODE_ENV?: string } };
 
 const MESSAGES: Record<DeprecatedProp, string> = {
   withIcon: "`withIcon` est déprécié : utilisez `iconStart`, `iconEnd` ou `icon` (icône seule + `aria-label`).",
@@ -166,7 +165,7 @@ const warned = new Set<string>();
  * `deprecation` : ajoute l'annonce de suppression en 1.0.0.
  */
 export const warnOnce = (component: string, key: string, message: string, deprecation = true): void => {
-  if (process.env.NODE_ENV === "production") return;
+  if (!isDevMode()) return;
   const id = `${component}:${key}`;
   if (warned.has(id)) return;
   warned.add(id);
@@ -177,7 +176,7 @@ const errored = new Set<string>();
 
 /** Erreur de développement, une seule fois par composant et par clé, hors production. */
 export const errorOnce = (component: string, key: string, message: string): void => {
-  if (process.env.NODE_ENV === "production") return;
+  if (!isDevMode()) return;
   const id = `${component}:${key}`;
   if (errored.has(id)) return;
   errored.add(id);

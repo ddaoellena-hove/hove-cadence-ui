@@ -9,6 +9,7 @@
 import { useEffect, type CSSProperties } from "react";
 import { normalizeLineColor, pickTextColor } from "./line-badge-utils";
 import "./line-badge.css";
+import { isDevMode } from "./dev-mode";
 
 export type LineMode = "metro" | "rer" | "train" | "tram" | "bus" | "car" | "bateau" | "navette";
 
@@ -53,7 +54,7 @@ export const LineBadge = ({ code, mode, color: colorProp, textColor: textColorPr
 
   // Avertissement en développement si aucune couleur de texte n'atteint AA.
   useEffect(() => {
-    if (import.meta.env.DEV && needsOutline && color) {
+    if (isDevMode() && needsOutline && color) {
       console.warn(
         `[cadence-ui] LineBadge : aucune couleur de texte n'atteint 4,5:1 sur ${color} (ligne « ${code} »). Un liseré est ajouté ; fournissez un route_text_color plus contrasté.`,
       );
