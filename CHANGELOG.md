@@ -28,7 +28,7 @@
 
 ### Recherche
 
-- **`SearchInput`** (nouveau) : champ de recherche au gabarit des boutons `sm` (pilule de 29px, bordure et relief de `PrimaryButton outline`, texte 12px), avec loupe et bouton « effacer » ; Échap vide le champ. Il s'aligne sur les filtres en `variant="button"`.
+- **`SearchInput`** (nouveau) : champ de recherche de 29px (la hauteur des boutons `sm`) avec loupe et bouton « effacer » ; Échap vide le champ. Il s'aligne sur les filtres en `variant="button"` (même hauteur, même bordure) mais s'en distingue par une forme de champ : coins de 8px et léger creux, là où les boutons sont des pilules en relief.
 - **`FilterBar`** : la recherche est un `SearchInput` au lieu d'un `TextInput` de 40px. Même API (`search`), même temporisation de 300 ms.
 
 ## 0.4.0 — 2026-10-21

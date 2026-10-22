@@ -91,7 +91,7 @@ export const Desactive: Story = {
   },
 };
 
-/** À côté de filtres en variante bouton : même hauteur, même pilule. */
+/** À côté de filtres en variante bouton : même hauteur, mais une forme de champ (coins de 8px) qui le distingue des pilules. */
 export const ACoteDeFiltres: Story = {
   name: "À côté de filtres",
   decorators: [
@@ -139,5 +139,8 @@ export const ACoteDeFiltres: Story = {
     // Même hauteur que les filtres voisins (29px)
     await expect(Math.round(field.getBoundingClientRect().height)).toBe(Math.round(filter.getBoundingClientRect().height));
     await expect(Math.round(field.getBoundingClientRect().height)).toBe(29);
+    // … mais une forme de champ (coins de 8px), distincte des pilules des filtres
+    await expect(getComputedStyle(field).borderRadius).toBe("8px");
+    await expect(getComputedStyle(filter).borderRadius).not.toBe("8px");
   },
 };
