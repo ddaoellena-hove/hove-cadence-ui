@@ -21,9 +21,20 @@ const DIRECTION_LABEL: Record<TrendDirection, string> = {
   flat: "stable",
 };
 
-/** « Tendance en hausse : de 12 à 18 min sur 7 points ». */
+/**
+ * « Tendance en hausse : de 12 à 18 min sur 7 points ». Si un pic ou un creux
+ * dépasse les extrémités, il est ajouté : « …, minimum 84 %, maximum 95 % »
+ * (sinon une série 95 → 84 → 95 serait annoncée « stable » sans plus).
+ */
 export const describeTrend = (values: number[], unit?: string, format?: Intl.NumberFormatOptions): string => {
-  const first = formatValueWithUnit(values[0], unit, format);
-  const last = formatValueWithUnit(values[values.length - 1], unit, format);
-  return `Tendance ${DIRECTION_LABEL[trendDirection(values)]} : de ${first} à ${last} sur ${values.length} points`;
+  const firstValue = values[0];
+  const lastValue = values[values.length - 1];
+  const fmt = (v: number) => formatValueWithUnit(v, unit, format);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const extremes =
+    min < Math.min(firstValue, lastValue) || max > Math.max(firstValue, lastValue)
+      ? `, minimum ${fmt(min)}, maximum ${fmt(max)}`
+      : "";
+  return `Tendance ${DIRECTION_LABEL[trendDirection(values)]} : de ${fmt(firstValue)} à ${fmt(lastValue)} sur ${values.length} points${extremes}`;
 };

@@ -20,6 +20,9 @@ export const copyToClipboard = async (text: string): Promise<boolean> => {
   field.style.opacity = "0";
   document.body.appendChild(field);
   const active = document.activeElement as HTMLElement | null;
+  // execCommand copie la sélection du document : le champ doit avoir le focus,
+  // sinon la copie peut « réussir » avec un contenu vide.
+  field.focus({ preventScroll: true });
   field.select();
   let ok: boolean;
   try {

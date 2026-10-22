@@ -20,7 +20,7 @@ export const EnHausse: Story = {
   name: "En hausse",
   args: { values: [2.1, 2.4, 2.2, 3.1, 4.8, 3.6, 3.9], unit: "min" },
   play: async ({ canvas }) => {
-    await expect(canvas.getByRole("img")).toHaveAccessibleName(/^Tendance en hausse : de 2,1\smin à 3,9\smin sur 7 points$/);
+    await expect(canvas.getByRole("img")).toHaveAccessibleName(/^Tendance en hausse : de 2,1\smin à 3,9\smin sur 7 points, minimum 2,1\smin, maximum 4,8\smin$/);
   },
 };
 

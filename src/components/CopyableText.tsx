@@ -40,6 +40,9 @@ export const CopyableText = ({
   className,
 }: CopyableTextProps) => {
   const [status, setStatus] = useState<"idle" | "copied" | "failed">("idle");
+  // Change à chaque copie : le message est un nouveau nœud, donc réannoncé
+  // même quand le texte est identique au précédent.
+  const [announceId, setAnnounceId] = useState(0);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => () => clearTimeout(timer.current), []);
@@ -47,6 +50,7 @@ export const CopyableText = ({
   const handleCopy = async () => {
     const ok = await copyToClipboard(value);
     setStatus(ok ? "copied" : "failed");
+    setAnnounceId((n) => n + 1);
     if (ok) onCopy?.(value);
     clearTimeout(timer.current);
     timer.current = setTimeout(() => setStatus("idle"), FEEDBACK_MS);
@@ -77,7 +81,7 @@ export const CopyableText = ({
         className={`copyable-text__status${status === "failed" ? " copyable-text__status--failed" : ""}`}
         role="status"
       >
-        {status === "copied" ? "Copié" : status === "failed" ? "Copie impossible" : ""}
+        {status !== "idle" && <span key={announceId}>{status === "copied" ? "Copié" : "Copie impossible"}</span>}
       </span>
     </span>
   );

@@ -2462,7 +2462,7 @@ Brancher `DataTable.hiddenColumnIds` sur le complément de `visibleIds`, et `Dat
 
 ### Sparkline
 
-Mini-courbe sans axe ni interaction, pour une cellule de `DataTable`, une ligne de liste ou une `Card` (qui l'utilise pour `trend`). Point final marqué. Nom accessible (`role="img"`) résumant la tendance : « Tendance en hausse : de 2,1 min à 3,9 min sur 7 points ».
+Mini-courbe sans axe ni interaction, pour une cellule de `DataTable`, une ligne de liste ou une `Card` (qui l'utilise pour `trend`). Point final marqué. Nom accessible (`role="img"`) résumant la tendance : « Tendance en hausse : de 2,1 min à 3,9 min sur 7 points », complété du minimum et du maximum quand un pic ou un creux dépasse les extrémités (« …, minimum 84 %, maximum 95 % »).
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|

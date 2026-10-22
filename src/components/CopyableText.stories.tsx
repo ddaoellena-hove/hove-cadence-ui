@@ -33,6 +33,10 @@ export const CopieReussie: Story = {
     await expect(navigator.clipboard.writeText).toHaveBeenCalledWith("stop_area:IDFM:482837");
     await expect(args.onCopy).toHaveBeenCalledWith("stop_area:IDFM:482837");
     await expect(canvas.getByRole("status")).toHaveTextContent("Copié");
+    // Seconde copie rapprochée : nouveau nœud, donc nouvelle annonce.
+    const first = canvas.getByRole("status").firstElementChild;
+    await userEvent.click(canvas.getByRole("button", { name: "Copier stop_area:IDFM:482837" }));
+    await waitFor(() => expect(canvas.getByRole("status").firstElementChild).not.toBe(first));
     // Le retour s'efface après 2 s.
     await waitFor(() => expect(canvas.getByRole("status")).toBeEmptyDOMElement(), { timeout: 3000 });
   },
@@ -54,6 +58,29 @@ export const CopieImpossible: Story = {
     await userEvent.click(canvas.getByRole("button", { name: "Copier stop_area:IDFM:482837" }));
     await expect(canvas.getByRole("status")).toHaveTextContent("Copie impossible");
     await expect(args.onCopy).not.toHaveBeenCalled();
+  },
+};
+
+/** Sans API Clipboard (contexte non sécurisé) : repli execCommand, focus rendu au bouton. */
+export const RepliExecCommand: Story = {
+  name: "Repli sans API Clipboard",
+  beforeEach: () => {
+    const clipboard = spyOn(navigator.clipboard, "writeText").mockRejectedValue(new Error("non sécurisé"));
+    const exec = spyOn(document, "execCommand").mockImplementation(() => {
+      // La copie lit la sélection du champ temporaire, qui doit avoir le focus.
+      const field = document.activeElement as HTMLTextAreaElement | null;
+      return field?.tagName === "TEXTAREA" && field.value === "stop_area:IDFM:482837";
+    });
+    return () => {
+      clipboard.mockRestore();
+      exec.mockRestore();
+    };
+  },
+  play: async ({ canvas }) => {
+    const button = canvas.getByRole("button", { name: "Copier stop_area:IDFM:482837" });
+    await userEvent.click(button);
+    await expect(canvas.getByRole("status")).toHaveTextContent("Copié");
+    await expect(button).toHaveFocus();
   },
 };
 
