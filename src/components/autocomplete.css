@@ -212,7 +212,7 @@
 .autocomplete__option-description {
   font-size: 13px;
   font-weight: 400;
-  color: var(--cadence-color-text-muted, #809397);
+  color: var(--cadence-color-text-secondary, #64757a);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -240,6 +240,6 @@
 .autocomplete__empty {
   padding: 10px 12px;
   font-size: 13px;
-  color: var(--cadence-color-text-muted, #809397);
+  color: var(--cadence-color-text-secondary, #64757a);
   text-align: center;
 }
