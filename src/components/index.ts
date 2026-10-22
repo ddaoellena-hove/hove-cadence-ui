@@ -68,3 +68,4 @@ export * from './TimePicker';
 export * from './ServiceCalendar';
 export * from './RouteStopList';
 export * from './Sparkline';
+export * from './CopyableText';

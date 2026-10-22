@@ -284,6 +284,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Tendance dans une cellule de `DataTable` ou une ligne de liste | `Sparkline` | `LineChart compact` (axe, tooltip, seuils) ; `Card trend` (déjà intégré à la carte) |
 | Identité de ligne (code et couleur GTFS) | `LineBadge` | `Badge` (étiquette générique) |
 | Nom, commune et identifiant d'arrêt | `StopLabel` | — |
+| Identifiant technique à copier (arrêt, course, véhicule) | `CopyableText` | `StopLabel` (nom d'arrêt, identifiant en simple mention) ; `TextInput readOnly` |
 | Message persistant dans la page | `InlineAlert` | `Toaster` (notification éphémère) |
 | Sections dépliables | `Accordion` | `TabList` (navigation) |
 | Étapes d'un import ou formulaire | `Stepper` | `ProgressBar` (avancement d'un traitement) |
@@ -2313,6 +2314,24 @@ Identité d'une ligne : pastille (code court ≤ 3 caractères hors espaces) ou 
 | `className` | `string` | — | Classe additionnelle |
 
 ⚠️ Exception à « tokens uniquement » : les couleurs de ligne sont des données métier. Une `textColor` explicite est respectée ; l'app doit vérifier son contraste. Les couleurs CSS nommées, RGB et alpha ne sont pas acceptées.
+
+### CopyableText
+
+Identifiant technique en police mono, tronqué avec ellipse (valeur complète en infobulle native), suivi d'un `GhostButton` de copie. Le retour « Copié » (ou « Copie impossible ») est écrit à côté du bouton et annoncé par une région `role="status"`, puis s'efface après 2 s. Copie via l'API Clipboard, avec repli `execCommand` hors contexte sécurisé.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `value` | `string` | **requis** | Texte copié, affiché par défaut |
+| `children` | `ReactNode` | — | Affichage à la place de `value` (identifiant abrégé) ; c'est toujours `value` qui est copié |
+| `copyLabel` | `string` | `"Copier {value}"` | Nom du bouton (et de son infobulle) |
+| `mono` | `boolean` | `true` | Police mono |
+| `truncate` | `boolean` | `true` | Ellipse sur une ligne |
+| `onCopy` | `(value: string) => void` | — | Après une copie réussie |
+| `className` | `string` | — | Classe additionnelle |
+
+- ✅ Dans `DescriptionList` (valeur d'une métadonnée), une cellule de `DataTable` ou le détail d'un arrêt de `RouteStopList`.
+- ✅ Abréger un identifiant très long avec `children` et nommer le bouton avec `copyLabel` (« Copier l’identifiant de la course »).
+- ❌ Pas pour du texte courant ou un libellé : réservé aux identifiants qu'on recopie dans un autre outil.
 
 ### StopLabel
 

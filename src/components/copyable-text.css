@@ -1,0 +1,47 @@
+/* ── CopyableText ──────────────────────────────────────────────────────────
+   Valeur (mono, tronquée), bouton de copie et retour textuel. */
+
+.copyable-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  min-width: 0;
+  color: var(--cadence-color-primary, #002830);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.copyable-text--mono .copyable-text__value {
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-size: 12px;
+}
+
+.copyable-text--truncate .copyable-text__value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.copyable-text__button {
+  flex-shrink: 0;
+}
+
+/* Retour « Copié » : région live toujours rendue (une région masquée en
+   display: none n'est pas annoncée de façon fiable), vide au repos. */
+.copyable-text__status {
+  flex-shrink: 0;
+  color: var(--cadence-status-completed-fg, #15803d);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.copyable-text__status:empty {
+  margin-left: -4px; /* annule le gap tant qu'il n'y a rien à dire */
+}
+
+.copyable-text__status--failed {
+  color: var(--cadence-color-danger-text, #b91c1c);
+}
