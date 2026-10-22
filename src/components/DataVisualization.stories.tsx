@@ -1,168 +1,69 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect } from "storybook/test";
 import { DataVisualization } from "./DataVisualization";
+import { disruptionsByModeWeekly, WEEKS } from "../stories/fixtures/transport";
 
-const CATEGORIES_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-const CATEGORIES_TEAMS = ["Alpha", "Beta", "Gamma", "Delta", "Epsilon"];
+// Déprécié : enveloppe de BarChart. Ces stories vérifient que l'ancienne API
+// (type, categories, series sans id) s'affiche toujours.
 
-const SERIES_TWO = [
-  { label: "Revenue", data: [42, 58, 35, 71, 49, 63] },
-  { label: "Expenses", data: [30, 41, 28, 52, 38, 44] },
-];
-
-const SERIES_THREE = [
-  { label: "Product A", data: [18, 24, 31, 19, 27] },
-  { label: "Product B", data: [22, 17, 25, 30, 15] },
-  { label: "Product C", data: [12, 20, 14, 18, 22] },
-];
+const series = disruptionsByModeWeekly.map(({ label, data }) => ({ label, data }));
 
 const meta = {
-  title: "Components/DataVisualization",
+  title: "Components/DataVisualization (déprécié)",
   component: DataVisualization,
   tags: ["autodocs"],
   parameters: {
     layout: "padded",
-  },
-  argTypes: {
-    type: {
-      control: "select",
-      options: ["stacked-vertical", "grouped-vertical", "horizontal"],
+    // Les violations a11y font échouer les tests de ce composant
+    a11y: { test: "error" },
+    docs: {
+      description: {
+        component: "⚠️ Déprécié depuis la 0.5.0, supprimé en 1.0.0 : utiliser `BarChart` (`layout`, `orientation`, `title` obligatoire).",
+      },
     },
-    height: { control: { type: "range", min: 160, max: 500, step: 20 } },
-    showLegend: { control: "boolean" },
-    showGridLines: { control: "boolean" },
-    showValues: { control: "boolean" },
   },
+  args: { categories: WEEKS, series, height: 260 },
 } satisfies Meta<typeof DataVisualization>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** "stacked-vertical" → BarChart layout="stacked". */
 export const StackedVertical: Story = {
-  name: "Stacked Vertical",
-  args: {
-    type: "stacked-vertical",
-    series: SERIES_TWO,
-    categories: CATEGORIES_MONTHS,
-    height: 260,
-    showLegend: true,
-    showGridLines: true,
-    showValues: false,
+  name: "stacked-vertical",
+  args: { type: "stacked-vertical" },
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelector(".bar-chart--vertical")).not.toBeNull();
+    // Empilé : une barre par série et par semaine, un seul total par semaine dans le tableau
+    await expect(canvasElement.querySelectorAll(".bar-chart__bar")).toHaveLength(12);
+    await expect(canvasElement.querySelector("th")?.closest("table")?.textContent).toContain("Total");
   },
 };
 
-export const StackedVerticalWithValues: Story = {
-  name: "Stacked Vertical — Values",
-  args: {
-    type: "stacked-vertical",
-    series: SERIES_TWO,
-    categories: CATEGORIES_MONTHS,
-    height: 260,
-    showLegend: true,
-    showGridLines: true,
-    showValues: true,
-  },
-};
-
-export const StackedVerticalThreeSeries: Story = {
-  name: "Stacked Vertical — 3 Series",
-  args: {
-    type: "stacked-vertical",
-    series: SERIES_THREE,
-    categories: CATEGORIES_TEAMS,
-    height: 260,
-    showLegend: true,
-    showGridLines: true,
-    showValues: false,
-  },
-};
-
+/** "grouped-vertical" → BarChart layout="grouped". */
 export const GroupedVertical: Story = {
-  name: "Grouped Vertical",
-  args: {
-    type: "grouped-vertical",
-    series: SERIES_TWO,
-    categories: CATEGORIES_MONTHS,
-    height: 260,
-    showLegend: true,
-    showGridLines: true,
-    showValues: false,
+  name: "grouped-vertical",
+  args: { type: "grouped-vertical", showValues: true },
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelectorAll(".bar-chart__value")).toHaveLength(12);
   },
 };
 
-export const GroupedVerticalWithValues: Story = {
-  name: "Grouped Vertical — Values",
-  args: {
-    type: "grouped-vertical",
-    series: SERIES_TWO,
-    categories: CATEGORIES_MONTHS,
-    height: 260,
-    showLegend: true,
-    showGridLines: true,
-    showValues: true,
-  },
-};
-
-export const GroupedVerticalThreeSeries: Story = {
-  name: "Grouped Vertical — 3 Series",
-  args: {
-    type: "grouped-vertical",
-    series: SERIES_THREE,
-    categories: CATEGORIES_TEAMS,
-    height: 260,
-    showLegend: true,
-    showGridLines: true,
-    showValues: false,
-  },
-};
-
+/** "horizontal" → BarChart layout="grouped" orientation="horizontal". */
 export const Horizontal: Story = {
-  name: "Horizontal",
-  args: {
-    type: "horizontal",
-    series: SERIES_TWO,
-    categories: CATEGORIES_MONTHS,
-    height: 260,
-    showLegend: true,
-    showGridLines: true,
-    showValues: false,
+  name: "horizontal",
+  args: { type: "horizontal" },
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelector(".bar-chart--horizontal")).not.toBeNull();
   },
 };
 
-export const HorizontalWithValues: Story = {
-  name: "Horizontal — Values",
-  args: {
-    type: "horizontal",
-    series: SERIES_TWO,
-    categories: CATEGORIES_MONTHS,
-    height: 260,
-    showLegend: true,
-    showGridLines: true,
-    showValues: true,
-  },
-};
-
-export const HorizontalThreeSeries: Story = {
-  name: "Horizontal — 3 Series",
-  args: {
-    type: "horizontal",
-    series: SERIES_THREE,
-    categories: CATEGORIES_TEAMS,
-    height: 300,
-    showLegend: true,
-    showGridLines: true,
-    showValues: false,
-  },
-};
-
-export const NoLegendNoGrid: Story = {
-  name: "Minimal (no legend, no grid)",
-  args: {
-    type: "grouped-vertical",
-    series: SERIES_TWO,
-    categories: CATEGORIES_MONTHS,
-    height: 220,
-    showLegend: false,
-    showGridLines: false,
-    showValues: false,
+/** Options héritées : sans légende ni grille. */
+export const SansLegendeNiGrille: Story = {
+  name: "Sans légende ni grille",
+  args: { type: "stacked-vertical", showLegend: false, showGridLines: false },
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelector(".chart-legend")).toBeNull();
+    await expect(canvasElement.querySelectorAll(".chart__grid-line")).toHaveLength(0);
   },
 };

@@ -25,8 +25,8 @@ export default defineConfig({
       formats: ['es', 'cjs'],
     },
     rollupOptions: {
-      // React, les icônes Untitled UI et TanStack ne doivent pas être inclus dans le bundle
-      external: ['react', 'react-dom', 'react/jsx-runtime', /^@untitledui\/icons/, /^@tanstack\//],
+      // React, les icônes Untitled UI, TanStack et d3 ne doivent pas être inclus dans le bundle
+      external: ['react', 'react-dom', 'react/jsx-runtime', /^@untitledui\/icons/, /^@tanstack\//, /^d3-/],
       output: {
         globals: {
           react: 'React',
