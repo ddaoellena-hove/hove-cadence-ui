@@ -1,5 +1,13 @@
 # Changelog — @ddaoellena/cadence-ui
 
+## 0.8.1 (non publiée)
+
+Version mineure, sans rupture d’API.
+
+### Ajouté
+
+- **`ModeIcon`** : famille de **30 pictogrammes de mode de transport** remplis (métro, train, tram, funiculaire, bus à la demande, bus de substitution, autocar, gare routière, avion, bateau, voiture, covoiturage, taxi, vélo, parking vélo, parking, parking relais, station, réseau, marche lente/moyenne/rapide, course, domicile, travail, PMR, ticket…). SVG inline (gabarit 80), suit `currentColor`, même interface qu’`Icons` (`size`, `color`, `title`). Famille **distincte** des icônes d’interface en trait d’`Icons`. Liste ordonnée `MODE_NAMES` et type `ModeName` exportés (pour une galerie ou un sélecteur de mode). Fiche GUIDELINES + ligne d’intention.
+
 ## 0.8.0 (non publiée)
 
 Version mineure, sans rupture d’API. Thème : **Page patterns**.
