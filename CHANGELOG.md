@@ -9,6 +9,10 @@ Version mineure, sans rupture d’API.
 - **`ColorField`** : saisie d’une couleur de ligne GTFS (`route_color`) avec pastille, champ hex validé, sélecteur natif et aperçu `LineBadge` en direct ; contrôle de contraste (`line-badge-utils`) et bouton « Calculer la couleur du texte ».
 - **`Timeline`** : plages horaires sur un axe temps partagé (`ChartAxis`), une ligne par entité, repère « maintenant », annotations, couleurs par `tone` doublées d’un motif ; navigation clavier, tooltip, « Voir les données », états `loading`/`empty`/`error`.
 
+### Modifié
+
+- **`Modal`** : nouveau design — carte blanche arrondie (`--cadence-radius-2xl`), en-tête sur fond discret (`--cadence-color-surface-subtle`) avec filet bas et titre 17px, pied sans filet. L’action secondaire passe de `GhostButton` à `PrimaryButton outline`. Un `children` en texte seul s’affiche comme un message centré (15px). API inchangée.
+
 ### Corrigé
 
 - Règle des boutons `md` à côté d’un champ : l’action inline à côté d’un seul champ est désormais documentée comme une exception (règle et exemple alignés).
@@ -21,6 +25,7 @@ Version mineure, sans rupture d’API.
 - Tableau des tokens de GUIDELINES complété (`--cadence-color-text-secondary`, `--cadence-color-skeleton`) + test de cohérence `tokens.css` ↔ GUIDELINES.
 - `StopLabel` : doc alignée sur le code (identifiant en `Badge`, pas de `title`).
 - Exemples des MDX de guidelines passés aux tokens, avec contrôle automatisé.
+- Fiche `Modal` : règles d’usage face à `Drawer` et `Popover` (✅ / ❌), exemple de confirmation.
 - Chip de filtre : `Badge dismissible` / `FilterBar activeFilters` documentés (pas de composant `Tag` dédié).
 
 ## 0.6.0 (non publiée)

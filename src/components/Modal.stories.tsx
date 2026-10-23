@@ -98,13 +98,13 @@ export const Large: Story = {
   },
 };
 
+/** Confirmation de suppression : message centré, Annuler en outline, Supprimer en danger. */
 export const Destructive: Story = {
   render: (args) => <ControlledTemplate {...args} />,
   args: {
-    title: "Supprimer le scénario",
-    size: "small",
-    children:
-      "Cette action est définitive. Le scénario et toutes ses données associées seront supprimés.",
+    title: "Confirmez-vous la suppression ?",
+    size: "medium",
+    children: "Si vous confirmez, votre objet sera définitivement effacé.",
     primaryAction: {
       label: "Supprimer",
       onClick: () => {},
@@ -114,6 +114,13 @@ export const Destructive: Story = {
       label: "Annuler",
       onClick: () => {},
     },
+  },
+  play: async () => {
+    const dialog = within(document.body).getByRole("dialog", { name: "Confirmez-vous la suppression ?" });
+    const scope = within(dialog);
+    await expect(scope.getByRole("button", { name: "Annuler" })).toHaveClass("primary-button--outline");
+    await expect(scope.getByRole("button", { name: "Supprimer" })).toHaveClass("primary-button--danger");
+    await expect(dialog.querySelector(".modal__body")).toHaveClass("modal__body--message");
   },
 };
 

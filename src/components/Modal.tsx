@@ -1,5 +1,4 @@
 import React, { useId, useLayoutEffect, useRef, useState } from "react";
-import { GhostButton } from "./GhostButton";
 import { PrimaryButton } from "./PrimaryButton";
 import { OverlayPortal, useOverlay } from "./overlay-primitives";
 import "./modal.css";
@@ -31,7 +30,7 @@ export interface ModalProps {
    */
   primaryAction?: ModalAction;
   /**
-   * Action secondaire (à gauche dans le pied, rendue en GhostButton).
+   * Action secondaire (à gauche dans le pied, rendue en PrimaryButton outline).
    * Typically « Annuler » or a reversible action.
    */
   secondaryAction?: ModalAction;
@@ -83,6 +82,16 @@ export const Modal = ({
 
   const showHeader = title || !hideCloseButton;
   const showFooter = primaryAction || secondaryAction;
+  // Message simple (texte seul) : centré, comme une confirmation.
+  const isMessage = typeof children === "string";
+  const bodyClass = [
+    "modal__body",
+    "cadence-scrollbar",
+    isMessage && "modal__body--message",
+    scrollable && "modal__body--scrollable",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <OverlayPortal>
@@ -94,16 +103,16 @@ export const Modal = ({
       aria-labelledby={title ? titleId : undefined}
       aria-label={title ? undefined : ariaLabel || "Dialogue"}
     >
-      {/* ── Frame (#002830, padding 3px) ── */}
+      {/* ── Cadre blanc ── */}
       <div
         ref={frameRef}
         tabIndex={-1}
         className={`modal modal--${size}`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* ── Header — transparent, texte blanc sur fond sombre ── */}
+        {/* ── En-tête sur fond discret ── */}
         {showHeader && (
-          <div className="modal__header">
+          <div className={`modal__header${title ? "" : " modal__header--no-title"}`}>
             {title && (
               <h2 id={titleId} className="modal__title">
                 {title}
@@ -122,27 +131,24 @@ export const Modal = ({
           </div>
         )}
 
-        {/* ── Inner — fond blanc, border-radius 9px ── */}
-        <div className="modal__inner">
-          <div ref={bodyRef} className="modal__body cadence-scrollbar" tabIndex={scrollable ? 0 : undefined}>
-            {children}
-          </div>
-
-          {showFooter && (
-            <div className="modal__footer">
-              {secondaryAction && (
-                <GhostButton label={secondaryAction.label} onClick={secondaryAction.onClick} />
-              )}
-              {primaryAction && (
-                <PrimaryButton
-                  label={primaryAction.label}
-                  onClick={primaryAction.onClick}
-                  tone={primaryAction.destructive ? "danger" : "default"}
-                />
-              )}
-            </div>
-          )}
+        <div ref={bodyRef} className={bodyClass} tabIndex={scrollable ? 0 : undefined}>
+          {children}
         </div>
+
+        {showFooter && (
+          <div className="modal__footer">
+            {secondaryAction && (
+              <PrimaryButton outline label={secondaryAction.label} onClick={secondaryAction.onClick} />
+            )}
+            {primaryAction && (
+              <PrimaryButton
+                label={primaryAction.label}
+                onClick={primaryAction.onClick}
+                tone={primaryAction.destructive ? "danger" : "default"}
+              />
+            )}
+          </div>
+        )}
       </div>
     </div>
     </OverlayPortal>

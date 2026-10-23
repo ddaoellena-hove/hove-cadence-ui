@@ -154,8 +154,8 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-radius-sm` | `6px` | Petits éléments : badges, boutons d'icône |
 | `--cadence-radius-md` | `8px` | Contenus internes |
 | `--cadence-radius-lg` | `10px` | Champs et cards |
-| `--cadence-radius-xl` | `12px` | Conteneurs : modale |
-| `--cadence-radius-2xl` | `16px` | Grandes cartes riches (`RichCheckbox` / `RichRadioButton` large) |
+| `--cadence-radius-xl` | `12px` | Conteneurs : `AppLayout`, `CounterInput` |
+| `--cadence-radius-2xl` | `16px` | `Modal`, grandes cartes riches (`RichCheckbox` / `RichRadioButton` large) |
 | `--cadence-radius-pill` | `999px` | Pilules et cercles : boutons, `SearchInput`, `Toggle`, halos ronds |
 | `--cadence-control-height-compact` | `29px` | Hauteur des contrôles compacts : boutons `size="sm"`, `SearchInput`, déclencheurs `variant="button"` — voir [Hauteurs de contrôle](#hauteurs-de-contrôle-et-alignement-sur-une-rangée) |
 | `--cadence-control-height-field` | `40px` | Hauteur des champs d'une ligne (`TextInput`, `Dropdown`, `DatePicker`…) et du `SegmentedControl` |
@@ -439,7 +439,7 @@ Le multi-colonnes est un outil de **densité locale**, pas un outil de **découp
 
 `PrimaryButton` (plein ou `outline`) et `GhostButton` ont **la même API et les mêmes dimensions** (voir la [Référence API](#primarybutton--ghostbutton)) : seul le rendu change, ce qui les aligne au pixel dans un groupe.
 
-**Ghost ou Outline ?** `GhostButton` par défaut (formulaires, modales, popovers, barres d'outils, barres de sélection). `PrimaryButton outline` dans un dashboard, quand les actions secondaires doivent rester visibles au repos à côté de l'action de création.
+**Ghost ou Outline ?** `GhostButton` par défaut (formulaires, popovers, barres d'outils, barres de sélection). `PrimaryButton outline` dans un dashboard, quand les actions secondaires doivent rester visibles au repos à côté de l'action de création, et pour l'action secondaire du pied d'une `Modal` (« Annuler » face à la décision).
 
 ### Règles
 
@@ -554,7 +554,7 @@ Une période, une date ou un choix dans une liste se placent dans l'en-tête ave
 </>
 ```
 
-**Modale** — le pied est géré par `primaryAction` (`PrimaryButton`) et `secondaryAction` (`GhostButton`) de `Modal` : ne pas recréer de boutons dans `children`.
+**Modale** — le pied est géré par `primaryAction` (`PrimaryButton`) et `secondaryAction` (`PrimaryButton outline`) de `Modal` : ne pas recréer de boutons dans `children`.
 
 **Empty state**
 
@@ -1924,15 +1924,36 @@ Clavier : le tracé est focusable ; ←/→ passent d'une abscisse à l'autre, D
 |---|---|---|---|
 | `isOpen` | `boolean` | **requis** | Visibilité |
 | `onClose` | `() => void` | **requis** | Backdrop, ×, Échap |
-| `title` | `string` | — | Titre (header sombre), relié par un identifiant unique |
+| `title` | `string` | — | Titre de l'en-tête (fond `--cadence-color-surface-subtle`, filet bas), relié par un identifiant unique |
 | `aria-label` | `string` | `"Dialogue"` | Nom accessible sans titre visible ; fournir un libellé précis |
-| `children` | `ReactNode` | **requis** | Corps (scrollable si long) |
+| `children` | `ReactNode` | **requis** | Corps (scrollable si long). Texte seul (`string`) → message centré en 15px, comme une confirmation ; contenu riche (formulaire, liste) → aligné à gauche en 13px |
 | `primaryAction` | `{ label, onClick, destructive? }` | — | Bouton droit du pied : `PrimaryButton` (`destructive` → `tone="danger"`) |
-| `secondaryAction` | `{ label, onClick }` | — | Bouton gauche du pied : `GhostButton` |
+| `secondaryAction` | `{ label, onClick }` | — | Bouton gauche du pied : `PrimaryButton outline` |
 | `size` | `"small" \| "medium" \| "large"` | `"medium"` | 400 / 560 / 800 px |
 | `hideCloseButton` | `boolean` | `false` | — |
 
 Comportements intégrés : fermeture sur Échap, scroll du body et du conteneur AppLayout verrouillé, footer fixe quand le corps scrolle. Avec plusieurs Modal/Drawer, seul le dernier ouvert gère Échap et le piège à focus. Fermer une surcouche en arrière-plan conserve le verrouillage et le focus de celle au premier plan. Les attributs `inert` et `aria-hidden` préexistants sont restaurés à la fermeture. Les contrôles masqués, désactivés (y compris par un fieldset) ou hors tabulation sont exclus du cycle Tab.
+
+Anatomie : carte blanche (`--cadence-radius-2xl`, liseré `--cadence-color-border`), en-tête sur fond discret avec titre 17px et bouton Fermer, corps, pied d'actions alignées à droite sans filet (un filet n'apparaît que si le corps défile).
+
+```tsx
+<Modal
+  isOpen={open}
+  onClose={close}
+  title="Confirmez-vous la suppression ?"
+  size="small"
+  primaryAction={{ label: "Supprimer", onClick: onDelete, destructive: true }}
+  secondaryAction={{ label: "Annuler", onClick: close }}
+>
+  Si vous confirmez, votre objet sera définitivement effacé.
+</Modal>
+```
+
+- ✅ Réservée à ce qui **bloque** : confirmation d'une action irréversible, décision à prendre avant de continuer, formulaire court (2-3 champs).
+- ✅ Titre formulé en question ou en action (« Confirmez-vous la suppression ? », « Renommer le scénario ») ; libellés de boutons explicites (« Supprimer », pas « OK »).
+- ❌ Pas pour consulter ou éditer le détail d'un élément, ni pour un formulaire long : `Drawer` (l'utilisateur garde la liste en vue).
+- ❌ Pas pour une aide riche ou un réglage rapide ancré à un bouton (seuil, filtre) : `Popover`.
+- ❌ Pas pour informer sans demander de décision : `useToast()` (temporaire) ou `InlineAlert` (dans la page).
 
 ### PageHeader
 
@@ -2375,7 +2396,7 @@ Panneau latéral droit pour consulter le détail d'un élément **sans quitter l
 
 Le panneau partage avec `Modal` la gestion des surcouches superposées : seule celle au premier plan possède le clavier ; le fond reste verrouillé jusqu’à la fermeture de la dernière.
 
-⚠️ Mêmes règles d'actions que `Modal` : `GhostButton` (secondaire) + `PrimaryButton` (principale), jamais deux boutons pleins.
+⚠️ Actions du pied : `GhostButton` (secondaire) + `PrimaryButton` (principale), jamais deux boutons pleins. (La `Modal` met son action secondaire en `PrimaryButton outline`.)
 
 ### ProgressBar
 
