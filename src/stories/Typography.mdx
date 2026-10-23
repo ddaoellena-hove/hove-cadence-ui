@@ -5,7 +5,7 @@ import { Meta, ColorPalette, ColorItem, Typeset } from "@storybook/addon-docs/bl
 <style>
 {`
   .typo-page {
-    font-family: "Inter", Helvetica, sans-serif;
+    font-family: var(--cadence-font-sans, "ABC Diatype", "Inter", Helvetica, sans-serif);
     max-width: 860px;
   }
 
@@ -14,7 +14,7 @@ import { Meta, ColorPalette, ColorItem, Typeset } from "@storybook/addon-docs/bl
   }
 
   .typo-section h2 {
-    font-family: "Inter", Helvetica, sans-serif;
+    font-family: var(--cadence-font-sans, "ABC Diatype", "Inter", Helvetica, sans-serif);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.1em;
@@ -106,7 +106,7 @@ import { Meta, ColorPalette, ColorItem, Typeset } from "@storybook/addon-docs/bl
 
 
   .type-section-title {
-    font-family: "Inter", Helvetica, sans-serif;
+    font-family: var(--cadence-font-sans, "ABC Diatype", "Inter", Helvetica, sans-serif);
     font-size: 13px;
     font-weight: 600;
     color: #1a1a2e;
@@ -116,7 +116,7 @@ import { Meta, ColorPalette, ColorItem, Typeset } from "@storybook/addon-docs/bl
   }
 
   .type-field-label {
-    font-family: "Inter", Helvetica, sans-serif;
+    font-family: var(--cadence-font-sans, "ABC Diatype", "Inter", Helvetica, sans-serif);
     font-size: 12px;
     font-weight: 500;
     color: #374151;
@@ -124,7 +124,7 @@ import { Meta, ColorPalette, ColorItem, Typeset } from "@storybook/addon-docs/bl
   }
 
   .type-body {
-    font-family: "Inter", Helvetica, sans-serif;
+    font-family: var(--cadence-font-sans, "ABC Diatype", "Inter", Helvetica, sans-serif);
     font-size: 12px;
     font-weight: 400;
     color: #888;
@@ -248,7 +248,7 @@ Le design system Hove utilise trois familles de caractères selon le contexte d'
   <div className="specimen__meta">
     <p className="specimen__name">Breadcrumb</p>
     <ul className="specimen__props">
-      <li>Inter</li>
+      <li>ABC Diatype</li>
       <li>11px / 400 (<code>--cadence-font-size-caption</code>)</li>
       <li>icon-muted → primary</li>
     </ul>
@@ -268,7 +268,7 @@ Le design system Hove utilise trois familles de caractères selon le contexte d'
   <div className="specimen__meta">
     <p className="specimen__name">Titre de section</p>
     <ul className="specimen__props">
-      <li>Inter</li>
+      <li>ABC Diatype</li>
       <li>13px / 600</li>
       <li>#1a1a2e</li>
       <li>UPPERCASE</li>
@@ -283,7 +283,7 @@ Le design system Hove utilise trois familles de caractères selon le contexte d'
   <div className="specimen__meta">
     <p className="specimen__name">Label de champ</p>
     <ul className="specimen__props">
-      <li>Inter</li>
+      <li>ABC Diatype</li>
       <li>12px / 500</li>
       <li>#374151</li>
     </ul>
@@ -297,7 +297,7 @@ Le design system Hove utilise trois familles de caractères selon le contexte d'
   <div className="specimen__meta">
     <p className="specimen__name">Corps / texte secondaire</p>
     <ul className="specimen__props">
-      <li>Inter</li>
+      <li>ABC Diatype</li>
       <li>12px / 400</li>
       <li>#888</li>
       <li>line-height 1.5</li>
@@ -401,37 +401,39 @@ Le design system Hove utilise trois familles de caractères selon le contexte d'
 
 ## Import des polices
 
-**Google Fonts — Inter & Spline Sans Mono**
+**Google Fonts — replis (Inter, Space Grotesk) & Spline Sans Mono**
+
+Inter (repli d'interface) et Space Grotesk (repli des titres) restent chargées ; Spline Sans Mono sert aux valeurs chiffrées.
 
 <div className="import-block">
   <code>{`<link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link
-  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Spline+Sans+Mono:wght@400;600;700&display=swap"
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap"
   rel="stylesheet"
 />`}</code>
 </div>
 
-**Uxum Grotesque — fichiers locaux**
+**Polices locales (woff2) — ABC Diatype (interface) & Uxum Grotesque (titres)**
+
+Polices commerciales déclarées via `@font-face` dans `tokens.css`, leurs `woff2` servis depuis `/fonts`. Elles priment sur leurs replis. Pour revenir à Inter en interface, remettre `"Inter"` en tête de `--cadence-font-sans`.
 
 <div className="import-block">
   <code>{`@font-face {
-  font-family: "Uxum Grotesque";
-  src: url("/fonts/UxumGrotesque-Regular.otf") format("opentype");
+  font-family: "ABC Diatype";
+  src: url("/fonts/ABCDiatype-Regular.woff2") format("woff2");
   font-weight: 400;
+  font-display: swap;
 }
+/* … Medium (500), Bold (600 700) + italiques … */
 
 @font-face {
   font-family: "Uxum Grotesque";
-  src: url("/fonts/UxumGrotesque-Medium.otf") format("opentype");
-  font-weight: 500;
+  src: url("/fonts/UxumGrotesque-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
 }
-
-@font-face {
-  font-family: "Uxum Grotesque";
-  src: url("/fonts/UxumGrotesque-Bold.otf") format("opentype");
-  font-weight: 700;
-}`}</code>
+/* … Medium (500), Bold (700) … */`}</code>
 </div>
 
 </div>
@@ -444,8 +446,8 @@ Le design system Hove utilise trois familles de caractères selon le contexte d'
 
 | Contexte | Police |
 |---|---|
-| Titre de page principal | **Uxum Grotesque** |
-| Corps, labels, navigation, UI | **Inter** |
+| Titre de page principal | **Uxum Grotesque** (repli Space Grotesk) |
+| Corps, labels, navigation, UI | **ABC Diatype** (repli Inter) |
 | Tags techniques, colonnes de données | **Spline Sans Mono** |
 
 > Les composants du design system (Sidebar, Tab, Toggle, Button…) héritent de la police de leur contexte. Ne pas surcharger la `font-family` à l'intérieur des composants sauf besoin explicite.
