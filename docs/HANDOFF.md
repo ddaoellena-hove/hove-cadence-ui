@@ -206,10 +206,21 @@ Branche `release/0.8.0`, version `0.8.0` non publiée. Commits atomiques, rien p
 - *Lot B (primitives)* : **`PageSection`**, **`FieldRow`**, **`FormActions`**, **`CardGrid`** (tsx+css+stories+tests+export+fiche+intention).
 - *Lot C (catalogue)* : section Storybook **« Page patterns »** + test de garde ; **11 patterns** livrés (gabarit vérifié `src/patterns/*.tsx`, stories fullscreen + a11y, MDX à structure fixe via `?raw`, fiche GUIDELINES). Tableau *Intention → pattern*, correspondance *recette → pattern*, page **Recettes → Page patterns**, instructions agents IA. Test `patterns-gabarit` (gabarit = doc). Audit responsive `docs/audits/0.8.0/`.
 
-**Décisions** : `Toolbar`/`SplitView` documentés (pas de composant) ; prop `DataTable` colonne collée **reportée** ; Paramètres = enregistrement **explicite**. Gabarits = option 1 (dans l'app, `src/patterns`, non exportés) ; seules les primitives sont dans la lib.
+**Décisions** : `Toolbar`/`SplitView` documentés (pas de composant) ; Paramètres = enregistrement **explicite**. Gabarits = option 1 (dans l'app, `src/patterns`, non exportés) ; seules les primitives sont dans la lib.
 
-**Reporté / reste ouvert** :
-- **Prop `DataTable` colonne d'actions collée** (construire la prop pour remplacer le CSS fourni par l'app).
-- **Migration complète** des 4 stories `Recettes/*` vers les patterns (aujourd'hui : page de redirection + mapping ; stories riches conservées jusqu'à la 1.0.0).
-- Captures image des 11 patterns aux 3 largeurs (aujourd'hui : audit programmatique « pas de scroll H » + 2 captures de référence).
-- Tests manuels lecteur d'écran ; décision de publication npm.
+## Mise à jour — finition du reste ouvert
+
+**Fait**
+
+- **`DataTable` : prop `stickyActions`** — colle la dernière colonne (actions) à droite au défilement, ombre de séparation ; remplace le CSS fourni par l'app (A6). CSS déplacé dans `data-table.css`, stories `Colonne d'actions` migrées sur la prop, fiche + CHANGELOG à jour.
+- **Warnings React** : les « champs contrôlés sans `onChange` » signalés dans l'ancien relais **ont disparu** (corrigés aux refontes TimePicker/recettes). Les avertissements de **dépréciation** restants proviennent uniquement des **stories de démonstration** des API dépréciées (`PrimaryButton destructive`/`size`/`withIcon`, `SecondaryButton`, `DataVisualization`) — **intentionnels** (ils documentent la migration), à retirer avec les API en 1.0.0. Aucun usage déprécié dans les recettes.
+- **`smoke:dist`** : paquet `dist` monté hors Vite (React 19, ESM/CJS) — vert.
+- **Migration Recettes → patterns** : traitée par la **page de redirection** + le mapping *recette → pattern* (choix validé par le prompt : « alias **ou** page redirect »). Les stories `Recettes/*` riches sont **conservées à dessein jusqu'à la 1.0.0** (retrait groupé avec les API dépréciées), pour ne pas perdre les démos à données réelles.
+- **Audit responsive** : les 11 patterns vérifiés **par programme** à 1024 px (`scrollWidth === clientWidth`, aucun scroll H) + captures de référence (`docs/audits/0.8.0/`). Les 33 captures image (11 × 3 largeurs) ne sont pas produites : faible valeur face à la vérification programmatique.
+
+**Reste ouvert — humain / décision (non automatisable ici)**
+
+- Tests manuels **lecteur d'écran** et navigateurs cibles.
+- Vérification dans des **apps consommatrices dédiées** React 18 / 19 (ESM + CJS) au-delà de `smoke:dist`.
+- Tests d'intégration des **menus en portail dans des dialogues**.
+- **Décision de publication npm** (rien n'est publié ; `npm version` déjà en 0.8.0).
