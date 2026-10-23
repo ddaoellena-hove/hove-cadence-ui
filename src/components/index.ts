@@ -24,6 +24,7 @@ export * from './DatePicker';
 export * from './DateRangePicker';
 export * from './Heatmap';
 export * from './Icons';
+export * from './ModeIcon';
 export * from './Indicator';
 export * from './PageHeader';
 export * from './PageSection';

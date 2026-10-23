@@ -315,6 +315,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Tendance dans une cellule de `DataTable` ou une ligne de liste | `Sparkline` | `LineChart compact` (axe, tooltip, seuils) ; `Card trend` (déjà intégré à la carte) |
 | Identité de ligne (code et couleur GTFS) | `LineBadge` | `Badge` (étiquette générique) |
 | Nom, commune et identifiant d'arrêt | `StopLabel` | — |
+| Pictogramme d'un mode de transport (rempli : métro, vélo, marche, voiture…) | `ModeIcon` | `Icons` (icônes d'interface en trait) ; `LineBadge` (code + couleur d'une ligne) |
 | Choisir le périmètre réseau d'une perturbation (réseaux, lignes) | `DisruptionScopePicker` | `Autocomplete multiple` (liste plate, sans hiérarchie) ; `TreeView` seul (sans champ, résumé ni chips) |
 | Identifiant technique à copier (arrêt, course, véhicule) | `CopyableText` | `StopLabel` (nom d'arrêt, identifiant en simple mention) ; `TextInput readOnly` |
 | Message persistant dans la page | `InlineAlert` | `Toaster` (notification éphémère) |
@@ -2006,6 +2007,23 @@ SVG inline issu de `@untitledui/icons` — aucune requête réseau. L'icône sui
 <Icons icon="trash" color="#da1e28" />       {/* couleur explicite */}
 <span style={{ color: "var(--cadence-color-danger)" }}><Icons icon="trash" /></span>  {/* via currentColor */}
 ```
+
+### ModeIcon
+
+Pictogramme **rempli** d'un mode de transport (30 modes), famille distincte des icônes d'interface en trait d'`Icons`. SVG inline (gabarit 80), aucune requête réseau, suit `currentColor`. Même interface que `Icons` (`size`, `color`, `title`). La liste ordonnée `MODE_NAMES` (et le type `ModeName`) sert à itérer : galerie, sélecteur de mode.
+
+Modes : `all-pt`, `metro`, `metro-alt`, `train`, `tram`, `funicular`, `bus-on-demand`, `substitute-bus-alt`, `coach`, `coach-station`, `plane`, `boat`, `car`, `carpool`, `taxi`, `bike`, `bike-parking`, `parking`, `park-and-ride-alt`, `station`, `network`, `walk`, `slow-walk`, `mid-walk`, `fast-walk`, `run`, `home`, `work`, `wheelchair`, `ticket`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `mode` | `ModeName` (30 valeurs) | **requis** | Mode de transport |
+| `size` | `number` | `24` | Taille en px (largeur = hauteur) |
+| `color` | `string` | `"currentColor"` | Remplissage. Laisser à `currentColor` pour piloter en CSS |
+| `title` | `string` | — | Si fourni → `role="img"` + `aria-label` ; sinon `aria-hidden` |
+| `className` | `string` | — | Classe CSS additionnelle |
+
+- ✅ Pictogramme de mode (rempli, carré). Décoratif à côté d'un libellé → sans `title` ; porteur de sens seul → `title`.
+- ❌ Pas pour une icône d'interface (trash, chevron…) : `Icons`. Pas pour l'identité d'une ligne (code + couleur GTFS) : `LineBadge`.
 
 ### Indicator
 
