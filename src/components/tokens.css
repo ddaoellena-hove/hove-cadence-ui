@@ -31,6 +31,52 @@
   src: url("/fonts/UxumGrotesque-Bold.woff2") format("woff2");
 }
 
+/* Police d'interface : ABC Diatype (commerciale). woff2 servis depuis /fonts
+   (public). Inter reste chargée (Google Fonts) et en tête de repli : pour
+   revenir à Inter, remettre "Inter" en premier dans --cadence-font-sans. */
+@font-face {
+  font-family: "ABC Diatype";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/ABCDiatype-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "ABC Diatype";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/ABCDiatype-RegularItalic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "ABC Diatype";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/ABCDiatype-Medium.woff2") format("woff2");
+}
+@font-face {
+  font-family: "ABC Diatype";
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/ABCDiatype-MediumItalic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "ABC Diatype";
+  font-style: normal;
+  font-weight: 600 700;
+  font-display: swap;
+  src: url("/fonts/ABCDiatype-Bold.woff2") format("woff2");
+}
+@font-face {
+  font-family: "ABC Diatype";
+  font-style: italic;
+  font-weight: 600 700;
+  font-display: swap;
+  src: url("/fonts/ABCDiatype-BoldItalic.woff2") format("woff2");
+}
+
 :root {
   /* ── Couleurs — encre & texte ──────────────────────────────────────────── */
   --cadence-color-primary: #002830;        /* Encre principale — texte fort, boutons, modale */
@@ -104,7 +150,9 @@
   --cadence-color-skeleton: var(--cadence-color-surface-alt, #eef1f4); /* Fond des squelettes de chargement (Skeleton, DataTable, Card) */
 
   /* ── Typographie ───────────────────────────────────────────────────────── */
-  --cadence-font-sans: "Inter", Helvetica, sans-serif;
+  /* Police d'interface. Inter conservée en repli (toujours chargée) : pour
+     revenir à Inter, la remettre en tête ici — c'est le seul endroit à changer. */
+  --cadence-font-sans: "ABC Diatype", "Inter", Helvetica, sans-serif;
   --cadence-font-display: "Uxum Grotesque", "Space Grotesk", sans-serif;
   --cadence-font-mono: "Spline Sans Mono", monospace;
   --cadence-font-size-caption: 11px;  /* Petits textes : aide sous un champ, fil d'Ariane */

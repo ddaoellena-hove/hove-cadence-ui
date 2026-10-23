@@ -83,7 +83,7 @@ import "@ddaoellena/cadence-ui/style.css";
 />
 ```
 
-La **Uxum Grotesque** (titres) est une police commerciale, déclarée via `@font-face` (poids 400 / 500 / 700) dans `tokens.css`, ses `woff2` servis depuis `/fonts` (dossier `public`). Elle prend automatiquement le pas sur Space Grotesk dans `--cadence-font-display`. Une app qui consomme la lib doit héberger les `woff2` sous `/fonts/` (la lib ne distribue que la règle `@font-face`, pas les fichiers) ; sinon Space Grotesk sert de fallback sans configuration.
+Le lien Google Fonts ci-dessus charge **Inter** (repli d'interface), **Space Grotesk** (repli display) et **Spline Sans Mono**. Les deux polices commerciales, **ABC Diatype** (interface) et **Uxum Grotesque** (titres), sont déclarées via `@font-face` dans `tokens.css`, leurs `woff2` servis depuis `/fonts` (dossier `public`) : elles prennent automatiquement le pas sur leurs replis (`--cadence-font-sans`, `--cadence-font-display`). Une app qui consomme la lib doit héberger ces `woff2` sous `/fonts/` (la lib ne distribue que les règles `@font-face`, pas les fichiers) ; sinon Inter (interface) et Space Grotesk (display) servent de repli sans configuration. Pour revenir à Inter en interface, remettre `"Inter"` en tête de `--cadence-font-sans`.
 
 ### 3. Importer les composants
 
@@ -147,7 +147,7 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-dataviz-seq-1..7` | `#eaf4f5` → `#004650` | Rampe séquentielle (`Heatmap`), teinte pétrole à clarté croissante |
 | `--cadence-dataviz-threshold` / `-threshold-breach` | `#1a3e45` / `#b91c1c` | Ligne de seuil / côté défavorable d'un seuil |
 | `--cadence-dataviz-annotation` / `-annotation-band` | `#55606e` / `rgba(85, 96, 110, 0.08)` | Trait ou bord d'annotation / remplissage d'une bande annotée |
-| `--cadence-font-sans` | Inter | Texte d'interface |
+| `--cadence-font-sans` | ABC Diatype → Inter | Texte d'interface |
 | `--cadence-font-display` | Uxum Grotesque → Space Grotesk | Titres |
 | `--cadence-font-mono` | Spline Sans Mono | Valeurs numériques |
 | `--cadence-font-size-caption` | `11px` | Petits textes : aide sous un champ (`TextInput`, `TextArea`, `TimePicker`), fil d'Ariane (`Breadcrumbs`) |
@@ -218,13 +218,15 @@ Trois polices, chacune réservée à un rôle précis. Ne pas les substituer.
 
 | Police | Token | Rôle |
 |---|---|---|
-| **Inter** | `--cadence-font-sans` | Texte d'interface : labels, valeurs, boutons, navigation, messages |
+| **ABC Diatype** (repli Inter) | `--cadence-font-sans` | Texte d'interface : labels, valeurs, boutons, navigation, messages |
 | **Uxum Grotesque** (fallback Space Grotesk) | `--cadence-font-display` | Titres de page (`<h1>`) et nom produit |
 | **Spline Sans Mono** | `--cadence-font-mono` | Valeurs numériques et données chiffrées |
 
+**ABC Diatype** (commerciale) est chargée via `@font-face` (`tokens.css`), ses `woff2` servis depuis `/fonts`. **Inter** reste chargée (Google Fonts) et en tête de repli : revenir à Inter ne demande que de la remettre en premier dans `--cadence-font-sans`.
+
 ### Règles
 
-- ✅ Utiliser **Inter** pour tout texte d'interface — c'est déjà la police par défaut de tous les composants.
+- ✅ Utiliser le token `--cadence-font-sans` (ABC Diatype) pour tout texte d'interface — c'est déjà la police par défaut de tous les composants.
 - ✅ Utiliser le token `--cadence-font-display` pour les `<h1>` de page.
 - ✅ Utiliser `--cadence-font-mono` uniquement pour les valeurs numériques affichées (codes, identifiants, axes de graphiques).
 - ❌ Ne jamais utiliser une police système ou une autre police web.
