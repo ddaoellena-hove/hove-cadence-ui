@@ -85,9 +85,9 @@ Le header est un <code>PageHeader</code> : fil d'Ariane et titre à gauche, acti
 Toute la zone de contenu est encapsulée dans une carte blanche.
 
 <div className="spec">
-  <code>background: #ffffff</code><br/>
+  <code>background: var(--cadence-color-white)</code><br/>
   <code>border-radius: 12px</code><br/>
-  <code>box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07)</code><br/>
+  <code>box-shadow: var(--cadence-shadow-sm)</code><br/>
   <code>overflow: hidden</code> — pour que les onglets touchent les bords
 </div>
 
@@ -99,7 +99,7 @@ La rangée supérieure de la carte est divisée en deux zones : les onglets à g
   <div className="label">Onglets</div>
   Composant : <code>TabList</code> + <code>Tab</code> (écart de <code>16px</code> fourni par <code>TabList</code>), texte en <strong>UPPERCASE</strong><br/>
   Padding de la rangée : <code>0 24px</code><br/>
-  Border bottom : <code>1px solid #f0f0f0</code>
+  Border bottom : <code>1px solid var(--cadence-color-divider)</code>
 
   <br/><br/>
   <div className="label">Actions (droite)</div>
@@ -110,7 +110,7 @@ La rangée supérieure de la carte est divisée en deux zones : les onglets à g
 
 ```tsx
 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between",
-              padding: "0 24px", borderBottom: "1px solid #f0f0f0", height: 52 }}>
+              padding: "0 24px", borderBottom: "1px solid var(--cadence-color-divider)", height: 52 }}>
   <TabList aria-label="État des scénarios">
     <Tab label="En cours" variant="active" onClick={…} />
     <Tab label="À venir" onClick={…} />
@@ -131,10 +131,10 @@ La rangée supérieure de la carte est divisée en deux zones : les onglets à g
 
 <div className="spec">
   Police : <strong>Spline Sans Mono</strong>, 11px, weight 400<br/>
-  Couleur : <code>#888</code><br/>
+  Couleur : <code>var(--cadence-color-text-muted)</code><br/>
   Texte en <strong>UPPERCASE</strong><br/>
   Padding cellule : <code>12px 24px</code><br/>
-  Border bottom : <code>1px solid #f0f0f0</code>
+  Border bottom : <code>1px solid var(--cadence-color-divider)</code>
 </div>
 
 ```css
@@ -142,10 +142,10 @@ La rangée supérieure de la carte est divisée en deux zones : les onglets à g
   font-family: "Spline Sans Mono", monospace;
   font-size: 11px;
   font-weight: 400;
-  color: #888;
+  color: var(--cadence-color-text-muted);
   text-transform: uppercase;
   padding: 12px 24px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--cadence-color-divider);
 }
 ```
 
@@ -153,14 +153,14 @@ La rangée supérieure de la carte est divisée en deux zones : les onglets à g
 
 <div className="spec">
   Centré horizontalement et verticalement dans la zone tableau<br/>
-  Texte : Inter 14px / 400, couleur <code>#888</code><br/>
+  Texte : Inter 14px / 400, couleur <code>var(--cadence-color-text-muted)</code><br/>
   Padding vertical minimum : <code>64px</code><br/>
   Message type : <em>« Aucun scénario enregistré pour le moment. »</em>
 </div>
 
 ```tsx
 <div style={{ display: "flex", alignItems: "center", justifyContent: "center",
-              padding: "64px 24px", color: "#888", fontSize: 14 }}>
+              padding: "64px 24px", color: "var(--cadence-color-text-muted)", fontSize: 14 }}>
   Aucun scénario enregistré pour le moment.
 </div>
 ```
