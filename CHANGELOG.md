@@ -1,5 +1,31 @@
 # Changelog — @ddaoellena/cadence-ui
 
+## 0.8.0 (non publiée)
+
+Version mineure, sans rupture d’API. Thème : **Page patterns**.
+
+### Ajouté
+
+- **Primitives de mise en page** (catégorie « Structure et mise en page ») : **`PageSection`** (titre `h2`/`h3`/`h4` + description + actions, repère `region`), **`FieldRow`** (champs à largeurs égales, alignés par le bas), **`FormActions`** (barre d’actions, ordre `Link` → `Ghost` → `Primary`), **`CardGrid`** (grille fluide `auto-fill`/`auto-fit`). Elles remplacent le CSS inline répété dans les recettes.
+- **Catalogue « Page patterns »** : section Storybook de premier niveau (entre `Composants` et `Recettes`), avec un test de garde de catégorie. **11 patterns** — Coque d’application, Liste / index, Liste + détail latéral, Page de détail, Formulaire, Assistant / import, Supervision, Analyse, Planification / temps, Paramètres, États de page. Chacun : un **gabarit vérifié** `src/patterns/<Nom>Pattern.tsx`, des stories `layout: "fullscreen"` (états `Défaut` / `Chargement` / `Vide` / `Erreur` selon le pattern, a11y en erreur), une page MDX `Page patterns/<Nom>/Documentation` (structure fixe) et une fiche GUIDELINES.
+- Gabarits affichés **à l’identique par construction** : le MDX importe le fichier via `?raw` ; GUIDELINES référence le fichier vérifié (test de garde `patterns-gabarit`).
+
+### Modifié
+
+- GUIDELINES : la section « Recettes de pages complètes » est précédée de **« Page patterns »** (tableau *Intention → pattern*, correspondance *recette → pattern*). Les **instructions agents IA** demandent de **choisir d’abord un pattern** ; une page hors pattern est **signalée, pas inventée**.
+- **Lot A — cohérence doc** : `Timeline`/`JourneyTimeline` ajoutés à Data visualisation ; `ColorField` et `DisruptionScopePicker` au tableau des hauteurs 40 px ; Feedback renvoie vers `useToast()` + `Toaster` ; exemple d’état vide en `text-secondary` (AA) ; `--cadence-color-primary` sans « modale » ; colonne d’actions collée de `DataTable` documentée.
+
+### Documentation
+
+- Stories de documentation migrées : page **« Recettes → Page patterns »** (correspondance et liens). Les stories `Recettes/*` restent disponibles comme exemples réalistes jusqu’à la 1.0.0. **Les liens Storybook changent** : les nouvelles pages sont sous `page-patterns-<nom>--…`.
+- Audit responsive 1440 / 1280 / 1024 px des 11 patterns (`docs/audits/0.8.0/`) : aucun défilement horizontal de page.
+
+### Décisions
+
+- `Toolbar` et `SplitView` : **documentés** (règles / composition), pas de composant (couverts par `PageHeader`/`FilterBar` et `Drawer`).
+- Prop `DataTable` colonne d’actions collée : **reportée** (documentée ; risque de régression sur un composant central).
+- Pattern Paramètres : **enregistrement explicite** par défaut ; un réglage à effet immédiat l’annonce.
+
 ## 0.7.6 (non publiée)
 
 Version mineure, sans rupture d’API.

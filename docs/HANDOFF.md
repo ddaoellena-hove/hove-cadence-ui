@@ -195,3 +195,21 @@ Composant **`TreeView`** livré : `TreeView.tsx`, `tree-view.css`, `tree-view-ut
 - **`ScheduleComparison`** : *non retenu comme composant*. Comparaison d'horaires/offres = assemblage `DataTable` + `BarChart`/`Timeline`, trop spécifique à l'app → à faire en recette au besoin. Consigné au CHANGELOG.
 
 **Reste ouvert** : tests manuels lecteur d'écran et navigateurs cibles ; décision de version et publication avec l'utilisateur (rien n'est poussé ni publié).
+
+## Mise à jour — lot 0.8.0 (Page patterns)
+
+Branche `release/0.8.0`, version `0.8.0` non publiée. Commits atomiques, rien poussé.
+
+**Fait**
+
+- *Lot A (dette doc)* : Timeline dans Data visualisation ; ColorField/DisruptionScopePicker au tableau des hauteurs ; Feedback → `useToast()` ; état vide en `text-secondary` ; `--cadence-color-primary` sans « modale » ; colonne d'actions collée `DataTable` documentée.
+- *Lot B (primitives)* : **`PageSection`**, **`FieldRow`**, **`FormActions`**, **`CardGrid`** (tsx+css+stories+tests+export+fiche+intention).
+- *Lot C (catalogue)* : section Storybook **« Page patterns »** + test de garde ; **11 patterns** livrés (gabarit vérifié `src/patterns/*.tsx`, stories fullscreen + a11y, MDX à structure fixe via `?raw`, fiche GUIDELINES). Tableau *Intention → pattern*, correspondance *recette → pattern*, page **Recettes → Page patterns**, instructions agents IA. Test `patterns-gabarit` (gabarit = doc). Audit responsive `docs/audits/0.8.0/`.
+
+**Décisions** : `Toolbar`/`SplitView` documentés (pas de composant) ; prop `DataTable` colonne collée **reportée** ; Paramètres = enregistrement **explicite**. Gabarits = option 1 (dans l'app, `src/patterns`, non exportés) ; seules les primitives sont dans la lib.
+
+**Reporté / reste ouvert** :
+- **Prop `DataTable` colonne d'actions collée** (construire la prop pour remplacer le CSS fourni par l'app).
+- **Migration complète** des 4 stories `Recettes/*` vers les patterns (aujourd'hui : page de redirection + mapping ; stories riches conservées jusqu'à la 1.0.0).
+- Captures image des 11 patterns aux 3 largeurs (aujourd'hui : audit programmatique « pas de scroll H » + 2 captures de référence).
+- Tests manuels lecteur d'écran ; décision de publication npm.
