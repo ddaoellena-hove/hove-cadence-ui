@@ -13,7 +13,7 @@
 import { useId, useRef, useState, type DragEvent } from "react";
 import { AlertCircle } from "@untitledui/icons/AlertCircle";
 import { Upload01 } from "@untitledui/icons/Upload01";
-import { GhostButton } from "./GhostButton";
+import { CloseButton } from "./CloseButton";
 import { PrimaryButton } from "./PrimaryButton";
 import { ProgressBar } from "./ProgressBar";
 import { formatFileSize, rejectFile } from "./file-upload-utils";
@@ -181,9 +181,7 @@ export const FileUpload = ({ accept, multiple = false, maxSize, onFiles, files =
                     onClick={() => onRemove(file.id)}
                   />
                 ) : (
-                  <GhostButton
-                    size="sm"
-                    icon="x-close"
+                  <CloseButton
                     aria-label={file.status === "uploading" ? `Annuler l’import de ${file.name}` : `Retirer ${file.name}`}
                     className="file-upload__dismiss"
                     onClick={() => onRemove(file.id)}
