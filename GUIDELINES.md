@@ -444,7 +444,7 @@ Le multi-colonnes est un outil de **densité locale**, pas un outil de **découp
 ### Règles
 
 - ✅ Un seul `PrimaryButton` par vue.
-- ✅ Croix de fermeture d'une surcouche ou d'un bandeau (`Modal`, `Drawer`, `Popover`, `InlineAlert`, `AlertToast`) : toujours la même, un `GhostButton size="sm"` icône `x-close` **sans infobulle** (le pictogramme suffit), nommé « Fermer » par `aria-label`. Les composants la fournissent : ne pas en recréer une dans `children`. Même croix sans infobulle pour retirer un fichier de `FileUpload` (nom précis : « Retirer rapport.pdf ») ; les petites croix de `Badge dismissible` et de `SearchInput` n'ont pas d'infobulle non plus.
+- ✅ Croix de fermeture d'une surcouche ou d'un bandeau (`Modal`, `Drawer`, `Popover`, `InlineAlert`, `AlertToast`) : toujours la même, un `GhostButton size="sm"` icône `x-close` **sans infobulle** (le pictogramme suffit), nommé « Fermer » par `aria-label`. Les composants la fournissent : ne pas en recréer une dans `children`. Même croix sans infobulle pour retirer un fichier de `FileUpload` (nom précis : « Retirer rapport.pdf ») et pour effacer un `SearchInput` (ramenée à 21px dans le champ) ; la petite croix de `Badge dismissible` n'a pas d'infobulle non plus.
 - ✅ Dans un groupe, l'engagement croît de gauche à droite : `Link` → `GhostButton` → `PrimaryButton`. **Ghost à gauche, Primary à droite.**
 - ✅ Plusieurs `GhostButton` (ou `PrimaryButton outline` en dashboard) sont autorisés.
 - ✅ Ne pas mélanger Ghost et Outline dans un même groupe : un dashboard prend Outline, le reste Ghost.

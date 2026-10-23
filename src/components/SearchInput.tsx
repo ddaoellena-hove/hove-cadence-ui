@@ -1,4 +1,5 @@
 import { useRef, type KeyboardEvent } from "react";
+import { CloseButton } from "./CloseButton";
 import { Icons } from "./Icons";
 import "./search-input.css";
 
@@ -73,9 +74,7 @@ export const SearchInput = ({
         onKeyDown={handleKeyDown}
       />
       {hasValue && !disabled && (
-        <button type="button" className="search-input__clear" aria-label="Effacer la recherche" onClick={clear}>
-          <Icons icon="x-close" size={12} />
-        </button>
+        <CloseButton aria-label="Effacer la recherche" className="search-input__clear" onClick={clear} />
       )}
     </div>
   );
