@@ -1,0 +1,46 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import gabarit from "../../patterns/EtatsPattern.tsx?raw";
+
+<Meta title="Page patterns/États de page/Documentation" />
+
+<style>{`.pp{font-family:var(--cadence-font-sans,"ABC Diatype","Inter",sans-serif);max-width:820px;color:var(--cadence-color-primary,#002830)}.pp h1{font-family:var(--cadence-font-display,"Uxum Grotesque",sans-serif);font-size:32px;font-weight:500}.pp h2{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--cadence-color-text-secondary,#64757a);margin:32px 0 10px;border-bottom:1px solid var(--cadence-color-divider,#f0f0f0);padding-bottom:6px}.pp pre{background:var(--cadence-color-surface-subtle,#fafafa);border:1px solid var(--cadence-color-divider,#f0f0f0);border-radius:8px;padding:16px;overflow:auto;font-family:var(--cadence-font-mono,monospace);font-size:12px;line-height:1.6}`}</style>
+
+<div className="pp">
+
+# Pattern — États de page
+
+**Quand l'utiliser** — le vocabulaire des états pleine page, réutilisé par tous les patterns. **Ne pas confondre avec** — un état *inline* (dans un `DataTable`, une `Card`, un graphique : `EmptyState size="inline"`).
+
+## Anatomie
+```
+Chargement  → PageHeader + Skeleton (squelettes de contenu)
+Erreur      → EmptyState variant="error" (+ Réessayer)
+Accès refusé→ EmptyState variant="error"
+Introuvable → EmptyState variant="error" (+ Retour à l'accueil)
+Vide        → EmptyState variant="empty" (+ action de création)
+```
+
+## Variantes
+`size="page"` (vue entière) ou `size="inline"` (dans un composant).
+
+## États
+C'est le pattern des états lui-même.
+
+## Comportements
+L'erreur et le « sans résultat » portent `role="status"` ; chaque état propose l'action de sortie adaptée (réessayer, créer, revenir).
+
+## Responsive
+`EmptyState size="page"` reste centré ; padding 48px.
+
+## Accessibilité
+`main` nommé (coque) ; message annoncé (`role="status"` pour erreur / sans résultat).
+
+## Règles
+- ✅ Toujours une action de sortie (réessayer, créer, revenir).
+- ❌ Pas d'état vide bricolé à la main : `EmptyState`.
+
+## Gabarit
+
+<pre><code>{gabarit}</code></pre>
+
+</div>

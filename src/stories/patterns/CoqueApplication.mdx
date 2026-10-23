@@ -1,0 +1,48 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import gabarit from "../../patterns/CoquePattern.tsx?raw";
+
+<Meta title="Page patterns/Coque d'application/Documentation" />
+
+<style>{`.pp{font-family:var(--cadence-font-sans,"ABC Diatype","Inter",sans-serif);max-width:820px;color:var(--cadence-color-primary,#002830)}.pp h1{font-family:var(--cadence-font-display,"Uxum Grotesque",sans-serif);font-size:32px;font-weight:500}.pp h2{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--cadence-color-text-secondary,#64757a);margin:32px 0 10px;border-bottom:1px solid var(--cadence-color-divider,#f0f0f0);padding-bottom:6px}.pp pre{background:var(--cadence-color-surface-subtle,#fafafa);border:1px solid var(--cadence-color-divider,#f0f0f0);border-radius:8px;padding:16px;overflow:auto;font-family:var(--cadence-font-mono,monospace);font-size:12px;line-height:1.6}`}</style>
+
+<div className="pp">
+
+# Pattern — Coque d'application
+
+**Quand l'utiliser** — toute page de l'app. C'est la coque qui porte la navigation et le contenu. **Ne pas confondre avec** — un pattern de contenu (Liste, Formulaire…), qui vit *dans* la coque.
+
+## Anatomie
+
+```
+AppLayout (main nommé)
+├─ Sidebar (nav nommée) : sections · périmètre (scope) · utilisateur
+└─ contenu
+   ├─ PageHeader (h1 + fil d'Ariane + actions)
+   ├─ {children} : le pattern de contenu
+   └─ Toaster (monté une seule fois)
+```
+
+## Variantes
+Sidebar repliable ; avec ou sans fil d'Ariane / sélecteur de périmètre.
+
+## États
+Les états vivent dans le contenu — voir **Pattern — États de page**.
+
+## Comportements
+`useToast()` partout, un seul `<Toaster />`. La Sidebar porte le périmètre (`scope`) et l'utilisateur en pied.
+
+## Responsive
+Sidebar repliable sous 1024 px ; le contenu s'élargit sans code applicatif.
+
+## Accessibilité
+Repères `main` et `nav` nommés (fournis par `AppLayout` / `Sidebar`), un seul `h1` (`PageHeader`).
+
+## Règles
+- ✅ Le contenu commence par un `PageHeader` ; pas de padding à rajouter.
+- ❌ Pas de `Header` ni de wrapper `position: fixed`.
+
+## Gabarit
+
+<pre><code>{gabarit}</code></pre>
+
+</div>

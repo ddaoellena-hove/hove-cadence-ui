@@ -2,9 +2,10 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
-// Chaque gabarit src/patterns/<Nom>.tsx est la source de vérité : il est
-// affiché à l'identique dans GUIDELINES (copie verbatim contrôlée ici) et dans
-// sa page MDX (via un import `?raw`, donc identique par construction).
+// Chaque gabarit src/patterns/<Nom>.tsx est la source de vérité unique :
+// - affiché dans sa page MDX via un import `?raw` (identique par construction,
+//   aucune copie qui peut diverger) ;
+// - référencé (pas recopié) dans GUIDELINES.
 const ROOT = join(__dirname, "..", "..");
 const PATTERNS_DIR = join(ROOT, "src", "patterns");
 const MDX_DIR = join(ROOT, "src", "stories", "patterns");
@@ -25,13 +26,11 @@ describe("Gabarits de page patterns", () => {
     expect(gabarits.length).toBeGreaterThan(0);
   });
 
-  it.each(gabarits)("%s est affiché à l'identique dans GUIDELINES", (file) => {
-    const code = readFileSync(join(PATTERNS_DIR, file), "utf8").trimEnd();
-    expect(guidelines).toContain(code);
+  it.each(gabarits)("%s est affiché via un import ?raw dans un MDX de pattern", (file) => {
+    expect(mdxSources.some((src) => src.includes(`${file}?raw`))).toBe(true);
   });
 
-  it.each(gabarits)("%s est affiché via un import ?raw dans un MDX de pattern", (file) => {
-    const imported = mdxSources.some((src) => src.includes(`${file}?raw`));
-    expect(imported).toBe(true);
+  it.each(gabarits)("%s est référencé dans GUIDELINES", (file) => {
+    expect(guidelines).toContain(`src/patterns/${file}`);
   });
 });

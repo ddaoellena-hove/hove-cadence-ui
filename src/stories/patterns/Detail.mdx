@@ -1,0 +1,45 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import gabarit from "../../patterns/DetailPattern.tsx?raw";
+
+<Meta title="Page patterns/Détail/Documentation" />
+
+<style>{`.pp{font-family:var(--cadence-font-sans,"ABC Diatype","Inter",sans-serif);max-width:820px;color:var(--cadence-color-primary,#002830)}.pp h1{font-family:var(--cadence-font-display,"Uxum Grotesque",sans-serif);font-size:32px;font-weight:500}.pp h2{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--cadence-color-text-secondary,#64757a);margin:32px 0 10px;border-bottom:1px solid var(--cadence-color-divider,#f0f0f0);padding-bottom:6px}.pp pre{background:var(--cadence-color-surface-subtle,#fafafa);border:1px solid var(--cadence-color-divider,#f0f0f0);border-radius:8px;padding:16px;overflow:auto;font-family:var(--cadence-font-mono,monospace);font-size:12px;line-height:1.6}`}</style>
+
+<div className="pp">
+
+# Pattern — Page de détail
+
+**Quand l'utiliser** — la page d'un seul objet : en-tête avec actions (dont une action destructive), onglets, sections, historique. **Ne pas confondre avec** — Liste + détail latéral (`Drawer`), Formulaire (édition).
+
+## Anatomie
+```
+PageHeader (h1 + fil d'Ariane + actions : Modifier · Supprimer)
+TabList (Informations · Historique)
+PageSection(s) : DescriptionList / ActivityFeed
+Modal (confirmation de l'action destructive)
+```
+
+## Variantes
+Avec ou sans onglets ; action destructive présente ou non.
+
+## États
+Chargement (squelettes), erreur de chargement, accès refusé (voir États de page).
+
+## Comportements
+L'action destructive passe par une `Modal` de confirmation. Les onglets naviguent dans la page (pas d'URL obligatoire).
+
+## Responsive
+Les actions passent sous le titre si la place manque.
+
+## Accessibilité
+Un seul `h1`, sections en `h2` ; onglets au motif `tab`/`tabpanel` ; `Modal` nommée, focus piégé.
+
+## Règles
+- ✅ Une seule action destructive, confirmée.
+- ❌ Pas de second `h1`.
+
+## Gabarit
+
+<pre><code>{gabarit}</code></pre>
+
+</div>

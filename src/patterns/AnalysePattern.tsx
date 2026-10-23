@@ -1,0 +1,43 @@
+import { useState } from "react";
+import {
+  PageHeader, CardGrid, Card, LineChart, Heatmap, BarList, DateRangePicker, type DateRange,
+} from "@ddaoellena/cadence-ui";
+
+// Pattern — Tableau de bord d'analyse (P8).
+// Période partagée · grille d'indicateurs · évolution (LineChart) · motif
+// jour × heure (Heatmap) à côté du classement (BarList). Chaque bloc gère son
+// état (`state`) à partir de la requête.
+const HOURS = ["6h", "8h", "10h", "12h", "14h", "16h", "18h"];
+const WEEKDAYS = ["Lun", "Mar", "Mer", "Jeu", "Ven"];
+const CELLS = WEEKDAYS.flatMap((y, j) => HOURS.map((x, h) => ({ x, y, value: (j + h) % 5 })));
+const DELAYS = HOURS.map((x, i) => ({ x, y: 2 + Math.sin(i) + i * 0.3 }));
+
+export const AnalysePattern = ({ state = "ready" }: { state?: "loading" | "error" | "ready" } = {}) => {
+  const [period, setPeriod] = useState<DateRange>({ start: new Date("2026-06-05"), end: new Date("2026-06-12") });
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      <PageHeader title="Analyse des perturbations" subtitle="Données de démonstration"
+        actions={<DateRangePicker variant="button" aria-label="Période" value={period} onChange={setPeriod} maxDays={92} />} />
+
+      <CardGrid>
+        <Card headingLevel={2} title="Retard moyen" value={3.4} unit="min" goodDirection="down" delta={{ value: 0.2, label: "vs période précédente" }} loading={state === "loading"} />
+        <Card headingLevel={2} title="Ponctualité" value={94.2} unit="%" delta={{ value: -0.6, unit: "pt" }} loading={state === "loading"} />
+        <Card headingLevel={2} title="Perturbations" value={312} goodDirection="down" onClick={() => {}} loading={state === "loading"} />
+      </CardGrid>
+
+      <LineChart headingLevel={2} title="Retard moyen par heure" description="Toutes lignes, sur la période"
+        state={state} onRetry={() => {}} unit="min" goodDirection="down"
+        series={[{ id: "delay", label: "Retard moyen", data: DELAYS }]}
+        thresholds={[{ value: 5, label: "Seuil d'alerte 5 min" }]} />
+
+      <CardGrid min={360} fit>
+        <Heatmap headingLevel={2} title="Perturbations par jour et par heure" state={state}
+          unit="perturbations" xLabels={HOURS} yLabels={WEEKDAYS} cells={CELLS} onCellClick={() => {}} />
+        <BarList headingLevel={2} title="Lignes les plus impactées" state={state} unit="perturbations" goodDirection="down"
+          items={[{ id: "m1", label: "Ligne 1", value: 84 }, { id: "ra", label: "RER A", value: 61 }, { id: "m4", label: "Ligne 4", value: 47 }]}
+          limit={5} onItemClick={() => {}} />
+      </CardGrid>
+    </div>
+  );
+};

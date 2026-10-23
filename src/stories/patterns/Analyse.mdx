@@ -1,0 +1,45 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import gabarit from "../../patterns/AnalysePattern.tsx?raw";
+
+<Meta title="Page patterns/Analyse/Documentation" />
+
+<style>{`.pp{font-family:var(--cadence-font-sans,"ABC Diatype","Inter",sans-serif);max-width:820px;color:var(--cadence-color-primary,#002830)}.pp h1{font-family:var(--cadence-font-display,"Uxum Grotesque",sans-serif);font-size:32px;font-weight:500}.pp h2{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--cadence-color-text-secondary,#64757a);margin:32px 0 10px;border-bottom:1px solid var(--cadence-color-divider,#f0f0f0);padding-bottom:6px}.pp pre{background:var(--cadence-color-surface-subtle,#fafafa);border:1px solid var(--cadence-color-divider,#f0f0f0);border-radius:8px;padding:16px;overflow:auto;font-family:var(--cadence-font-mono,monospace);font-size:12px;line-height:1.6}`}</style>
+
+<div className="pp">
+
+# Pattern — Tableau de bord d'analyse
+
+**Quand l'utiliser** — explorer des données sur une période : indicateurs, évolution, répartition, classement. **Ne pas confondre avec** — Supervision (temps réel), Liste / index.
+
+## Anatomie
+```
+PageHeader (h1 + période)
+CardGrid (indicateurs)
+LineChart (évolution)
+CardGrid min=360 fit (Heatmap + BarList)
+```
+
+## Variantes
+Jeu de graphiques variable selon le domaine.
+
+## États
+Chargement / erreur **par bloc** : chaque graphique reçoit `state` (et `onRetry`) à partir de la requête.
+
+## Comportements
+Une seule période pilote tous les blocs ; un clic sur une cellule / barre ouvre la liste filtrée.
+
+## Responsive
+Grilles fluides (`auto-fill` / `auto-fit`) ; les graphiques suivent leur conteneur.
+
+## Accessibilité
+Un seul `h1`, graphiques en `h2` avec `title` ; alternative « Voir les données ».
+
+## Règles
+- ✅ Jamais de largeur fixe en px : grilles fluides.
+- ❌ Pas de graphique sans `title` ni état.
+
+## Gabarit
+
+<pre><code>{gabarit}</code></pre>
+
+</div>

@@ -1,0 +1,45 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import gabarit from "../../patterns/SupervisionPattern.tsx?raw";
+
+<Meta title="Page patterns/Supervision/Documentation" />
+
+<style>{`.pp{font-family:var(--cadence-font-sans,"ABC Diatype","Inter",sans-serif);max-width:820px;color:var(--cadence-color-primary,#002830)}.pp h1{font-family:var(--cadence-font-display,"Uxum Grotesque",sans-serif);font-size:32px;font-weight:500}.pp h2{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--cadence-color-text-secondary,#64757a);margin:32px 0 10px;border-bottom:1px solid var(--cadence-color-divider,#f0f0f0);padding-bottom:6px}.pp pre{background:var(--cadence-color-surface-subtle,#fafafa);border:1px solid var(--cadence-color-divider,#f0f0f0);border-radius:8px;padding:16px;overflow:auto;font-family:var(--cadence-font-mono,monospace);font-size:12px;line-height:1.6}`}</style>
+
+<div className="pp">
+
+# Pattern — Tableau de bord de supervision
+
+**Quand l'utiliser** — suivi temps réel : indicateurs, alertes, fraîcheur de la donnée, listes priorisées. **Ne pas confondre avec** — Analyse (exploration sur période, graphiques), Liste / index.
+
+## Anatomie
+```
+PageHeader (h1 + période, DateRangePicker variant="button")
+DataFreshness · InlineAlert (alerte temps réel)
+CardGrid (indicateurs cliquables → liste filtrée)
+[ liste filtrée par la même période ]
+```
+
+## Variantes
+Avec ou sans liste intégrée ; indicateurs avec seuil (`status`).
+
+## États
+Chargement (`loading` par carte, la grille garde sa taille), erreur par bloc.
+
+## Comportements
+La période filtre à la fois les indicateurs et la liste. Une carte cliquable ouvre la liste déjà filtrée.
+
+## Responsive
+`CardGrid` fluide (`auto-fill`) ; une colonne sur mobile.
+
+## Accessibilité
+Un seul `h1`, cartes et graphiques en `h2` ; `DataFreshness` annonce la date absolue.
+
+## Règles
+- ✅ Période au niveau page ; `loading` par carte.
+- ❌ Pas de bouton « Voir » en plus d'une carte cliquable.
+
+## Gabarit
+
+<pre><code>{gabarit}</code></pre>
+
+</div>

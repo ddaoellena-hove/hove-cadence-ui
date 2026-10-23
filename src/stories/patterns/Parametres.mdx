@@ -1,0 +1,44 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import gabarit from "../../patterns/ParametresPattern.tsx?raw";
+
+<Meta title="Page patterns/Paramètres/Documentation" />
+
+<style>{`.pp{font-family:var(--cadence-font-sans,"ABC Diatype","Inter",sans-serif);max-width:820px;color:var(--cadence-color-primary,#002830)}.pp h1{font-family:var(--cadence-font-display,"Uxum Grotesque",sans-serif);font-size:32px;font-weight:500}.pp h2{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--cadence-color-text-secondary,#64757a);margin:32px 0 10px;border-bottom:1px solid var(--cadence-color-divider,#f0f0f0);padding-bottom:6px}.pp pre{background:var(--cadence-color-surface-subtle,#fafafa);border:1px solid var(--cadence-color-divider,#f0f0f0);border-radius:8px;padding:16px;overflow:auto;font-family:var(--cadence-font-mono,monospace);font-size:12px;line-height:1.6}`}</style>
+
+<div className="pp">
+
+# Pattern — Paramètres
+
+**Quand l'utiliser** — réglages d'un espace : sections, bascules, choix exclusifs. **Ne pas confondre avec** — Formulaire (créer/éditer un objet).
+
+## Anatomie
+```
+PageHeader (h1)
+PageSection(s) : rangées titre + description + contrôle (Toggle / RadioButton)
+FormActions (Enregistrer)
+```
+
+## Variantes
+**Décision** : enregistrement **explicite** par défaut (bouton « Enregistrer ») ; un réglage à **effet immédiat** (`Toggle`) l'annonce dans sa section.
+
+## États
+Pas d'état vide ; erreur d'enregistrement remontée par un toast ou `InlineAlert`.
+
+## Comportements
+Un `Toggle` à effet immédiat applique le changement sur-le-champ ; les réglages groupés attendent « Enregistrer ».
+
+## Responsive
+Une colonne ; le contrôle reste à droite de son libellé.
+
+## Accessibilité
+Un seul `h1`, sections en `h2` ; chaque contrôle porte un `aria-label` (ou un libellé associé) ; `Toggle`/`RadioButton` pilotés par `state`.
+
+## Règles
+- ✅ Indiquer clairement ce qui est immédiat et ce qui demande « Enregistrer ».
+- ❌ Pas de prop `checked` : piloter par `state`.
+
+## Gabarit
+
+<pre><code>{gabarit}</code></pre>
+
+</div>
