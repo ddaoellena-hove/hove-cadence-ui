@@ -106,7 +106,8 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-color-primary` | `#002830` | Encre principale — texte fort, boutons, modale |
 | `--cadence-color-label` | `#1a3e45` | Labels de formulaire, badges ; fond de `PrimaryButton` au repos |
 | `--cadence-color-primary-hover` | `#10353d` | Survol d'un `PrimaryButton` : un cran plus foncé que le repos |
-| `--cadence-color-text-muted` | `#809397` | Texte secondaire (heures, descriptions) |
+| `--cadence-color-text-muted` | `#809397` | Icônes et grand texte secondaire (3,2:1 — pas pour du petit texte) |
+| `--cadence-color-text-secondary` | `#64757a` | Texte secondaire AA (4,8:1 sur blanc) : descriptions, aides, petits libellés |
 | `--cadence-color-text-disabled` | `#808080` | Texte des états désactivés |
 | `--cadence-color-placeholder` | `#737373` | Placeholders des champs |
 | `--cadence-color-icon-muted` | `#69797d` | Icônes d'action discrètes |
@@ -141,6 +142,7 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-color-border-strong` | `#bfc9cb` | Bordures appuyées, états disabled |
 | `--cadence-color-scrollbar-thumb` | `rgba(0, 40, 48, 0.2)` | Curseur des barres de défilement (`cadence-scrollbar`) ; `-hover` : `rgba(0, 40, 48, 0.36)` |
 | `--cadence-color-divider` | `#f0f0f0` | Séparateurs internes |
+| `--cadence-color-skeleton` | `var(--cadence-color-surface-alt)` | Fond des squelettes de chargement (`Skeleton`, `DataTable`, `Card`) |
 | `--cadence-dataviz-series-1..8` | violet, bleu, teal, ambre `#b36b00`, magenta, corail, violet foncé, ardoise | Séries des graphiques, dans cet ordre ; toutes ≥ 3:1 sur blanc. Anciens noms `--CAI-dv-series-*` en alias |
 | `--cadence-dataviz-seq-1..7` | `#eaf4f5` → `#004650` | Rampe séquentielle (`Heatmap`), teinte pétrole à clarté croissante |
 | `--cadence-dataviz-threshold` / `-threshold-breach` | `#1a3e45` / `#b91c1c` | Ligne de seuil / côté défavorable d'un seuil |
