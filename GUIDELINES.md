@@ -272,6 +272,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Choix exclusif avec icône + description | `RichRadioButton` | `RichCheckbox` (sélection multiple) |
 | Sélection multiple avec icône + description | `RichCheckbox` | `RichRadioButton` (choix exclusif) |
 | Étiquette d'information neutre (catégorie, tag, code) | `Badge` | `Indicator` (qui porte un état) |
+| Chip amovible (filtre actif « Ligne 38 × », « Tout effacer ») | `Badge dismissible` ; sous une liste, `FilterBar` (`activeFilters` + `onRemoveFilter`) | un composant `Tag` dédié (doublon inutile) |
 | État ou statut avec picto + couleur sémantique | `Indicator` | `Badge` (purement informatif) |
 | En-tête de page (titre, sous-titre, actions), collé en haut au défilement | `PageHeader` | `<h1>` à la main |
 | Indicateur chiffré + évolution (haut de tableau de bord) | `Card` (`value`, `delta`, `trend`) | `Indicator` (statut sans valeur) |

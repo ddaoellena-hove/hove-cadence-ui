@@ -144,4 +144,15 @@ Branches locales, rien poussé ni publié : `release/0.6.0` (lot 0.6.0, relectur
 
 Validation : 718 tests (103 fichiers) sous React 19 et React 18 (`npm run test:react18`), lint sans erreur, `tsc -b`, `build:lib`, `smoke:dist`, `build-storybook`.
 
-**Reste ouvert** : propositions reportées (Timeline, ColorField, TreeView, DisruptionScopePicker, ScheduleComparison, DataFreshness) ; tests manuels lecteur d'écran et navigateurs cibles ; décision de version et de publication avec l'utilisateur.
+**Reste ouvert** : propositions reportées (TreeView, DisruptionScopePicker, ScheduleComparison, DataFreshness) ; tests manuels lecteur d'écran et navigateurs cibles ; décision de version et de publication avec l'utilisateur.
+
+## Mise à jour — lot 0.7.0 (cohérence + composants métier)
+
+Branche `release/0.7.0`, version `0.7.0` non publiée. Commits atomiques, rien poussé.
+
+**Fait**
+
+- *Lot A (cohérence/dette)* : A1 règle des boutons `md` à côté d'un champ (exception documentée) ; A2 commentaires `tokens.css` (focus appliqué, z-index réels) + JSDoc `CopyableText` sans infobulle ; A3 nom de token `--cadence-color-field-focus-subtle` dans le CHANGELOG ; A4 tokens `text-secondary`/`skeleton` ajoutés au tableau + **test `tokens-doc`** (tokens.css ↔ GUIDELINES) ; A5 doc `StopLabel` alignée (id en `Badge`, pas de `title`) ; A6 exemples MDX passés aux tokens + **test `mdx-tokens`** ; A7 colonne d'actions `DataTable` (ombre de séparation + story 800px).
+- *Lot B* : **`ColorField`** (couleur GTFS, hex validé, aperçu `LineBadge`, contraste) et **`Timeline`** (plages sur axe temps, clavier, tooltip, « Voir les données », états) livrés avec stories, tests, exports et GUIDELINES. **B4 `Tag`** : non créé (doublon) — `Badge dismissible` / `FilterBar activeFilters` documentés.
+
+**Reporté (validé par l'utilisateur)** : **`TreeView`** (le plus lourd) ; propositions B5 **`DisruptionScopePicker`** (assemblage `Autocomplete multiple` + `TreeView`), **`ScheduleComparison`** (`DataTable` + `BarChart`/`Timeline`, plutôt une recette), **`DataFreshness`** (`Indicator` + temps relatif) — toutes jugées couvrables par assemblage ; à réévaluer après `TreeView`.
