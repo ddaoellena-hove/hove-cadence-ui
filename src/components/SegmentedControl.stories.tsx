@@ -1,5 +1,5 @@
 import React from "react";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { SegmentedControl } from "./SegmentedControl";
 
@@ -64,10 +64,22 @@ export const SecondActive: Story = {
   },
 };
 
+/** Dernier choix actif : la pastille garde 4px de marge à droite, comme ailleurs. */
 export const ThirdActive: Story = {
   args: {
     options: threeTabs,
     defaultValue: "tab-3",
+  },
+  play: async ({ canvasElement }) => {
+    const root = canvasElement.querySelector<HTMLElement>(".segmented-control")!;
+    const pill = canvasElement.querySelector<HTMLElement>(".segmented-control__pill")!;
+    pill.style.transition = "none";
+    await waitFor(() => {
+      const r = root.getBoundingClientRect();
+      const p = pill.getBoundingClientRect();
+      expect(r.right - p.right).toBe(4);
+      expect(p.top - r.top).toBe(4);
+    });
   },
 };
 

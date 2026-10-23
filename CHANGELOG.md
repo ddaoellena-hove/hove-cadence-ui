@@ -16,6 +16,7 @@ Version mineure, sans rupture d’API.
 
 ### Corrigé
 
+- `SegmentedControl` : la pastille active débordait de 2px à droite (bordure hors largeur) ; sur le dernier choix, la marge passe de 2px à 4px comme les autres côtés.
 - Règle des boutons `md` à côté d’un champ : l’action inline à côté d’un seul champ est désormais documentée comme une exception (règle et exemple alignés).
 - CHANGELOG 0.6.0 : nom de token corrigé (`--cadence-color-field-focus-subtle`).
 - Colonne d’actions de `DataTable` : largeur réservée, ombre de séparation et défilement horizontal à 800 px.

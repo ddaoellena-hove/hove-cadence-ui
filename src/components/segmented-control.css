@@ -7,6 +7,9 @@
     inset 0px 2px 0px rgba(255, 255, 255, 0.25),
     inset 0px -3px 8px rgba(0, 0, 0, 0.05),
     inset 0px -3px 0px rgba(0, 0, 0, 0.1);
+  /* Bordure comprise dans la largeur mesurée du segment : sinon la pastille
+     déborde de 2px à droite (marge de 2px au lieu de 4px sur le dernier choix). */
+  box-sizing: border-box;
   pointer-events: none;
   position: absolute;
   top: 4px;
