@@ -12,7 +12,7 @@ import {
 } from "../stories/fixtures/transport";
 
 const meta: Meta<typeof BarChart> = {
-  title: "Components/BarChart",
+  title: "Composants/Visualisation de données/BarChart",
   component: BarChart,
   tags: ["autodocs"],
   parameters: {

@@ -12,7 +12,7 @@ import { SecondaryButton } from "./SecondaryButton";
  * Migration automatique : `node scripts/codemods/buttons-v2.mjs src`.
  */
 const meta: Meta<typeof SecondaryButton> = {
-  title: "Components/SecondaryButton (déprécié)",
+  title: "Composants/Actions/SecondaryButton (déprécié)",
   component: SecondaryButton,
   tags: ["autodocs", "deprecated"],
   parameters: { a11y: { test: "error" } },

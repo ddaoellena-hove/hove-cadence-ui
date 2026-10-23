@@ -47,7 +47,7 @@ const itemsWithIcons: BreadcrumbItem[] = [
 // ── Meta ───────────────────────────────────────────────────────────────────────
 
 const meta: Meta<typeof Breadcrumbs> = {
-  title: "Components/Breadcrumbs",
+  title: "Composants/Navigation/Breadcrumbs",
   component: Breadcrumbs,
   tags: ["autodocs"],
   args: {

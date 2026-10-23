@@ -3,7 +3,7 @@ import { expect, fn, userEvent, within } from "storybook/test";
 import { RouteStopList } from "./RouteStopList";
 import { LineBadge } from "./LineBadge";
 const meta: Meta<typeof RouteStopList> = {
-  title: "Métier/RouteStopList", component: RouteStopList, tags: ["autodocs"],
+  title: "Composants/Transport/RouteStopList", component: RouteStopList, tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },
   args: { label: "Course de nuit vers Nation", line: <LineBadge code="38" mode="bus" />, stops: [
     { id: "passage-1", stopId: "gare", name: "Gare de Lyon", departure: "23:50" },

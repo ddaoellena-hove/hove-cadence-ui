@@ -11,7 +11,7 @@ import { formatRange } from "./date-range-utils";
 const REFERENCE = new Date(2026, 9, 19, 14, 30);
 
 const meta: Meta<typeof DateRangePicker> = {
-  title: "Components/DateRangePicker",
+  title: "Composants/Formulaires/DateRangePicker",
   component: DateRangePicker,
   tags: ["autodocs"],
   parameters: {

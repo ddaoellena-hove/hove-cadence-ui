@@ -3,7 +3,7 @@ import { expect, fn, userEvent, within } from "storybook/test";
 import { Card } from "./Card";
 
 const meta: Meta<typeof Card> = {
-  title: "Components/Card",
+  title: "Composants/Structure et mise en page/Card",
   component: Card,
   tags: ["autodocs"],
   parameters: {

@@ -7,7 +7,7 @@ import { formatValueWithUnit } from "./chart-format";
 import { LINES } from "../stories/data/network";
 
 const meta: Meta<typeof Sparkline> = {
-  title: "Components/Sparkline",
+  title: "Composants/Visualisation de données/Sparkline",
   component: Sparkline,
   tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },

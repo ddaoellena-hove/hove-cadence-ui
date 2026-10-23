@@ -5,7 +5,7 @@ import { Badge } from "./Badge";
 import { topImpactedLines } from "../stories/fixtures/transport";
 
 const meta: Meta<typeof BarList> = {
-  title: "Components/BarList",
+  title: "Composants/Visualisation de données/BarList",
   component: BarList,
   tags: ["autodocs"],
   parameters: {

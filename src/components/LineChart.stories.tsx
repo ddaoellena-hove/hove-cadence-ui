@@ -12,7 +12,7 @@ import {
 } from "../stories/fixtures/transport";
 
 const meta: Meta<typeof LineChart> = {
-  title: "Components/LineChart",
+  title: "Composants/Visualisation de données/LineChart",
   component: LineChart,
   tags: ["autodocs"],
   parameters: {

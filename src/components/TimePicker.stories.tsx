@@ -11,7 +11,7 @@ function ControlledTime(args: TimePickerProps) {
   </div>;
 }
 const meta: Meta<typeof TimePicker> = {
-  title: "Components/TimePicker", component: TimePicker, tags: ["autodocs"],
+  title: "Composants/Formulaires/TimePicker", component: TimePicker, tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },
   args: { label: "Heure de départ", value: "09:30", onChange: fn() },
   render: (args) => <ControlledTime {...args} />,

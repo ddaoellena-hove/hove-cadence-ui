@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { RichCheckbox, type RichCheckboxProps } from "./RichCheckbox";
 
 const meta: Meta<typeof RichCheckbox> = {
-  title: "Components/RichCheckbox",
+  title: "Composants/Formulaires/RichCheckbox",
   component: RichCheckbox,
   tags: ["autodocs"],
   argTypes: {

@@ -9,7 +9,7 @@ import { Card } from "./Card";
 import { PageHeader } from "./PageHeader";
 
 const meta: Meta<typeof AppLayout> = {
-  title: "Components/AppLayout",
+  title: "Composants/Structure et mise en page/AppLayout",
   component: AppLayout,
   tags: ["autodocs"],
   parameters: {

@@ -26,6 +26,7 @@ Version mineure, sans rupture d’API.
 
 ### Documentation
 
+- Storybook : composants rangés en 10 catégories (`Composants/<Catégorie>/<Nom>` : Actions, Formulaires, Navigation, Structure et mise en page, Données et tableaux, Visualisation de données, Retours et statuts, Surcouches, Transport, Médias et icônes), ordre du menu fixé dans `.storybook/preview.ts`, test de garde. Les liens directs vers les anciennes stories (`components-…`) changent.
 - Commentaires `tokens.css` (focus appliqué, couches z-index réelles) et JSDoc `CopyableText` (sans infobulle) à jour.
 - Tableau des tokens de GUIDELINES complété (`--cadence-color-text-secondary`, `--cadence-color-skeleton`) + test de cohérence `tokens.css` ↔ GUIDELINES.
 - `StopLabel` : doc alignée sur le code (identifiant en `Badge`, pas de `title`).

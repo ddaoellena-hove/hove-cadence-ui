@@ -15,7 +15,7 @@ import { Breadcrumbs } from "./Breadcrumbs";
 const REFERENCE = new Date(2026, 9, 21, 14, 32);
 
 const meta: Meta<typeof PageHeader> = {
-  title: "Components/PageHeader",
+  title: "Composants/Structure et mise en page/PageHeader",
   component: PageHeader,
   tags: ["autodocs"],
   parameters: {

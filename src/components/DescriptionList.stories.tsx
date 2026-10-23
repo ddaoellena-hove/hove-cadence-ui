@@ -5,7 +5,7 @@ import { LineBadge } from "./LineBadge";
 import { Indicator } from "./Indicator";
 
 const meta: Meta<typeof DescriptionList> = {
-  title: "Components/DescriptionList", component: DescriptionList, tags: ["autodocs"],
+  title: "Composants/Structure et mise en page/DescriptionList", component: DescriptionList, tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },
   decorators: [(Story) => <div style={{ maxWidth: 600 }}><Story /></div>],
   args: { "aria-label": "Détails du réseau", items: [

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { RadioButton } from "./RadioButton";
 
 const meta: Meta<typeof RadioButton> = {
-  title: "Components/RadioButton",
+  title: "Composants/Formulaires/RadioButton",
   component: RadioButton,
   tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },

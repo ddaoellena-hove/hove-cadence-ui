@@ -4,7 +4,7 @@ import { expect, userEvent, within } from "storybook/test";
 import { DatePicker } from "./DatePicker";
 
 const meta: Meta<typeof DatePicker> = {
-  title: "Components/DatePicker",
+  title: "Composants/Formulaires/DatePicker",
   component: DatePicker,
   tags: ["autodocs"],
   argTypes: {

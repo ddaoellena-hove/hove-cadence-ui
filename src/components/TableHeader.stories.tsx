@@ -5,7 +5,7 @@ import { TableCard } from "./TableCard";
 import { GhostButton } from "./GhostButton";
 
 const meta: Meta<typeof TableHeader> = {
-  title: "Components/TableHeader",
+  title: "Composants/Données et tableaux/TableHeader",
   component: TableHeader,
   tags: ["autodocs"],
 };

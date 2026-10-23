@@ -3,7 +3,7 @@ import { expect, within } from "storybook/test";
 import { AlertToast } from "./AlertToast";
 
 const meta: Meta<typeof AlertToast> = {
-  title: "Components/AlertToast",
+  title: "Composants/Retours et statuts/AlertToast",
   component: AlertToast,
   tags: ["autodocs"],
   argTypes: {

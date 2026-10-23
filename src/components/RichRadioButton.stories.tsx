@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { RichRadioButton, type RichRadioButtonProps } from "./RichRadioButton";
 
 const meta: Meta<typeof RichRadioButton> = {
-  title: "Components/RichRadioButton",
+  title: "Composants/Formulaires/RichRadioButton",
   component: RichRadioButton,
   tags: ["autodocs"],
   argTypes: {

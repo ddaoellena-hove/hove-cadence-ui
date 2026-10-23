@@ -10,7 +10,7 @@ import { Dropdown } from "./Dropdown";
 import { CounterInput } from "./CounterInput";
 
 const meta: Meta<typeof Modal> = {
-  title: "Components/Modal",
+  title: "Composants/Surcouches/Modal",
   component: Modal,
   tags: ["autodocs"],
   argTypes: {

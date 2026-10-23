@@ -22,7 +22,7 @@ const fourTabs = [
 ];
 
 const meta: Meta<typeof SegmentedControl> = {
-  title: "Components/SegmentedControl",
+  title: "Composants/Formulaires/SegmentedControl",
   component: SegmentedControl,
   tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },

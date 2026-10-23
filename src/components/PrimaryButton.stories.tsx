@@ -4,7 +4,7 @@ import { PrimaryButton } from "./PrimaryButton";
 import { GhostButton } from "./GhostButton";
 
 const meta: Meta<typeof PrimaryButton> = {
-  title: "Components/PrimaryButton",
+  title: "Composants/Actions/PrimaryButton",
   component: PrimaryButton,
   tags: ["autodocs"],
   parameters: {

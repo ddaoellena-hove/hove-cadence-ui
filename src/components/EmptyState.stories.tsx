@@ -3,7 +3,7 @@ import { expect, within } from "storybook/test";
 import { EmptyState } from "./EmptyState";
 
 const meta: Meta<typeof EmptyState> = {
-  title: "Components/EmptyState",
+  title: "Composants/Retours et statuts/EmptyState",
   component: EmptyState,
   tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },

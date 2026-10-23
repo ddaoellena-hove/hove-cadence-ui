@@ -4,7 +4,7 @@ import { expect, userEvent, waitFor, within } from "storybook/test";
 import { ColumnManager, type ColumnManagerColumn } from "./ColumnManager";
 
 const meta: Meta<typeof ColumnManager> = {
-  title: "Components/ColumnManager",
+  title: "Composants/Données et tableaux/ColumnManager",
   component: ColumnManager,
   tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },

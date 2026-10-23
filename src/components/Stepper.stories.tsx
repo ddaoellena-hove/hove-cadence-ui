@@ -4,7 +4,7 @@ import { expect, userEvent, within } from "storybook/test";
 import { Stepper, type StepperStep } from "./Stepper";
 
 const meta: Meta<typeof Stepper> = {
-  title: "Components/Stepper",
+  title: "Composants/Navigation/Stepper",
   component: Stepper,
   tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },

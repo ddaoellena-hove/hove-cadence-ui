@@ -5,7 +5,7 @@ import { Tab } from "./Tab";
 import { TabList } from "./TabList";
 
 const meta: Meta<typeof Tab> = {
-  title: "Components/Tab",
+  title: "Composants/Navigation/Tab",
   component: Tab,
   tags: ["autodocs"],
   parameters: {

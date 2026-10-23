@@ -3,7 +3,7 @@ import { expect, fn, userEvent, within } from "storybook/test";
 import { InlineAlert } from "./InlineAlert";
 
 const meta: Meta<typeof InlineAlert> = {
-  title: "Components/InlineAlert",
+  title: "Composants/Retours et statuts/InlineAlert",
   component: InlineAlert,
   tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },

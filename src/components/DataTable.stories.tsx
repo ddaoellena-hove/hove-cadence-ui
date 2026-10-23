@@ -12,7 +12,7 @@ import { generateDisruptions, generateTrips, type Disruption, type Trip } from "
 import { DISRUPTION_COLUMNS, TRIP_COLUMNS } from "../stories/data/columns";
 
 const meta: Meta<typeof DataTable<Trip>> = {
-  title: "Components/DataTable",
+  title: "Composants/Données et tableaux/DataTable",
   component: DataTable<Trip>,
   tags: ["autodocs"],
   parameters: {

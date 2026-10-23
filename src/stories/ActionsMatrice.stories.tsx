@@ -110,7 +110,7 @@ const MatriceActions = () => (
 );
 
 const meta: Meta<typeof MatriceActions> = {
-  title: "Actions/Matrice",
+  title: "Composants/Actions/Matrice des actions",
   component: MatriceActions,
   parameters: {
     layout: "fullscreen",

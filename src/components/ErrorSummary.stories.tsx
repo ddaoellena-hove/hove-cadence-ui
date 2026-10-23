@@ -7,7 +7,7 @@ import { PrimaryButton } from "./PrimaryButton";
 import { inertProps } from "./inert-props";
 
 const meta: Meta<typeof ErrorSummary> = {
-  title: "Components/ErrorSummary", component: ErrorSummary, tags: ["autodocs"],
+  title: "Composants/Formulaires/ErrorSummary", component: ErrorSummary, tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },
   decorators: [(Story) => <div style={{ maxWidth: 600 }}><Story /></div>],
 };

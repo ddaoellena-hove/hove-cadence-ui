@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Indicator, type IndicatorVariant } from "./Indicator";
 
 const meta: Meta<typeof Indicator> = {
-  title: "Components/Indicator",
+  title: "Composants/Retours et statuts/Indicator",
   component: Indicator,
   tags: ["autodocs"],
   argTypes: {

@@ -3,6 +3,30 @@ import '../src/components/tokens.css'
 
 const preview: Preview = {
   parameters: {
+    // Ordre du menu : fondations, composants rangés par catégorie, recettes.
+    options: {
+      storySort: {
+        order: [
+          'Configure your project',
+          'Foundation',
+          ['Couleurs', 'Typography', 'Tokens', 'Hauteurs de contrôle', 'Guidelines'],
+          'Composants',
+          [
+            'Actions',
+            'Formulaires',
+            'Navigation',
+            'Structure et mise en page',
+            'Données et tableaux',
+            'Visualisation de données',
+            'Retours et statuts',
+            'Surcouches',
+            'Transport',
+            'Médias et icônes',
+          ],
+          'Recettes',
+        ],
+      },
+    },
     controls: {
       matchers: {
        color: /(background|color)$/i,

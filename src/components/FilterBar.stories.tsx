@@ -6,7 +6,7 @@ import { Dropdown } from "./Dropdown";
 import { GhostButton } from "./GhostButton";
 
 const meta: Meta<typeof FilterBar> = {
-  title: "Components/FilterBar",
+  title: "Composants/Données et tableaux/FilterBar",
   component: FilterBar,
   tags: ["autodocs"],
   parameters: {

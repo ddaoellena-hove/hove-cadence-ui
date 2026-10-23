@@ -4,7 +4,7 @@ import { LineBadge } from "./LineBadge";
 import { STOPS, lineByCode } from "../stories/data/network";
 
 const meta: Meta<typeof StopLabel> = {
-  title: "Components/StopLabel",
+  title: "Composants/Transport/StopLabel",
   component: StopLabel,
   tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },

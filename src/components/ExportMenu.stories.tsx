@@ -4,7 +4,7 @@ import { expect, userEvent, within } from "storybook/test";
 import { ExportMenu } from "./ExportMenu";
 
 const meta: Meta<typeof ExportMenu> = {
-  title: "Components/ExportMenu",
+  title: "Composants/Actions/ExportMenu",
   component: ExportMenu,
   tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },

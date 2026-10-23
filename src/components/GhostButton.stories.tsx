@@ -3,7 +3,7 @@ import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import { GhostButton } from "./GhostButton";
 
 const meta: Meta<typeof GhostButton> = {
-  title: "Components/GhostButton",
+  title: "Composants/Actions/GhostButton",
   component: GhostButton,
   tags: ["autodocs"],
   parameters: {

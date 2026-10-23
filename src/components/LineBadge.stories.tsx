@@ -4,7 +4,7 @@ import { LineBadge } from "./LineBadge";
 import { LINES } from "../stories/data/network";
 
 const meta: Meta<typeof LineBadge> = {
-  title: "Components/LineBadge",
+  title: "Composants/Transport/LineBadge",
   component: LineBadge,
   tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },

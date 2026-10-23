@@ -11,7 +11,7 @@ import { generateTrips, type Trip } from "../stories/data/transport";
 import { TRIP_COLUMNS } from "../stories/data/columns";
 
 const meta: Meta<typeof ActionMenu> = {
-  title: "Components/ActionMenu",
+  title: "Composants/Actions/ActionMenu",
   component: ActionMenu,
   tags: ["autodocs"],
 };

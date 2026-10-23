@@ -7,7 +7,7 @@ import type { ToastOptions } from "./useToast";
 import { PrimaryButton } from "./PrimaryButton";
 
 const meta: Meta<typeof Toaster> = {
-  title: "Components/Toaster",
+  title: "Composants/Retours et statuts/Toaster",
   component: Toaster,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

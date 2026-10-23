@@ -9,7 +9,7 @@ import { disruptionsByModeWeekly, WEEKS } from "../stories/fixtures/transport";
 const series = disruptionsByModeWeekly.map(({ label, data }) => ({ label, data }));
 
 const meta = {
-  title: "Components/DataVisualization (déprécié)",
+  title: "Composants/Visualisation de données/DataVisualization (déprécié)",
   component: DataVisualization,
   tags: ["autodocs"],
   parameters: {

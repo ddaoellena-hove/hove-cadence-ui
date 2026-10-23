@@ -15,7 +15,7 @@ const DisruptionIcon = () => (
 );
 
 const meta: Meta<typeof TableCard> = {
-  title: "Components/TableCard",
+  title: "Composants/Données et tableaux/TableCard",
   component: TableCard,
   tags: ["autodocs"],
   argTypes: {

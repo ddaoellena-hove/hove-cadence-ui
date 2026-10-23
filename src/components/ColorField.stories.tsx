@@ -4,7 +4,7 @@ import { expect, userEvent, within } from "storybook/test";
 import { ColorField } from "./ColorField";
 
 const meta: Meta<typeof ColorField> = {
-  title: "Components/ColorField",
+  title: "Composants/Formulaires/ColorField",
   component: ColorField,
   tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },

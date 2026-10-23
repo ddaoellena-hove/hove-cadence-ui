@@ -5,7 +5,7 @@ import { SearchInput, type SearchInputProps } from "./SearchInput";
 import { Dropdown } from "./Dropdown";
 
 const meta: Meta<typeof SearchInput> = {
-  title: "Components/SearchInput",
+  title: "Composants/Formulaires/SearchInput",
   component: SearchInput,
   tags: ["autodocs"],
   parameters: {

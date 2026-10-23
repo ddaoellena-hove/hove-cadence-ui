@@ -63,7 +63,7 @@ const optionsWithDisabled: DropdownOption[] = [
 // ── Meta ───────────────────────────────────────────────────────────────────────
 
 const meta: Meta<typeof Dropdown> = {
-  title: "Components/Dropdown",
+  title: "Composants/Formulaires/Dropdown",
   component: Dropdown,
   tags: ["autodocs"],
   parameters: {

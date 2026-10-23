@@ -4,7 +4,7 @@ import { Heatmap } from "./Heatmap";
 import { disruptionsByWeekdayHour, SERVICE_HOURS, WEEKDAYS } from "../stories/fixtures/transport";
 
 const meta: Meta<typeof Heatmap> = {
-  title: "Components/Heatmap",
+  title: "Composants/Visualisation de données/Heatmap",
   component: Heatmap,
   tags: ["autodocs"],
   parameters: {

@@ -11,7 +11,7 @@ import { Modal } from "./Modal";
 import { ExportMenu } from "./ExportMenu";
 
 const meta: Meta<typeof Popover> = {
-  title: "Components/Popover",
+  title: "Composants/Surcouches/Popover",
   component: Popover,
   tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },

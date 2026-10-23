@@ -37,7 +37,7 @@ const JOURNEYS: Journey[] = [
 ];
 
 const meta: Meta<typeof JourneyTimeline> = {
-  title: "Components/JourneyTimeline",
+  title: "Composants/Transport/JourneyTimeline",
   component: JourneyTimeline,
   tags: ["autodocs"],
   args: {

@@ -4,7 +4,7 @@ import { Accordion } from "./Accordion";
 import { StopLabel } from "./StopLabel";
 
 const meta: Meta<typeof Accordion> = {
-  title: "Components/Accordion",
+  title: "Composants/Structure et mise en page/Accordion",
   component: Accordion,
   tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },

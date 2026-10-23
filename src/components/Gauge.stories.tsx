@@ -3,7 +3,7 @@ import { expect, within } from "storybook/test";
 import { Gauge } from "./Gauge";
 
 const meta: Meta<typeof Gauge> = {
-  title: "Components/Gauge",
+  title: "Composants/Visualisation de données/Gauge",
   component: Gauge,
   tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },

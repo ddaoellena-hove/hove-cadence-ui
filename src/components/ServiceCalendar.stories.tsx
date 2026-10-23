@@ -7,7 +7,7 @@ function Demo(args: ServiceCalendarProps) {
   return <ServiceCalendar {...args} value={value} onChange={(next) => { setValue(next); args.onChange(next); }} />;
 }
 const meta: Meta<typeof ServiceCalendar> = {
-  title: "Métier/ServiceCalendar", component: ServiceCalendar, tags: ["autodocs"],
+  title: "Composants/Transport/ServiceCalendar", component: ServiceCalendar, tags: ["autodocs"],
   parameters: { a11y: { test: "error" } }, render: (args) => <Demo {...args} />,
   args: { label: "Service de novembre", onChange: fn(), value: {
     startDate: "2026-11-01", endDate: "2026-11-30", weekdays: [1, 2, 3, 4, 5], exceptions: [{ date: "2026-11-11", type: "removed" }],

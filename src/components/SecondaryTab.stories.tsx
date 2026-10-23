@@ -6,7 +6,7 @@ import { SegmentedControl } from "./SegmentedControl";
 import { TabList } from "./TabList";
 
 const meta: Meta<typeof SecondaryTab> = {
-  title: "Components/SecondaryTab",
+  title: "Composants/Navigation/SecondaryTab",
   component: SecondaryTab,
   tags: ["autodocs"],
   parameters: {

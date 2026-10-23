@@ -21,6 +21,7 @@ React 19 · TypeScript ~6 (strict) · Vite 8 · Storybook 10 (`@storybook/react-
 
 ## Ajouter / modifier un composant
 1. Les 3 fichiers, en réutilisant composants et tokens existants.
+   Titre de la story : `Composants/<Catégorie>/<Nom>`, catégorie prise dans la liste de `.storybook/preview.ts` (Actions, Formulaires, Navigation, Structure et mise en page, Données et tableaux, Visualisation de données, Retours et statuts, Surcouches, Transport, Médias et icônes). Un test le vérifie.
 2. Export dans `index.ts`.
 3. Mettre à jour `GUIDELINES.md` : table « Intention → composant », section de domaine, et fiche API (toutes les props, défauts, pièges ⚠️).
 

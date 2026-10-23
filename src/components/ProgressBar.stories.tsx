@@ -3,7 +3,7 @@ import { expect, within } from "storybook/test";
 import { ProgressBar } from "./ProgressBar";
 
 const meta: Meta<typeof ProgressBar> = {
-  title: "Components/ProgressBar",
+  title: "Composants/Retours et statuts/ProgressBar",
   component: ProgressBar,
   tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },

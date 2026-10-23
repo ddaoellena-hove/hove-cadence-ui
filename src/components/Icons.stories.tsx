@@ -5,7 +5,7 @@ import { ICONS, type IconName } from "./icon-registry";
 const ALL_ICONS = Object.keys(ICONS) as IconName[];
 
 const meta: Meta<typeof Icons> = {
-  title: "Components/Icons",
+  title: "Composants/Médias et icônes/Icons",
   component: Icons,
   tags: ["autodocs"],
   argTypes: {

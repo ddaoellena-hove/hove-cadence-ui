@@ -12,7 +12,7 @@ const ROWS: TimelineRow[] = [
 ];
 
 const meta: Meta<typeof Timeline> = {
-  title: "Components/Timeline",
+  title: "Composants/Visualisation de données/Timeline",
   component: Timeline,
   tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },

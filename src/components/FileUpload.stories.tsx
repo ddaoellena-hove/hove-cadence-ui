@@ -4,7 +4,7 @@ import { expect, userEvent, within } from "storybook/test";
 import { FileUpload, type UploadFile } from "./FileUpload";
 
 const meta: Meta<typeof FileUpload> = {
-  title: "Components/FileUpload",
+  title: "Composants/Formulaires/FileUpload",
   component: FileUpload,
   tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },

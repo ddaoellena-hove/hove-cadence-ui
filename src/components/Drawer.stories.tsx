@@ -10,7 +10,7 @@ import { SEVERITY_LABELS, generateDisruptions, type Disruption } from "../storie
 import { DISRUPTION_COLUMNS } from "../stories/data/columns";
 
 const meta: Meta<typeof Drawer> = {
-  title: "Components/Drawer",
+  title: "Composants/Surcouches/Drawer",
   component: Drawer,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

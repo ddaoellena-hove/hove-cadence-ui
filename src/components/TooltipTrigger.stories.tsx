@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { TooltipTrigger } from "./TooltipTrigger";
 
 const meta: Meta<typeof TooltipTrigger> = {
-  title: "Components/TooltipTrigger",
+  title: "Composants/Surcouches/TooltipTrigger",
   component: TooltipTrigger,
   tags: ["autodocs"],
   parameters: {

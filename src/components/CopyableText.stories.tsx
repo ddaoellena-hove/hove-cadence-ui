@@ -6,7 +6,7 @@ import { DataTable, type DataTableColumn } from "./DataTable";
 import { StopLabel } from "./StopLabel";
 
 const meta: Meta<typeof CopyableText> = {
-  title: "Components/CopyableText",
+  title: "Composants/Actions/CopyableText",
   component: CopyableText,
   tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },

@@ -4,7 +4,7 @@ import { expect, userEvent, within } from "storybook/test";
 import { TextInput } from "./TextInput";
 
 const meta: Meta<typeof TextInput> = {
-  title: "Components/TextInput",
+  title: "Composants/Formulaires/TextInput",
   component: TextInput,
   tags: ["autodocs"],
   argTypes: {

@@ -3,7 +3,7 @@ import { expect, within } from "storybook/test";
 import { Skeleton } from "./Skeleton";
 
 const meta: Meta<typeof Skeleton> = {
-  title: "Components/Skeleton",
+  title: "Composants/Retours et statuts/Skeleton",
   component: Skeleton,
   tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },

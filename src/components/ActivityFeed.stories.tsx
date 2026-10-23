@@ -3,7 +3,7 @@ import { expect, within } from "storybook/test";
 import { ActivityFeed } from "./ActivityFeed";
 
 const meta: Meta<typeof ActivityFeed> = {
-  title: "Components/ActivityFeed", component: ActivityFeed, tags: ["autodocs"],
+  title: "Composants/Données et tableaux/ActivityFeed", component: ActivityFeed, tags: ["autodocs"],
   parameters: { a11y: { test: "error" } },
   decorators: [(Story) => <div style={{ maxWidth: 560 }}><Story /></div>],
   args: { "aria-label": "Historique de la perturbation", timeZone: "Europe/Paris", items: [

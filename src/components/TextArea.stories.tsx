@@ -3,7 +3,7 @@ import { fn } from "storybook/test";
 import { TextArea } from "./TextArea";
 
 const meta: Meta<typeof TextArea> = {
-  title: "Components/TextArea",
+  title: "Composants/Formulaires/TextArea",
   component: TextArea,
   tags: ["autodocs"],
   // Champ contrôlé : value s'accompagne toujours d'un onChange (sinon React
