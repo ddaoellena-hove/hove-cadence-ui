@@ -98,6 +98,12 @@ export interface DataTableProps<T> {
   maxHeight?: number | string;
   /** Virtualisation des lignes. Défaut false. */
   virtualized?: boolean;
+  /**
+   * Colle la **dernière colonne** (actions) à droite quand le tableau défile
+   * horizontalement, avec une ombre de séparation. La dernière colonne doit
+   * être la colonne d'actions.
+   */
+  stickyActions?: boolean;
   /** Classe CSS additionnelle. */
   className?: string;
 }
@@ -161,6 +167,7 @@ export function DataTable<T extends object>({
   emptyState = "Aucun résultat.",
   maxHeight,
   virtualized = false,
+  stickyActions = false,
   className,
 }: DataTableProps<T>) {
   // ── Tri (contrôlé ou interne) ──
@@ -324,6 +331,7 @@ export function DataTable<T extends object>({
     "cadence-scrollbar",
     `data-table--${density}`,
     loading && rows.length > 0 ? "data-table--busy" : "",
+    stickyActions ? "data-table--sticky-actions" : "",
     className,
   ]
     .filter(Boolean)

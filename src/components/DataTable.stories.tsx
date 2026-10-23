@@ -406,39 +406,6 @@ function RowActions({ row, onAction }: { row: Trip; onAction: (msg: string) => v
  * rendu dans un portail : non clippé par l'overflow du tableau, au-dessus de
  * tout grâce au z-index. Tester le survol d'une action sur une ligne du bas.
  */
-/* Colonne d'actions collée à droite (dernière cellule) + masquage du tooltip
-   intégré de GhostButton (clippé) au profit du tooltip en portail. */
-const STICKY_ACTIONS_CSS = `
-.dt-sticky .data-table__row > *:last-child {
-  position: sticky;
-  right: 0;
-  background: var(--cadence-color-white, #ffffff);
-  z-index: 1;
-  /* Ombre de séparation : la colonne se lit « au-dessus » du contenu qui
-     défile dessous, au lieu de sembler masquer la colonne précédente. */
-  box-shadow: -8px 0 8px -8px var(--cadence-color-scrollbar-thumb, rgba(0, 40, 48, 0.2));
-}
-.dt-sticky .data-table__body .data-table__row:hover > *:last-child {
-  background: var(--cadence-color-surface-alt, #eef1f4);
-}
-.dt-sticky .data-table__row--selected > *:last-child {
-  background: var(--cadence-color-accent-subtle, #f0f6ff);
-}
-.dt-sticky .data-table__row > *:last-child::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: var(--cadence-color-border, #e5e5e5);
-  pointer-events: none;
-}
-.dt-sticky .base-button-tip__bubble {
-  display: none;
-}
-`;
-
 export const ColonneActions: Story = {
   name: "Colonne d'actions",
   render: () => {
@@ -459,7 +426,6 @@ export const ColonneActions: Story = {
     );
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <style>{STICKY_ACTIONS_CSS}</style>
         <span style={{ fontFamily: "var(--cadence-font-sans)", fontSize: 13, color: "var(--cadence-color-label)" }}>
           Dernière action : {last}
         </span>
@@ -469,7 +435,7 @@ export const ColonneActions: Story = {
           getRowId={(t) => t.id}
           data={TRIPS_50}
           maxHeight={360}
-          className="dt-sticky"
+          stickyActions
         />
       </div>
     );
@@ -494,7 +460,6 @@ export const ColonneActionsEtroite: Story = {
     );
     return (
       <div style={{ width: 800, maxWidth: "100%", display: "flex", flexDirection: "column", gap: 12 }}>
-        <style>{STICKY_ACTIONS_CSS}</style>
         <span style={{ fontFamily: "var(--cadence-font-sans)", fontSize: 13, color: "var(--cadence-color-label)" }}>
           Dernière action : {last}
         </span>
@@ -504,7 +469,7 @@ export const ColonneActionsEtroite: Story = {
           getRowId={(t) => t.id}
           data={TRIPS_50}
           maxHeight={320}
-          className="dt-sticky"
+          stickyActions
         />
       </div>
     );

@@ -1821,7 +1821,7 @@ Champ bordé de 40px ; les boutons − et + sont des `GhostButton size="sm"` ic�
 
 Tableau dense pour les gros volumes. Vrai `<table>` (rôles ARIA explicites), en-tête collant, tri, sélection, navigation clavier, virtualisation optionnelle. Générique : `DataTable<T>`.
 
-⚠️ **Colonne d'actions collée à droite** : `DataTable` n'intègre pas (encore) de prop dédiée. Quand le tableau dépasse la largeur disponible, l'app rend la dernière colonne collante elle-même — `position: sticky; right: 0` sur la cellule d'actions, plus une ombre de séparation (`box-shadow: -8px 0 8px -8px var(--cadence-color-scrollbar-thumb)`) pour la détacher de la colonne précédente. Modèle : la story *Données et tableaux / DataTable → Colonne d'actions (800px)*. Une prop intégrée est à l'étude (0.8.0).
+**Colonne d'actions collée à droite** : passer `stickyActions`. Quand le tableau dépasse la largeur disponible, la **dernière colonne** (actions) reste collée à droite avec une ombre de séparation ; le reste défile dessous. La dernière colonne doit être la colonne d'actions. L'infobulle intégrée des boutons d'icône de cette colonne est masquée (rognée par le défilement) ; leur nom accessible reste. Story : *Données et tableaux / DataTable → Colonne d'actions (800px)*.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
@@ -1846,6 +1846,7 @@ Tableau dense pour les gros volumes. Vrai `<table>` (rôles ARIA explicites), en
 | `emptyState` | `ReactNode` | `"Aucun résultat."` | Contenu sans résultat |
 | `maxHeight` | `number \| string` | — | Zone scrollable, en-tête collant |
 | `virtualized` | `boolean` | `false` | Seules les lignes visibles sont montées. ⚠️ Hauteur bornée (`maxHeight`, défaut 560px) |
+| `stickyActions` | `boolean` | `false` | Colle la **dernière colonne** (actions) à droite au défilement horizontal, avec ombre de séparation |
 | `className` | `string` | — | — |
 
 **`DataTableColumn<T>`**

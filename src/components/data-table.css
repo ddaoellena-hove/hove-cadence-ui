@@ -193,3 +193,46 @@
   padding: 48px 16px;
   text-align: center;
 }
+
+/* ── Colonne d'actions collée à droite (prop stickyActions) ──
+   La dernière colonne reste visible quand le tableau défile horizontalement,
+   avec une ombre de séparation : elle se lit « au-dessus » du contenu qui
+   défile dessous, au lieu de sembler masquer la colonne précédente. */
+.data-table--sticky-actions .data-table__row > *:last-child {
+  position: sticky;
+  right: 0;
+  background: var(--cadence-color-white, #ffffff);
+  z-index: 1;
+  box-shadow: -8px 0 8px -8px var(--cadence-color-scrollbar-thumb, rgba(0, 40, 48, 0.2));
+}
+
+.data-table--sticky-actions .data-table__row--header > *:last-child {
+  z-index: 2;
+}
+
+.data-table--sticky-actions .data-table__body .data-table__row:hover > *:last-child {
+  background: var(--cadence-color-surface-alt, #eef1f4);
+}
+
+.data-table--sticky-actions .data-table__row--selected > *:last-child,
+.data-table--sticky-actions .data-table__body .data-table__row--selected:hover > *:last-child {
+  background: var(--cadence-color-accent-subtle, #f0f6ff);
+}
+
+/* Filet de séparation à gauche de la colonne collée. */
+.data-table--sticky-actions .data-table__row > *:last-child::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--cadence-color-border, #e5e5e5);
+  pointer-events: none;
+}
+
+/* L'infobulle intégrée d'un bouton d'icône serait rognée par le défilement
+   dans la colonne collée : la masquer (le nom accessible reste). */
+.data-table--sticky-actions .data-table__row > *:last-child .base-button-tip__bubble {
+  display: none;
+}

@@ -23,7 +23,7 @@ Version mineure, sans rupture d’API. Thème : **Page patterns**.
 ### Décisions
 
 - `Toolbar` et `SplitView` : **documentés** (règles / composition), pas de composant (couverts par `PageHeader`/`FilterBar` et `Drawer`).
-- Prop `DataTable` colonne d’actions collée : **reportée** (documentée ; risque de régression sur un composant central).
+- **`DataTable` : prop `stickyActions`** — colle la dernière colonne (actions) à droite au défilement horizontal, avec ombre de séparation. Remplace le CSS que l’app fournissait (A6). L’infobulle intégrée des boutons d’icône de la colonne collée est masquée (rognée au défilement) ; le nom accessible reste.
 - Pattern Paramètres : **enregistrement explicite** par défaut ; un réglage à effet immédiat l’annonce.
 
 ## 0.7.6 (non publiée)
