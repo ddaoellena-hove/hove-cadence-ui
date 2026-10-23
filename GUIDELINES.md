@@ -274,6 +274,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Étiquette d'information neutre (catégorie, tag, code) | `Badge` | `Indicator` (qui porte un état) |
 | Chip amovible (filtre actif « Ligne 38 × », « Tout effacer ») | `Badge dismissible` ; sous une liste, `FilterBar` (`activeFilters` + `onRemoveFilter`) | un composant `Tag` dédié (doublon inutile) |
 | État ou statut avec picto + couleur sémantique | `Indicator` | `Badge` (purement informatif) |
+| Fraîcheur d'une donnée (dernière mise à jour, péremption) | `DataFreshness` | `Indicator` (statut métier, pas temporel) ; `ActivityFeed` (journal d'événements horodatés) |
 | En-tête de page (titre, sous-titre, actions), collé en haut au défilement | `PageHeader` | `<h1>` à la main |
 | Indicateur chiffré + évolution (haut de tableau de bord) | `Card` (`value`, `delta`, `trend`) | `Indicator` (statut sans valeur) |
 | Proposer une action dans une carte (titre + description + bouton) | `Card` (`actionLabel`, `onAction`) | `TableCard` (élément de liste) |
@@ -1904,6 +1905,25 @@ SVG inline issu de `@untitledui/icons` — aucune requête réseau. L'icône sui
 |---|---|---|---|
 | `variant` | `"active" \| "upcoming" \| "completed" \| "draft" \| "warning" \| "info" \| "critical" \| "nominal"` | **requis** | Statut sémantique (picto + couleurs) |
 | `label` | `string` | label de la variante | Surcharge du libellé |
+
+### DataFreshness
+
+Fraîcheur d'une donnée : un point coloré (ton de statut) et un libellé relatif compact (« Mis à jour il y a 3 min », « il y a 2 h »), la date absolue restant en `title` et pour les lecteurs d'écran (`<time dateTime>`). Le ton suit l'âge : **frais** (`nominal`, vert) sous `freshWithin`, **vieillissant** (`warning`, orange) sous `staleWithin`, **périmé** (`critical`, rouge) au-delà. Au-delà de 7 jours (ou pour une date future), la date absolue remplace le libellé relatif. Une date invalide donne un repli discret « Date indisponible ».
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `updatedAt` | `Date \| string \| number` | **requis** | Dernière mise à jour (Date, ISO ou timestamp) |
+| `now` | `Date \| string \| number` | maintenant | Instant de référence (à fixer pour les tests) |
+| `freshWithin` | `number` | `300` | Seuil « frais », en secondes (5 min) |
+| `staleWithin` | `number` | `3600` | Seuil « vieillissant », en secondes (1 h) |
+| `label` | `string` | `"Mis à jour"` | Préfixe du libellé |
+| `hideDot` | `boolean` | `false` | Masquer le point coloré |
+| `timeZone` | `string` | fuseau local | Fuseau du format absolu |
+| `className` | `string` | — | — |
+
+- ✅ En-tête de tableau de bord ou de carte pour dater une donnée live (ponctualité, affluence).
+- ✅ Régler `freshWithin` / `staleWithin` selon la cadence réelle de la source.
+- ❌ Pas pour un statut métier (en cours, ralenti…) : `Indicator`. Pas pour un journal d'événements : `ActivityFeed`.
 
 ### LineChart
 
