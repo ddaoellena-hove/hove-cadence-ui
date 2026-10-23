@@ -1,5 +1,19 @@
 # Changelog — @ddaoellena/cadence-ui
 
+## 0.7.5 (non publiée)
+
+Version mineure, sans rupture d’API.
+
+### Ajouté
+
+- **Police display Uxum Grotesque** réellement chargée : `@font-face` (poids 400 / 500 / 700, `font-display: swap`) dans `tokens.css`, fichiers `woff2` servis depuis `/fonts` (dossier `public`, repris par Storybook via `staticDirs`). Les titres (`PageHeader`) rendent désormais en Uxum Grotesque au lieu du repli Space Grotesk.
+
+### Modifié
+
+- `--cadence-font-display` : repli serif `Georgia` retiré — `"Uxum Grotesque", "Space Grotesk", sans-serif` (Space Grotesk reste le repli web si Uxum est absente). Fallback aligné dans `page-header.css`.
+
+> ⚠️ **Consommateurs de la lib** : Uxum Grotesque est une police commerciale. La lib ne distribue que la règle `@font-face` (pas les fichiers) ; héberge les `woff2` sous `/fonts/` pour l’activer, sinon le rendu retombe sur Space Grotesk.
+
 ## 0.7.0 (non publiée)
 
 Version mineure, sans rupture d’API.
