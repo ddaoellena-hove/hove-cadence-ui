@@ -1,5 +1,5 @@
 /* ── ColorField ────────────────────────────────────────────────────────────
-   Champ 40px à l'allure d'un TextInput : pastille (sélecteur natif) + hex. */
+   Champ 40px à l'allure d'un TextInput : pastille (ouvre le sélecteur HEX) + hex. */
 
 .color-field {
   display: flex;
@@ -58,34 +58,126 @@
   box-shadow: none;
 }
 
-/* ── Pastille = input type=color ── */
+/* ── Pastille : bouton qui ouvre le sélecteur ── */
 .color-field__swatch {
   flex-shrink: 0;
   width: 24px;
   height: 24px;
   padding: 0;
-  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border: 1px solid var(--cadence-color-border-strong, #bfc9cb);
   border-radius: var(--cadence-radius-pill, 999px);
-  background: none;
+  background: var(--cadence-color-white, #ffffff);
   cursor: pointer;
-  overflow: hidden;
-}
-
-.color-field__swatch::-webkit-color-swatch-wrapper {
-  padding: 0;
-}
-.color-field__swatch::-webkit-color-swatch {
-  border: none;
-  border-radius: var(--cadence-radius-pill, 999px);
-}
-.color-field__swatch::-moz-color-swatch {
-  border: none;
-  border-radius: var(--cadence-radius-pill, 999px);
 }
 
 .color-field__swatch:focus-visible {
   outline: none;
   box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+}
+
+.color-field__swatch:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ── Sélecteur HEX (contenu du Popover) ── */
+.color-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Zone saturation (→) / luminosité (↑) : dégradés posés en style (teinte). */
+.color-picker__area {
+  border-radius: var(--cadence-radius-md, 8px);
+  cursor: crosshair;
+  height: 152px;
+  position: relative;
+  touch-action: none;
+}
+
+.color-picker__area:focus-visible {
+  outline: none;
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+}
+
+.color-picker__thumb {
+  border: 2px solid var(--cadence-color-white, #ffffff);
+  border-radius: var(--cadence-radius-pill, 999px);
+  box-shadow: var(--cadence-shadow-md, 0px 0px 12px rgba(0, 0, 0, 0.08), 0px 0px 2px rgba(0, 0, 0, 0.25));
+  box-sizing: border-box;
+  height: 16px;
+  pointer-events: none;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 16px;
+}
+
+/* Réglette de teinte : dégradé du spectre posé en style. */
+.color-picker__hue {
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: var(--cadence-radius-pill, 999px);
+  cursor: pointer;
+  height: 12px;
+  margin: 0;
+  width: 100%;
+}
+
+.color-picker__hue:focus-visible {
+  outline: none;
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+}
+
+.color-picker__hue::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border-strong, #bfc9cb);
+  border-radius: var(--cadence-radius-pill, 999px);
+  box-shadow: var(--cadence-shadow-sm, 0px 1px 3px rgba(0, 0, 0, 0.06), 0px 1px 2px rgba(0, 0, 0, 0.04));
+  height: 18px;
+  width: 18px;
+}
+
+.color-picker__hue::-moz-range-thumb {
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border-strong, #bfc9cb);
+  border-radius: var(--cadence-radius-pill, 999px);
+  box-shadow: var(--cadence-shadow-sm, 0px 1px 3px rgba(0, 0, 0, 0.06), 0px 1px 2px rgba(0, 0, 0, 0.04));
+  height: 18px;
+  width: 18px;
+}
+
+.color-picker__hue::-moz-range-track {
+  background: transparent;
+}
+
+.color-picker__hex-row {
+  align-items: flex-end;
+  display: flex;
+  gap: 12px;
+}
+
+/* Aperçu à hauteur du champ HEX (40px). */
+.color-picker__preview {
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-lg, 10px);
+  box-sizing: border-box;
+  flex-shrink: 0;
+  height: 40px;
+  width: 40px;
+}
+
+.color-picker__hex {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Erreur sous le champ : l'aperçu reste aligné sur le champ, pas sur l'aide. */
+.color-picker__hex-row:has(.text-input__helper) {
+  align-items: center;
 }
 
 /* ── Champ hex ── */

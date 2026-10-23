@@ -6,7 +6,7 @@ Version mineure, sans rupture d’API.
 
 ### Ajouté
 
-- **`ColorField`** : saisie d’une couleur de ligne GTFS (`route_color`) avec pastille, champ hex validé, sélecteur natif et aperçu `LineBadge` en direct ; contrôle de contraste (`line-badge-utils`) et bouton « Calculer la couleur du texte ».
+- **`ColorField`** : saisie d’une couleur de ligne GTFS (`route_color`) avec pastille, champ hex validé et aperçu `LineBadge` en direct. La pastille ouvre un sélecteur HEX dans un `Popover` (zone saturation / luminosité, réglette de teinte, champ HEX), à la place du sélecteur natif et de ses modes RGB / HSL ; contrôle de contraste (`line-badge-utils`) et bouton « Calculer la couleur du texte ».
 - **`Timeline`** : plages horaires sur un axe temps, une ligne par entité, repère « maintenant », annotations, couleurs par `tone` doublées d’un motif ; navigation clavier, tooltip, « Voir les données », états `loading`/`empty`/`error`. Rendu HTML dans une carte : bandeau « Fenêtre » (`Jeu. 11/06/2026 07h55 → 08h35`, mono), sélecteur **Échelle** (`scales`, `defaultScale` : « Ajuster », 1 h, 30 min, 15 min, défilement horizontal), axe horaire en haut au format `08h15` (pas majeurs en gras), grille, gouttière de libellés collée au défilement, aide en pied (`hint`).
 - **`JourneyTimeline`** : comparaison d’itinéraires sur une fenêtre de départ, même cadre que `Timeline`. Étapes marche / transport / attente (picto, `LineBadge`, teinte de la couleur GTFS), libellé `[n]` collé au départ, résumé calculé (durée, correspondances, marche) et mention « Recommandé » ; info-bulle par étape, clic sur un itinéraire (`onJourneyClick`), clavier, « Voir les données ».
 - **Icônes** : `bus`, `tram`, `train`, `anchor` (Untitled UI) et `walk` (dessinée au même gabarit).

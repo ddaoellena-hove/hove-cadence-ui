@@ -2,15 +2,19 @@
  * ColorField component.
  *
  * Saisie d'une couleur de ligne GTFS (`route_color`), avec `route_text_color`
- * optionnel. Champ de 40 px : pastille (sélecteur natif), champ hex validé
- * (avec ou sans `#`) et aperçu `LineBadge` en direct. Le contraste texte/fond
+ * optionnel. Champ de 40 px : pastille qui ouvre un sélecteur HEX dans un
+ * Popover (zone saturation / luminosité, réglette de teinte, champ HEX), champ
+ * hex validé (avec ou sans `#`) et aperçu `LineBadge` en direct. Le contraste texte/fond
  * est contrôlé via `line-badge-utils` : sous 4,5:1 l'aide passe en erreur et un
  * bouton « Calculer la couleur du texte » propose une couleur lisible.
  */
-import { forwardRef, useId, useState } from "react";
+import { forwardRef, useId, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import { LineBadge, type LineMode } from "./LineBadge";
 import { GhostButton } from "./GhostButton";
+import { Popover } from "./Popover";
+import { TextInput } from "./TextInput";
 import { normalizeLineColor, contrastRatio, pickTextColor, AA_RATIO } from "./line-badge-utils";
+import { clamp, hexToHsv, hsvToHex, type Hsv } from "./color-field-utils";
 import "./color-field.css";
 
 export interface ColorFieldProps {
@@ -37,6 +41,122 @@ export interface ColorFieldProps {
   id?: string;
   className?: string;
 }
+
+/** Dégradé de la réglette de teinte (spectre complet). */
+const HUE_GRADIENT = `linear-gradient(to right, ${[0, 60, 120, 180, 240, 300, 360].map((h) => `hsl(${h} 100% 50%)`).join(", ")})`;
+
+/**
+ * Sélecteur HEX (interne) : zone saturation / luminosité, réglette de teinte et
+ * champ HEX. Chaque changement est transmis aussitôt (`onChange`, texte hex).
+ */
+const ColorPicker = ({ value, onChange }: { value: string | null; onChange: (hex: string) => void }) => {
+  // HSV de travail : conserve la teinte quand la couleur passe par le gris.
+  const [hsv, setHsv] = useState<Hsv>(() => (value && hexToHsv(value)) || { h: 200, s: 60, v: 80 });
+  const [hexDraft, setHexDraft] = useState(value ? value.toUpperCase() : "");
+  const areaRef = useRef<HTMLDivElement>(null);
+  const hexInvalid = hexDraft.trim() !== "" && normalizeLineColor(hexDraft) === null;
+
+  const apply = (next: Hsv) => {
+    setHsv(next);
+    const hex = hsvToHex(next);
+    setHexDraft(hex);
+    onChange(hex);
+  };
+
+  const fromPointer = (e: PointerEvent<HTMLDivElement>) => {
+    const rect = areaRef.current?.getBoundingClientRect();
+    if (!rect || rect.width === 0 || rect.height === 0) return;
+    apply({
+      ...hsv,
+      s: clamp(((e.clientX - rect.left) / rect.width) * 100, 0, 100),
+      v: clamp(100 - ((e.clientY - rect.top) / rect.height) * 100, 0, 100),
+    });
+  };
+
+  // Clavier : ←/→ saturation, ↑/↓ luminosité ; Maj = pas de 10.
+  const onAreaKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    const step = e.shiftKey ? 10 : 1;
+    const delta: Record<string, [number, number]> = {
+      ArrowLeft: [-step, 0],
+      ArrowRight: [step, 0],
+      ArrowUp: [0, step],
+      ArrowDown: [0, -step],
+    };
+    const d = delta[e.key];
+    if (!d) return;
+    e.preventDefault();
+    apply({ ...hsv, s: clamp(Math.round(hsv.s) + d[0], 0, 100), v: clamp(Math.round(hsv.v) + d[1], 0, 100) });
+  };
+
+  const onHexChange = (text: string) => {
+    setHexDraft(text);
+    const norm = normalizeLineColor(text);
+    const next = norm ? hexToHsv(norm) : null;
+    if (!next) return;
+    setHsv(next);
+    onChange(text);
+  };
+
+  const s = Math.round(hsv.s);
+  const v = Math.round(hsv.v);
+  const current = hsvToHex(hsv);
+
+  return (
+    <div className="color-picker">
+      <div
+        ref={areaRef}
+        className="color-picker__area"
+        role="slider"
+        tabIndex={0}
+        aria-label="Saturation et luminosité"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={s}
+        aria-valuetext={`Saturation ${s} %, luminosité ${v} %`}
+        style={{
+          background: `linear-gradient(to top, rgb(0 0 0), transparent), linear-gradient(to right, rgb(255 255 255), transparent), hsl(${Math.round(hsv.h)} 100% 50%)`,
+        }}
+        onPointerDown={(e) => {
+          e.currentTarget.setPointerCapture?.(e.pointerId);
+          e.currentTarget.focus();
+          fromPointer(e);
+        }}
+        onPointerMove={(e) => {
+          if (e.currentTarget.hasPointerCapture?.(e.pointerId)) fromPointer(e);
+        }}
+        onKeyDown={onAreaKeyDown}
+      >
+        <span className="color-picker__thumb" style={{ left: `${hsv.s}%`, top: `${100 - hsv.v}%`, background: current }} aria-hidden="true" />
+      </div>
+
+      <input
+        type="range"
+        className="color-picker__hue"
+        min={0}
+        max={359}
+        step={1}
+        value={Math.round(hsv.h) % 360}
+        aria-label="Teinte"
+        aria-valuetext={`Teinte ${Math.round(hsv.h) % 360}°`}
+        style={{ background: HUE_GRADIENT }}
+        onChange={(e) => apply({ ...hsv, h: Number(e.target.value) })}
+      />
+
+      <div className="color-picker__hex-row">
+        <span className="color-picker__preview" style={{ background: hexInvalid ? undefined : current }} aria-hidden="true" />
+        <TextInput
+          className="color-picker__hex"
+          label="HEX"
+          value={hexDraft}
+          placeholder="#6EC4E8"
+          state={hexInvalid ? "error" : "enabled"}
+          helperText={hexInvalid ? "Format attendu : #RRGGBB." : undefined}
+          onChange={(e) => onHexChange(e.target.value)}
+        />
+      </div>
+    </div>
+  );
+};
 
 export const ColorField = forwardRef<HTMLInputElement, ColorFieldProps>(
   (
@@ -89,15 +209,24 @@ export const ColorField = forwardRef<HTMLInputElement, ColorFieldProps>(
 
         <div className="color-field__row">
           <div className="color-field__box">
-            {/* Pastille = sélecteur natif */}
-            <input
-              type="color"
-              className="color-field__swatch"
-              value={normalized ?? "#000000"}
-              disabled={disabled}
-              aria-label={`Sélecteur de couleur — ${label}`}
-              onChange={(e) => commit(e.target.value)}
-            />
+            {/* Pastille : ouvre le sélecteur HEX (Popover). */}
+            <Popover
+              title={label}
+              width={264}
+              renderTrigger={({ ref: triggerRef, toggle }) => (
+                <button
+                  ref={triggerRef}
+                  type="button"
+                  className="color-field__swatch"
+                  style={normalized ? { background: normalized } : undefined}
+                  disabled={disabled}
+                  aria-label={`Choisir la couleur — ${label}`}
+                  onClick={toggle}
+                />
+              )}
+            >
+              <ColorPicker value={normalized} onChange={commit} />
+            </Popover>
             <input
               ref={ref}
               id={inputId}

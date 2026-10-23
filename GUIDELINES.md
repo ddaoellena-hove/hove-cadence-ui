@@ -2609,7 +2609,7 @@ Rendu des étapes :
 
 ### ColorField
 
-Saisie d'une couleur de ligne GTFS (`route_color`), avec `route_text_color` optionnel. Champ de 40 px : pastille (sélecteur natif `input type="color"`), champ hex validé (avec ou sans `#`) et aperçu `LineBadge` en direct. Le contraste texte/fond est contrôlé via `line-badge-utils` ; sous 4,5:1, l'aide passe en erreur et un bouton « Calculer la couleur du texte » propose une couleur lisible.
+Saisie d'une couleur de ligne GTFS (`route_color`), avec `route_text_color` optionnel. Champ de 40 px : pastille, champ hex validé (avec ou sans `#`) et aperçu `LineBadge` en direct. La pastille ouvre un **sélecteur HEX** dans un `Popover` (titré par `label`) : zone saturation / luminosité, réglette de teinte et champ « HEX ». Chaque changement s'applique aussitôt au champ et à l'aperçu ; Échap ou « Fermer » referme le sélecteur. Un seul mode, l'hexadécimal (format GTFS) : pas de RGB ni de HSL. Le contraste texte/fond est contrôlé via `line-badge-utils` ; sous 4,5:1, l'aide passe en erreur et un bouton « Calculer la couleur du texte » propose une couleur lisible.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
@@ -2628,6 +2628,7 @@ Saisie d'une couleur de ligne GTFS (`route_color`), avec `route_text_color` opti
 
 - ✅ Couleur **des données** (GTFS), jamais un token : c'est l'exception assumée de `LineBadge`/`ColorField`.
 - ✅ Fournir `onTextColorChange` pour laisser l'utilisateur corriger un contraste insuffisant.
+- Clavier du sélecteur : la zone de couleur est un curseur (←/→ saturation, ↑/↓ luminosité, Maj pour un pas de 10) ; la teinte est un curseur natif ; le champ HEX accepte `#RRGGBB`, `RRGGBB` ou `#RGB`.
 - ❌ Ne pas utiliser pour une couleur de thème ou de statut (celles-ci passent par les tokens).
 
 ### ColumnManager

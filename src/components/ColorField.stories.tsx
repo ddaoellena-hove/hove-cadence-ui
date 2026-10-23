@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { ColorField } from "./ColorField";
 
 const meta: Meta<typeof ColorField> = {
@@ -26,6 +26,40 @@ export const Defaut: Story = {
     await userEvent.type(input, "B6007A");
     // Accepté sans « # » puis normalisé en #RRGGBB.
     await expect((input as HTMLInputElement).value.toUpperCase()).toMatch(/B6007A$/);
+  },
+};
+
+/** Sélecteur HEX dans un Popover : zone saturation / luminosité, teinte, champ HEX. */
+export const SelecteurHex: Story = {
+  name: "Sélecteur HEX",
+  render: function Demo() {
+    const [color, setColor] = useState("#6EC4E8");
+    return <ColorField label="Couleur de la ligne" previewCode="13" previewMode="metro" value={color} onChange={setColor} />;
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const field = canvas.getByRole("textbox", { name: "Couleur de la ligne" }) as HTMLInputElement;
+    await userEvent.click(canvas.getByRole("button", { name: "Choisir la couleur — Couleur de la ligne" }));
+    const body = within(document.body);
+    const dialog = await body.findByRole("dialog", { name: "Couleur de la ligne" });
+    const panel = within(dialog);
+
+    // Focus initial sur la zone ; flèches : saturation / luminosité.
+    const area = panel.getByRole("slider", { name: "Saturation et luminosité" });
+    await waitFor(() => expect(area).toHaveFocus());
+    await userEvent.keyboard("{Shift>}{ArrowDown}{/Shift}");
+    await waitFor(() => expect(field.value).not.toBe("#6EC4E8"));
+
+    // Champ HEX : la valeur saisie est reprise par le champ principal.
+    const hex = panel.getByRole("textbox", { name: "HEX" });
+    await userEvent.clear(hex);
+    await userEvent.type(hex, "#E3051B");
+    await waitFor(() => expect(field.value.toUpperCase()).toBe("#E3051B"));
+    await expect(panel.getByRole("slider", { name: "Teinte" })).toHaveValue("354");
+
+    // Pas d'autre mode que HEX.
+    await expect(panel.queryByRole("textbox", { name: /RGB|HSL/i })).toBeNull();
+    await userEvent.keyboard("{Escape}");
   },
 };
 
