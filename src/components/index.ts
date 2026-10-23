@@ -74,4 +74,5 @@ export * from './Timeline';
 export * from './JourneyTimeline';
 export * from './TreeView';
 export * from './DataFreshness';
+export * from './DisruptionScopePicker';
 export * from './Popover';

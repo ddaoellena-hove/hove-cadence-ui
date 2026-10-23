@@ -309,6 +309,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Tendance dans une cellule de `DataTable` ou une ligne de liste | `Sparkline` | `LineChart compact` (axe, tooltip, seuils) ; `Card trend` (déjà intégré à la carte) |
 | Identité de ligne (code et couleur GTFS) | `LineBadge` | `Badge` (étiquette générique) |
 | Nom, commune et identifiant d'arrêt | `StopLabel` | — |
+| Choisir le périmètre réseau d'une perturbation (réseaux, lignes) | `DisruptionScopePicker` | `Autocomplete multiple` (liste plate, sans hiérarchie) ; `TreeView` seul (sans champ, résumé ni chips) |
 | Identifiant technique à copier (arrêt, course, véhicule) | `CopyableText` | `StopLabel` (nom d'arrêt, identifiant en simple mention) ; `TextInput readOnly` |
 | Message persistant dans la page | `InlineAlert` | `Toaster` (notification éphémère) |
 | Sections dépliables | `Accordion` | `TabList` (navigation) |
@@ -2846,6 +2847,30 @@ Migration : les props existantes restent utilisables ; le DOM passe d’un champ
 - `RouteStopList` pour lire la succession de passages d’une course. Réutilise `StopLabel` et accepte un `LineBadge` en en-tête.
 - Recette **Offre et qualité** : premier niveau `SegmentedControl` (« Offre / Qualité »), second niveau `SecondaryTab` dans `TabList level="secondary"`. L’onglet Offre montre le calendrier puis les courses ; Qualité compose le rapport décrit ci-dessous.
 - **DataQualityReport est une recette interne, pas un export de la bibliothèque.** Elle compose `InlineAlert`, `FilterBar`, `DataTable`, `Drawer`, `DescriptionList` et `EmptyState`. L’application fournit les constats et décide quels niveaux bloquent l’import. Le résumé global reste indépendant du filtre ; aucun résultat de recherche ne signifie pas absence d’erreurs.
+- `DisruptionScopePicker` pour choisir le périmètre réseau d’une perturbation. Compose un champ, un `Popover`, une recherche (`SearchInput`) et un `TreeView` en sélection multiple ; le périmètre retenu s’affiche en chips (`Badge dismissible`).
+
+### DisruptionScopePicker
+
+Sélection du périmètre d’une perturbation dans l’arborescence du réseau (réseau → ligne → parcours). Champ de 40 px qui ouvre un `Popover` nommé par le `label` ; à l’intérieur, une recherche filtre l’arbre (et déplie les branches correspondantes) et un `TreeView` en sélection **multiple** (cases tri-état) coche lignes et réseaux — cocher un réseau coche ses lignes. Le périmètre retenu apparaît en chips `Badge dismissible` sous le champ (retirables), le champ résumant la sélection (« Ligne 1 +2 ») ; « Tout effacer » vide la sélection. Les enfants peuvent se charger à la demande via `TreeView` (`loadChildren`). Variante **hiérarchique** du multi-select : `Autocomplete multiple` filtre une liste plate, ce composant gère la hiérarchie.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `label` | `string` | **requis** | Libellé du champ et nom du `Popover` |
+| `nodes` | `TreeNode[]` | **requis** | Arbre du réseau (voir `TreeView`) |
+| `value` / `defaultValue` | `string[]` | — | Périmètre (contrôlé / au montage) : identifiants de feuilles |
+| `onChange` | `(ids: string[]) => void` | — | Changement du périmètre |
+| `loadChildren` | `(node: TreeNode) => Promise<TreeNode[]>` | — | Chargement des enfants d’un nœud `hasChildren` |
+| `placeholder` | `string` | `"Tout le réseau"` | Texte quand rien n’est sélectionné |
+| `helperText` | `string` | — | Aide sous le champ (remplacée par l’erreur) |
+| `state` | `"enabled" \| "error"` | `"enabled"` | `"error"` force le rendu d’erreur |
+| `disabled` / `required` | `boolean` | `false` | États natifs |
+| `searchPlaceholder` | `string` | `"Rechercher une ligne…"` | Placeholder de la recherche |
+| `ref` | `Ref<HTMLButtonElement>` | — | Cible le champ (pour `ErrorSummary`) |
+| `id` / `className` | `string` | — | — |
+
+- ✅ Pour un périmètre **hiérarchique** (réseaux et lignes) : cocher un réseau sélectionne ses lignes.
+- ✅ La sélection (`value`) est une liste de feuilles ; le chip et le résumé utilisent les libellés des nœuds **chargés** (sinon l’identifiant).
+- ❌ Pour une liste plate sans hiérarchie : `Autocomplete multiple`. Pour parcourir sans champ ni périmètre retenu : `TreeView` seul.
 
 ### ServiceCalendar
 

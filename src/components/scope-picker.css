@@ -1,0 +1,116 @@
+/* DisruptionScopePicker — champ de périmètre réseau. Tokens uniquement. */
+
+.scope-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+}
+
+.scope-picker__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--cadence-color-label, #1a3e45);
+  line-height: 1.4;
+}
+
+/* Champ 40px à l'allure d'un TextInput, déclencheur du Popover. */
+.scope-picker__field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  box-sizing: border-box;
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-lg, 10px);
+  box-shadow: var(--cadence-shadow-sm, 0px 1px 3px rgba(0, 0, 0, 0.06), 0px 1px 2px rgba(0, 0, 0, 0.04));
+  color: var(--cadence-color-label, #1a3e45);
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.scope-picker__field:hover {
+  box-shadow: var(--cadence-shadow-md, 0px 0px 12px rgba(0, 0, 0, 0.08), 0px 0px 2px rgba(0, 0, 0, 0.25));
+}
+
+.scope-picker__field:focus-visible {
+  outline: none;
+  border: 1.5px solid var(--cadence-color-field-focus, #2d5f6b);
+  box-shadow: var(--cadence-field-focus-ring, 0 0 0 4px rgba(45, 95, 107, 0.12));
+}
+
+.scope-picker__field svg {
+  flex: 0 0 auto;
+  color: var(--cadence-color-icon-muted, #69797d);
+}
+
+.scope-picker--error .scope-picker__field {
+  border: 2px solid var(--cadence-color-danger, #da1e28);
+}
+
+.scope-picker--disabled .scope-picker__field {
+  background: var(--cadence-color-border, #e5e5e5);
+  border-color: var(--cadence-color-border-strong, #bfc9cb);
+  box-shadow: none;
+  cursor: default;
+}
+
+.scope-picker__placeholder {
+  color: var(--cadence-color-text-secondary, #64757a);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scope-picker__summary {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Contenu du Popover. */
+.scope-picker__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.scope-picker__tree {
+  border-color: var(--cadence-color-divider, #f0f0f0);
+}
+
+.scope-picker__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.scope-picker__count {
+  font-size: 13px;
+  color: var(--cadence-color-text-secondary, #64757a);
+}
+
+/* Chips du périmètre retenu, sous le champ. */
+.scope-picker__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.scope-picker__helper {
+  margin: 0;
+  font-size: 13px;
+  color: var(--cadence-color-text-secondary, #64757a);
+}
+
+.scope-picker--error .scope-picker__helper {
+  color: var(--cadence-color-danger-text, #b91c1c);
+}
