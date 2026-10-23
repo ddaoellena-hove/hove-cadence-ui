@@ -10,6 +10,8 @@ Version mineure, sans rupture d’API.
 - **`Timeline`** : plages horaires sur un axe temps, une ligne par entité, repère « maintenant », annotations, couleurs par `tone` doublées d’un motif ; navigation clavier, tooltip, « Voir les données », états `loading`/`empty`/`error`. Rendu HTML dans une carte : bandeau « Fenêtre » (`Jeu. 11/06/2026 07h55 → 08h35`, mono), sélecteur **Échelle** (`scales`, `defaultScale` : « Ajuster », 1 h, 30 min, 15 min, défilement horizontal), axe horaire en haut au format `08h15` (pas majeurs en gras), grille, gouttière de libellés collée au défilement, aide en pied (`hint`).
 - **`JourneyTimeline`** : comparaison d’itinéraires sur une fenêtre de départ, même cadre que `Timeline`. Étapes marche / transport / attente (picto, `LineBadge`, teinte de la couleur GTFS), libellé `[n]` collé au départ, résumé calculé (durée, correspondances, marche) et mention « Recommandé » ; info-bulle par étape, clic sur un itinéraire (`onJourneyClick`), clavier, « Voir les données ».
 - **`TreeView`** : arborescence dépliable (réseau → ligne → parcours, dépôt → véhicules). Motif ARIA `tree` aplati (`aria-level` / `aria-setsize` / `aria-posinset`), clavier complet (flèches, Début / Fin, `*` pour déplier les frères, saisie de la première lettre). Sélection `none` / `single` / `multiple` avec cases tri-état qui remontent vers le parent ; chargement à la demande (`loadChildren`, `Skeleton`, reprise « Réessayer ») ; virtualisation au-delà de 500 lignes visibles.
+- **`DataFreshness`** : fraîcheur d’une donnée — point coloré (ton de statut) et libellé relatif compact (« Mis à jour il y a 3 min »), date absolue en `title` et pour les lecteurs d’écran ; ton selon l’âge (frais `nominal` / vieillissant `warning` / périmé `critical`).
+- **`DisruptionScopePicker`** : sélection du périmètre réseau d’une perturbation — champ qui ouvre un `Popover` (recherche + `TreeView` en sélection multiple) ; périmètre retenu en chips `Badge dismissible`, résumé sur le champ, « Tout effacer ». Variante hiérarchique d’`Autocomplete multiple`.
 - **Icônes** : `bus`, `tram`, `train`, `anchor` (Untitled UI) et `walk` (dessinée au même gabarit).
 - **`SegmentedControl`** : option désactivée (`options[].disabled`), grisée et sautée par les flèches.
 
@@ -24,6 +26,7 @@ Version mineure, sans rupture d’API.
 - Règle des boutons `md` à côté d’un champ : l’action inline à côté d’un seul champ est désormais documentée comme une exception (règle et exemple alignés).
 - CHANGELOG 0.6.0 : nom de token corrigé (`--cadence-color-field-focus-subtle`).
 - Colonne d’actions de `DataTable` : largeur réservée, ombre de séparation et défilement horizontal à 800 px.
+- `TreeView` : les libellés retombaient sur le serif du navigateur en isolation — police héritée du token `--cadence-font-sans`.
 
 ### Documentation
 
@@ -34,6 +37,8 @@ Version mineure, sans rupture d’API.
 - Exemples des MDX de guidelines passés aux tokens, avec contrôle automatisé.
 - Fiche `Modal` : règles d’usage face à `Drawer` et `Popover` (✅ / ❌), exemple de confirmation.
 - Chip de filtre : `Badge dismissible` / `FilterBar activeFilters` documentés (pas de composant `Tag` dédié).
+- Polices : nouveau test de garde — toute `font-family` des CSS de composants passe par un token `--cadence-font-*` (ou `inherit`), pour qu’un changement de police (ex. remplacer Inter) se fasse au seul endroit (`tokens.css`). Stories `TableHeader` / `Icons` passées au token.
+- `ScheduleComparison` (proposition B5) : non retenu comme composant — comparaison d’horaires/offres couverte par un assemblage `DataTable` + `BarChart`/`Timeline` (recette), trop spécifique à l’app pour un composant générique.
 
 ## 0.6.0 (non publiée)
 

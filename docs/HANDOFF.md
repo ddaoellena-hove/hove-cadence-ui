@@ -184,4 +184,14 @@ Composant **`TreeView`** livré : `TreeView.tsx`, `tree-view.css`, `tree-view-ut
 
 **Limite connue** : la sélection d'un parent non encore chargé retient l'id du parent (l'app résout son sous-arbre au chargement).
 
-**Reste ouvert** : B5 (`DisruptionScopePicker`, `ScheduleComparison`, `DataFreshness`) à trancher ; tests manuels lecteur d'écran ; décision de version et publication avec l'utilisateur.
+## Mise à jour — tokens de police + B5 (clôture 0.7.0)
+
+**Police** : l'architecture est bonne — un seul token `--cadence-font-sans` (`tokens.css`), référencé avec repli dans ~59 CSS de composants ; changer Inter = une ligne. Corrigé : `TreeView` ne fixait aucune `font-family` → serif en isolation. Ajouté : garde-fou `font-tokens.test.ts` (toute `font-family` de composant via un token `--cadence-font-*` ou `inherit`) ; stories `TableHeader`/`Icons` passées au token. Observation (non traité, hors périmètre Inter) : `--cadence-font-display` a un repli serif `Georgia` — à revoir si les polices display ne sont pas chargées.
+
+**B5 — décisions**
+
+- **`DataFreshness`** : *livré*. Primitive claire (temps relatif + ton de péremption), non couverte par l'existant. `data-freshness-utils` (+ tests), stories, fiche GUIDELINES (« Retours et statuts »).
+- **`DisruptionScopePicker`** : *livré*. Composite hiérarchique au-dessus de `TreeView` (champ + `Popover` recherche + `TreeView` multiple + chips `Badge`). Pas un doublon d'`Autocomplete multiple` (liste plate). Nommage du champ par `label` + résumé (`aria-labelledby`) pour annoncer la valeur. `scope-picker-utils` (filtre + table de libellés, + tests), stories, fiche GUIDELINES + compositions transport.
+- **`ScheduleComparison`** : *non retenu comme composant*. Comparaison d'horaires/offres = assemblage `DataTable` + `BarChart`/`Timeline`, trop spécifique à l'app → à faire en recette au besoin. Consigné au CHANGELOG.
+
+**Reste ouvert** : tests manuels lecteur d'écran et navigateurs cibles ; décision de version et publication avec l'utilisateur (rien n'est poussé ni publié).
