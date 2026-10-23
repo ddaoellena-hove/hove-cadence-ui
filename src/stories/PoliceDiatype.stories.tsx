@@ -24,6 +24,10 @@ import {
 const INTER = '"Inter", Helvetica, sans-serif';
 const DIATYPE = '"ABC Diatype", Helvetica, sans-serif';
 
+// Horodatage fixe (spécimen déterministe, pas d'appel impur au rendu).
+const FRESH_NOW = "2026-06-12T08:15:00";
+const FRESH_UPDATED = "2026-06-12T08:12:00";
+
 /** Applique une police d'interface à tout son contenu via le token. */
 const FontScope = ({ font, children }: { font: string; children: ReactNode }) => (
   <div style={{ ["--cadence-font-sans"]: font } as CSSProperties}>{children}</div>
@@ -164,7 +168,7 @@ const InterfaceSampler = () => (
       <h3 style={{ margin: 0, fontSize: 18, fontWeight: 600, color: "var(--cadence-color-primary, #002830)" }}>
         Perturbations en cours
       </h3>
-      <DataFreshness updatedAt={Date.now() - 3 * 60_000} />
+      <DataFreshness updatedAt={FRESH_UPDATED} now={FRESH_NOW} />
     </div>
 
     <p style={{ margin: 0, fontSize: 14, lineHeight: 1.5, color: "var(--cadence-color-label, #1a3e45)" }}>
