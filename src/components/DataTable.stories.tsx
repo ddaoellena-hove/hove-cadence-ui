@@ -414,6 +414,9 @@ const STICKY_ACTIONS_CSS = `
   right: 0;
   background: var(--cadence-color-white, #ffffff);
   z-index: 1;
+  /* Ombre de séparation : la colonne se lit « au-dessus » du contenu qui
+     défile dessous, au lieu de sembler masquer la colonne précédente. */
+  box-shadow: -8px 0 8px -8px var(--cadence-color-scrollbar-thumb, rgba(0, 40, 48, 0.2));
 }
 .dt-sticky .data-table__body .data-table__row:hover > *:last-child {
   background: var(--cadence-color-surface-alt, #eef1f4);
@@ -466,6 +469,41 @@ export const ColonneActions: Story = {
           getRowId={(t) => t.id}
           data={TRIPS_50}
           maxHeight={360}
+          className="dt-sticky"
+        />
+      </div>
+    );
+  },
+};
+
+/**
+ * Conteneur étroit (800px) : le tableau déborde, la colonne d'actions reste
+ * collée à droite et se détache par son ombre ; le reste défile dessous sans
+ * être masqué. Tester le défilement horizontal.
+ */
+export const ColonneActionsEtroite: Story = {
+  name: "Colonne d'actions (800px)",
+  render: () => {
+    const [last, setLast] = useState("—");
+    const columns = useMemo<DataTableColumn<Trip>[]>(
+      () => [
+        ...TRIP_COLUMNS,
+        { id: "actions", header: "Actions", accessor: () => "", width: 132, align: "right", cell: (row) => <RowActions row={row} onAction={setLast} /> },
+      ],
+      [],
+    );
+    return (
+      <div style={{ width: 800, maxWidth: "100%", display: "flex", flexDirection: "column", gap: 12 }}>
+        <style>{STICKY_ACTIONS_CSS}</style>
+        <span style={{ fontFamily: "var(--cadence-font-sans)", fontSize: 13, color: "var(--cadence-color-label)" }}>
+          Dernière action : {last}
+        </span>
+        <DataTable<Trip>
+          aria-label="Courses de la journée"
+          columns={columns}
+          getRowId={(t) => t.id}
+          data={TRIPS_50}
+          maxHeight={320}
           className="dt-sticky"
         />
       </div>
