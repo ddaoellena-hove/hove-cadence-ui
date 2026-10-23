@@ -165,9 +165,9 @@
   --cadence-shadow-overlay: 0px 20px 60px rgba(0, 0, 0, 0.2), 0px 4px 16px rgba(0, 0, 0, 0.1);
 
   /* ── Focus ─────────────────────────────────────────────────────────────── */
-  /* Anneau de focus unique PROPOSÉ (phase 3, docs/proposals/tokens-v2.md).
-     Pas encore appliqué : les composants gardent leurs styles :focus-visible
-     actuels jusqu'à validation. */
+  /* Anneau de focus unique du design system, appliqué sur :focus-visible par
+     l'ensemble des composants interactifs. (Les champs de formulaire gardent en
+     plus leur liseré --cadence-color-field-focus + halo --cadence-field-focus-ring.) */
   /* Couleur de l'anneau — 11,6:1 sur blanc, 10,2:1 sur --cadence-color-surface-alt */
   --cadence-focus-color: #1a3e45;
   /* Anneau box-shadow : liseré blanc de 2px puis anneau plein de 2px (visible aussi sur fond sombre) */
@@ -176,9 +176,9 @@
   /* ── Z-index ───────────────────────────────────────────────────────────── */
   /* Couches globales. Les valeurs locales 0/1/2 (empilement interne d'un
      composant) restent en dur. */
-  --cadence-z-sticky: 100;     /* Éléments collants (position: sticky) dans le contenu */
-  --cadence-z-popover: 100;    /* Popovers et bulles ancrés : DatePicker, tooltips des graphiques */
-  --cadence-z-dropdown: 200;   /* Menus déroulants (Dropdown, Autocomplete) */
-  --cadence-z-modal: 1000;     /* Voile et dialogue de Modal */
+  --cadence-z-sticky: 100;     /* Éléments collants (position: sticky) dans le contenu : PageHeader */
+  --cadence-z-popover: 100;    /* Panneaux et bulles ancrés : Popover, DatePicker, DateRangePicker, TimePicker, Tooltip, ChartTooltip */
+  --cadence-z-dropdown: 200;   /* Menus déroulants : Dropdown, Autocomplete, menus en portail (ActionMenu/ExportMenu), ColumnManager */
+  --cadence-z-modal: 1000;     /* Voile et surface des surcouches modales : Modal, Drawer */
   --cadence-z-toast: 1100;     /* Toasts en overlay, au-dessus des modales (recette 2) */
 }
