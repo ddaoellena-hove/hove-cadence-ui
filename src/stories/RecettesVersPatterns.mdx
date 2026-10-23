@@ -1,0 +1,30 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Recettes/Vers les Page patterns" />
+
+<style>{`.r{font-family:var(--cadence-font-sans,"ABC Diatype","Inter",sans-serif);max-width:820px;color:var(--cadence-color-primary,#002830)}.r h1{font-family:var(--cadence-font-display,"Uxum Grotesque",sans-serif);font-size:32px;font-weight:500}.r table{border-collapse:collapse;width:100%;font-size:14px}.r th,.r td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--cadence-color-divider,#f0f0f0)}.r th{color:var(--cadence-color-text-secondary,#64757a);font-weight:600}`}</style>
+
+<div className="r">
+
+# Recettes → Page patterns
+
+La section **Recettes** est remplacée par le catalogue **Page patterns** (menu, entre *Composants* et *Recettes*). Chaque recette correspond à un pattern nommé, documenté de façon homogène, avec un gabarit vérifié.
+
+Partez du tableau **Intention → pattern** (GUIDELINES) puis du gabarit du pattern. Les stories `Recettes/*` restent disponibles comme **exemples réalistes à données riches** le temps de leur retrait complet (1.0.0).
+
+| Recette | Pattern |
+|---|---|
+| R1 — Layout d'application | Coque d'application |
+| R2 — Liste avec sélection multiple | Liste / index |
+| R3 — Page formulaire | Formulaire |
+| R4 — Empty state | États de page |
+| R5 — Page de supervision (liste) | Liste / index |
+| R6 — Tableau de bord de supervision | Supervision |
+| R7 — Tableau de bord d'analyse | Analyse |
+| R8 — Détail d'une perturbation | Liste + détail latéral |
+| R9 — Import réseau | Assistant / import |
+| R10 — Planification d'un service de nuit | Planification / temps |
+
+Stories riches encore en place : *Recettes / Liste de perturbations* → **Liste / index** · *Recettes / Parcours transport* → **Liste + détail latéral** et **Assistant** · *Recettes / Offre et qualité* → **Liste + détail latéral** · *Recettes / Planification de service* → **Planification / temps**.
+
+</div>
