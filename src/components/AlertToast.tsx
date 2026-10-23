@@ -9,7 +9,7 @@ import { InfoCircle } from "@untitledui/icons/InfoCircle";
 import { CheckCircle } from "@untitledui/icons/CheckCircle";
 import { AlertTriangle } from "@untitledui/icons/AlertTriangle";
 import { AlertCircle } from "@untitledui/icons/AlertCircle";
-import { XClose } from "@untitledui/icons/XClose";
+import { CloseButton } from "./CloseButton";
 import { GhostButton } from "./GhostButton";
 import { PrimaryButton } from "./PrimaryButton";
 import { ProgressBar } from "./ProgressBar";
@@ -161,14 +161,7 @@ export const AlertToast = ({
       {/* Close button */}
       {showDismiss && (
         <div className="alert-toast__close-col">
-          <button
-            className="alert-toast__close-btn"
-            onClick={onDismiss}
-            aria-label="Fermer la notification"
-            type="button"
-          >
-            <XClose className="alert-toast__close-icon" size={16} aria-hidden="true" />
-          </button>
+          <CloseButton onClick={() => onDismiss?.()} aria-label="Fermer la notification" />
         </div>
       )}
 

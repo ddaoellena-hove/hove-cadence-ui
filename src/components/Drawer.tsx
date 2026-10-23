@@ -7,6 +7,7 @@
  * surcouche partagées (voir overlay-primitives.ts).
  */
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { CloseButton } from "./CloseButton";
 import { GhostButton } from "./GhostButton";
 import { PrimaryButton } from "./PrimaryButton";
 import { inertProps } from "./inert-props";
@@ -47,12 +48,6 @@ export interface DrawerProps {
 
 // Durée de l'entrée / sortie, cohérente avec la Sidebar (250 ms).
 const TRANSITION_MS = 250;
-
-const CloseIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-    <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-  </svg>
-);
 
 export const Drawer = ({
   isOpen,
@@ -129,9 +124,7 @@ export const Drawer = ({
               </h2>
               {subtitle && <p className="drawer__subtitle">{subtitle}</p>}
             </div>
-            <button className="drawer__close" onClick={onClose} aria-label="Fermer" type="button">
-              <CloseIcon />
-            </button>
+            <CloseButton onClick={onClose} />
           </div>
 
           {/* Corps défilant */}

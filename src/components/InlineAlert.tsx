@@ -11,7 +11,7 @@ import { InfoCircle } from "@untitledui/icons/InfoCircle";
 import { CheckCircle } from "@untitledui/icons/CheckCircle";
 import { AlertTriangle } from "@untitledui/icons/AlertTriangle";
 import { AlertCircle } from "@untitledui/icons/AlertCircle";
-import { XClose } from "@untitledui/icons/XClose";
+import { CloseButton } from "./CloseButton";
 import { PrimaryButton } from "./PrimaryButton";
 import "./inline-alert.css";
 
@@ -59,9 +59,7 @@ export const InlineAlert = ({ type, title, children, action, dismissible = false
         )}
       </div>
       {dismissible && (
-        <button className="inline-alert__close" onClick={onDismiss} aria-label="Fermer" type="button">
-          <XClose size={16} aria-hidden="true" />
-        </button>
+        <CloseButton onClick={() => onDismiss?.()} />
       )}
     </div>
   );

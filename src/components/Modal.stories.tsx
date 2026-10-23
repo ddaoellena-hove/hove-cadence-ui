@@ -121,6 +121,12 @@ export const Destructive: Story = {
     await expect(scope.getByRole("button", { name: "Annuler" })).toHaveClass("primary-button--outline");
     await expect(scope.getByRole("button", { name: "Supprimer" })).toHaveClass("primary-button--danger");
     await expect(dialog.querySelector(".modal__body")).toHaveClass("modal__body--message");
+    // Croix : GhostButton sans infobulle, en-tête compact.
+    const close = scope.getByRole("button", { name: "Fermer" });
+    await expect(close).toHaveClass("ghost-button");
+    const bubble = close.parentElement?.querySelector(".base-button-tip__bubble");
+    await expect(bubble && getComputedStyle(bubble).display).toBe("none");
+    await expect(dialog.querySelector(".modal__header")?.getBoundingClientRect().height).toBe(48);
   },
 };
 

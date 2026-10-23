@@ -444,6 +444,7 @@ Le multi-colonnes est un outil de **densité locale**, pas un outil de **découp
 ### Règles
 
 - ✅ Un seul `PrimaryButton` par vue.
+- ✅ Croix de fermeture d'une surcouche ou d'un bandeau (`Modal`, `Drawer`, `Popover`, `InlineAlert`, `AlertToast`) : toujours la même, un `GhostButton size="sm"` icône `x-close` **sans infobulle** (le pictogramme suffit), nommé « Fermer » par `aria-label`. Les composants la fournissent : ne pas en recréer une dans `children`.
 - ✅ Dans un groupe, l'engagement croît de gauche à droite : `Link` → `GhostButton` → `PrimaryButton`. **Ghost à gauche, Primary à droite.**
 - ✅ Plusieurs `GhostButton` (ou `PrimaryButton outline` en dashboard) sont autorisés.
 - ✅ Ne pas mélanger Ghost et Outline dans un même groupe : un dashboard prend Outline, le reste Ghost.
@@ -1934,7 +1935,7 @@ Clavier : le tracé est focusable ; ←/→ passent d'une abscisse à l'autre, D
 
 Comportements intégrés : fermeture sur Échap, scroll du body et du conteneur AppLayout verrouillé, footer fixe quand le corps scrolle. Avec plusieurs Modal/Drawer, seul le dernier ouvert gère Échap et le piège à focus. Fermer une surcouche en arrière-plan conserve le verrouillage et le focus de celle au premier plan. Les attributs `inert` et `aria-hidden` préexistants sont restaurés à la fermeture. Les contrôles masqués, désactivés (y compris par un fieldset) ou hors tabulation sont exclus du cycle Tab.
 
-Anatomie : carte blanche (`--cadence-radius-2xl`, liseré `--cadence-color-border`), en-tête sur fond discret avec titre 17px et bouton Fermer, corps, pied d'actions alignées à droite sans filet (un filet n'apparaît que si le corps défile).
+Anatomie : carte blanche (`--cadence-radius-2xl`, liseré `--cadence-color-border`), en-tête compact (48px) sur fond discret avec titre 17px et croix de fermeture (`GhostButton` sans infobulle), corps, pied d'actions alignées à droite sans filet (un filet n'apparaît que si le corps défile).
 
 ```tsx
 <Modal

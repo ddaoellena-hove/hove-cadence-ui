@@ -15,7 +15,7 @@
  */
 import { useEffect, useId, useRef, useState, type ReactNode, type Ref } from "react";
 import { createPortal } from "react-dom";
-import { GhostButton } from "./GhostButton";
+import { CloseButton } from "./CloseButton";
 import { useAnchoredPanel } from "./overlay-primitives";
 import "./popover.css";
 import "./scrollbar.css";
@@ -203,7 +203,7 @@ export const Popover = ({
               <span id={titleId} className={hideTitle ? "popover__title popover__title--hidden" : "popover__title"}>
                 {title}
               </span>
-              <GhostButton size="sm" icon="x-close" aria-label="Fermer" onClick={() => close()} />
+              <CloseButton onClick={() => close()} />
             </div>
             <div className="popover__body">
               {typeof children === "function" ? <PopoverContent render={children} close={close} /> : children}

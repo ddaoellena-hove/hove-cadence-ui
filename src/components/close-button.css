@@ -1,0 +1,4 @@
+/* Croix de fermeture : pas d'infobulle, le pictogramme suffit. */
+.base-button-tip:has(> .close-button) .base-button-tip__bubble {
+  display: none;
+}

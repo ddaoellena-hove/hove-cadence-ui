@@ -32,12 +32,13 @@
   align-items: center;
   background-color: var(--cadence-color-surface-subtle, #fafafa);
   border-bottom: 1px solid var(--cadence-color-border, #e5e5e5);
+  box-sizing: border-box;
   display: flex;
   flex-shrink: 0;
   gap: 12px;
   justify-content: space-between;
-  min-height: 56px;
-  padding: 12px 16px 12px 24px;
+  min-height: 48px;
+  padding: 8px 12px 8px 24px;
 }
 
 /* Sans titre : bouton Fermer seul, aligné à droite. */
@@ -55,31 +56,8 @@
   margin: 0;
 }
 
-.modal__close {
-  align-items: center;
-  background: transparent;
-  border: none;
-  border-radius: var(--cadence-radius-sm, 6px);
-  color: var(--cadence-color-text-secondary, #64757a);
-  cursor: pointer;
-  display: flex;
-  flex-shrink: 0;
-  height: 32px;
-  justify-content: center;
-  padding: 0;
-  transition: color 120ms ease, background-color 120ms ease;
-  width: 32px;
-}
 
-.modal__close:hover {
-  background-color: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
-  color: var(--cadence-color-primary, #002830);
-}
 
-.modal__close:focus-visible {
-  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
-  outline: none;
-}
 
 /* ── Corps ───────────────────────────────────────────────────────────────── */
 .modal__body {

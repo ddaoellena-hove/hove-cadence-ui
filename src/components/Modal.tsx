@@ -1,4 +1,5 @@
 import React, { useId, useLayoutEffect, useRef, useState } from "react";
+import { CloseButton } from "./CloseButton";
 import { PrimaryButton } from "./PrimaryButton";
 import { OverlayPortal, useOverlay } from "./overlay-primitives";
 import "./modal.css";
@@ -39,17 +40,6 @@ export interface ModalProps {
   /** Hide the × close button in the header. */
   hideCloseButton?: boolean;
 }
-
-const CloseIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-    <path
-      d="M12 4L4 12M4 4l8 8"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-    />
-  </svg>
-);
 
 export const Modal = ({
   isOpen,
@@ -118,16 +108,7 @@ export const Modal = ({
                 {title}
               </h2>
             )}
-            {!hideCloseButton && (
-              <button
-                className="modal__close"
-                onClick={onClose}
-                aria-label="Fermer"
-                type="button"
-              >
-                <CloseIcon />
-              </button>
-            )}
+            {!hideCloseButton && <CloseButton onClick={onClose} />}
           </div>
         )}
 

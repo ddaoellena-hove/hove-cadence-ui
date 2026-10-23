@@ -11,7 +11,8 @@ Version mineure, sans rupture d’API.
 
 ### Modifié
 
-- **`Modal`** : nouveau design — carte blanche arrondie (`--cadence-radius-2xl`), en-tête sur fond discret (`--cadence-color-surface-subtle`) avec filet bas et titre 17px, pied sans filet. L’action secondaire passe de `GhostButton` à `PrimaryButton outline`. Un `children` en texte seul s’affiche comme un message centré (15px). API inchangée.
+- **Croix de fermeture unifiée** : `Modal`, `Drawer`, `Popover`, `InlineAlert` et `AlertToast` utilisent le même `GhostButton size="sm"` icône `x-close`, sans infobulle (composant interne `CloseButton`). Le `Popover` perd l’infobulle « Fermer » sur sa croix ; les boutons maison de `Modal`, `Drawer`, `InlineAlert` et `AlertToast` disparaissent.
+- **`Modal`** : nouveau design — carte blanche arrondie (`--cadence-radius-2xl`), en-tête sur fond discret (`--cadence-color-surface-subtle`) avec filet bas et titre 17px, pied sans filet. L’action secondaire passe de `GhostButton` à `PrimaryButton outline`. En-tête compact (48px). Un `children` en texte seul s’affiche comme un message centré (15px). API inchangée.
 
 ### Corrigé
 

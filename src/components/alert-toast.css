@@ -141,37 +141,3 @@
   padding: 10px 8px 10px 4px;
   flex-shrink: 0;
 }
-
-.alert-toast__close-btn {
-  appearance: none;
-  -webkit-appearance: none;
-  background: none;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  padding: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--cadence-color-icon-neutral, #737373);
-  transition:
-    background-color 0.15s,
-    color 0.15s;
-  line-height: 0;
-}
-
-.alert-toast__close-btn:hover {
-  background-color: var(--cadence-color-divider, #f0f0f0);
-  color: var(--cadence-color-primary, #002830);
-}
-
-.alert-toast__close-btn:focus-visible {
-  outline: 2px solid var(--cadence-color-info, #0f62fe);
-  outline-offset: 2px;
-}
-
-.alert-toast__close-icon {
-  width: 16px;
-  height: 16px;
-  display: block;
-}

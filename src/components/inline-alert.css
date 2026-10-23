@@ -63,31 +63,3 @@
 .inline-alert__actions {
   margin-top: 6px;
 }
-
-.inline-alert__close {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border: none;
-  border-radius: var(--cadence-radius-sm, 6px);
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 120ms ease, background-color 120ms ease;
-}
-
-.inline-alert__close:hover {
-  opacity: 1;
-  background: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
-}
-
-.inline-alert__close:focus-visible {
-  outline: none;
-  opacity: 1;
-  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
-}
