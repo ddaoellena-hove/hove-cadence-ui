@@ -1,5 +1,28 @@
 # Changelog — @ddaoellena/cadence-ui
 
+## 0.7.0 (non publiée)
+
+Version mineure, sans rupture d’API.
+
+### Ajouté
+
+- **`ColorField`** : saisie d’une couleur de ligne GTFS (`route_color`) avec pastille, champ hex validé, sélecteur natif et aperçu `LineBadge` en direct ; contrôle de contraste (`line-badge-utils`) et bouton « Calculer la couleur du texte ».
+- **`Timeline`** : plages horaires sur un axe temps partagé (`ChartAxis`), une ligne par entité, repère « maintenant », annotations, couleurs par `tone` doublées d’un motif ; navigation clavier, tooltip, « Voir les données », états `loading`/`empty`/`error`.
+
+### Corrigé
+
+- Règle des boutons `md` à côté d’un champ : l’action inline à côté d’un seul champ est désormais documentée comme une exception (règle et exemple alignés).
+- CHANGELOG 0.6.0 : nom de token corrigé (`--cadence-color-field-focus-subtle`).
+- Colonne d’actions de `DataTable` : largeur réservée, ombre de séparation et défilement horizontal à 800 px.
+
+### Documentation
+
+- Commentaires `tokens.css` (focus appliqué, couches z-index réelles) et JSDoc `CopyableText` (sans infobulle) à jour.
+- Tableau des tokens de GUIDELINES complété (`--cadence-color-text-secondary`, `--cadence-color-skeleton`) + test de cohérence `tokens.css` ↔ GUIDELINES.
+- `StopLabel` : doc alignée sur le code (identifiant en `Badge`, pas de `title`).
+- Exemples des MDX de guidelines passés aux tokens, avec contrôle automatisé.
+- Chip de filtre : `Badge dismissible` / `FilterBar activeFilters` documentés (pas de composant `Tag` dédié).
+
 ## 0.6.0 (non publiée)
 
 Version mineure, sans rupture d’API. La 0.5.0 n’a pas été publiée sur npm : une app qui passe de la 0.4.0 à la 0.6.0 reçoit aussi les changements de la section 0.5.0 ci-dessous.
