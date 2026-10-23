@@ -2441,7 +2441,7 @@ Identifiant technique en police mono, tronqué avec ellipse, suivi d'un `GhostBu
 
 ### StopLabel
 
-Nom, commune et identifiant d'arrêt, avec lignes facultatives. Texte complet conservé dans le DOM et attribut `title` natif sur nom/id ; ce n'est pas une infobulle Cadence interactive.
+Nom, commune et identifiant d'arrêt, avec lignes facultatives. Le nom est tronqué par ellipse, sa valeur complète restant dans l'attribut `title` natif ; l'identifiant est affiché en entier dans un `Badge mono` (donc pas de `title`). Ce n'est pas une infobulle Cadence interactive.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
