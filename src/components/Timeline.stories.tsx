@@ -86,5 +86,5 @@ export const Simple: Story = {
   args: { scales: [], hint: false },
 };
 
-export const Vide: Story = { name: "Vide", args: { state: "empty", rows: [] } };
-export const Erreur: Story = { name: "Erreur", args: { state: "error", rows: [], onRetry: fn() } };
+export const Vide: Story = { args: { state: "empty", rows: [] } };
+export const Erreur: Story = { args: { state: "error", rows: [], onRetry: fn() } };
