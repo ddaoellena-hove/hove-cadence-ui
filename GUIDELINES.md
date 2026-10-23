@@ -372,7 +372,7 @@ Principe de composition :
 Exceptions, hors de ces deux gabarits :
 
 - `TextArea` et `Autocomplete multiple` avec plusieurs valeurs : hauteur variable (l'`Autocomplete` part de 40px et s'agrandit).
-- `PrimaryButton` / `GhostButton` `size="md"` (34px) : action de début de page ou de fin de formulaire, posée sur sa propre rangée, jamais alignée sur des champs.
+- `PrimaryButton` / `GhostButton` `size="md"` (34px) : action de début de page ou de fin de formulaire, posée sur sa propre rangée. **Exception** — une **action inline à côté d'un seul champ** (ex. « Vérifier » après un identifiant) est permise : la rangée aligne le champ et le bouton par le bas (`align-items: flex-end`). Ne pas aligner un bouton `md` sur une **grille de plusieurs champs**.
 - Contrôles de formulaire sans boîte (`Checkbox`, `Toggle`, `RadioButton`) et cartes riches (`RichCheckbox`, `RichRadioButton`) : hauteur de leur contenu.
 
 ```tsx
