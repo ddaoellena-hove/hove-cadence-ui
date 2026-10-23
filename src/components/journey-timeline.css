@@ -1,0 +1,126 @@
+/* ── JourneyTimeline ───────────────────────────────────────────────────────
+   Itinéraires sur un axe horaire. Bandeau, axe, grille et lignes via
+   timeline-shell.css ; ici les étapes, le libellé [n] et le résumé. */
+
+.journey-timeline__rows:focus {
+  outline: none;
+}
+
+.journey-timeline__rows:focus-visible {
+  box-shadow: inset var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+}
+
+.journey-timeline__row--clickable {
+  cursor: pointer;
+}
+
+.journey-timeline__row--clickable:hover {
+  background-color: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
+}
+
+/* Libellé « [1] » collé au départ du trajet. */
+.journey-timeline__label {
+  color: var(--cadence-color-text-secondary, #64757a);
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-size: 13px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  z-index: 1;
+}
+
+/* ── Étapes ──────────────────────────────────────────────────────────────── */
+.journey-timeline__seg {
+  align-items: center;
+  border: 1px solid var(--cadence-color-border-strong, #bfc9cb);
+  border-radius: var(--cadence-radius-sm, 6px);
+  box-sizing: border-box;
+  color: var(--cadence-color-primary, #002830);
+  display: flex;
+  gap: 6px;
+  height: 28px;
+  overflow: hidden;
+  padding: 0 8px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.journey-timeline__seg--walk {
+  background-color: var(--cadence-color-divider, #f0f0f0);
+}
+
+/* Transport : teinte et bord de la couleur de ligne posés en style (GTFS). */
+.journey-timeline__seg--transit {
+  background-color: var(--cadence-color-surface-alt, #eef1f4);
+  border-color: var(--cadence-color-label, #1a3e45);
+  border-width: 1.5px;
+}
+
+.journey-timeline__seg--wait {
+  background-color: var(--cadence-color-white, #ffffff);
+  border-style: dashed;
+}
+
+.journey-timeline__seg--focused {
+  outline: 2px solid var(--cadence-focus-color, #1a3e45);
+  outline-offset: 1px;
+}
+
+.journey-timeline__seg-icon {
+  flex-shrink: 0;
+}
+
+.journey-timeline__seg .line-badge {
+  flex-shrink: 0;
+}
+
+.journey-timeline__seg-duration {
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-size: 12px;
+}
+
+/* Étape étroite : le picto se centre. */
+.journey-timeline__seg:not(:has(.journey-timeline__seg-duration)):not(:has(.line-badge)) {
+  justify-content: center;
+  padding: 0;
+}
+
+/* ── Résumé ──────────────────────────────────────────────────────────────── */
+.journey-timeline__summary {
+  color: var(--cadence-color-text-secondary, #64757a);
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-size: 12px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.journey-timeline__total {
+  color: var(--cadence-color-primary, #002830);
+  font-weight: 600;
+}
+
+.journey-timeline__recommended {
+  color: var(--cadence-color-link, #1d4ed8);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  font-weight: 600;
+}
+
+/* Texte réservé aux lecteurs d'écran (annonce de l'étape focalisée). */
+.journey-timeline__sr {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}

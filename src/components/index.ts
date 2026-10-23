@@ -71,4 +71,5 @@ export * from './Sparkline';
 export * from './CopyableText';
 export * from './ColorField';
 export * from './Timeline';
+export * from './JourneyTimeline';
 export * from './Popover';

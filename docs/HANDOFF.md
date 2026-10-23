@@ -156,3 +156,17 @@ Branche `release/0.7.0`, version `0.7.0` non publiée. Commits atomiques, rien p
 - *Lot B* : **`ColorField`** (couleur GTFS, hex validé, aperçu `LineBadge`, contraste) et **`Timeline`** (plages sur axe temps, clavier, tooltip, « Voir les données », états) livrés avec stories, tests, exports et GUIDELINES. **B4 `Tag`** : non créé (doublon) — `Badge dismissible` / `FilterBar activeFilters` documentés.
 
 **Reporté (validé par l'utilisateur)** : **`TreeView`** (le plus lourd) ; propositions B5 **`DisruptionScopePicker`** (assemblage `Autocomplete multiple` + `TreeView`), **`ScheduleComparison`** (`DataTable` + `BarChart`/`Timeline`, plutôt une recette), **`DataFreshness`** (`Indicator` + temps relatif) — toutes jugées couvrables par assemblage ; à réévaluer après `TreeView`.
+
+## Mise à jour — Timeline horaires et itinéraires
+
+Branche `feat/timeline-itineraires` (depuis `docs/prompt-timeline` ← `feat/modal-design`), rien poussé. Cadrage : `docs/prompts/prompt-timeline-itineraires.md` (+ maquette `.webp`).
+
+**Décisions de la phase 0**
+
+- Deux composants publics : `Timeline` (plages par entité, API conservée) et **`JourneyTimeline`** (itinéraires). Cadre interne commun **`TimelineShell`** (bandeau « Fenêtre », échelle, axe en haut, grille, défilement, aide) : pas de props mortes selon l'usage.
+- Rendu **HTML** (positions en %), plus de SVG pour les lignes : pictos, `LineBadge`, texte et défilement. Les motifs de `tone` restent des `<pattern>` SVG (défs cachées référencées par chaque barre).
+- **Échelle** = durée visible dans la largeur ; « Ajuster » = toute la fenêtre. Échelle ≥ fenêtre → option désactivée (`SegmentedControl` gagne `options[].disabled`). Pas de zoom libre.
+- Résumé d'itinéraire **calculé** (durée, correspondances = transports − 1, marche) ; « Recommandé » en texte (`--cadence-color-link`, AA).
+- Teinte des étapes transport : `color-mix()` de la couleur GTFS dans le style en ligne (exception GTFS, comme `LineBadge`).
+
+**Écarts assumés face à la maquette** : titre de graphique et « Voir les données » au-dessus de la carte (cadre commun des graphiques) ; sélecteur d'échelle en casse normale (`SegmentedControl`) ; picto métro = train (pas d'icône métro chez Untitled UI).

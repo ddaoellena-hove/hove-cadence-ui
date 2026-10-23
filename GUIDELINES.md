@@ -301,7 +301,8 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Motif jour × heure, ligne × jour | `Heatmap` | `LineChart` (une seule dimension temporelle) |
 | Classement (lignes les plus impactées) | `BarList` | `BarChart orientation="horizontal"` (plusieurs séries) |
 | Comparaison de catégories (barres empilées / groupées) | `BarChart` | `BarList` (classement à une valeur) ; `DataVisualization` est déprécié |
-| Plages sur un axe temps (perturbations, amplitudes, travaux) | `Timeline` | `LineChart` (séries continues) ; `ActivityFeed` (événements ponctuels) ; `ServiceCalendar` (jours) |
+| Plages sur un axe temps (perturbations, amplitudes, travaux) | `Timeline` | `LineChart` (séries continues) ; `ActivityFeed` (événements ponctuels) ; `ServiceCalendar` (jours) ; `JourneyTimeline` (trajets) |
+| Comparer des itinéraires sur une fenêtre de départ (marche, transport, correspondances) | `JourneyTimeline` | `Timeline` (plages par entité) ; `RouteStopList` (arrêts d'une seule ligne) |
 | Mini-courbe dans une carte d'indicateur | `Card trend` (ou `LineChart compact`) | — |
 | Tendance dans une cellule de `DataTable` ou une ligne de liste | `Sparkline` | `LineChart compact` (axe, tooltip, seuils) ; `Card trend` (déjà intégré à la carte) |
 | Identité de ligne (code et couleur GTFS) | `LineBadge` | `Badge` (étiquette générique) |
@@ -318,7 +319,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Heure seule, y compris service après minuit | `TimePicker` | `DatePicker withTime` (date calendaire + heure) |
 | Résumé d'erreurs avec accès aux champs | `ErrorSummary` | `InlineAlert` (message sans navigation de formulaire) |
 | Métadonnées label/valeur d'un détail ou d'une synthèse | `DescriptionList` | `DataTable` (plusieurs lignes d'un même type) |
-| Historique d'événements datés et attribués | `ActivityFeed` | `Timeline` (périodes sur une échelle de temps, reportée) |
+| Historique d'événements datés et attribués | `ActivityFeed` | `Timeline` (périodes sur une échelle de temps) |
 | Icône seule | `Icons` | — |
 
 ---
@@ -1848,11 +1849,11 @@ Clavier : une seule cellule tabulable ; flèches, Début / Fin (ligne), Ctrl+Dé
 
 ### Icons
 
-SVG inline issu de `@untitledui/icons` — aucune requête réseau. L'icône suit `currentColor` : par défaut elle prend la couleur du texte parent.
+SVG inline issu de `@untitledui/icons` — aucune requête réseau. L'icône suit `currentColor` : par défaut elle prend la couleur du texte parent. Modes de transport : `"bus"`, `"tram"`, `"train"` (métro, RER, train), `"anchor"` (bateau) ; `"walk"` (marche) est dessinée au même gabarit, faute d'équivalent Untitled UI.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `icon` | `IconName` (≈ 89 valeurs) | `"search-md"` | Ex : `"trash"`, `"copy-01"`, `"edit-02"`, `"plus"`, `"calendar"`, `"chevron-down"`, `"switch-vertical-01"`… |
+| `icon` | `IconName` (≈ 94 valeurs) | `"search-md"` | Ex : `"trash"`, `"copy-01"`, `"edit-02"`, `"plus"`, `"calendar"`, `"chevron-down"`, `"switch-vertical-01"`… |
 | `size` | `number` | `24` | Taille en px (largeur = hauteur) |
 | `color` | `string` | `"currentColor"` | Couleur du trait. Laisser à `currentColor` pour piloter la couleur en CSS |
 | `title` | `string` | — | Si fourni → `role="img"` + `aria-label` ; sinon l'icône est `aria-hidden` |
@@ -2097,7 +2098,7 @@ Composant unique : apparence de l’ancien Alt, pour les formulaires et les basc
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `options` | `{ value, label }[]` | **requis** | 2 à 4 segments |
+| `options` | `{ value, label, disabled? }[]` | **requis** | 2 à 4 segments. Une option `disabled` est grisée et sautée par les flèches (ex. échelle plus large que la fenêtre d'une frise) |
 | `value` | `string` | — | Mode contrôlé |
 | `defaultValue` | `string` | — | Mode non contrôlé |
 | `onChange` | `(value: string) => void` | — | — |
@@ -2537,22 +2538,74 @@ Menu de portée × format, partagé avec la primitive interne d'`ActionMenu`. L'
 
 ### Timeline
 
-Plages horizontales sur un axe temps, une ligne par entité (ligne, arrêt, véhicule, perturbation) : durée des perturbations, amplitudes de service, travaux. Les bornes sont des `Date` **ou** des heures de service `HH:mm` (jusqu'à 47:59 avec `allowOvernight`, comme `TimePicker`). Axe partagé (`ChartAxis`, fr-FR), repère « maintenant » optionnel, `annotations` (traits et bandes). Couleurs par `tone` (tokens de statut) **toujours doublées d'un motif**. 32 px par ligne. Survol/focus → `ChartTooltip` ; clic/Entrée → `onItemClick` (ouvrir un `Drawer`). États `loading`/`empty`/`error` et « Voir les données » comme les autres graphiques ; animations coupées sous `prefers-reduced-motion`.
+Plages horizontales sur un axe temps, une ligne par entité (ligne, arrêt, véhicule, perturbation) : durée des perturbations, amplitudes de service, travaux. Les bornes sont des `Date` **ou** des heures de service `HH:mm` (jusqu'à 47:59 avec `allowOvernight`, comme `TimePicker`). Couleurs par `tone` (tokens de statut) **toujours doublées d'un motif**. 40 px par ligne, libellés dans une gouttière de 148 px qui reste visible au défilement. Repère « maintenant » optionnel, `annotations` (traits et bandes). Survol/focus → `ChartTooltip` ; clic/Entrée → `onItemClick` (ouvrir un `Drawer`). États `loading`/`empty`/`error` et « Voir les données » comme les autres graphiques.
+
+**Cadre commun avec `JourneyTimeline`** : carte bordée avec bandeau « Fenêtre » (`Jeu. 11/06/2026 07h55 → 08h35`, durée, en police mono), sélecteur **Échelle**, axe horaire **en haut** au format `08h15` (graduations alignées sur l'horloge, pas majeurs en gras : quarts d'heure pour un pas de 5 min), grille verticale, défilement horizontal et aide en pied.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
 | `title` | `string` | **requis** | Nom accessible (comme tous les graphiques) |
 | `rows` | `TimelineRow[]` | **requis** | `{ id; label; items: TimelineItem[] }` ; item : `{ id; start; end?; label?; tone?; pattern? }` |
 | `allowOvernight` | `boolean` | `false` | Heures de service au-delà de 24:00 (jusqu'à 47:59) |
-| `range` | `[TimeValue, TimeValue]` | englobe les plages | Fenêtre affichée |
+| `range` | `[TimeValue, TimeValue]` | englobe les plages, arrondie à 5 min | Fenêtre affichée |
 | `now` | `TimeValue` | — | Repère « maintenant » |
 | `annotations` | `TimelineAnnotation[]` | — | `{ id; start; end?; label? }` : trait (sans `end`) ou bande |
 | `onItemClick` | `(item, row) => void` | — | Clic ou Entrée sur une plage |
+| `scales` | `number[]` | `[60, 30, 15]` | Échelles en plus de « Ajuster », en **minutes visibles dans la largeur**. `[]` masque le sélecteur |
+| `defaultScale` | `"fit" \| number` | `"fit"` | Échelle initiale |
+| `hint` | `string \| false` | phrase adaptée | Aide en pied ; `false` la masque |
 | `state` / `emptyMessage` / `errorMessage` / `onRetry` / `description` / `headingLevel` / `className` | — | — | Props communes des graphiques |
 
-- Clavier : une seule plage tabulable (`role="group"`), ←/→ dans la ligne, ↑/↓ de ligne, Début / Fin, Entrée, Échap. La plage focalisée est annoncée (`role="status"`).
+- Clavier : une seule plage tabulable (`role="group"`), ←/→ dans la ligne, ↑/↓ de ligne, Début / Fin, Entrée, Échap. La plage focalisée est annoncée (`role="status"`) et ramenée dans la zone visible.
+- **Échelle** : « Ajuster » fait tenir toute la fenêtre dans la largeur ; une échelle fixe (1 h, 30 min, 15 min) montre cette durée dans la largeur et la frise défile horizontalement. Une échelle supérieure ou égale à la fenêtre est désactivée (« 1 h » sur une fenêtre de 40 min).
 - ✅ Toujours un `tone` (motif automatique) ou un `pattern` explicite : jamais la couleur seule.
-- ❌ Hors périmètre : glisser, redimensionner, créer une plage, zoomer.
+- ✅ Donner `range` quand la fenêtre est connue de l'app (fenêtre de départ, journée de service) : le bandeau l'affiche telle quelle.
+- ❌ Hors périmètre : glisser, redimensionner, créer une plage, zoom libre (molette, pincement) : seules les échelles proposées.
+
+### JourneyTimeline
+
+Comparaison d'**itinéraires** sur une fenêtre de départ : une ligne par itinéraire, faite d'étapes (marche, transport, attente) sur l'axe horaire commun, suivie d'un résumé calculé (`20 min · 0 correspondance · 5 min de marche`) et de la mention **« Recommandé »**. Même cadre que `Timeline` (bandeau « Fenêtre » avec le nombre d'itinéraires, échelle, axe `08h15`, grille, aide en pied). Le libellé `[1]`, `[2]`… est collé au départ de chaque trajet (effet d'escalier).
+
+```tsx
+<JourneyTimeline
+  title="Itinéraires proposés"
+  range={[depart, depart + 40 min]}
+  journeys={[{
+    id: "j1",
+    recommended: true,
+    segments: [
+      { id: "w1", kind: "walk", start: t0, end: t1 },
+      { id: "b1", kind: "transit", start: t1, end: t2, line: { code: "A", mode: "bus", color: "#E3051B" }, label: "Mairie → Gare" },
+      { id: "w2", kind: "walk", start: t2, end: t3 },
+    ],
+  }]}
+  onJourneyClick={(journey) => openDrawer(journey)}
+/>
+```
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `title` | `string` | **requis** | Nom accessible |
+| `journeys` | `Journey[]` | **requis** | `{ id; segments; label?; recommended? }` ; `label` défaut `[n]` (nom accessible « Itinéraire n ») |
+| `range` | `[TimeValue, TimeValue]` | englobe les trajets, arrondie à 5 min | Fenêtre de départ affichée |
+| `allowOvernight` | `boolean` | `false` | Heures de service au-delà de 24:00 |
+| `onJourneyClick` | `(journey) => void` | — | Clic sur une ligne, ou Entrée sur une de ses étapes |
+| `scales` / `defaultScale` / `hint` | — | comme `Timeline` | Échelle et aide |
+| `state` / `emptyMessage` / `errorMessage` / `onRetry` / `description` / `headingLevel` / `className` | — | — | Props communes des graphiques |
+
+Étape (`JourneySegment`) : `{ id; kind: "walk" | "transit" | "wait"; start; end; line?: { code; mode?; color?; textColor? }; label? }`. `label` est le détail de l'info-bulle (« Châtelet → Nation »).
+
+Rendu des étapes :
+- **Marche** : fond gris, picto piéton, durée si la place le permet.
+- **Transport** : teinte pâle et bord de la couleur de ligne GTFS (`route_color`), picto du mode, `LineBadge`, durée. Sans couleur : bord encre, fond neutre. Le contenu se réduit selon la place (durée, puis badge) ; le picto reste.
+- **Attente** : bord pointillé, picto horloge.
+
+- Résumé : durée de bout en bout, correspondances = étapes en transport − 1, cumul de marche. Calculé par le composant : fournir des étapes contiguës.
+- Clavier : ↑/↓ entre itinéraires, ←/→ entre étapes, Début / Fin, Entrée ouvre l'itinéraire, Échap. L'étape et le total de l'itinéraire sont annoncés (`role="status"`). « Voir les données » : une ligne par étape et un total par itinéraire.
+- ✅ « Recommandé » est un texte (pas seulement une couleur) ; un seul itinéraire recommandé.
+- ✅ Couleurs de ligne issues des données GTFS, comme `LineBadge` : texte calculé pour AA.
+- ❌ Pas pour des plages par entité (perturbations, amplitudes) : `Timeline`.
+- ❌ Pas de calcul d'itinéraire : le composant affiche ce que l'app fournit.
 
 ### ColorField
 
@@ -2694,7 +2747,7 @@ Historique d'événements ponctuels. Liste ordonnée avec icône, état **textue
 
 `ActivityTone` : `"neutral" | "success" | "warning" | "danger"`. Les états affichés sont « Information », « Succès », « Avertissement », « Erreur ». Dates formatées en `fr-FR`, avec `<time dateTime={date.toISOString()}>` ; une Date invalide affiche « Date indisponible ». Pas de temps relatif ni de mise à jour périodique. Le fuseau par défaut UTC garantit le même rendu serveur/client ; une configuration IANA invalide doit être corrigée par l'app.
 
-⚠️ Ce composant ne remplace ni une frise de périodes (`Timeline`, toujours reportée), ni un journal d'audit serveur. Une erreur de récupération se compose avec `InlineAlert`/`EmptyState variant="error"`.
+⚠️ Ce composant ne remplace ni une frise de périodes (`Timeline`), ni un journal d'audit serveur. Une erreur de récupération se compose avec `InlineAlert`/`EmptyState variant="error"`.
 
 ### TimePicker
 
