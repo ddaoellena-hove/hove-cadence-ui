@@ -5,6 +5,32 @@
    garantissent un rendu correct même si ce fichier n'est pas chargé.
    ════════════════════════════════════════════════════════════════════════ */
 
+/* Police display : Uxum Grotesque (commerciale). Les fichiers woff2 sont servis
+   depuis /fonts (dossier public du projet / app consommatrice). Absente, le
+   token --cadence-font-display retombe sur Space Grotesk. Inter, Space Grotesk
+   et Spline Sans Mono sont chargées via Google Fonts (index.html / Storybook). */
+@font-face {
+  font-family: "Uxum Grotesque";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/UxumGrotesque-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Uxum Grotesque";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/UxumGrotesque-Medium.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Uxum Grotesque";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/UxumGrotesque-Bold.woff2") format("woff2");
+}
+
 :root {
   /* ── Couleurs — encre & texte ──────────────────────────────────────────── */
   --cadence-color-primary: #002830;        /* Encre principale — texte fort, boutons, modale */
@@ -79,7 +105,7 @@
 
   /* ── Typographie ───────────────────────────────────────────────────────── */
   --cadence-font-sans: "Inter", Helvetica, sans-serif;
-  --cadence-font-display: "Uxum Grotesque", "Space Grotesk", "Georgia", sans-serif;
+  --cadence-font-display: "Uxum Grotesque", "Space Grotesk", sans-serif;
   --cadence-font-mono: "Spline Sans Mono", monospace;
   --cadence-font-size-caption: 11px;  /* Petits textes : aide sous un champ, fil d'Ariane */
 

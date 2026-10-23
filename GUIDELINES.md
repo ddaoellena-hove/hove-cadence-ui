@@ -83,7 +83,7 @@ import "@ddaoellena/cadence-ui/style.css";
 />
 ```
 
-La **Uxum Grotesque** (titres) est une police commerciale : si le projet la possède, la déclarer via `@font-face` — elle prendra automatiquement le pas sur Space Grotesk dans `--cadence-font-display`. Sinon Space Grotesk sert de fallback sans configuration.
+La **Uxum Grotesque** (titres) est une police commerciale, déclarée via `@font-face` (poids 400 / 500 / 700) dans `tokens.css`, ses `woff2` servis depuis `/fonts` (dossier `public`). Elle prend automatiquement le pas sur Space Grotesk dans `--cadence-font-display`. Une app qui consomme la lib doit héberger les `woff2` sous `/fonts/` (la lib ne distribue que la règle `@font-face`, pas les fichiers) ; sinon Space Grotesk sert de fallback sans configuration.
 
 ### 3. Importer les composants
 

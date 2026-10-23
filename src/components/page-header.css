@@ -52,7 +52,7 @@
 
 .page-header__title {
   color: var(--cadence-color-primary, #002830);
-  font-family: var(--cadence-font-display, "Uxum Grotesque", "Space Grotesk", "Georgia", sans-serif);
+  font-family: var(--cadence-font-display, "Uxum Grotesque", "Space Grotesk", sans-serif);
   font-size: 22px;
   font-weight: 500;
   line-height: 1.2;
