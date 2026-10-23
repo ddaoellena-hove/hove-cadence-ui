@@ -79,7 +79,7 @@
 
 :root {
   /* ── Couleurs — encre & texte ──────────────────────────────────────────── */
-  --cadence-color-primary: #002830;        /* Encre principale — texte fort, boutons, modale */
+  --cadence-color-primary: #002830;        /* Encre principale — texte fort, titres, boutons */
   --cadence-color-label: #1a3e45;          /* Labels de formulaire, badges ; fond de PrimaryButton au repos */
   --cadence-color-primary-hover: #10353d;  /* Survol d'un PrimaryButton : un cran plus foncé que le repos (13,1:1 avec texte blanc) */
   --cadence-color-text-muted: #809397;     /* Texte secondaire NON AA (3,2:1) — réservé aux icônes et au grand texte/gras */

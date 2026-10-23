@@ -103,7 +103,7 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 
 | Token | Valeur | Usage |
 |---|---|---|
-| `--cadence-color-primary` | `#002830` | Encre principale — texte fort, boutons, modale |
+| `--cadence-color-primary` | `#002830` | Encre principale — texte fort, titres, boutons |
 | `--cadence-color-label` | `#1a3e45` | Labels de formulaire, badges ; fond de `PrimaryButton` au repos |
 | `--cadence-color-primary-hover` | `#10353d` | Survol d'un `PrimaryButton` : un cran plus foncé que le repos |
 | `--cadence-color-text-muted` | `#809397` | Icônes et grand texte secondaire (3,2:1 — pas pour du petit texte) |
@@ -158,7 +158,7 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-radius-2xl` | `16px` | `Modal`, grandes cartes riches (`RichCheckbox` / `RichRadioButton` large) |
 | `--cadence-radius-pill` | `999px` | Pilules et cercles : boutons, `SearchInput`, `Toggle`, halos ronds |
 | `--cadence-control-height-compact` | `29px` | Hauteur des contrôles compacts : boutons `size="sm"`, `SearchInput`, déclencheurs `variant="button"` — voir [Hauteurs de contrôle](#hauteurs-de-contrôle-et-alignement-sur-une-rangée) |
-| `--cadence-control-height-field` | `40px` | Hauteur des champs d'une ligne (`TextInput`, `Dropdown`, `DatePicker`…) et du `SegmentedControl` |
+| `--cadence-control-height-field` | `40px` | Hauteur des champs d'une ligne (`TextInput`, `Dropdown`, `DatePicker`, `ColorField`…) et du `SegmentedControl` |
 
 **Statuts** — les 8 variantes d'`Indicator`, une paire texte (`-fg`) / fond (`-bg`) par variante :
 
@@ -370,7 +370,7 @@ Deux tokens fixent la hauteur extérieure (bordure comprise) des contrôles, pou
 | Token | Valeur | Groupe | Composants |
 |---|---|---|---|
 | `--cadence-control-height-compact` | `29px` | **Compact** : en-tête de dashboard, barre d'outils, `FilterBar`, barre de sélection | `PrimaryButton` / `GhostButton` `size="sm"` (plein, `outline`, icône seule), `SearchInput`, `Dropdown` / `DatePicker` / `DateRangePicker` / `TimePicker` en `variant="button"`, déclencheurs d'`ActionMenu`, `ExportMenu`, `ColumnManager`, `Popover` (boutons `sm`) |
-| `--cadence-control-height-field` | `40px` | **Champ** : formulaire, rangée de critères détaillés | `TextInput`, `Dropdown`, `DatePicker`, `DateRangePicker`, `TimePicker` et `CounterInput` en variante champ, `Autocomplete` (hauteur minimale), `SegmentedControl` |
+| `--cadence-control-height-field` | `40px` | **Champ** : formulaire, rangée de critères détaillés | `TextInput`, `Dropdown`, `DatePicker`, `DateRangePicker`, `TimePicker` et `CounterInput` en variante champ, `ColorField`, `DisruptionScopePicker`, `Autocomplete` (hauteur minimale), `SegmentedControl` |
 
 Principe de composition :
 
@@ -567,7 +567,7 @@ Une période, une date ou un choix dans une liste se placent dans l'en-tête ave
 
 ```tsx
 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16, padding: 48 }}>
-  <p style={{ color: "var(--cadence-color-text-muted)", fontSize: 14 }}>Aucun scénario créé pour ce réseau.</p>
+  <p style={{ color: "var(--cadence-color-text-secondary)", fontSize: 14 }}>Aucun scénario créé pour ce réseau.</p>
   <PrimaryButton label="Créer le premier scénario" onClick={onCreate} />
 </div>
 ```
@@ -891,6 +891,7 @@ Une `Card` est **interactive** soit par `onClick` (toute la carte mène à la li
 | Comment se répartissent des catégories, série par série ? | `BarChart` (`layout="stacked" | "grouped"`, `orientation="vertical" | "horizontal"`) |
 | Une valeur clé et sa tendance en haut de page ? | `Card` (`value`, `delta`, `trend`) |
 | La tendance de chaque ligne d'un tableau ? | `Sparkline` dans une cellule de `DataTable` |
+| Quand des plages se situent sur un axe temps (perturbations, amplitudes, travaux) ? | `Timeline` (une ligne par entité) ; `JourneyTimeline` (itinéraires comparés) |
 
 ### Palette
 
@@ -908,10 +909,10 @@ Une `Card` est **interactive** soit par `onClick` (toute la carte mène à la li
 ### Accessibilité
 
 - ✅ Chaque graphique a un `title` (nom accessible) et, de préférence, une `description` (période, périmètre).
-- ✅ Alternative tabulaire : « Voir les données » affiche un vrai tableau, présent dans le DOM même masqué (`LineChart`, `BarChart` avec le total par catégorie, `BarList`) ; la `Heatmap` est elle-même une grille (`role="grid"`) avec en-têtes de lignes et de colonnes.
-- ✅ Clavier : `LineChart` (←/→, Début / Fin, tooltip annoncé), `BarChart` (←/→ ou ↑/↓ d'une catégorie à l'autre), `Heatmap` (flèches, Début / Fin, Ctrl+Début / Fin, Entrée), `BarList` (lignes cliquables = boutons nommés).
+- ✅ Alternative tabulaire : « Voir les données » affiche un vrai tableau, présent dans le DOM même masqué (`LineChart`, `BarChart` avec le total par catégorie, `BarList`, `Timeline` et `JourneyTimeline`) ; la `Heatmap` est elle-même une grille (`role="grid"`) avec en-têtes de lignes et de colonnes.
+- ✅ Clavier : `LineChart` (←/→, Début / Fin, tooltip annoncé), `BarChart` (←/→ ou ↑/↓ d'une catégorie à l'autre), `Heatmap` (flèches, Début / Fin, Ctrl+Début / Fin, Entrée), `BarList` (lignes cliquables = boutons nommés), `Timeline` / `JourneyTimeline` (←/→ entre plages d'une ligne, ↑/↓ de ligne, Début / Fin, Entrée).
 - ✅ États `loading`, `empty`, `error` (avec `onRetry`) plutôt qu'un graphique vide.
-- ✅ Les graphiques suivent la largeur de leur conteneur : jamais de largeur fixe en px. Hauteurs par défaut : `LineChart` et `BarChart` vertical 280px (`LineChart compact` : 48px), `BarChart` horizontal 36px par catégorie, `Heatmap` 28px par ligne, `BarList` 32px par ligne.
+- ✅ Les graphiques suivent la largeur de leur conteneur : jamais de largeur fixe en px. Hauteurs par défaut : `LineChart` et `BarChart` vertical 280px (`LineChart compact` : 48px), `BarChart` horizontal 36px par catégorie, `Heatmap` 28px par ligne, `BarList` 32px par ligne, `Timeline` / `JourneyTimeline` 32px par ligne.
 
 ---
 
@@ -1718,6 +1719,8 @@ Champ bordé de 40px ; les boutons − et + sont des `GhostButton size="sm"` ic�
 ### DataTable
 
 Tableau dense pour les gros volumes. Vrai `<table>` (rôles ARIA explicites), en-tête collant, tri, sélection, navigation clavier, virtualisation optionnelle. Générique : `DataTable<T>`.
+
+⚠️ **Colonne d'actions collée à droite** : `DataTable` n'intègre pas (encore) de prop dédiée. Quand le tableau dépasse la largeur disponible, l'app rend la dernière colonne collante elle-même — `position: sticky; right: 0` sur la cellule d'actions, plus une ombre de séparation (`box-shadow: -8px 0 8px -8px var(--cadence-color-scrollbar-thumb)`) pour la détacher de la colonne précédente. Modèle : la story *Données et tableaux / DataTable → Colonne d'actions (800px)*. Une prop intégrée est à l'étude (0.8.0).
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|

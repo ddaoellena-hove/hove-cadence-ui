@@ -27,9 +27,9 @@ import { Meta } from "@storybook/addon-docs/blocks";
     <tr><th>Situation</th><th>Composant</th></tr>
   </thead>
   <tbody>
-    <tr><td>Confirmation d'une action (sauvegarde, export réussi)</td><td><code>AlertToast</code> type <code>success</code></td></tr>
-    <tr><td>Erreur système ou action échouée</td><td><code>AlertToast</code> type <code>error</code></td></tr>
-    <tr><td>Avertissement non bloquant</td><td><code>AlertToast</code> type <code>warning</code></td></tr>
+    <tr><td>Confirmation d'une action (sauvegarde, export réussi)</td><td><code>useToast()</code> <code>{`{ type: "success" }`}</code> + <code>{`<Toaster />`}</code></td></tr>
+    <tr><td>Erreur système ou action échouée</td><td><code>useToast()</code> <code>{`{ type: "error" }`}</code> + <code>{`<Toaster />`}</code></td></tr>
+    <tr><td>Avertissement non bloquant</td><td><code>useToast()</code> <code>{`{ type: "warning" }`}</code> + <code>{`<Toaster />`}</code></td></tr>
     <tr><td>Information contextuelle sur un élément UI</td><td><code>Tooltip</code> via <code>TooltipTrigger</code></td></tr>
     <tr><td>Explication d'un bouton désactivé</td><td><code>Tooltip</code> sur le bouton <code>disabled</code></td></tr>
     <tr><td>Erreur de validation d'un champ</td><td><code>TextInput state="error"</code> + prop <code>helperText</code></td></tr>
