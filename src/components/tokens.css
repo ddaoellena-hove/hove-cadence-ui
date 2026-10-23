@@ -31,8 +31,9 @@
   src: url("/fonts/UxumGrotesque-Bold.woff2") format("woff2");
 }
 
-/* ESSAI (branche feat/police-diatype) : ABC Diatype en police d'interface à la
-   place d'Inter. woff2 servis depuis /fonts (public). */
+/* Police d'interface : ABC Diatype (commerciale). woff2 servis depuis /fonts
+   (public). Inter reste chargée (Google Fonts) et en tête de repli : pour
+   revenir à Inter, remettre "Inter" en premier dans --cadence-font-sans. */
 @font-face {
   font-family: "ABC Diatype";
   font-style: normal;
@@ -149,6 +150,8 @@
   --cadence-color-skeleton: var(--cadence-color-surface-alt, #eef1f4); /* Fond des squelettes de chargement (Skeleton, DataTable, Card) */
 
   /* ── Typographie ───────────────────────────────────────────────────────── */
+  /* Police d'interface. Inter conservée en repli (toujours chargée) : pour
+     revenir à Inter, la remettre en tête ici — c'est le seul endroit à changer. */
   --cadence-font-sans: "ABC Diatype", "Inter", Helvetica, sans-serif;
   --cadence-font-display: "Uxum Grotesque", "Space Grotesk", sans-serif;
   --cadence-font-mono: "Spline Sans Mono", monospace;

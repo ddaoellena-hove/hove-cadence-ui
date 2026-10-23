@@ -12,11 +12,11 @@ import {
 } from "../components";
 
 /**
- * Essai de police d'interface : **ABC Diatype** à la place d'**Inter**.
+ * Police d'interface : **ABC Diatype** (adoptée), **Inter** conservée en repli.
  *
- * Sur cette branche, `--cadence-font-sans` vaut déjà ABC Diatype : toutes les
- * stories du Storybook rendent donc en Diatype. Ces pages mettent les deux
- * polices **côte à côte** pour trancher : la colonne « Inter » force
+ * `--cadence-font-sans` vaut ABC Diatype : tous les composants rendent donc en
+ * Diatype. Ces pages gardent les deux polices **côte à côte** comme référence
+ * (et pour rejuger vite si besoin) : la colonne « Inter » force
  * `--cadence-font-sans` sur Inter, la colonne « ABC Diatype » sur Diatype.
  * Les vrais composants lisent la variable et suivent leur colonne.
  */
@@ -55,7 +55,7 @@ const SideBySide = ({ children }: { children: ReactNode }) => (
 );
 
 const meta: Meta = {
-  title: "Essais/Police — Inter vs ABC Diatype",
+  title: "Typographie/Police d'interface — ABC Diatype vs Inter",
   parameters: {
     layout: "padded",
     // Comparaison visuelle : pas de contrôle a11y automatique sur ces pages d'essai.

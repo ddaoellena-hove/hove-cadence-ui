@@ -1,5 +1,20 @@
 # Changelog — @ddaoellena/cadence-ui
 
+## 0.7.6 (non publiée)
+
+Version mineure, sans rupture d’API.
+
+### Modifié
+
+- **Police d’interface : ABC Diatype** remplace Inter. `@font-face` (poids 400 / 500 / 700 + italiques) dans `tokens.css`, `woff2` servis depuis `/fonts` ; `--cadence-font-sans` passe à `"ABC Diatype", "Inter", …`. Tous les composants suivent le token — aucun changement d’API.
+- **Inter conservée** : toujours chargée (Google Fonts) et en tête de repli. Revenir à Inter ne demande que de la remettre en premier dans `--cadence-font-sans` (un seul endroit).
+
+### Ajouté
+
+- Stories **Typographie / Police d’interface — ABC Diatype vs Inter** : spécimen (glyphes, graisses, chiffres tabulaires) et interface réaliste, les deux polices côte à côte (surcharge de `--cadence-font-sans` par colonne).
+
+> ⚠️ **Consommateurs de la lib** : ABC Diatype est commerciale. La lib ne distribue que la règle `@font-face` ; héberge les `woff2` sous `/fonts/` pour l’activer, sinon le rendu retombe sur Inter.
+
 ## 0.7.5 (non publiée)
 
 Version mineure, sans rupture d’API.
