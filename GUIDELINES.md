@@ -295,6 +295,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Navigation principale (sections de l'app) | `Sidebar` | — |
 | Sélecteur de périmètre + profil utilisateur | `Sidebar` (`scope`, `user`) | — |
 | Fil d'Ariane | `Breadcrumbs` | — |
+| Arborescence dépliable (réseau → ligne → parcours, dépôt → véhicules) | `TreeView` | `Sidebar` (navigation fixe de l'app) ; `Accordion` (sections de contenu, sans hiérarchie profonde) ; `DataTable` (grand volume plat) |
 | Sélecteur de contexte dans le breadcrumb (produit/module) | `Dropdown` `variant="button"` | `Dropdown` `variant="field"` (formulaires) |
 | Identité utilisateur (initiales / photo) | `Avatar` | — |
 | Évolution dans le temps (retards, ponctualité, volumes) | `LineChart` | `BarChart` (comparaison de catégories) |
@@ -1467,7 +1468,7 @@ export const AnalysisDashboard = () => {
 
 ### Recette 8 — Détail d'une perturbation
 
-Story **Recettes/Parcours transport → Détail d’une perturbation** : `AppLayout` + `Sidebar` + `PageHeader`, liste `DataTable`, ouverture d'un `Drawer`, `InlineAlert`, `Accordion`, `LineBadge` et `StopLabel`. Les métadonnées utilisent `DescriptionList` et l’historique local utilise `ActivityFeed`. Pour situer les perturbations sur un axe temps (durées, chevauchements), ajouter un `Timeline` dont chaque plage ouvre le `Drawer` via `onItemClick`. La prise en compte est un état local de démonstration. Aucun backend ni historique réel n'est fourni.
+Story **Recettes/Parcours transport → Détail d’une perturbation** : `AppLayout` + `Sidebar` + `PageHeader`, liste `DataTable`, ouverture d'un `Drawer`, `InlineAlert`, `Accordion`, `LineBadge` et `StopLabel`. Les métadonnées utilisent `DescriptionList` et l’historique local utilise `ActivityFeed`. Pour situer les perturbations sur un axe temps (durées, chevauchements), ajouter un `Timeline` dont chaque plage ouvre le `Drawer` via `onItemClick`. Pour restreindre la liste à une branche du réseau (mode → ligne → parcours), un `TreeView` sert de volet de navigation à gauche, les enfants d'une ligne pouvant être chargés à la demande (`loadChildren`). La prise en compte est un état local de démonstration. Aucun backend ni historique réel n'est fourni.
 
 ### Recette 9 — Import réseau et correction des erreurs
 
@@ -1656,6 +1657,36 @@ Classement horizontal : libellé, barre proportionnelle (`--cadence-dataviz-seri
 | `className` | `string` | — | — |
 
 `BreadcrumbItem.content` (`ReactNode`) remplace le rendu du libellé — typiquement `<Dropdown variant="button" aria-label="…" />` comme sélecteur de contexte. Le `<li>` et les séparateurs sont conservés ; `label` reste requis et nomme l'élément (`role="group"`) ; `href`, `onClick` et `icon` sont ignorés. ⚠️ Le type de `label` ne change pas : toujours une `string`.
+
+### TreeView
+
+Arborescence dépliable pour une hiérarchie profonde (réseau → mode → ligne → parcours, dépôt → véhicules…). Motif ARIA `tree` **aplati** : chaque ligne est un `treeitem` qui porte `aria-level` / `aria-setsize` / `aria-posinset` (pas de `group` imbriqué), ce qui autorise la virtualisation. Une seule ligne est tabulable (tabindex roving). Au clavier : ↑/↓ entre lignes visibles, → déplie puis entre dans le 1ᵉʳ enfant, ← replie puis remonte au parent, Début / Fin, `*` déplie tous les frères, saisie de la première lettre, Entrée active (`onNodeClick`). Un picto (`TreeNode.icon`) et un contenu secondaire non focusable (`TreeNode.meta` : compteur, `Badge`) sont possibles.
+
+Sélection `none` | `single` (défaut) | `multiple`. En `multiple`, chaque ligne porte une case **tri-état** (`aria-checked` mixte) : cocher un parent coche tout son sous-arbre, cocher une partie des enfants remonte en « indéterminé ». La sélection est une liste d'identifiants de feuilles (et de parents non encore chargés) — contrôlée (`selectedIds`) ou non (`defaultSelectedIds`).
+
+Chargement à la demande : un nœud `hasChildren` sans `children` déclenche `loadChildren(node)` à son premier dépliage — un `Skeleton` (`aria-busy`) s'affiche pendant le chargement, et une ligne de reprise « Réessayer » (activable à l'Entrée ou au clic) en cas d'échec. Au-delà de `virtualizeThreshold` lignes visibles (500 par défaut), la liste est virtualisée (`@tanstack/react-virtual`) dans une zone de hauteur `maxHeight` (420px par défaut).
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `nodes` | `TreeNode[]` | **requis** | `{ id, label, icon?, children?, hasChildren?, disabled?, meta? }` |
+| `aria-label` | `string` | **requis** | Nom accessible de l'arbre |
+| `selection` | `"none" \| "single" \| "multiple"` | `"single"` | Mode de sélection |
+| `expandedIds` / `defaultExpandedIds` | `string[]` | — | Nœuds dépliés (contrôlé / au montage) |
+| `onExpandedChange` | `(ids: string[]) => void` | — | Changement des dépliages |
+| `selectedIds` / `defaultSelectedIds` | `string[]` | — | Sélection (contrôlée / au montage) |
+| `onSelectionChange` | `(ids: string[]) => void` | — | Changement de la sélection |
+| `loadChildren` | `(node: TreeNode) => Promise<TreeNode[]>` | — | Chargement des enfants d'un nœud `hasChildren` |
+| `onNodeClick` | `(node: TreeNode) => void` | — | Activation (Entrée, clic) — ouvrir un détail côté app |
+| `virtualizeThreshold` | `number` | `500` | Seuil de virtualisation (lignes visibles) |
+| `maxHeight` | `number \| string` | `420` si virtualisé | Hauteur de la zone défilante |
+| `emptyLabel` | `string` | `"Aucun élément."` | Texte quand l'arbre est vide |
+| `id` / `className` | `string` | — | — |
+
+- ✅ Marquer un parent chargé à la demande avec `hasChildren` (sans `children`) et fournir `loadChildren`.
+- ✅ `onNodeClick` pour ouvrir un détail (un `Drawer` côté app), indépendamment du mode de sélection.
+- ⚠️ `children: []` (tableau vide) = parent sans enfant (non dépliable), pas un chargement à la demande — pour le différé, utiliser `hasChildren`.
+- ⚠️ La case tri-état est un visuel (`aria-hidden`) : l'état de sélection est porté par le `treeitem` (`aria-checked`), jamais par une case focusable à part.
+- ❌ Pas pour une liste plate de gros volume avec colonnes de données : `DataTable`. Pas pour la navigation fixe de l'app : `Sidebar`.
 
 ### Checkbox
 

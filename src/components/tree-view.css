@@ -1,0 +1,135 @@
+/* TreeView — arborescence dépliable. Tokens uniquement. */
+
+.tree-view {
+  overflow: auto;
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-md, 8px);
+  padding: 4px;
+  background: var(--cadence-color-white, #ffffff);
+  box-sizing: border-box;
+}
+
+.tree-view__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding-inline-end: 8px;
+  border-radius: var(--cadence-radius-sm, 6px);
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+  box-sizing: border-box;
+  transition: background-color 0.12s ease;
+}
+
+.tree-view__item:hover {
+  background: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
+}
+
+.tree-view__item:focus-visible {
+  outline: none;
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+  position: relative;
+  z-index: 1;
+}
+
+.tree-view__item--selected,
+.tree-view__item--selected:hover {
+  background: var(--cadence-color-selected-surface, #c8d6e4);
+  font-weight: 600;
+}
+
+.tree-view__item--disabled {
+  color: var(--cadence-color-text-disabled, #808080);
+  cursor: default;
+}
+
+.tree-view__item--disabled:hover {
+  background: transparent;
+}
+
+/* Chevron (dé)pliable et gouttière d'alignement des feuilles. */
+.tree-view__twisty {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cadence-color-icon-muted, #69797d);
+}
+
+.tree-view__twisty--leaf {
+  color: transparent;
+}
+
+.tree-view__icon {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  color: var(--cadence-color-icon-muted, #69797d);
+}
+
+.tree-view__item--selected .tree-view__icon {
+  color: var(--cadence-color-primary, #002830);
+}
+
+.tree-view__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tree-view__meta {
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+  padding-inline-start: 8px;
+  color: var(--cadence-color-text-secondary, #64757a);
+  font-size: 12px;
+}
+
+/* La case tri-état (classes .checkbox de checkbox.css) ne doit pas capter le focus. */
+.tree-view__item .checkbox {
+  flex: 0 0 auto;
+  pointer-events: none;
+}
+
+/* Lignes d'état : chargement et erreur. */
+.tree-view__item--status {
+  cursor: default;
+}
+
+.tree-view__item--error {
+  color: var(--cadence-color-danger-text, #b91c1c);
+}
+
+.tree-view__item--error .tree-view__retry {
+  margin-inline-start: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--cadence-color-link, #1d4ed8);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tree-view__empty {
+  margin: 0;
+  padding: 12px 8px;
+  color: var(--cadence-color-text-secondary, #64757a);
+  font-size: 14px;
+}
+
+.tree-view__spacer {
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tree-view__item {
+    transition: none;
+  }
+}

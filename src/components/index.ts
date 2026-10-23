@@ -72,4 +72,5 @@ export * from './CopyableText';
 export * from './ColorField';
 export * from './Timeline';
 export * from './JourneyTimeline';
+export * from './TreeView';
 export * from './Popover';

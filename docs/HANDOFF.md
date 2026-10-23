@@ -155,7 +155,7 @@ Branche `release/0.7.0`, version `0.7.0` non publiée. Commits atomiques, rien p
 - *Lot A (cohérence/dette)* : A1 règle des boutons `md` à côté d'un champ (exception documentée) ; A2 commentaires `tokens.css` (focus appliqué, z-index réels) + JSDoc `CopyableText` sans infobulle ; A3 nom de token `--cadence-color-field-focus-subtle` dans le CHANGELOG ; A4 tokens `text-secondary`/`skeleton` ajoutés au tableau + **test `tokens-doc`** (tokens.css ↔ GUIDELINES) ; A5 doc `StopLabel` alignée (id en `Badge`, pas de `title`) ; A6 exemples MDX passés aux tokens + **test `mdx-tokens`** ; A7 colonne d'actions `DataTable` (ombre de séparation + story 800px).
 - *Lot B* : **`ColorField`** (couleur GTFS, hex validé, aperçu `LineBadge`, contraste) et **`Timeline`** (plages sur axe temps, clavier, tooltip, « Voir les données », états) livrés avec stories, tests, exports et GUIDELINES. **B4 `Tag`** : non créé (doublon) — `Badge dismissible` / `FilterBar activeFilters` documentés.
 
-**Reporté (validé par l'utilisateur)** : **`TreeView`** (le plus lourd) ; propositions B5 **`DisruptionScopePicker`** (assemblage `Autocomplete multiple` + `TreeView`), **`ScheduleComparison`** (`DataTable` + `BarChart`/`Timeline`, plutôt une recette), **`DataFreshness`** (`Indicator` + temps relatif) — toutes jugées couvrables par assemblage ; à réévaluer après `TreeView`.
+**Reporté (validé par l'utilisateur)** : **`TreeView`** (le plus lourd — depuis livré, voir plus bas) ; propositions B5 **`DisruptionScopePicker`** (assemblage `Autocomplete multiple` + `TreeView`), **`ScheduleComparison`** (`DataTable` + `BarChart`/`Timeline`, plutôt une recette), **`DataFreshness`** (`Indicator` + temps relatif) — toutes jugées couvrables par assemblage.
 
 ## Mise à jour — Timeline horaires et itinéraires
 
@@ -170,3 +170,18 @@ Branche `feat/timeline-itineraires` (depuis `docs/prompt-timeline` ← `feat/mod
 - Teinte des étapes transport : `color-mix()` de la couleur GTFS dans le style en ligne (exception GTFS, comme `LineBadge`).
 
 **Écarts assumés face à la maquette** : titre de graphique et « Voir les données » au-dessus de la carte (cadre commun des graphiques) ; sélecteur d'échelle en casse normale (`SegmentedControl`) ; picto métro = train (pas d'icône métro chez Untitled UI).
+
+## Mise à jour — B3 `TreeView` (reporté → livré)
+
+Composant **`TreeView`** livré : `TreeView.tsx`, `tree-view.css`, `tree-view-utils.ts` (+ tests), `TreeView.stories.tsx`, export dans `index.ts`, fiche GUIDELINES (table « Intention → composant » sous Navigation, règles ✅/❌, API) et mention dans la recette 8 (volet de navigation réseau).
+
+**Décisions**
+
+- Motif ARIA `tree` **aplati** (chaque `treeitem` porte `aria-level` / `aria-setsize` / `aria-posinset`, pas de `group` imbriqué) : indispensable pour cohabiter avec la virtualisation `@tanstack/react-virtual` (réutilise le schéma focus-roving de `DataTable`). Clavier via le conteneur, `focusedRowId` resynchronisé sur le focus réel (`onFocusCapture`).
+- Sélection `multiple` : état porté par le `treeitem` (`aria-checked` true/false/mixed) ; la case tri-état est un **visuel** `aria-hidden` (classes `.checkbox` de `checkbox.css`), jamais une case focusable séparée. L'indéterminé est **dérivé** des feuilles (`getCheckState`).
+- Chargement à la demande : `hasChildren` sans `children` → `loadChildren` au 1ᵉʳ dépliage ; lignes synthétiques `loading` (Skeleton, `aria-busy`) et `error` (ligne de reprise activable, pas de bouton focusable imbriqué dans un `treeitem`).
+- Arbre **vide** : on retire le rôle `tree` (il exigerait un `treeitem`) au profit d'une `region` étiquetée — sinon axe `aria-required-children`.
+
+**Limite connue** : la sélection d'un parent non encore chargé retient l'id du parent (l'app résout son sous-arbre au chargement).
+
+**Reste ouvert** : B5 (`DisruptionScopePicker`, `ScheduleComparison`, `DataFreshness`) à trancher ; tests manuels lecteur d'écran ; décision de version et publication avec l'utilisateur.
