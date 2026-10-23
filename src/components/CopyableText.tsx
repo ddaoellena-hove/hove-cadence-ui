@@ -2,7 +2,7 @@
  * CopyableText component.
  *
  * Identifiant technique (arrêt, course, véhicule) en police mono, tronqué si
- * besoin, avec un bouton de copie. Aucune infobulle (ni intégrée au bouton, ni
+ * besoin, avec un bouton de copie. Pas de survol d'aide (ni sur le bouton, ni
  * `title` natif) : le retour « Copié » (ou « Copie impossible ») est écrit à
  * côté du bouton, l'icône passe en coche, et une région `role="status"`
  * l'annonce ; il s'efface après 2 s.
@@ -21,7 +21,7 @@ export interface CopyableTextProps {
   copyLabel?: string;
   /** Police mono (identifiants). Défaut `true`. */
   mono?: boolean;
-  /** Tronque le texte avec une ellipse (valeur complète en infobulle native). */
+  /** Tronque le texte affiché avec une ellipse (la valeur complète reste copiée). */
   truncate?: boolean;
   /** Appelé après une copie réussie. */
   onCopy?: (value: string) => void;
