@@ -70,4 +70,5 @@ export * from './RouteStopList';
 export * from './Sparkline';
 export * from './CopyableText';
 export * from './ColorField';
+export * from './Timeline';
 export * from './Popover';

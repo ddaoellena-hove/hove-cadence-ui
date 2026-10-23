@@ -300,6 +300,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Motif jour × heure, ligne × jour | `Heatmap` | `LineChart` (une seule dimension temporelle) |
 | Classement (lignes les plus impactées) | `BarList` | `BarChart orientation="horizontal"` (plusieurs séries) |
 | Comparaison de catégories (barres empilées / groupées) | `BarChart` | `BarList` (classement à une valeur) ; `DataVisualization` est déprécié |
+| Plages sur un axe temps (perturbations, amplitudes, travaux) | `Timeline` | `LineChart` (séries continues) ; `ActivityFeed` (événements ponctuels) ; `ServiceCalendar` (jours) |
 | Mini-courbe dans une carte d'indicateur | `Card trend` (ou `LineChart compact`) | — |
 | Tendance dans une cellule de `DataTable` ou une ligne de liste | `Sparkline` | `LineChart compact` (axe, tooltip, seuils) ; `Card trend` (déjà intégré à la carte) |
 | Identité de ligne (code et couleur GTFS) | `LineBadge` | `Badge` (étiquette générique) |
@@ -1463,7 +1464,7 @@ export const AnalysisDashboard = () => {
 
 ### Recette 8 — Détail d'une perturbation
 
-Story **Recettes/Parcours transport → Détail d’une perturbation** : `AppLayout` + `Sidebar` + `PageHeader`, liste `DataTable`, ouverture d'un `Drawer`, `InlineAlert`, `Accordion`, `LineBadge` et `StopLabel`. Les métadonnées utilisent `DescriptionList` et l’historique local utilise `ActivityFeed`. La prise en compte est un état local de démonstration. Aucun backend ni historique réel n'est fourni.
+Story **Recettes/Parcours transport → Détail d’une perturbation** : `AppLayout` + `Sidebar` + `PageHeader`, liste `DataTable`, ouverture d'un `Drawer`, `InlineAlert`, `Accordion`, `LineBadge` et `StopLabel`. Les métadonnées utilisent `DescriptionList` et l’historique local utilise `ActivityFeed`. Pour situer les perturbations sur un axe temps (durées, chevauchements), ajouter un `Timeline` dont chaque plage ouvre le `Drawer` via `onItemClick`. La prise en compte est un état local de démonstration. Aucun backend ni historique réel n'est fourni.
 
 ### Recette 9 — Import réseau et correction des erreurs
 
@@ -2510,6 +2511,25 @@ Menu de portée × format, partagé avec la primitive interne d'`ActionMenu`. L'
 | `className` | `string` | — | Classe additionnelle |
 
 `ExportScope` : `"selection" | "page" | "all"`. `ExportFormat` : `"csv" | "excel"`. Chaque option annonce sa portée via une description accessible. La sélection peut être limitée au résultat filtré par l'app (comme la recette de supervision). Exporter une page exige de respecter le tri appliqué.
+
+### Timeline
+
+Plages horizontales sur un axe temps, une ligne par entité (ligne, arrêt, véhicule, perturbation) : durée des perturbations, amplitudes de service, travaux. Les bornes sont des `Date` **ou** des heures de service `HH:mm` (jusqu'à 47:59 avec `allowOvernight`, comme `TimePicker`). Axe partagé (`ChartAxis`, fr-FR), repère « maintenant » optionnel, `annotations` (traits et bandes). Couleurs par `tone` (tokens de statut) **toujours doublées d'un motif**. 32 px par ligne. Survol/focus → `ChartTooltip` ; clic/Entrée → `onItemClick` (ouvrir un `Drawer`). États `loading`/`empty`/`error` et « Voir les données » comme les autres graphiques ; animations coupées sous `prefers-reduced-motion`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `title` | `string` | **requis** | Nom accessible (comme tous les graphiques) |
+| `rows` | `TimelineRow[]` | **requis** | `{ id; label; items: TimelineItem[] }` ; item : `{ id; start; end?; label?; tone?; pattern? }` |
+| `allowOvernight` | `boolean` | `false` | Heures de service au-delà de 24:00 (jusqu'à 47:59) |
+| `range` | `[TimeValue, TimeValue]` | englobe les plages | Fenêtre affichée |
+| `now` | `TimeValue` | — | Repère « maintenant » |
+| `annotations` | `TimelineAnnotation[]` | — | `{ id; start; end?; label? }` : trait (sans `end`) ou bande |
+| `onItemClick` | `(item, row) => void` | — | Clic ou Entrée sur une plage |
+| `state` / `emptyMessage` / `errorMessage` / `onRetry` / `description` / `headingLevel` / `className` | — | — | Props communes des graphiques |
+
+- Clavier : une seule plage tabulable (`role="group"`), ←/→ dans la ligne, ↑/↓ de ligne, Début / Fin, Entrée, Échap. La plage focalisée est annoncée (`role="status"`).
+- ✅ Toujours un `tone` (motif automatique) ou un `pattern` explicite : jamais la couleur seule.
+- ❌ Hors périmètre : glisser, redimensionner, créer une plage, zoomer.
 
 ### ColorField
 
