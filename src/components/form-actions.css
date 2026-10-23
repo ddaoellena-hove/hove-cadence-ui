@@ -1,0 +1,19 @@
+/* FormActions — barre d'actions de formulaire. */
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.form-actions--end {
+  justify-content: flex-end;
+}
+
+.form-actions--between {
+  justify-content: space-between;
+}
+
+.form-actions--start {
+  justify-content: flex-start;
+}

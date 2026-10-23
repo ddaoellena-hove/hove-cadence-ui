@@ -1,0 +1,62 @@
+/**
+ * PageSection — section de page : un titre `h2` (ou `h3`/`h4`), une description
+ * et des actions optionnelles, au-dessus d'un contenu empilé. Remplace le
+ * `<section>` + `<h2>` en style inline répété dans les recettes.
+ *
+ * Nommée par son titre (`aria-labelledby`) : c'est un repère `region`.
+ */
+import { useId, type ReactNode } from "react";
+import "./page-section.css";
+
+export interface PageSectionProps {
+  /** Titre de la section (porte le repère). */
+  title: string;
+  /** Niveau de titre. Défaut 2. */
+  headingLevel?: 2 | 3 | 4;
+  /** Description sous le titre. */
+  description?: string;
+  /** Actions alignées à droite du titre. */
+  actions?: ReactNode;
+  /** Espacement vertical (échelle 4/8/12/16/20/24/32/48). Défaut 20. */
+  gap?: number;
+  children: ReactNode;
+  id?: string;
+  className?: string;
+}
+
+export const PageSection = ({
+  title,
+  headingLevel = 2,
+  description,
+  actions,
+  gap = 20,
+  children,
+  id,
+  className,
+}: PageSectionProps) => {
+  const reactId = useId();
+  const headingId = `${id ?? "section"}-${reactId}`;
+  const Heading = `h${headingLevel}` as const;
+
+  return (
+    <section
+      id={id}
+      className={["page-section", className].filter(Boolean).join(" ")}
+      aria-labelledby={headingId}
+      style={{ gap }}
+    >
+      <div className="page-section__head">
+        <div className="page-section__titles">
+          <Heading id={headingId} className={`page-section__heading page-section__heading--${headingLevel}`}>
+            {title}
+          </Heading>
+          {description && <p className="page-section__description">{description}</p>}
+        </div>
+        {actions && <div className="page-section__actions">{actions}</div>}
+      </div>
+      <div className="page-section__body" style={{ gap }}>
+        {children}
+      </div>
+    </section>
+  );
+};

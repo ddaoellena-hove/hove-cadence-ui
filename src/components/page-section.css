@@ -1,0 +1,57 @@
+/* PageSection — section de page titrée. Tokens uniquement. */
+
+.page-section {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--cadence-font-sans, "ABC Diatype", "Inter", Helvetica, sans-serif);
+}
+
+.page-section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.page-section__titles {
+  min-width: 0;
+}
+
+.page-section__heading {
+  margin: 0;
+  font-weight: 600;
+  color: var(--cadence-color-primary, #002830);
+  line-height: 1.3;
+}
+
+.page-section__heading--2 {
+  font-size: 16px;
+}
+
+.page-section__heading--3 {
+  font-size: 14px;
+}
+
+.page-section__heading--4 {
+  font-size: 13px;
+}
+
+.page-section__description {
+  margin: 4px 0 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--cadence-color-text-secondary, #64757a);
+}
+
+.page-section__actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-section__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}

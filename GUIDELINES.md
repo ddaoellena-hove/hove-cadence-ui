@@ -278,6 +278,10 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | État ou statut avec picto + couleur sémantique | `Indicator` | `Badge` (purement informatif) |
 | Fraîcheur d'une donnée (dernière mise à jour, péremption) | `DataFreshness` | `Indicator` (statut métier, pas temporel) ; `ActivityFeed` (journal d'événements horodatés) |
 | En-tête de page (titre, sous-titre, actions), collé en haut au défilement | `PageHeader` | `<h1>` à la main |
+| Section de page (titre `h2`, description, actions) | `PageSection` | un `<section>` + `<h2>` en style inline |
+| Rangée de champs à largeurs égales, alignés par le bas | `FieldRow` | `<div style="display:flex;gap:12">` + `flex:1` à la main |
+| Barre d'actions de formulaire (à droite, ordre `Link` → `Ghost` → `Primary`) | `FormActions` | un `<div>` `justify-content:flex-end` à la main |
+| Grille fluide de cartes / graphiques | `CardGrid` | un `<div style="display:grid;…auto-fill">` à la main |
 | Indicateur chiffré + évolution (haut de tableau de bord) | `Card` (`value`, `delta`, `trend`) | `Indicator` (statut sans valeur) |
 | Proposer une action dans une carte (titre + description + bouton) | `Card` (`actionLabel`, `onAction`) | `TableCard` (élément de liste) |
 | Liste de gros volume (> 50 lignes, colonnes de données) | `DataTable` | `TableCard` (liste de cartes riches, peu nombreuses) |
@@ -2030,6 +2034,64 @@ En-tête de page : titre (`<h1>`, display 22px), sous-titre et actions sur une l
 - ✅ Premier élément du contenu d'`AppLayout` : il recouvre le padding du conteneur (`24px 32px`) pour que rien ne défile au-dessus ni sur les côtés.
 - ✅ Les popovers des actions (`DateRangePicker`, `DatePicker`, `Dropdown`) se décalent vers la gauche pour rester dans le conteneur quand le déclencheur est au bord droit.
 - ❌ Un seul `PageHeader` par page, et pas de `<h1>` à côté.
+
+### PageSection
+
+Section de page : un titre (`h2` par défaut, `h3`/`h4` pour une sous-section), une description et des actions optionnelles, au-dessus d'un contenu empilé. Remplace le `<section>` + `<h2>` en style inline recréé à la main. Nommée par son titre (`aria-labelledby`) : c'est un repère `region`. L'espacement (`gap`) s'applique entre le titre et le contenu **et** entre les éléments du contenu.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `title` | `string` | **requis** | Titre (porte le repère) |
+| `headingLevel` | `2 \| 3 \| 4` | `2` | Niveau du titre |
+| `description` | `string` | — | Texte sous le titre |
+| `actions` | `ReactNode` | — | Actions alignées à droite du titre |
+| `gap` | `number` | `20` | Espacement vertical (échelle 4/8/12/16/20/24/32/48) |
+| `children` | `ReactNode` | **requis** | Contenu de la section |
+| `id` / `className` | `string` | — | — |
+
+- ✅ Enchaîner des `PageSection` dans un conteneur en colonne pour structurer une page de formulaire ou de détail. Le multi-colonnes (`FieldRow`) vit **à l'intérieur** d'une section.
+- ❌ Ne pas sauter de niveau de titre : après le `h1` du `PageHeader`, les sections sont en `h2`.
+
+### FieldRow
+
+Rangée de champs de formulaire à **largeurs égales**, alignés par le bas (`align-items: flex-end`), gap 12. Remplace le `<div style="display:flex;gap:12">` + `flex:1` recréé à la main.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `children` | `ReactNode` | **requis** | Champs (chacun prend une part égale) |
+| `gap` | `number` | `12` | Espacement horizontal (échelle) |
+| `className` | `string` | — | — |
+
+- ✅ Pour 2-3 champs d'un même gabarit de hauteur (40 px) côte à côte dans une section.
+- ❌ Ne pas y mélanger un champ 40 px et un contrôle compact 29 px (voir [Hauteurs de contrôle](#hauteurs-de-contrôle-et-alignement-sur-une-rangée)). Pas de `helperText` sous un seul champ de la rangée (il décale l'alignement).
+
+### FormActions
+
+Barre d'actions de formulaire. Alignée à droite par défaut, gap 8. Ordre attendu des enfants : `Link` (tertiaire) → `GhostButton` (secondaire) → `PrimaryButton` (principal, en dernier). `justify="between"` pour un pied d'assistant (Précédent à gauche, Suivant à droite).
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `children` | `ReactNode` | **requis** | Actions, dans l'ordre `Link` → `Ghost` → `Primary` |
+| `justify` | `"end" \| "between" \| "start"` | `"end"` | Alignement horizontal |
+| `gap` | `number` | `8` | Espacement (échelle) |
+| `className` | `string` | — | — |
+
+- ✅ Un seul `PrimaryButton` plein, en dernier. Une 3ᵉ action est un `Link hideArrow`.
+
+### CardGrid
+
+Grille fluide de cartes ou de graphiques : colonnes `minmax(min, 1fr)` en `auto-fill` (ou `auto-fit`), gap 16. Remplace le `<div style="display:grid;…">` recréé à la main. Jamais de largeur fixe : les cartes suivent leur conteneur et se replient en une colonne sur mobile.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `children` | `ReactNode` | **requis** | Cartes / graphiques |
+| `min` | `number` | `240` | Largeur mini d'une colonne (px) |
+| `gap` | `number` | `16` | Espacement (échelle) |
+| `fit` | `boolean` | `false` | `auto-fit` (étire la dernière rangée) au lieu d'`auto-fill` |
+| `className` | `string` | — | — |
+
+- ✅ Une grille de `Card` indicateurs en haut d'un tableau de bord ; une grille de graphiques (`min` 360) en dessous.
+- ❌ Pas de `gridTemplateColumns` fixe en px : la grille doit rester fluide.
 
 ### Pagination
 
