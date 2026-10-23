@@ -68,5 +68,23 @@ export const ServiceDeNuit: Story = {
   },
 };
 
+/** Échelle 1 h : la frise défile, les libellés de lignes restent visibles. */
+export const Echelle1h: Story = {
+  name: "Échelle 1 h",
+  args: { defaultScale: 60 },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("06h30 → 17h30")).toBeInTheDocument();
+    await expect(canvas.getByRole("radio", { name: "1 h" })).toBeChecked();
+    const scroller = canvasElement.querySelector<HTMLElement>(".timeline-shell__scroll")!;
+    await waitFor(() => expect(scroller.scrollWidth).toBeGreaterThan(scroller.clientWidth * 5));
+  },
+};
+
+/** Sans sélecteur d'échelle ni aide. */
+export const Simple: Story = {
+  args: { scales: [], hint: false },
+};
+
 export const Vide: Story = { name: "Vide", args: { state: "empty", rows: [] } };
 export const Erreur: Story = { name: "Erreur", args: { state: "error", rows: [], onRetry: fn() } };

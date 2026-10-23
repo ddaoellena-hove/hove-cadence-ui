@@ -1,64 +1,78 @@
 /* ── Timeline ──────────────────────────────────────────────────────────────
-   Plages horizontales sur un axe temps. Axe et grille via chart-frame.css. */
+   Plages horizontales sur un axe temps. Bandeau, axe, grille et lignes via
+   timeline-shell.css. */
 
-.timeline__svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  overflow: visible;
-  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-}
-
-.timeline__svg:focus {
+.timeline__rows:focus {
   outline: none;
 }
 
-.timeline__svg:focus-visible {
-  outline: 2px solid var(--cadence-focus-color, #1a3e45);
-  outline-offset: 2px;
-  border-radius: var(--cadence-radius-sm, 6px);
+.timeline__rows:focus-visible {
+  box-shadow: inset var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
 }
 
 .timeline__row-label {
-  fill: var(--cadence-color-primary, #002830);
   font-size: 13px;
+  overflow: hidden;
+  padding: 0 12px 0 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .timeline__item {
+  background-color: var(--cadence-dataviz-series-1, #6b3fd6);
+  border-radius: var(--cadence-radius-sm, 6px);
   cursor: pointer;
-}
-
-.timeline__bar {
-  fill: var(--cadence-dataviz-series-1, #6b3fd6);
+  height: 20px;
+  overflow: hidden;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   transition: opacity 120ms ease;
+  z-index: 1;
 }
 
-.timeline__item:hover .timeline__bar {
+.timeline__item:hover {
   opacity: 0.85;
 }
 
 /* Plage focalisée : liseré net autour de la barre. */
-.timeline__item--focused .timeline__bar {
-  stroke: var(--cadence-focus-color, #1a3e45);
-  stroke-width: 2;
+.timeline__item--focused {
+  outline: 2px solid var(--cadence-focus-color, #1a3e45);
+  outline-offset: 1px;
+}
+
+.timeline__item-pattern {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+/* Défs de motifs partagées (SVG caché). */
+.timeline__defs {
+  position: absolute;
 }
 
 /* Repère « maintenant » */
 .timeline__now {
-  stroke: var(--cadence-dataviz-threshold-breach, #b91c1c);
-  stroke-width: 1.5;
-  stroke-dasharray: 4 3;
+  border-left: 1.5px dashed var(--cadence-dataviz-threshold-breach, #b91c1c);
+  bottom: 0;
+  position: absolute;
+  top: 0;
 }
 
 /* Annotations */
 .timeline__annotation {
-  stroke: var(--cadence-dataviz-annotation, #55606e);
-  stroke-width: 1;
-  stroke-dasharray: 3 3;
+  border-left: 1px dashed var(--cadence-dataviz-annotation, #55606e);
+  bottom: 0;
+  position: absolute;
+  top: 0;
 }
 
 .timeline__band {
-  fill: var(--cadence-dataviz-annotation-band, rgba(85, 96, 110, 0.08));
+  background-color: var(--cadence-dataviz-annotation-band, rgba(85, 96, 110, 0.08));
+  bottom: 0;
+  position: absolute;
+  top: 0;
 }
 
 /* Texte réservé aux lecteurs d'écran (annonce de la plage focalisée). */
@@ -75,7 +89,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .timeline__bar {
+  .timeline__item {
     transition: none;
   }
 }

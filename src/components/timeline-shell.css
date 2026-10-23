@@ -1,0 +1,170 @@
+/* ── Cadre commun de Timeline et JourneyTimeline ─────────────────────────────
+   Carte bordée : bandeau « Fenêtre » + échelle, axe horaire en haut, grille,
+   lignes, aide en pied. Heures et durées en police mono. */
+
+.timeline-shell {
+  background-color: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-xl, 12px);
+  color: var(--cadence-color-primary, #002830);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ── Bandeau ─────────────────────────────────────────────────────────────── */
+.timeline-shell__header {
+  align-items: center;
+  background-color: var(--cadence-color-surface-subtle, #fafafa);
+  border-bottom: 1px solid var(--cadence-color-border, #e5e5e5);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  justify-content: space-between;
+  padding: 8px 12px 8px 16px;
+}
+
+.timeline-shell__window {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 0;
+  min-width: 0;
+}
+
+.timeline-shell__eyebrow {
+  color: var(--cadence-color-text-secondary, #64757a);
+  font-size: var(--cadence-font-size-caption, 11px);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.timeline-shell__window-value {
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.timeline-shell__meta {
+  color: var(--cadence-color-text-secondary, #64757a);
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-size: 12px;
+}
+
+.timeline-shell__scale {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+/* ── Zone défilante ──────────────────────────────────────────────────────── */
+.timeline-shell__scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.timeline-shell__canvas {
+  min-width: 100%;
+  position: relative;
+}
+
+/* Grille et calque : même géométrie que les pistes (gouttière à gauche, marge à droite). */
+.timeline-shell__grid,
+.timeline-shell__overlay {
+  bottom: 0;
+  left: var(--tl-gutter);
+  pointer-events: none;
+  position: absolute;
+  right: var(--tl-right);
+  top: 0;
+}
+
+.timeline-shell__overlay {
+  top: var(--tl-axis);
+  z-index: 1;
+}
+
+.timeline-shell__gridline {
+  background-color: var(--cadence-color-divider, #f0f0f0);
+  bottom: 0;
+  position: absolute;
+  top: 0;
+  width: 1px;
+}
+
+.timeline-shell__gridline--major {
+  background-color: var(--cadence-color-border, #e5e5e5);
+}
+
+/* ── Lignes (axe compris) ────────────────────────────────────────────────── */
+.timeline-shell__row,
+.timeline-shell__axis {
+  border-bottom: 1px solid var(--cadence-color-divider, #f0f0f0);
+  display: flex;
+  position: relative;
+}
+
+.timeline-shell__row {
+  height: var(--tl-row);
+}
+
+.timeline-shell__row:last-child {
+  border-bottom: none;
+}
+
+.timeline-shell__axis {
+  height: var(--tl-axis);
+}
+
+.timeline-shell__gutter {
+  align-items: center;
+  border-right: 1px solid var(--cadence-color-divider, #f0f0f0);
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 0 var(--tl-gutter);
+  min-width: 0;
+}
+
+/* Gouttière de libellés d'entités : reste visible au défilement horizontal. */
+.timeline-shell__canvas--sticky .timeline-shell__gutter {
+  background-color: var(--cadence-color-white, #ffffff);
+  left: 0;
+  position: sticky;
+  z-index: 2;
+}
+
+.timeline-shell__track {
+  flex: 1;
+  margin-right: var(--tl-right);
+  min-width: 0;
+  position: relative;
+}
+
+/* ── Axe ─────────────────────────────────────────────────────────────────── */
+.timeline-shell__tick {
+  color: var(--cadence-color-text-secondary, #64757a);
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-size: 12px;
+  padding-left: 4px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+}
+
+.timeline-shell__tick--major {
+  color: var(--cadence-color-primary, #002830);
+  font-weight: 600;
+}
+
+/* ── Aide ────────────────────────────────────────────────────────────────── */
+.timeline-shell__hint {
+  background-color: var(--cadence-color-surface-subtle, #fafafa);
+  border-top: 1px solid var(--cadence-color-border, #e5e5e5);
+  color: var(--cadence-color-text-secondary, #64757a);
+  font-size: 12px;
+  margin: 0;
+  padding: 10px 16px;
+}
