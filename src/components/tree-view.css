@@ -6,6 +6,7 @@
   border-radius: var(--cadence-radius-md, 8px);
   padding: 4px;
   background: var(--cadence-color-white, #ffffff);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   box-sizing: border-box;
 }
 
