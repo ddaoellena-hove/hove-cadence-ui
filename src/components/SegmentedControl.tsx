@@ -7,6 +7,8 @@ export interface SegmentedControlOption {
   value: string;
   /** Label rendered inside the tab. */
   label: string;
+  /** Option indisponible : grisée, ni cliquable ni atteignable aux flèches. */
+  disabled?: boolean;
 }
 
 export interface SegmentedControlProps {
@@ -86,18 +88,24 @@ export const SegmentedControl = React.forwardRef<HTMLDivElement, SegmentedContro
       idx: number
     ) => {
       if (disabled || options.length === 0) return;
+      // Les options désactivées sont sautées.
+      const enabled = options.map((o, i) => (o.disabled ? -1 : i)).filter((i) => i >= 0);
+      if (enabled.length === 0) return;
+      const pos = enabled.indexOf(idx);
       let next: number;
       switch (e.key) {
-        case "ArrowRight": case "ArrowDown": next = (idx + 1) % options.length; break;
-        case "ArrowLeft": case "ArrowUp": next = (idx - 1 + options.length) % options.length; break;
-        case "Home": next = 0; break;
-        case "End": next = options.length - 1; break;
+        case "ArrowRight": case "ArrowDown": next = enabled[(pos + 1) % enabled.length]; break;
+        case "ArrowLeft": case "ArrowUp": next = enabled[(pos - 1 + enabled.length) % enabled.length]; break;
+        case "Home": next = enabled[0]; break;
+        case "End": next = enabled[enabled.length - 1]; break;
         default: return;
       }
       e.preventDefault();
       tabRefs.current[next]?.focus();
       handleSelect(options[next].value);
     };
+
+    const firstEnabled = options.findIndex((o) => !o.disabled);
 
     const rootClass = [
       "segmented-control",
@@ -139,10 +147,10 @@ export const SegmentedControl = React.forwardRef<HTMLDivElement, SegmentedContro
               role="radio"
               aria-checked={isActive}
               className={btnClass}
-              disabled={disabled}
+              disabled={disabled || option.disabled}
               onClick={() => handleSelect(option.value)}
               onKeyDown={(e) => handleKeyDown(e, idx)}
-              tabIndex={isActive || (idx === 0 && !options.some((item) => item.value === activeValue)) ? 0 : -1}
+              tabIndex={isActive || (idx === firstEnabled && !options.some((item) => item.value === activeValue)) ? 0 : -1}
             >
               {option.label}
             </button>

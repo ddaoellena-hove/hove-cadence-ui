@@ -126,3 +126,26 @@ export const Clavier: Story = {
     await expect(radios[0]).toBeChecked();
   },
 };
+
+/** Option désactivée : grisée, ni cliquable ni atteinte aux flèches. */
+export const OptionDesactivee: Story = {
+  name: "Option désactivée",
+  args: {
+    "aria-label": "Échelle",
+    options: [
+      { value: "fit", label: "Ajuster" },
+      { value: "60", label: "1 h", disabled: true },
+      { value: "30", label: "30 min" },
+      { value: "15", label: "15 min" },
+    ],
+    defaultValue: "fit",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("radio", { name: "1 h" })).toBeDisabled();
+    await userEvent.click(canvas.getByRole("radio", { name: "Ajuster" }));
+    await userEvent.keyboard("{ArrowRight}");
+    await expect(canvas.getByRole("radio", { name: "30 min" })).toHaveFocus();
+    await expect(canvas.getByRole("radio", { name: "30 min" })).toBeChecked();
+  },
+};

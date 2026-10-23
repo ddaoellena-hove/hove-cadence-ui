@@ -91,6 +91,12 @@
   color: var(--cadence-color-label, #1a3e45);
 }
 
+/* Option désactivée seule (le groupe reste actif) */
+.segmented-control__tab:disabled {
+  color: var(--cadence-color-text-disabled, #808080);
+  cursor: not-allowed;
+}
+
 /* Disabled inactive */
 .segmented-control--disabled .segmented-control__tab {
   color: var(--cadence-color-border-strong, #bfc9cb);

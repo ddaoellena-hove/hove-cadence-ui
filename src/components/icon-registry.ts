@@ -10,9 +10,12 @@
  *   home      → Home01        (home-03 → Home03 reste distinct)
  *   drag-drop → DotsGrid      (cohérent avec le handle du Badge)
  *   icon-90   → ChevronSelectorVertical (sélecteur vertical ↕)
+ *   walk      → icône maison (icon-walk.tsx) : pas de piéton chez Untitled UI
+ *   anchor    → mode bateau (pas de navire chez Untitled UI)
  */
 import type { FC, SVGProps } from "react";
 import { AlertTriangle } from "@untitledui/icons/AlertTriangle";
+import { Anchor } from "@untitledui/icons/Anchor";
 import { AnnotationInfo } from "@untitledui/icons/AnnotationInfo";
 import { Announcement01 } from "@untitledui/icons/Announcement01";
 import { ArrowDown } from "@untitledui/icons/ArrowDown";
@@ -99,13 +102,18 @@ import { Users01 } from "@untitledui/icons/Users01";
 import { VolumeMax } from "@untitledui/icons/VolumeMax";
 import { VolumeMin } from "@untitledui/icons/VolumeMin";
 import { VolumeX } from "@untitledui/icons/VolumeX";
+import { Bus } from "@untitledui/icons/Bus";
+import { Train } from "@untitledui/icons/Train";
+import { Tram } from "@untitledui/icons/Tram";
 import { XClose } from "@untitledui/icons/XClose";
+import { Walk } from "./icon-walk";
 
 /** Signature commune d'une icône (évite de fuiter les types privés d'Untitled UI). */
 export type IconComponent = FC<SVGProps<SVGSVGElement> & { size?: number; color?: string }>;
 
 export const ICONS = {
   "alert-triangle":            AlertTriangle as IconComponent,
+  "anchor":                    Anchor as IconComponent,
   "annotation-info":           AnnotationInfo as IconComponent,
   "announcement-01":           Announcement01 as IconComponent,
   "arrow-down":                ArrowDown as IconComponent,
@@ -118,6 +126,7 @@ export const ICONS = {
   "bell-01":                   Bell01 as IconComponent,
   "briefcase-01":              Briefcase01 as IconComponent,
   "building-07":               Building07 as IconComponent,
+  "bus":                       Bus as IconComponent,
   "calendar":                  Calendar as IconComponent,
   "check":                     Check as IconComponent,
   "check-circle":              CheckCircle as IconComponent,
@@ -186,6 +195,8 @@ export const ICONS = {
   "switch-horizontal-01":      SwitchHorizontal01 as IconComponent,
   "switch-vertical-01":        SwitchVertical01 as IconComponent,
   "terminal":                  Terminal as IconComponent,
+  "train":                     Train as IconComponent,
+  "tram":                      Tram as IconComponent,
   "trash":                     Trash01 as IconComponent,
   "upload-02":                 Upload02 as IconComponent,
   "user-01":                   User01 as IconComponent,
@@ -193,6 +204,7 @@ export const ICONS = {
   "volume-max":                VolumeMax as IconComponent,
   "volume-min":                VolumeMin as IconComponent,
   "volume-x":                  VolumeX as IconComponent,
+  "walk":                      Walk as IconComponent,
   "x-close":                   XClose as IconComponent,
 };
 
