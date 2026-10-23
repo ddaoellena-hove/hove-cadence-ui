@@ -1,0 +1,133 @@
+/* ── ColorField ────────────────────────────────────────────────────────────
+   Champ 40px à l'allure d'un TextInput : pastille (sélecteur natif) + hex. */
+
+.color-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  min-width: 0;
+}
+
+.color-field__label {
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.color-field__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ── Boîte de champ (comme TextInput) ── */
+.color-field__box {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 12px;
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-lg, 10px);
+  box-shadow: var(--cadence-shadow-sm, 0px 1px 3px rgba(0, 0, 0, 0.06), 0px 1px 2px rgba(0, 0, 0, 0.04));
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.color-field__box:hover {
+  box-shadow: var(--cadence-shadow-md, 0px 0px 12px rgba(0, 0, 0, 0.08), 0px 0px 2px rgba(0, 0, 0, 0.25));
+}
+
+.color-field__box:focus-within {
+  border: 1.5px solid var(--cadence-color-field-focus, #2d5f6b);
+  box-shadow: var(--cadence-field-focus-ring, 0 0 0 4px rgba(45, 95, 107, 0.12));
+}
+
+.color-field--error .color-field__box {
+  border: 2px solid var(--cadence-color-danger, #da1e28);
+}
+
+.color-field--disabled .color-field__box {
+  background: var(--cadence-color-border, #e5e5e5);
+  border-color: var(--cadence-color-border-strong, #bfc9cb);
+  box-shadow: none;
+}
+
+/* ── Pastille = input type=color ── */
+.color-field__swatch {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: 999px;
+  background: none;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.color-field__swatch::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+.color-field__swatch::-webkit-color-swatch {
+  border: none;
+  border-radius: 999px;
+}
+.color-field__swatch::-moz-color-swatch {
+  border: none;
+  border-radius: 999px;
+}
+
+.color-field__swatch:focus-visible {
+  outline: none;
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+}
+
+/* ── Champ hex ── */
+.color-field__hex {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--cadence-color-primary, #002830);
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.color-field__hex::placeholder {
+  color: var(--cadence-color-placeholder, #737373);
+  text-transform: none;
+}
+
+.color-field__hex:disabled {
+  color: var(--cadence-color-text-disabled, #808080);
+}
+
+/* ── Aperçu ── */
+.color-field__preview {
+  flex-shrink: 0;
+  display: inline-flex;
+}
+
+/* ── Message + action ── */
+.color-field__message {
+  margin: 0;
+  color: var(--cadence-color-text-secondary, #64757a);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.color-field--error .color-field__message {
+  color: var(--cadence-color-danger-text, #b91c1c);
+}
+
+.color-field__action {
+  display: flex;
+}

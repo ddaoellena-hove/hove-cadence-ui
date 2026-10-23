@@ -256,6 +256,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Saisie de texte libre (1 ligne) | `TextInput` | — |
 | Saisie de texte long (multi-lignes) | `TextArea` | — |
 | Valeur numérique avec +/− | `CounterInput` | `TextInput type="number"` (interdit) |
+| Couleur d'une ligne (GTFS `route_color`) | `ColorField` | `input type="color"` nu (pas de validation ni de contraste) |
 | Choix dans une liste courte (≥ 3 options, sans recherche) | `Dropdown` | `Autocomplete` (longue liste à filtrer) |
 | Période, date ou choix dans un dashboard | `DateRangePicker` / `DatePicker` / `Dropdown` avec `variant="button"` (à privilégier) | Variante champ (formulaire) ; dans une `FilterBar`, toujours la variante bouton ; `PrimaryButton outline` (action, pas de valeur) |
 | Choix dans une longue liste avec recherche au clavier | `Autocomplete` | `Dropdown` (liste courte) |
@@ -1466,7 +1467,7 @@ Story **Recettes/Parcours transport → Détail d’une perturbation** : `AppLay
 
 ### Recette 9 — Import réseau et correction des erreurs
 
-Story **Recettes/Parcours transport → Import réseau et reprise après erreur** : `Stepper`, `TextInput`, `FileUpload`, résumé d'erreurs (`ErrorSummary` + refs), `Autocomplete multiple`, vérification et `ProgressBar`.
+Story **Recettes/Parcours transport → Import réseau et reprise après erreur** : `Stepper`, `TextInput`, `FileUpload`, résumé d'erreurs (`ErrorSummary` + refs), `Autocomplete multiple`, vérification et `ProgressBar`. Pour corriger les couleurs de lignes importées (GTFS `route_color`), utiliser `ColorField` (hex validé, aperçu `LineBadge`, contrôle de contraste).
 
 La démonstration lit un CSV UTF-8 et contrôle uniquement les en-têtes `stop_id`/`stop_name` (virgule ou point-virgule). Elle simule ensuite le traitement local. Elle ne remplace ni un parseur CSV complet ni un validateur GTFS. Les timers sont nettoyés au démontage ; l'app de production doit gérer ses propres requêtes, annulations et reprises.
 
@@ -2509,6 +2510,29 @@ Menu de portée × format, partagé avec la primitive interne d'`ActionMenu`. L'
 | `className` | `string` | — | Classe additionnelle |
 
 `ExportScope` : `"selection" | "page" | "all"`. `ExportFormat` : `"csv" | "excel"`. Chaque option annonce sa portée via une description accessible. La sélection peut être limitée au résultat filtré par l'app (comme la recette de supervision). Exporter une page exige de respecter le tri appliqué.
+
+### ColorField
+
+Saisie d'une couleur de ligne GTFS (`route_color`), avec `route_text_color` optionnel. Champ de 40 px : pastille (sélecteur natif `input type="color"`), champ hex validé (avec ou sans `#`) et aperçu `LineBadge` en direct. Le contraste texte/fond est contrôlé via `line-badge-utils` ; sous 4,5:1, l'aide passe en erreur et un bouton « Calculer la couleur du texte » propose une couleur lisible.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `label` | `string` | **requis** | Libellé visible |
+| `value` | `string` | **requis** | Couleur de fond hex (avec ou sans `#`) |
+| `onChange` | `(hex: string) => void` | **requis** | Couleur normalisée `#RRGGBB` |
+| `textColor` | `string` | — | `route_text_color` ; déclenche le contrôle de contraste |
+| `onTextColorChange` | `(hex: string) => void` | — | Appelé par « Calculer la couleur du texte » |
+| `previewCode` | `string` | `"00"` | Code affiché dans l'aperçu `LineBadge` |
+| `previewMode` | `LineMode` | — | Mode de l'aperçu (nom accessible) |
+| `helperText` | `string` | — | Aide, remplacée par l'erreur de validation/contraste |
+| `state` | `"enabled" \| "error"` | `"enabled"` | `"error"` force le rendu d'erreur |
+| `disabled` / `required` | `boolean` | `false` | États natifs |
+| `id` / `className` | `string` | — | — |
+| `ref` | `Ref<HTMLInputElement>` | — | Cible le champ hex (pour `ErrorSummary`) |
+
+- ✅ Couleur **des données** (GTFS), jamais un token : c'est l'exception assumée de `LineBadge`/`ColorField`.
+- ✅ Fournir `onTextColorChange` pour laisser l'utilisateur corriger un contraste insuffisant.
+- ❌ Ne pas utiliser pour une couleur de thème ou de statut (celles-ci passent par les tokens).
 
 ### ColumnManager
 
