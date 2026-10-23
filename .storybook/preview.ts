@@ -3,7 +3,7 @@ import '../src/components/tokens.css'
 
 const preview: Preview = {
   parameters: {
-    // Ordre du menu : fondations, composants rangés par catégorie, recettes.
+    // Ordre du menu : fondations, composants par catégorie, page patterns, recettes.
     options: {
       storySort: {
         order: [
@@ -23,6 +23,7 @@ const preview: Preview = {
             'Transport',
             'Médias et icônes',
           ],
+          'Page patterns',
           'Recettes',
         ],
       },

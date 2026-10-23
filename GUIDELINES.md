@@ -32,7 +32,7 @@ Règles impératives pour générer du code avec ce design system :
 4. **Les règles ❌ sont bloquantes.** Ce ne sont pas des suggestions : un code qui viole un ❌ est incorrect.
 5. **`Checkbox`, `Toggle`, `RadioButton`, `RichCheckbox` et `RichRadioButton` se pilotent par la prop `state`**, pas par une prop `checked` — elle n'existe pas. Exemple : `<Checkbox state={isChecked ? "checked" : "unchecked"} onChange={setIsChecked} />`.
 6. **Le CSS custom est limité au layout.** `display: flex`, `gap`, `padding`, `margin`, largeurs : OK en style inline. Couleurs, polices, bordures, ombres custom : interdit — les composants et tokens couvrent ces besoins.
-7. **Partir des [recettes](#recettes-de-pages-complètes)** pour toute page nouvelle, puis adapter. Ne pas réinventer la structure.
+7. **Choisir d'abord un pattern** dans le tableau [Intention → pattern](#intention--pattern) pour toute page nouvelle, partir de son gabarit, puis composer. **Une page qui ne correspond à aucun pattern est signalée, pas inventée.** (Les recettes restent valides le temps de leur migration.)
 8. **Un seul `PrimaryButton` plein par vue.** Plusieurs `GhostButton` sont autorisés. 3e action d'un groupe : `Link hideArrow`. `SecondaryButton` est déprécié.
 9. **Toujours passer `label`** sur les champs de formulaire (`TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker`, `CounterInput`, `TimePicker`). Exception, qui prend `aria-label` à la place : la variante bouton (`variant="button"` de `DatePicker`, `DateRangePicker`, `Dropdown`, `TimePicker`), notamment pour les filtres rapides d'une `FilterBar`.
 10. **Imports** : composants depuis `@ddaoellena/cadence-ui`, styles via un unique `import "@ddaoellena/cadence-ui/style.css"`, polices via les `<link>` de la section [Installation](#installation--setup).
@@ -971,9 +971,156 @@ toast({ type: "error", title: "Échec de l'envoi" }); // persistant
 
 ---
 
+## Page patterns
+
+Catalogue de gabarits de page nommés. **Choisir d'abord un pattern dans le tableau *Intention → pattern*, partir de son gabarit, puis composer.** Une page qui ne correspond à aucun pattern est **signalée, pas inventée**.
+
+### Intention → pattern
+
+| Intention | Pattern | État |
+|---|---|---|
+| Coque d'application (navigation + contenu) | Coque d'application | gabarit : recette 1 ci-dessous |
+| Lister / parcourir un ensemble (filtres, sélection, pagination) | Liste / index | à migrer (recettes 2, 4, 5) |
+| Liste + détail latéral sans quitter la liste | Liste + détail latéral | à migrer (recette 8) |
+| Page de détail d'un élément (onglets, historique, action destructive) | Page de détail | à venir |
+| **Créer / éditer un objet en formulaire** | **Formulaire** | **✅ fiche ci-dessous** |
+| Assistant multi-étapes / import | Assistant | à migrer (recette 9) |
+| Supervision temps réel (indicateurs, alertes, fraîcheur) | Tableau de bord de supervision | à migrer (recette 6) |
+| Analyse (période partagée, grille de graphiques) | Tableau de bord d'analyse | à migrer (recette 7) |
+| Planification / temps (axes temps, heures de service) | Planification / temps | à migrer (recette 10) |
+| Réglages (sections, enregistrement explicite) | Paramètres | à venir |
+| États d'une page (chargement, erreur, accès, introuvable, vide) | États de page | à migrer (recette 4) |
+
+### Correspondance recette → pattern
+
+R1 → Coque d'application · R2 → Liste / index · R3 → Formulaire · R4 → États de page · R5 → Liste / index · R6 → Supervision · R7 → Analyse · R8 → Liste + détail latéral · R9 → Assistant · R10 → Planification / temps.
+
+> Les fiches des autres patterns et la migration des recettes ci-dessous arrivent par incréments. Les recettes restent valides en attendant.
+
+### Pattern — Formulaire
+
+**Quand l'utiliser** — créer ou éditer un objet métier (scénario, perturbation, règle) dans un formulaire en sections, à largeur contenue, avec soumission explicite. **Ne pas confondre avec** — une page liste (Liste / index), un assistant multi-étapes (Assistant), une page de paramètres (Paramètres, souvent à effet immédiat).
+
+**Anatomie**
+
+```
+PageHeader (h1)
+ErrorSummary (si erreurs)
+PageSection « Informations générales »  →  TextInput · FieldRow(Dropdown×2) · SegmentedControl
+PageSection « Période »                 →  FieldRow(DatePicker×2) · CounterInput · TextArea
+PageSection « Récapitulatif »           →  DescriptionList
+FormActions  →  Link · GhostButton · PrimaryButton
+```
+
+**Variantes** — Création (défaut) ; Édition (champs pré-remplis, action « Enregistrer »).
+
+**États** — Chargement (squelettes pendant la lecture en édition) ; Erreur (validation via `ErrorSummary`, formulaire `noValidate`) ; Vide (sans objet pour une création) ; Permissions (voir États de page).
+
+**Comportements** — Soumission explicite ; la validation renvoie au premier champ fautif (`ErrorSummary focusOnMount`). Multi-colonnes (`FieldRow`) **dans** une section ; synthèse **sous** le formulaire. Quitter sans enregistrer → `Modal`. Succès → toast (`useToast()` + `Toaster`).
+
+**Responsive** — Référence 1280 px : `max-width: 720px`. À 1024 px et en dessous : les `FieldRow` se replient en une colonne, pas de défilement horizontal.
+
+**Accessibilité** — un seul `h1` (`PageHeader`), sections en `h2` sans saut de niveau ; `ErrorSummary` prend le focus et liste des liens vers les champs ; chaque champ a un `label`, l'erreur dans son `helperText` + `state="error"`.
+
+**Règles** — ✅ `PageSection` empilées, multi-colonnes seulement via `FieldRow`. ✅ Un seul `PrimaryButton`, en dernier. ❌ Pas de synthèse à droite du formulaire. ❌ Pas de `<section>` + `<h2>` inline : `PageSection`.
+
+**Gabarit** — vérifié : [`src/patterns/FormulairePattern.tsx`](src/patterns/FormulairePattern.tsx), affiché dans *Storybook → Page patterns / Formulaire / Documentation*.
+
+```tsx
+import { useRef, useState } from "react";
+import {
+  PageHeader, PageSection, FieldRow, FormActions,
+  TextInput, TextArea, Dropdown, DatePicker, CounterInput, SegmentedControl,
+  DescriptionList, ErrorSummary, PrimaryButton, GhostButton, Link, Modal,
+} from "@ddaoellena/cadence-ui";
+
+// Pattern — Formulaire de création / édition (P5).
+// Sections empilées (PageSection), rangées de champs (FieldRow), synthèse
+// (DescriptionList), résumé d'erreurs (ErrorSummary) et actions (FormActions).
+// Le multi-colonnes vit à l'intérieur d'une section, jamais à côté du formulaire.
+// `onSave` / `onLeave` : navigation et persistance fournies par l'app.
+export const FormulairePattern = ({ onSave = () => {}, onLeave = () => {} }: {
+  onSave?: () => void;
+  onLeave?: () => void;
+} = {}) => {
+  const [title, setTitle] = useState("");
+  const [type, setType] = useState<string>();
+  const [cause, setCause] = useState<string>();
+  const [mode, setMode] = useState("planifiee");
+  const [start, setStart] = useState<Date>();
+  const [end, setEnd] = useState<Date>();
+  const [duration, setDuration] = useState(60);
+  const [description, setDescription] = useState("");
+  const [errors, setErrors] = useState<{ id: string; message: string; target: typeof titleRef }[]>([]);
+  const [leaveOpen, setLeaveOpen] = useState(false);
+
+  const titleRef = useRef<HTMLInputElement>(null);
+
+  const submit = () => {
+    // L'app calcule ses erreurs (formulaire noValidate) ; ErrorSummary renvoie au champ.
+    const next = title.trim() ? [] : [{ id: "title", message: "Renseignez le titre du scénario.", target: titleRef }];
+    setErrors(next);
+    if (next.length === 0) onSave();
+  };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 32, maxWidth: 720 }}>
+      <PageHeader title="Créer un scénario" subtitle="Renseignez le titre, puis les détails de la perturbation." />
+
+      {errors.length > 0 && <ErrorSummary title="Corrigez les erreurs suivantes" errors={errors} focusOnMount />}
+
+      <PageSection title="Informations générales">
+        <TextInput ref={titleRef} label="Titre" placeholder="Ex : Tronçon Melun – Montereau"
+          value={title} onChange={(e) => setTitle(e.target.value)}
+          helperText={errors.some((x) => x.id === "title") ? "Ce champ est requis." : undefined}
+          state={errors.some((x) => x.id === "title") ? "error" : "enabled"} />
+        <FieldRow>
+          <Dropdown label="Type" placeholder="Sélectionner" value={type} onChange={setType}
+            options={[{ id: "works", label: "Travaux" }, { id: "incident", label: "Incident" }]} />
+          <Dropdown label="Cause" placeholder="Sélectionner" value={cause} onChange={setCause}
+            options={[{ id: "weather", label: "Météo" }, { id: "tech", label: "Technique" }]} />
+        </FieldRow>
+        <SegmentedControl aria-label="Mode de déclenchement" value={mode} onChange={setMode}
+          options={[{ value: "planifiee", label: "Planifiée" }, { value: "immediate", label: "Immédiate" }]} />
+      </PageSection>
+
+      <PageSection title="Période">
+        <FieldRow>
+          <DatePicker label="Début" value={start} onChange={setStart} withTime />
+          <DatePicker label="Fin" value={end} onChange={setEnd} withTime />
+        </FieldRow>
+        <CounterInput label="Durée estimée" min={0} max={480} step={15} unit="min" value={duration} onChange={setDuration} />
+        <TextArea label="Description" rows={4} placeholder="Impacts attendus, mesures prises…"
+          value={description} onChange={(e) => setDescription(e.target.value)} />
+      </PageSection>
+
+      <PageSection title="Récapitulatif" gap={12}>
+        <DescriptionList aria-label="Scénario à créer" items={[
+          { id: "title", label: "Titre", value: title || undefined },
+          { id: "type", label: "Type et cause", value: type && cause ? `${type} · ${cause}` : undefined },
+          { id: "duration", label: "Durée estimée", value: `${duration} min` },
+        ]} />
+      </PageSection>
+
+      <FormActions>
+        <Link hideArrow onClick={() => setLeaveOpen(true)}>Quitter sans enregistrer</Link>
+        <GhostButton label="Réinitialiser" onClick={() => setTitle("")} />
+        <PrimaryButton label="Créer le scénario" onClick={submit} />
+      </FormActions>
+
+      <Modal isOpen={leaveOpen} onClose={() => setLeaveOpen(false)} title="Quitter sans enregistrer ?" size="small"
+        secondaryAction={{ label: "Rester", onClick: () => setLeaveOpen(false) }}
+        primaryAction={{ label: "Quitter", destructive: true, onClick: onLeave }}>
+        Les modifications non enregistrées seront perdues.
+      </Modal>
+    </div>
+  );
+};
+```
+
 ## Recettes de pages complètes
 
-Blocs prêts à copier. **Partir d'une recette puis adapter** — ne pas réinventer la structure.
+Blocs prêts à copier. **Partir d'une recette puis adapter** — ne pas réinventer la structure. *(En cours de migration vers les Page patterns ci-dessus.)*
 
 ### Recette 1 — Layout d'application
 

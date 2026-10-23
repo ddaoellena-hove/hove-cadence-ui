@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -6,7 +6,7 @@ import { describe, expect, it } from "vitest";
 // .storybook/preview.ts) : chaque story de composant doit y être rangée.
 const ROOT = join(__dirname, "..", "..");
 const preview = readFileSync(join(ROOT, ".storybook", "preview.ts"), "utf8");
-const block = preview.slice(preview.indexOf("'Composants'"), preview.indexOf("'Recettes'"));
+const block = preview.slice(preview.indexOf("'Composants'"), preview.indexOf("'Page patterns'"));
 const categories = [...block.matchAll(/'([^']+)'/g)].map((m) => m[1]).filter((c) => c !== "Composants");
 
 const titleOf = (file: string) => /title:\s*"([^"]+)"/.exec(readFileSync(file, "utf8"))?.[1];
@@ -24,6 +24,23 @@ describe("organisation du Storybook", () => {
       .filter(({ title }) => {
         const [root, category, name] = (title ?? "").split("/");
         return root !== "Composants" || !categories.includes(category) || !name;
+      });
+    expect(wrong).toEqual([]);
+  });
+
+  it("la section « Page patterns » est déclarée dans preview.ts", () => {
+    expect(preview).toContain("'Page patterns'");
+  });
+
+  it("chaque story de src/stories/patterns est rangée sous « Page patterns/<Nom> »", () => {
+    const dir = join(ROOT, "src", "stories", "patterns");
+    if (!existsSync(dir)) return; // le dossier apparaît avec le 1er pattern
+    const wrong = readdirSync(dir)
+      .filter((f) => f.endsWith(".stories.tsx"))
+      .map((f) => ({ f, title: titleOf(join(dir, f)) }))
+      .filter(({ title }) => {
+        const [root, name] = (title ?? "").split("/");
+        return root !== "Page patterns" || !name;
       });
     expect(wrong).toEqual([]);
   });

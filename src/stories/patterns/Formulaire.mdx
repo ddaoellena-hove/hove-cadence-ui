@@ -1,0 +1,88 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import gabarit from "../../patterns/FormulairePattern.tsx?raw";
+
+<Meta title="Page patterns/Formulaire/Documentation" />
+
+<style>{`
+  .pp { font-family: var(--cadence-font-sans, "ABC Diatype", "Inter", Helvetica, sans-serif); max-width: 820px; color: var(--cadence-color-primary, #002830); }
+  .pp h1 { font-family: var(--cadence-font-display, "Uxum Grotesque", "Space Grotesk", sans-serif); font-size: 32px; font-weight: 500; }
+  .pp h2 { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cadence-color-text-secondary, #64757a); margin: 36px 0 12px; border-bottom: 1px solid var(--cadence-color-divider, #f0f0f0); padding-bottom: 8px; }
+  .pp pre { background: var(--cadence-color-surface-subtle, #fafafa); border: 1px solid var(--cadence-color-divider, #f0f0f0); border-radius: 8px; padding: 16px; overflow: auto; font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace); font-size: 12px; line-height: 1.6; }
+  .pp ul { line-height: 1.7; }
+`}</style>
+
+<div className="pp">
+
+# Pattern — Formulaire
+
+**Quand l'utiliser** — créer ou éditer un objet métier (scénario, perturbation, règle) dans un formulaire en sections, à largeur contenue, avec soumission explicite.
+
+**Ne pas confondre avec** — une page liste (`Pattern — Liste / index`), un assistant multi-étapes (`Pattern — Assistant`), une page de paramètres (`Pattern — Paramètres`, réglages souvent à effet immédiat).
+
+## Anatomie
+
+```
+┌───────────────────────────────────────────────┐
+│ PageHeader (h1 + sous-titre)                   │
+├───────────────────────────────────────────────┤
+│ ErrorSummary ............... (si erreurs)      │
+│ PageSection « Informations générales » (h2)    │
+│    TextInput · FieldRow(Dropdown × 2) · Segm.  │
+│ PageSection « Période » (h2)                   │
+│    FieldRow(DatePicker × 2) · Counter · Area   │
+│ PageSection « Récapitulatif » (DescriptionList)│
+│ FormActions  [ Link · GhostButton · Primary ]  │
+└───────────────────────────────────────────────┘
+```
+
+| Zone | Composant |
+|---|---|
+| Titre | `PageHeader` (`h1`) |
+| Résumé d'erreurs | `ErrorSummary` (refs vers les champs) |
+| Section | `PageSection` (`h2`), empilées verticalement |
+| Rangée de champs | `FieldRow` (largeurs égales) |
+| Synthèse | `DescriptionList` |
+| Actions | `FormActions` (ordre `Link` → `Ghost` → `Primary`) |
+
+## Variantes
+
+- **Création** (défaut) : champs vides, action « Créer ».
+- **Édition** : champs pré-remplis, action « Enregistrer » ; état `Chargement` pendant la lecture des données.
+
+## États
+
+- **Chargement** : squelettes (`Skeleton`) à la place des champs pendant la lecture (édition).
+- **Erreur** : erreurs de validation remontées par `ErrorSummary` (l'app calcule ses erreurs, formulaire `noValidate`).
+- **Vide** : sans objet — un formulaire de création n'a pas d'état vide.
+- **Permissions** : accès refusé → voir `Pattern — États de page`.
+
+## Comportements
+
+- Soumission explicite (bouton `PrimaryButton`) ; la validation renvoie au premier champ fautif via `ErrorSummary` (`focusOnMount`).
+- Le multi-colonnes (`FieldRow`) vit **à l'intérieur** d'une section ; la synthèse est **sous** le formulaire, jamais à côté.
+- Quitter sans enregistrer passe par une `Modal` de confirmation.
+- Succès : un toast (`useToast()` + `Toaster`), puis navigation.
+
+## Responsive
+
+- Référence 1280 px : formulaire à `max-width: 720px`, aligné à gauche.
+- 1024 px et en dessous : les `FieldRow` se replient en une colonne ; pas de défilement horizontal.
+
+## Accessibilité
+
+- Un seul `h1` (`PageHeader`) ; les sections en `h2` sans saut de niveau.
+- `ErrorSummary` prend le focus et liste des liens vers chaque champ fautif.
+- Chaque champ porte un `label` ; l'erreur d'un champ est dans son `helperText` + `state="error"`.
+
+## Règles
+
+- ✅ Sections `PageSection` empilées ; multi-colonnes seulement via `FieldRow` dans une section.
+- ✅ Un seul `PrimaryButton`, en dernier dans `FormActions`.
+- ❌ Pas de panneau de synthèse à droite du formulaire (toujours en dessous).
+- ❌ Pas de `<section>` + `<h2>` en style inline : utiliser `PageSection`.
+
+## Gabarit
+
+<pre><code>{gabarit}</code></pre>
+
+</div>
