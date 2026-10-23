@@ -17,10 +17,10 @@ type Story = StoryObj<typeof TableHeader>;
 
 const DateCell = ({ date, time }: { date: string; time: string }) => (
   <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-    <span style={{ fontFamily: "Inter, Helvetica", fontSize: 13, fontWeight: 500, color: "#002830" }}>
+    <span style={{ fontFamily: "var(--cadence-font-sans, \"Inter\", Helvetica, sans-serif)", fontSize: 13, fontWeight: 500, color: "#002830" }}>
       {date}
     </span>
-    <span style={{ fontFamily: "Inter, Helvetica", fontSize: 12, color: "var(--cadence-color-text-secondary, #64757a)" }}>
+    <span style={{ fontFamily: "var(--cadence-font-sans, \"Inter\", Helvetica, sans-serif)", fontSize: 12, color: "var(--cadence-color-text-secondary, #64757a)" }}>
       {time}
     </span>
   </div>
@@ -129,7 +129,7 @@ export const WithTableCards: Story = {
                 {
                   key: "info",
                   content: (
-                    <span style={{ fontFamily: "Inter, Helvetica", fontSize: 13, color: "#002830" }}>
+                    <span style={{ fontFamily: "var(--cadence-font-sans, \"Inter\", Helvetica, sans-serif)", fontSize: 13, color: "#002830" }}>
                       {row.title}
                     </span>
                   ),
@@ -138,7 +138,7 @@ export const WithTableCards: Story = {
                 {
                   key: "sev",
                   content: (
-                    <span style={{ fontFamily: "Inter, Helvetica", fontSize: 13, color: "#002830" }}>
+                    <span style={{ fontFamily: "var(--cadence-font-sans, \"Inter\", Helvetica, sans-serif)", fontSize: 13, color: "#002830" }}>
                       {row.sev}
                     </span>
                   ),
@@ -147,7 +147,7 @@ export const WithTableCards: Story = {
                 {
                   key: "cause",
                   content: (
-                    <span style={{ fontFamily: "Inter, Helvetica", fontSize: 13, color: "#002830" }}>
+                    <span style={{ fontFamily: "var(--cadence-font-sans, \"Inter\", Helvetica, sans-serif)", fontSize: 13, color: "#002830" }}>
                       {row.cause}
                     </span>
                   ),

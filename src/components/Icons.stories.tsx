@@ -56,7 +56,7 @@ export const Sizes: Story = {
       {[16, 20, 24, 32, 48].map((s) => (
         <div key={s} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
           <Icons icon="calendar" size={s} />
-          <span style={{ fontFamily: "Inter, sans-serif", fontSize: 11, color: "var(--cadence-color-text-secondary, #64757a)" }}>
+          <span style={{ fontFamily: "var(--cadence-font-sans, \"Inter\", Helvetica, sans-serif)", fontSize: 11, color: "var(--cadence-color-text-secondary, #64757a)" }}>
             {s}px
           </span>
         </div>
@@ -92,7 +92,7 @@ export const AllIcons: Story = {
           <Icons icon={name} size={24} />
           <span
             style={{
-              fontFamily: "Inter, sans-serif",
+              fontFamily: "var(--cadence-font-sans, \"Inter\", Helvetica, sans-serif)",
               fontSize: 11,
               color: "var(--cadence-color-text-secondary, #64757a)",
               textAlign: "center",
