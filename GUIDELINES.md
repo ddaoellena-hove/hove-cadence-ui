@@ -307,6 +307,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Identité utilisateur (initiales / photo) | `Avatar` | — |
 | Évolution dans le temps (retards, ponctualité, volumes) | `LineChart` | `BarChart` (comparaison de catégories) |
 | Motif jour × heure, ligne × jour | `Heatmap` | `LineChart` (une seule dimension temporelle) |
+| Flux entre arrêts, zones ou lignes (matrice origine-destination) | `Heatmap showTotals sort="desc"` | un `SankeyChart` (prévu 0.9.6) pour des flux détaillés |
 | Une valeur par jour sur une année (ponctualité quotidienne, jours de grève, jours de circulation) | `CalendarHeatmap` | `ServiceCalendar` (saisie des jours de circulation) ; `LineChart` (tendance, pas le motif hebdomadaire) |
 | Classement (lignes les plus impactées) | `BarList` | `BarChart orientation="horizontal"` (plusieurs séries) |
 | Comparaison de catégories (barres empilées / groupées) | `BarChart` | `BarList` (classement à une valeur) ; `DataVisualization` est déprécié |
@@ -2119,6 +2120,8 @@ Grille à deux catégories (jour × heure, ligne × jour) sur la rampe séquenti
 | `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | — |
 | `onCellClick` | `(cell) => void` | — | Clic ou Entrée sur une cellule renseignée (ouvrir la liste filtrée) |
 | `rowHeight` | `number` | `28` | Hauteur d'une ligne |
+| `showTotals` | `boolean` | `false` | Matrice origine-destination : total par ligne (dernière colonne), par colonne (dernière ligne) et total général, en chiffres hors rampe ; cases de total focusables et nommées (« Total Châtelet : 218 k voyages ») |
+| `sort` | `"none" \| "desc"` | `"none"` | `"desc"` : lignes et colonnes triées par total décroissant |
 
 Clavier : une seule cellule tabulable ; flèches, Début / Fin (ligne), Ctrl+Début / Fin (grille), Entrée ; tooltip au survol et au focus. Quand la place manque, une étiquette de colonne sur deux ou trois est masquée visuellement (toujours lue).
 

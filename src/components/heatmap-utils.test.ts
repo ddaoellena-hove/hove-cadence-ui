@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildStepScale, columnLabelEvery, heatmapDomain, indexCells, moveInGrid, rampThresholds } from "./heatmap-utils";
+import { axisTotals, buildStepScale, columnLabelEvery, heatmapDomain, indexCells, moveInGrid, rampThresholds, sortByTotal } from "./heatmap-utils";
 
 const cells = [
   { x: "08 h", y: "lun.", value: 0 },
@@ -55,5 +55,23 @@ describe("navigation au clavier dans la grille", () => {
   it("allège les étiquettes de colonnes quand la place manque", () => {
     expect(columnLabelEvery(640, 20)).toBe(1);
     expect(columnLabelEvery(300, 20)).toBe(3);
+  });
+
+  it("matrice OD : totaux par ligne, par colonne et général, tri décroissant", () => {
+    const od = [
+      { x: "Nation", y: "Châtelet", value: 120 },
+      { x: "La Défense", y: "Châtelet", value: 300 },
+      { x: "Nation", y: "Gare de Lyon", value: 80 },
+      { x: "La Défense", y: "Gare de Lyon", value: null },
+    ];
+    const totals = axisTotals(od);
+    expect(totals.rows.get("Châtelet")).toBe(420);
+    expect(totals.rows.get("Gare de Lyon")).toBe(80);
+    expect(totals.cols.get("Nation")).toBe(200);
+    expect(totals.cols.get("La Défense")).toBe(300);
+    expect(totals.grand).toBe(500);
+    expect(sortByTotal(["Nation", "La Défense"], totals.cols)).toEqual(["La Défense", "Nation"]);
+    // Égalité : ordre fourni conservé ; libellé sans total en dernier
+    expect(sortByTotal(["A", "B", "C"], new Map([["A", 5], ["B", 5]]))).toEqual(["A", "B", "C"]);
   });
 });
