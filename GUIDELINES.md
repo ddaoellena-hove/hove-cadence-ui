@@ -2868,9 +2868,9 @@ Comparaison d'**itinéraires** sur une fenêtre de départ : une ligne par itin�
 Étape (`JourneySegment`) : `{ id; kind: "walk" | "transit" | "wait"; start; end; line?: { code; mode?; color?; textColor? }; label? }`. `label` est le détail de l'info-bulle (« Châtelet → Nation »).
 
 Rendu des étapes :
-- **Marche** : fond gris, picto piéton, durée si la place le permet.
-- **Transport** : teinte pâle et bord de la couleur de ligne GTFS (`route_color`), picto du mode, `LineBadge`, durée. Sans couleur : bord encre, fond neutre. Le contenu se réduit selon la place (durée, puis badge) ; le picto reste.
-- **Attente** : bord pointillé, picto horloge.
+- **Marche** : fond gris, picto piéton (`ModeIcon walk`), durée si la place le permet.
+- **Transport** : teinte pâle et bord de la couleur de ligne GTFS (`route_color`), picto du mode (`ModeIcon` : `metro`, `train` pour RER et train, `tram`, `bus` pour bus et navette, `coach` pour car, `boat` ; `all-pt` sans mode), `LineBadge`, durée. Sans couleur : bord encre, fond neutre. Le contenu se réduit selon la place (durée, puis badge) ; le picto reste.
+- **Attente** : bord pointillé, picto horloge (`Icons clock` : pas de mode de transport).
 
 - Résumé : durée de bout en bout, correspondances = étapes en transport − 1, cumul de marche. Calculé par le composant : fournir des étapes contiguës.
 - Clavier : ↑/↓ entre itinéraires, ←/→ entre étapes, Début / Fin, Entrée ouvre l'itinéraire, Échap. L'étape et le total de l'itinéraire sont annoncés (`role="status"`). « Voir les données » : une ligne par étape et un total par itinéraire.

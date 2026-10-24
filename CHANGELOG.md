@@ -15,6 +15,7 @@ Version mineure, sans rupture d’API.
 
 ### Modifié
 
+- **`JourneyTimeline`** : les étapes utilisent les pictogrammes remplis de **`ModeIcon`** (métro, train, tram, bus, autocar, bateau, marche) au lieu des icônes d’interface en trait ; le métro a enfin son propre picto (il prenait celui du train). L’attente garde l’horloge d’`Icons`. Sans changement d’API.
 - **`ActivityFeed` — hiérarchie** : titre en 14px gras suivi du **statut en `Indicator` sans picto** (le marqueur porte déjà l’icône) coloré (Succès vert, Avertissement orange, Erreur rouge) ; auteur avec **mini-avatar 20px** à initiales puis la date, en secondaire ; **contenu de l’étape mis en avant** dans un encadré. Un événement `neutral` n’affiche plus le texte « Information » (marqueur gris seul). Sans changement d’API.
 - **`Gauge`** : l’arc de valeur est retiré de 3px dans sa piste (côtés et extrémités), un liseré gris reste visible autour, comme une barre dans son rail.
 - ⚠️ **`Card` cliquable : bouton visible obligatoire.** `onClick` exige désormais `actionLabel` (erreur de typage sinon) : un `PrimaryButton outline size="sm"` (« Voir les perturbations ») signale l’interactivité et porte le clic, sa zone étirée sur toute la carte (une seule cible au clavier, anneau de focus autour de la carte). Le titre n’est plus un bouton. Hors TypeScript, une carte cliquable sans `actionLabel` affiche « Voir le détail » et une erreur en développement. **Migration** : ajouter `actionLabel` à chaque `Card onClick`. `onClick` et `onAction` restent exclusifs. Patterns Supervision et Analyse mis à jour.
