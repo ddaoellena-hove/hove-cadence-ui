@@ -1,0 +1,56 @@
+/* ModeFilter — rangée de chips de mode togglables. Tokens uniquement. */
+
+.mode-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: var(--cadence-font-sans, "ABC Diatype", "Inter", Helvetica, sans-serif);
+}
+
+.mode-filter__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 5px 12px;
+  box-sizing: border-box;
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-pill, 999px);
+  background: var(--cadence-color-white, #ffffff);
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 13px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.mode-filter__chip:hover {
+  background: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
+}
+
+.mode-filter__chip:focus-visible {
+  outline: none;
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+}
+
+/* Mode sélectionné (bascule active). */
+.mode-filter__chip[aria-pressed="true"] {
+  background: var(--cadence-color-selected-surface, #c8d6e4);
+  border-color: var(--cadence-color-border-strong, #bfc9cb);
+  color: var(--cadence-color-primary, #002830);
+  font-weight: 500;
+}
+
+.mode-filter__chip[aria-pressed="true"]:hover {
+  background: var(--cadence-color-selected-surface, #c8d6e4);
+}
+
+.mode-filter__label {
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mode-filter__chip {
+    transition: none;
+  }
+}

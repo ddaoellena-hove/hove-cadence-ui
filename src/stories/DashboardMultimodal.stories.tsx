@@ -1,8 +1,8 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
-  PageHeader, PageSection, CardGrid, DataFreshness, DateRangePicker, DataTable,
-  Indicator, LineBadge, ModeIcon, type DateRange, type DataTableColumn, type ModeName,
+  PageHeader, PageSection, CardGrid, DataFreshness, DateRangePicker, DataTable, EmptyState,
+  Indicator, LineBadge, ModeIcon, ModeFilter, type DateRange, type DataTableColumn, type ModeName,
 } from "../components";
 import { Shell } from "./patterns/_shell";
 
@@ -73,6 +73,13 @@ type Story = StoryObj;
 export const Vue: Story = {
   render: function Demo() {
     const [period, setPeriod] = useState<DateRange>({ start: new Date("2026-06-05"), end: new Date("2026-06-12") });
+    const [modes, setModes] = useState<ModeName[]>([]);
+
+    // Sélection vide = aucun filtre (tout affiché).
+    const keep = (m: ModeName) => modes.length === 0 || modes.includes(m);
+    const kpis = KPIS.filter((k) => keep(k.mode));
+    const lignes = LIGNES.filter((l) => keep(l.mode));
+
     return (
       <Shell>
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -81,23 +88,24 @@ export const Vue: Story = {
 
           <DataFreshness updatedAt="2026-06-12T08:12:00" now="2026-06-12T08:15:00" />
 
-          {/* Légende des modes couverts */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
-            {COUVERTURE.map((m) => (
-              <span key={m.mode} style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, color: "var(--cadence-color-text-secondary, #64757a)" }}>
-                <ModeIcon mode={m.mode} size={22} /> {m.label}
-              </span>
-            ))}
-          </div>
+          {/* Filtre par mode de transport */}
+          <ModeFilter aria-label="Filtrer par mode" modes={COUVERTURE.map((c) => c.mode)} value={modes} onChange={setModes} />
 
           <PageSection title="Fréquentation par mode">
-            <CardGrid min={220}>
-              {KPIS.map((k) => <ModeTile key={k.mode} k={k} />)}
-            </CardGrid>
+            {kpis.length > 0 ? (
+              <CardGrid min={220}>
+                {kpis.map((k) => <ModeTile key={k.mode} k={k} />)}
+              </CardGrid>
+            ) : (
+              <EmptyState size="inline" variant="no-results" title="Aucun indicateur pour ces modes"
+                description="Ces modes n'ont pas d'indicateur de fréquentation sur la période." />
+            )}
           </PageSection>
 
           <PageSection title="Lignes les plus fréquentées">
-            <DataTable aria-label="Lignes par mode" columns={COLUMNS} data={LIGNES} getRowId={(r) => r.id} />
+            <DataTable aria-label="Lignes par mode" columns={COLUMNS} data={lignes} getRowId={(r) => r.id}
+              emptyState={<EmptyState size="inline" variant="no-results" title="Aucune ligne pour ces modes"
+                action={{ label: "Réinitialiser le filtre", onClick: () => setModes([]) }} />} />
           </PageSection>
         </div>
       </Shell>

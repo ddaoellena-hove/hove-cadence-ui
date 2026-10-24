@@ -106,3 +106,37 @@ export const MODE_ICON_PATHS: Record<ModeName, ReactNode> = {
 
 /** Liste ordonnée des modes (pour itérer : galerie, sélecteur…). */
 export const MODE_NAMES = Object.keys(MODE_ICON_PATHS) as ModeName[];
+
+/** Libellés français par défaut des modes (filtre, galerie, légende). */
+export const MODE_LABELS: Record<ModeName, string> = {
+  "all-pt": "Tous modes",
+  metro: "Métro",
+  "metro-alt": "Métro",
+  train: "Train",
+  tram: "Tramway",
+  funicular: "Funiculaire",
+  "bus-on-demand": "Bus à la demande",
+  "substitute-bus-alt": "Bus de substitution",
+  coach: "Autocar",
+  "coach-station": "Gare routière",
+  plane: "Avion",
+  boat: "Bateau",
+  car: "Voiture",
+  carpool: "Covoiturage",
+  taxi: "Taxi",
+  bike: "Vélo",
+  "bike-parking": "Parking vélo",
+  parking: "Parking",
+  "park-and-ride-alt": "Parking relais",
+  station: "Station",
+  network: "Réseau",
+  walk: "Marche",
+  "slow-walk": "Marche lente",
+  "mid-walk": "Marche",
+  "fast-walk": "Marche rapide",
+  run: "Course",
+  home: "Domicile",
+  work: "Travail",
+  wheelchair: "PMR",
+  ticket: "Ticket",
+};

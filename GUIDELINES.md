@@ -316,6 +316,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Identité de ligne (code et couleur GTFS) | `LineBadge` | `Badge` (étiquette générique) |
 | Nom, commune et identifiant d'arrêt | `StopLabel` | — |
 | Pictogramme d'un mode de transport (rempli : métro, vélo, marche, voiture…) | `ModeIcon` | `Icons` (icônes d'interface en trait) ; `LineBadge` (code + couleur d'une ligne) |
+| Filtrer un tableau de bord / une liste par mode de transport | `ModeFilter` | `SegmentedControl` (choix exclusif 2-4, sans picto) ; `Dropdown` (menu, 1 valeur) ; `FilterBar` (recherche + filtres génériques) |
 | Choisir le périmètre réseau d'une perturbation (réseaux, lignes) | `DisruptionScopePicker` | `Autocomplete multiple` (liste plate, sans hiérarchie) ; `TreeView` seul (sans champ, résumé ni chips) |
 | Identifiant technique à copier (arrêt, course, véhicule) | `CopyableText` | `StopLabel` (nom d'arrêt, identifiant en simple mention) ; `TextInput readOnly` |
 | Message persistant dans la page | `InlineAlert` | `Toaster` (notification éphémère) |
@@ -2024,6 +2025,24 @@ Modes : `all-pt`, `metro`, `metro-alt`, `train`, `tram`, `funicular`, `bus-on-de
 
 - ✅ Pictogramme de mode (rempli, carré). Décoratif à côté d'un libellé → sans `title` ; porteur de sens seul → `title`.
 - ❌ Pas pour une icône d'interface (trash, chevron…) : `Icons`. Pas pour l'identité d'une ligne (code + couleur GTFS) : `LineBadge`.
+
+### ModeFilter
+
+Filtre par mode de transport : une rangée de **chips togglables** (picto `ModeIcon` + libellé), **multi-sélection** par défaut. Pour un filtre de tableau de bord ou de liste, dans une `FilterBar` ou une barre d'outils. Chaque chip est un bouton bascule (`aria-pressed`) ; le groupe est nommé par `aria-label`. Une sélection **vide = aucun filtre** (l'app affiche tout). Libellés FR par défaut (`MODE_LABELS`), surchargables.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `modes` | `ModeName[]` | **requis** | Modes proposés, dans l'ordre |
+| `aria-label` | `string` | **requis** | Nom accessible du groupe |
+| `value` / `defaultValue` | `ModeName[]` | — | Sélection (contrôlée / au montage) |
+| `onChange` | `(modes: ModeName[]) => void` | — | Changement de la sélection |
+| `selection` | `"multiple" \| "single"` | `"multiple"` | Multi ou un seul mode |
+| `labels` | `Partial<Record<ModeName, string>>` | `MODE_LABELS` | Libellés personnalisés |
+| `iconSize` | `number` | `18` | Taille du picto |
+| `id` / `className` | `string` | — | — |
+
+- ✅ Sélection vide = aucun filtre ; l'app décide (tout afficher). Contrôlé pour piloter le filtre ↔ URL.
+- ❌ Pour un choix exclusif court (2-4) sans picto : `SegmentedControl`. Pour 1 valeur dans un menu : `Dropdown`.
 
 ### Indicator
 
