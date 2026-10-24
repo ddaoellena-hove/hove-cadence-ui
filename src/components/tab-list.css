@@ -9,6 +9,40 @@
 
 .tab-list--primary {
   gap: 16px;
+  /* Repère de l'indicateur glissant */
+  position: relative;
+}
+
+/* ── Indicateur glissant (rangée de Tab) ── */
+/* Remplace le soulignement de chaque Tab : une seule capsule, placée sous
+   l'onglet actif (left / top / width posés par TabList), qui glisse d'un
+   onglet à l'autre. */
+.tab-list__indicator {
+  position: absolute;
+  height: 3.5px;
+  margin-top: -3.5px;
+  border-radius: var(--cadence-radius-pill, 999px);
+  background: var(--cadence-color-primary, #002830);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tab-list__indicator--ready {
+  transition:
+    left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    top 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s ease;
+}
+
+.tab-list--primary .tab__underline {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab-list__indicator--ready {
+    transition: none;
+  }
 }
 
 .tab-list--secondary {

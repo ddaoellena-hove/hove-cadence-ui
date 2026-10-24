@@ -35,6 +35,33 @@ export const TabList = ({
   className,
 }: TabListProps) => {
   const listRef = useRef<HTMLDivElement>(null);
+  const indicatorRef = useRef<HTMLSpanElement>(null);
+
+  // Rangée de Tab : un seul soulignement, qui glisse sous l'onglet actif.
+  // Repositionné à chaque rendu et quand un onglet change de taille (police
+  // chargée, libellé passé en gras, retour à la ligne).
+  useLayoutEffect(() => {
+    const list = listRef.current;
+    const indicator = indicatorRef.current;
+    if (level !== "primary" || !list || !indicator) return;
+    const place = () => {
+      const active = list.querySelector<HTMLElement>(".tab--active");
+      if (!active) {
+        indicator.style.opacity = "0";
+        return;
+      }
+      indicator.style.opacity = "1";
+      indicator.style.left = `${active.offsetLeft}px`;
+      indicator.style.top = `${active.offsetTop + active.offsetHeight}px`;
+      indicator.style.width = `${active.offsetWidth}px`;
+      // Pas de glissement au premier placement : seulement aux changements suivants
+      requestAnimationFrame(() => indicator.classList.add("tab-list__indicator--ready"));
+    };
+    place();
+    const observer = new ResizeObserver(place);
+    list.querySelectorAll('[role="tab"]').forEach((tab) => observer.observe(tab));
+    return () => observer.disconnect();
+  });
 
   // Sans onglet actif, le premier onglet activable reste atteignable au clavier
   useLayoutEffect(() => {
@@ -85,6 +112,7 @@ export const TabList = ({
         onKeyDown={handleKeyDown}
       >
         {children}
+        {level === "primary" && <span ref={indicatorRef} className="tab-list__indicator" aria-hidden="true" />}
       </div>
     </TabListContext.Provider>
   );
