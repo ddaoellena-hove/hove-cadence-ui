@@ -7,6 +7,7 @@ import {
   collectXs,
   nearestIndex,
   resolveAnnotations,
+  serviceMinutes,
   stackSeries,
   type LineSeriesInput,
 } from "./line-chart-utils";
@@ -130,5 +131,30 @@ describe("point le plus proche", () => {
     expect(nearestIndex([0, 100, 200], 40)).toBe(0);
     expect(nearestIndex([0, 100, 200], 160)).toBe(2);
     expect(nearestIndex([], 10)).toBe(-1);
+  });
+
+  it("heures de service : tri, positions proportionnelles au-delà de 24:00, graduations d'horloge", () => {
+    const night: LineSeriesInput = {
+      id: "n",
+      label: "Noctilien",
+      data: ["25:30", "22:00", "23:00", "24:00", "26:00"].map((x) => ({ x, y: 1 })),
+    };
+    expect(serviceMinutes("25:30")).toBe(1530);
+    expect(serviceMinutes("pas une heure")).toBe(0);
+    const xs = collectXs([night], true);
+    expect(xs).toEqual(["22:00", "23:00", "24:00", "25:30", "26:00"]);
+    // Sans serviceTime : ordre d'apparition (catégories)
+    expect(collectXs([night])[0]).toBe("25:30");
+
+    const scale = buildXScale(xs, 480, true);
+    expect(scale.service).toBe(true);
+    expect(scale.position("22:00")).toBe(0);
+    expect(scale.position("26:00")).toBe(480);
+    expect(scale.position("24:00")).toBe(240);
+    expect(scale.position("25:30")).toBe(420);
+
+    const ticks = buildXTicks(xs, scale, 480);
+    expect(ticks.map((t) => t.label)).toEqual(["22h00", "23h00", "24h00", "25h00", "26h00"]);
+    expect(ticks[2].position).toBe(240);
   });
 });

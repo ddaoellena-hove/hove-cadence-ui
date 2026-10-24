@@ -4,10 +4,10 @@ import { ChartAxisBottom, ChartAxisLeft } from "./ChartAxis";
 import { ChartDataTable } from "./ChartDataTable";
 import { ChartFrame, type ChartCommonProps } from "./ChartFrame";
 import { ChartLegend } from "./ChartLegend";
-import { ChartMarker } from "./ChartMarker";
+import { ChartMarker, ReferenceSwatch } from "./ChartMarker";
 import { ChartTooltip, type ChartTooltipRow } from "./ChartTooltip";
-import { formatFullDate, formatKpiValue, formatValueWithUnit, type GoodDirection } from "./chart-format";
-import { seriesColor, seriesMarker } from "./chart-palette";
+import { formatFullDate, formatGap, formatKpiValue, formatValueWithUnit, type GoodDirection } from "./chart-format";
+import { paletteIndex, REFERENCE_COLOR, seriesColor, seriesMarker } from "./chart-palette";
 import {
   breachesThreshold,
   buildXScale,
@@ -16,11 +16,13 @@ import {
   collectXs,
   nearestIndex,
   resolveAnnotations,
+  serviceMinutes,
   stackSeries,
   valueAt,
   xKey,
   type ChartX,
 } from "./line-chart-utils";
+import { formatClock } from "./timeline-utils";
 import { useChartWidth } from "./use-chart-size";
 import "./line-chart.css";
 
@@ -29,6 +31,12 @@ export interface LineChartSeries {
   label: string;
   /** Points ; x est une Date (axe temporel) ou une catégorie. y null = trou dans la courbe. */
   data: { x: Date | string; y: number | null }[];
+  /**
+   * Série de référence (période précédente, semaine type) : trait tireté
+   * ardoise, sans marqueur ni aire, hors empilement et hors seuils. Ses
+   * abscisses sont celles de la période courante (N-1 recalée sur N).
+   */
+  reference?: boolean;
 }
 
 export interface LineChartThreshold {
@@ -71,6 +79,12 @@ export interface LineChartProps extends ChartCommonProps {
   compact?: boolean;
   /** Hauteur du tracé. Défaut 280 (48 en compact). */
   height?: number;
+  /**
+   * Abscisses en heures de service « HH:mm », au-delà de 24:00 jusqu'à 47:59
+   * (« 25:30 » = 1 h 30 le lendemain, même jour de service) : positions
+   * proportionnelles au temps, graduations d'horloge. Défaut false.
+   */
+  serviceTime?: boolean;
 }
 
 // Motif de trait par série (en plus de la couleur et du marqueur)
@@ -95,6 +109,7 @@ export const LineChart = ({
   yDomain,
   compact = false,
   height: heightProp,
+  serviceTime = false,
   ...frame
 }: LineChartProps) => {
   const titleId = useId();
@@ -111,19 +126,35 @@ export const LineChart = ({
   const plotWidth = Math.max(0, width - margin.left - margin.right);
   const plotHeight = Math.max(0, height - margin.top - margin.bottom);
 
-  const indexed = series.map((s, i) => ({ ...s, index: i }));
+  // Les références ne consomment pas de couleur ni de motif de la palette
+  const indexed = series.map((s, i) => {
+    const palette = paletteIndex(series, i);
+    return {
+      ...s,
+      index: i,
+      color: s.reference ? REFERENCE_COLOR : seriesColor(palette),
+      marker: seriesMarker(palette),
+      dash: s.reference ? "4 4" : DASHES[palette % DASHES.length],
+    };
+  });
   const visible = indexed.filter((s) => !hidden.has(s.id));
+  const visibleMain = visible.filter((s) => !s.reference);
+  const visibleRefs = visible.filter((s) => s.reference);
   const isArea = variant === "area";
   const isStacked = isArea && stacked;
   const curveFactory = curve === "step" ? curveStepAfter : curveMonotoneX;
 
-  const xs = useMemo(() => collectXs(series), [series]);
-  const xScale = buildXScale(xs, plotWidth);
+  const xs = useMemo(() => collectXs(series, serviceTime), [series, serviceTime]);
+  const xScale = buildXScale(xs, plotWidth, serviceTime);
   const positions = xs.map(xScale.position);
-  const yScale = buildYScale(visible, xs, plotHeight, {
+  // Empilé : seules les séries principales s'empilent ; les références comptent par leurs valeurs brutes
+  const yScale = buildYScale(isStacked ? visibleMain : visible, xs, plotHeight, {
     stacked: isStacked,
     yDomain,
-    thresholds: thresholds.map((t) => t.value),
+    thresholds: [
+      ...thresholds.map((t) => t.value),
+      ...(isStacked ? visibleRefs.flatMap((r) => r.data.map((p) => p.y).filter((y): y is number => y !== null)) : []),
+    ],
   });
   const baseline = yScale(Math.max(yScale.domain()[0], 0));
   const yTicks = yScale.ticks(5).map((v) => ({ key: String(v), position: yScale(v), label: formatKpiValue(v, format) }));
@@ -134,15 +165,17 @@ export const LineChart = ({
   const formatValue = (value: number | null) => (value === null ? "—" : formatValueWithUnit(value, unit, format));
   // Données horaires (heures ou minutes non nulles) : la date complète garde l'heure, quelle que soit l'étendue
   const withTime = xScale.time && (xs as Date[]).some((d) => d.getHours() !== 0 || d.getMinutes() !== 0);
-  const formatX = (x: ChartX) => (x instanceof Date ? formatFullDate(x, withTime ? "hour" : xScale.granularity) : x);
+  const formatX = (x: ChartX) =>
+    x instanceof Date ? formatFullDate(x, withTime ? "hour" : xScale.granularity) : xScale.service ? formatClock(serviceMinutes(x), "time") : x;
   const isBreach = (value: number | null) => thresholds.some((t) => breachesThreshold(value, t.value, goodDirection));
+  const stackIndex = new Map(visibleMain.map((s, i) => [s.id, i]));
 
   // ── Tracés ──
-  const stackedLayers = isStacked ? stackSeries(visible, xs) : [];
-  const paths = visible.map((s, layerIndex) => {
-    const color = seriesColor(s.index);
-    if (isStacked) {
-      const layer = stackedLayers[layerIndex];
+  const stackedLayers = isStacked ? stackSeries(visibleMain, xs) : [];
+  const paths = visible.map((s) => {
+    const color = s.color;
+    if (isStacked && !s.reference) {
+      const layer = stackedLayers[stackIndex.get(s.id) ?? 0];
       const areaPath = d3Area<[number, number]>()
         .x((_, i) => positions[i])
         .y0((d) => yScale(d[0]))
@@ -160,7 +193,7 @@ export const LineChart = ({
       .x((p) => xScale.position(p.x))
       .y((p) => yScale(p.y as number))
       .curve(curveFactory)(points);
-    const areaPath = isArea
+    const areaPath = isArea && !s.reference
       ? d3Area<{ x: ChartX; y: number | null }>()
           .defined((p) => p.y !== null)
           .x((p) => xScale.position(p.x))
@@ -173,7 +206,8 @@ export const LineChart = ({
 
   // Ordonnée affichée d'une série à l'index i (sommet de sa couche si empilé)
   const plottedY = (layerIndex: number, i: number) => {
-    if (isStacked) return yScale(stackedLayers[layerIndex][i][1]);
+    const layer = stackIndex.get(visible[layerIndex].id);
+    if (isStacked && layer !== undefined) return yScale(stackedLayers[layer][i][1]);
     const value = valueAt(visible[layerIndex], xs[i]);
     return value === null ? null : yScale(value);
   };
@@ -189,9 +223,10 @@ export const LineChart = ({
             id: s.id,
             label: s.label,
             value: formatValue(value),
-            color: seriesColor(s.index),
-            marker: seriesMarker(s.index),
-            tone: isBreach(value) ? "alert" : "default",
+            color: s.color,
+            marker: s.marker,
+            icon: s.reference ? <ReferenceSwatch /> : undefined,
+            tone: !s.reference && isBreach(value) ? "alert" : "default",
           };
         });
   const activeNotes =
@@ -199,8 +234,15 @@ export const LineChart = ({
       ? []
       : resolvedAnnotations.filter((a) => positions[active] >= a.x0 - 0.5 && positions[active] <= a.x1 + 0.5).map((a) => a.label);
   const breachedThresholds =
-    activeX === null ? [] : thresholds.filter((t) => visible.some((s) => breachesThreshold(valueAt(s, activeX), t.value, goodDirection)));
-  const note = [...activeNotes, ...breachedThresholds.map((t) => `${t.label} franchi`)].join(" · ") || undefined;
+    activeX === null ? [] : thresholds.filter((t) => visibleMain.some((s) => breachesThreshold(valueAt(s, activeX), t.value, goodDirection)));
+  // Une série et sa référence : écart rappelé (« Écart vs 2025 : +1,2 pt »)
+  const gap = (() => {
+    if (activeX === null || visibleMain.length !== 1 || visibleRefs.length !== 1) return null;
+    const current = valueAt(visibleMain[0], activeX);
+    const previous = valueAt(visibleRefs[0], activeX);
+    return current === null || previous === null ? null : `Écart vs ${visibleRefs[0].label} : ${formatGap(current - previous, unit, format)}`;
+  })();
+  const note = [...activeNotes, ...breachedThresholds.map((t) => `${t.label} franchi`), ...(gap ? [gap] : [])].join(" · ") || undefined;
   const announcement =
     activeX === null ? "" : `${formatX(activeX)} — ${rows.map((r) => `${r.label} : ${r.value}`).join(", ")}${note ? `. ${note}` : ""}`;
 
@@ -261,8 +303,9 @@ export const LineChart = ({
         items={indexed.map((s) => ({
           id: s.id,
           label: s.label,
-          color: seriesColor(s.index),
-          marker: seriesMarker(s.index),
+          color: s.color,
+          marker: s.marker,
+          icon: s.reference ? <ReferenceSwatch /> : undefined,
           hidden: hidden.has(s.id),
         }))}
         onToggle={toggleSeries}
@@ -273,7 +316,7 @@ export const LineChart = ({
     <ChartDataTable
       caption={frame.title}
       visible={show}
-      columns={[xScale.time ? "Date" : "Catégorie", ...visible.map((s) => (unit ? `${s.label} (${unit})` : s.label))]}
+      columns={[xScale.time ? "Date" : xScale.service ? "Heure" : "Catégorie", ...visible.map((s) => (unit ? `${s.label} (${unit})` : s.label))]}
       numeric={visible.map((_, i) => i + 1)}
       rows={xs.map((x) => [formatX(x), ...visible.map((s) => formatKpiValue(valueAt(s, x) ?? "—", format))])}
     />
@@ -332,14 +375,15 @@ export const LineChart = ({
                 className="line-chart__line"
                 d={linePath ?? undefined}
                 stroke={color}
-                strokeDasharray={DASHES[s.index % DASHES.length] || undefined}
+                strokeDasharray={s.dash || undefined}
+                strokeWidth={s.reference ? 1.5 : undefined}
               />
             ))}
 
             {/* Seuils : ligne tiretée + libellé, « franchi » en couleur de dépassement */}
             {thresholds.map((t) => {
               const y = yScale(t.value);
-              const breached = visible.some((s) => s.data.some((p) => breachesThreshold(p.y, t.value, goodDirection)));
+              const breached = visibleMain.some((s) => s.data.some((p) => breachesThreshold(p.y, t.value, goodDirection)));
               return (
                 <g key={`${t.label}-${t.value}`} className={`line-chart__threshold${breached ? " line-chart__threshold--breached" : ""}`}>
                   <line x1={0} x2={plotWidth} y1={y} y2={y} />
@@ -357,16 +401,16 @@ export const LineChart = ({
               xs.map((x, i) => {
                 const y = plottedY(l, i);
                 const value = valueAt(s, x);
-                const breach = isBreach(value);
-                if (y === null || (!showMarkers && !breach) || i === active) return null;
+                const breach = !s.reference && isBreach(value);
+                if (y === null || s.reference || (!showMarkers && !breach) || i === active) return null;
                 return (
                   <ChartMarker
                     key={`${s.id}-${xKey(x)}`}
-                    shape={seriesMarker(s.index)}
+                    shape={s.marker}
                     x={positions[i]}
                     y={y}
                     size={compact ? 2 : 3}
-                    color={breach ? "var(--cadence-dataviz-threshold-breach, #b91c1c)" : seriesColor(s.index)}
+                    color={breach ? "var(--cadence-dataviz-threshold-breach, #b91c1c)" : s.color}
                   />
                 );
               }),
@@ -382,11 +426,11 @@ export const LineChart = ({
                   return (
                     <ChartMarker
                       key={s.id}
-                      shape={seriesMarker(s.index)}
+                      shape={s.marker}
                       x={positions[active]}
                       y={y}
                       size={compact ? 3 : 5}
-                      color={isBreach(valueAt(s, xs[active])) ? "var(--cadence-dataviz-threshold-breach, #b91c1c)" : seriesColor(s.index)}
+                      color={!s.reference && isBreach(valueAt(s, xs[active])) ? "var(--cadence-dataviz-threshold-breach, #b91c1c)" : s.color}
                     />
                   );
                 })}

@@ -17,9 +17,11 @@ export interface MeterSegment extends MeterSegmentInput {
   share: number;
 }
 
-/** Proportion bornée à [0, 1] ; 0 si les valeurs ne sont pas exploitables. */
-export const meterRatio = (value: number, max: number) =>
-  Number.isFinite(value) && Number.isFinite(max) && max > 0 ? Math.min(1, Math.max(0, value / max)) : 0;
+/** Proportion bornée à [0, 1] entre `min` et `max` ; 0 si les valeurs ne sont pas exploitables. */
+export const meterRatio = (value: number, max: number, min = 0) =>
+  Number.isFinite(value) && Number.isFinite(max) && Number.isFinite(min) && max > min
+    ? Math.min(1, Math.max(0, (value - min) / (max - min)))
+    : 0;
 
 /**
  * Texte de la valeur : « 86 % » quand l'unité est « % » (la valeur est déjà

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  formatGap,
   describeDelta,
   formatAxisDate,
   formatDelta,
@@ -38,5 +39,12 @@ describe("dates d'axe adaptées à l'étendue", () => {
     expect(formatAxisDate(new Date(2026, 9, 14), "month")).toBe("oct. 2026");
     expect(formatFullDate(new Date(2026, 9, 14), "day")).toBe("mercredi 14 octobre 2026");
     expect(formatFullDate(new Date(2026, 9, 14, 8, 30), "hour")).toBe("mercredi 14 octobre à 08:30");
+  });
+
+  it("écart signé dans l'unité de la mesure, en points pour des %", () => {
+    expect(formatGap(1.24, "min")).toBe("+1,2\u202fmin");
+    expect(formatGap(-0.8, "%")).toBe("\u22120,8\u202fpt");
+    expect(formatGap(12)).toBe("+12");
+    expect(formatGap(0, "%")).toBe("0\u202fpt");
   });
 });

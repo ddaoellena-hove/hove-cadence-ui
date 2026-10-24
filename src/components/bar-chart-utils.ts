@@ -38,6 +38,12 @@ export const stackBars = (series: BarSeriesInput[], categories: string[]) => {
 export const categoryTotal = (series: BarSeriesInput[], index: number) =>
   series.reduce((sum, s) => sum + (s.data[index] ?? 0), 0);
 
+/** Étend une échelle de valeurs aux séries de référence (traits hors barres), si elles la dépassent. */
+export const includeReferences = (scale: ReturnType<typeof scaleLinear<number, number>>, references: BarSeriesInput[]) => {
+  const high = max(references.flatMap((r) => r.data.filter((v): v is number => v !== null))) ?? 0;
+  return high > scale.domain()[1] ? scale.copy().domain([0, high]).nice(5) : scale;
+};
+
 /** Échelle des valeurs : 0 → maximum arrondi (somme des séries si empilé). */
 export const buildValueScale = (series: BarSeriesInput[], categories: string[], length: number, layout: BarLayout) => {
   const high =

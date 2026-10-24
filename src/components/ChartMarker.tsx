@@ -1,4 +1,4 @@
-import type { MarkerShape } from "./chart-palette";
+import { REFERENCE_COLOR, type MarkerShape } from "./chart-palette";
 
 interface ChartMarkerProps {
   shape: MarkerShape;
@@ -53,5 +53,12 @@ export const ChartMarker = ({ shape, x, y, size = 4, color, className }: ChartMa
 export const ChartMarkerIcon = ({ shape, color }: { shape: MarkerShape; color: string }) => (
   <svg width={14} height={14} viewBox="0 0 14 14" aria-hidden="true" className="chart-marker-icon">
     <ChartMarker shape={shape} x={7} y={7} size={4} color={color} />
+  </svg>
+);
+
+/** Pastille de légende ou de tooltip d'une série de référence (interne) : trait tireté ardoise. */
+export const ReferenceSwatch = () => (
+  <svg width={16} height={12} viewBox="0 0 16 12" aria-hidden="true" className="chart-marker-icon">
+    <line x1={0} x2={16} y1={6} y2={6} stroke={REFERENCE_COLOR} strokeWidth={2} strokeDasharray="4 3" />
   </svg>
 );

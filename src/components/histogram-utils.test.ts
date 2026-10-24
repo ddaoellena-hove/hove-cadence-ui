@@ -54,4 +54,17 @@ describe("Histogram", () => {
     expect(edgePosition(edges, -3, 500)).toBe(0);
     expect(edgePosition([1], 4, 500)).toBe(0);
   });
+
+  it("heures de service : classes alignées sur l'horloge, libellés horaires", () => {
+    // Derniers départs entre 22h40 et 25h10
+    const departures = [1360, 1385, 1410, 1440, 1455, 1480, 1500, 1510];
+    const bins = buildBins(departures, 5, true);
+    expect(bins[0].x0).toBe(1350);
+    expect(bins.map((b) => b.x1 - b.x0).every((w) => w === 30)).toBe(true);
+    expect(bins[bins.length - 1].x1).toBe(1530);
+    expect(binLabel(bins[0], undefined, undefined, true)).toBe("De 22h30 à 23h00");
+    expect(binLabel({ ...bins[0], openStart: true }, undefined, undefined, true)).toBe("Avant 23h00");
+    expect(binLabel({ ...bins[0], openEnd: true }, undefined, undefined, true)).toBe("22h30 et après");
+    expect(describeHistogram(departures, bins, "départs", undefined, undefined, true)).toMatch(/^8 départs, médiane 24h08, classe la plus fournie : de /);
+  });
 });

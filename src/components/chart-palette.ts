@@ -16,6 +16,12 @@ const SHAPES: MarkerShape[] = ["circle", "square", "triangle", "diamond", "cross
 /** Couleur de la série n (0 à 7), par token. */
 export const seriesColor = (index: number) => `var(--cadence-dataviz-series-${(index % 8) + 1})`;
 
+/** Couleur d'une série de référence (période précédente, semaine type) : ardoise neutre. */
+export const REFERENCE_COLOR = "var(--cadence-dataviz-series-8, #55606e)";
+
+/** Index de palette d'une série parmi les séries hors référence (les références ne consomment pas de couleur). */
+export const paletteIndex = (series: { reference?: boolean }[], i: number) => series.slice(0, i).filter((s) => !s.reference).length;
+
 /** Forme de marqueur de la série n (0 à 7). */
 export const seriesMarker = (index: number): MarkerShape => SHAPES[index % SHAPES.length];
 

@@ -8,6 +8,8 @@
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   gap: 6px;
   min-width: 0;
+  /* Contient les textes masqués (libellé en sm, résumé) placés en absolu */
+  position: relative;
   width: 100%;
 }
 
@@ -82,6 +84,17 @@
   width: 2px;
 }
 
+/* Objectif : trait plus épais et plus haut que les seuils */
+.meter__target {
+  background: var(--cadence-color-primary, #002830);
+  border-radius: 1px;
+  height: 16px;
+  position: absolute;
+  top: -4px;
+  transform: translateX(-1.5px);
+  width: 3px;
+}
+
 .meter__status {
   color: var(--cadence-color-label, #1a3e45);
   font-size: 12px;
@@ -118,6 +131,69 @@
 .meter__legend-value {
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
   font-variant-numeric: tabular-nums;
+}
+
+/* ── Taille sm : une rangée barre + valeur (cellule de tableau, ligne de liste) ──
+   Le libellé et le statut sont masqués visuellement, toujours lus. */
+.meter--sm {
+  align-items: center;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(40px, 1fr) auto;
+}
+
+.meter--sm .meter__header {
+  display: contents;
+}
+
+.meter--sm .meter__label {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.meter--sm .meter__value {
+  font-size: 12px;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.meter--sm .meter__track {
+  grid-column: 1;
+  grid-row: 1;
+  height: 6px;
+}
+
+.meter--sm.meter--proportional .meter__track {
+  height: 8px;
+}
+
+.meter--sm .meter__tick {
+  height: 10px;
+  top: -2px;
+}
+
+.meter--sm .meter__target {
+  height: 12px;
+  top: -3px;
+}
+
+.meter--sm .meter__status {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
 }
 
 /* Texte réservé aux lecteurs d'écran. */

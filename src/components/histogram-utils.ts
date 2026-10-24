@@ -1,6 +1,7 @@
 import { bin, extent, median } from "d3-array";
 import { scaleLinear } from "d3-scale";
 import { formatKpiValue, formatValueWithUnit } from "./chart-format";
+import { formatClock } from "./timeline-utils";
 
 // Calculs de l'Histogram (purs, testés) : classes, libellés et résumé lu par
 // les lecteurs d'écran.
@@ -23,7 +24,10 @@ export interface HistogramBin {
  * les valeurs en dehors rejoignent la première ou la dernière classe, alors
  * ouverte. Valeurs non finies ignorées.
  */
-export const buildBins = (values: number[], bins?: number | number[]): HistogramBin[] => {
+// Pas d'horloge possibles (minutes) pour des classes d'heures de service
+const CLOCK_STEPS = [5, 10, 15, 20, 30, 60, 120, 180, 240, 360];
+
+export const buildBins = (values: number[], bins?: number | number[], clock = false): HistogramBin[] => {
   const finite = values.filter((v) => Number.isFinite(v));
   if (finite.length === 0) return [];
 
@@ -40,6 +44,17 @@ export const buildBins = (values: number[], bins?: number | number[]): Histogram
     highOutside = finite.some((v) => v > domain[1]);
     data = finite.map((v) => Math.min(domain[1], Math.max(domain[0], v)));
     thresholds = bounds.slice(1, -1);
+  } else if (clock) {
+    // Heures de service : classes alignées sur l'horloge (22h00, 22h30…), pas le plus proche du nombre visé
+    const count = typeof bins === "number" && bins > 0 ? Math.round(bins) : Math.ceil(Math.log2(finite.length) + 1);
+    const [low, high] = extent(finite) as [number, number];
+    const span = Math.max(1, high - low);
+    const step = CLOCK_STEPS.reduce((best, s) => (Math.abs(span / s - count) < Math.abs(span / best - count) ? s : best));
+    const start = Math.floor(low / step) * step;
+    const end = Math.max(start + step, Math.ceil(high / step) * step);
+    domain = [start, end];
+    thresholds = [];
+    for (let t = start + step; t < end; t += step) thresholds.push(t);
   } else {
     const count = typeof bins === "number" && bins > 0 ? Math.round(bins) : Math.ceil(Math.log2(finite.length) + 1);
     const [low, high] = extent(finite) as [number, number];
@@ -59,12 +74,20 @@ export const buildBins = (values: number[], bins?: number | number[]): Histogram
   }));
 };
 
-/** Libellé d'une classe : « de 2 à 4 min », « moins de 2 min », « 10 min et plus ». */
-export const binLabel = (b: HistogramBin, unit?: string, format?: Intl.NumberFormatOptions) => {
+/** Format d'une borne : nombre fr-FR, ou heure de service (« 25h30 ») quand `clock`. */
+export const formatBound = (value: number, clock: boolean, unit?: string, format?: Intl.NumberFormatOptions) =>
+  clock ? formatClock(value, "time") : formatValueWithUnit(value, unit, format);
+
+/**
+ * Libellé d'une classe : « de 2 à 4 min », « moins de 2 min », « 10 min et
+ * plus » ; en heures de service : « de 22h00 à 22h30 », « avant 06h00 »,
+ * « 25h00 et après ».
+ */
+export const binLabel = (b: HistogramBin, unit?: string, format?: Intl.NumberFormatOptions, clock = false) => {
   if (b.openStart && b.openEnd) return "Toutes les valeurs";
-  if (b.openStart) return `Moins de ${formatValueWithUnit(b.x1, unit, format)}`;
-  if (b.openEnd) return `${formatValueWithUnit(b.x0, unit, format)} et plus`;
-  return `De ${formatKpiValue(b.x0, format)} à ${formatValueWithUnit(b.x1, unit, format)}`;
+  if (b.openStart) return `${clock ? "Avant" : "Moins de"} ${formatBound(b.x1, clock, unit, format)}`;
+  if (b.openEnd) return `${formatBound(b.x0, clock, unit, format)} et ${clock ? "après" : "plus"}`;
+  return `De ${clock ? formatClock(b.x0, "time") : formatKpiValue(b.x0, format)} à ${formatBound(b.x1, clock, unit, format)}`;
 };
 
 const percentFormat = new Intl.NumberFormat("fr-FR", { style: "percent", maximumFractionDigits: 1 });
@@ -79,13 +102,14 @@ export const describeHistogram = (
   countLabel: string,
   unit?: string,
   format?: Intl.NumberFormatOptions,
+  clock = false,
 ) => {
   const finite = values.filter((v) => Number.isFinite(v));
   if (finite.length === 0 || bins.length === 0) return "Aucune observation.";
   const top = bins.reduce((a, b) => (b.count > a.count ? b : a));
   const mid = median(finite) ?? 0;
-  const topLabel = binLabel(top, unit, format);
-  return `${formatKpiValue(finite.length, { maximumFractionDigits: 0 })} ${countLabel}, médiane ${formatValueWithUnit(mid, unit, format)}, classe la plus fournie : ${topLabel.charAt(0).toLowerCase()}${topLabel.slice(1)} (${formatBinShare(top.share)}).`;
+  const topLabel = binLabel(top, unit, format, clock);
+  return `${formatKpiValue(finite.length, { maximumFractionDigits: 0 })} ${countLabel}, médiane ${formatBound(mid, clock, unit, format)}, classe la plus fournie : ${topLabel.charAt(0).toLowerCase()}${topLabel.slice(1)} (${formatBinShare(top.share)}).`;
 };
 
 /**

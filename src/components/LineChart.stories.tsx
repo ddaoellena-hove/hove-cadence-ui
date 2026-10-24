@@ -156,6 +156,63 @@ export const OffreParTranche: Story = {
   },
 };
 
+/** Heures de service (`serviceTime`) : la soirée continue après minuit, sans couper à 24:00. */
+export const ServiceDeNuit: Story = {
+  name: "Service de nuit (heures de service)",
+  args: {
+    title: "Voyageurs à bord — service de nuit",
+    description: "Noctilien N13, jour de service du 23 octobre 2026",
+    serviceTime: true,
+    unit: "voyageurs",
+    format: { maximumFractionDigits: 0 },
+    series: [
+      {
+        id: "n13",
+        label: "N13",
+        data: [
+          ["21:30", 140], ["22:00", 182], ["22:30", 205], ["23:00", 230], ["23:30", 260], ["24:00", 310],
+          ["24:30", 340], ["25:00", 290], ["25:30", 220], ["26:00", 160], ["27:00", 90], ["28:30", 40],
+        ].map(([x, y]) => ({ x: x as string, y: y as number })),
+      },
+    ],
+    annotations: [{ at: "24:00", label: "Changement de jour calendaire" }],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // Graduations d'horloge au-delà de 24h00
+    await expect(canvas.getAllByText("25h00").length).toBeGreaterThan(0);
+    // Alternative tabulaire : colonne « Heure », valeurs au format horaire
+    const table = canvas.getByRole("table", { name: "Voyageurs à bord — service de nuit" });
+    await expect(within(table).getByRole("columnheader", { name: "Heure" })).toBeInTheDocument();
+    await expect(within(table).getByRole("rowheader", { name: "25h30" })).toBeInTheDocument();
+  },
+};
+
+/** Comparaison N vs N-1 : la série de référence (2025, recalée sur les dates 2026) est tiretée, l'écart est rappelé au survol. */
+export const ComparaisonN1: Story = {
+  name: "Comparaison N vs N-1",
+  args: {
+    title: "Ponctualité, octobre 2026 vs octobre 2025",
+    description: "Réseau bus, ponctualité quotidienne ; 2025 recalée sur les mêmes dates",
+    unit: "%",
+    yDomain: [85, 100],
+    thresholds: [{ value: 92, label: "Objectif 92 %" }],
+    series: [
+      { id: "n", label: "2026", data: dailyPunctuality },
+      { id: "n1", label: "2025", reference: true, data: dailyPunctuality.map((p, i) => ({ x: p.x, y: Math.round((94.1 + Math.sin(i / 3) * 1.4) * 10) / 10 })) },
+    ],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // Légende : la référence garde sa place, avec sa pastille tiretée
+    await expect(canvas.getByRole("button", { name: "2025" })).toBeInTheDocument();
+    // Clavier : l'écart avec la référence est annoncé
+    await userEvent.click(canvas.getByRole("group", { name: /Ponctualité, octobre 2026/ }));
+    await userEvent.keyboard("{Home}");
+    await expect(canvasElement.querySelector("[aria-live]")).toHaveTextContent(/Écart vs 2025 : [+−]\d+(,\d)?\spt/);
+  },
+};
+
 /** Mode compact, sans axes, pour une Card. */
 export const Compact: Story = {
   args: {

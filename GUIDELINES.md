@@ -312,6 +312,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Plages sur un axe temps (perturbations, amplitudes, travaux) | `Timeline` | `LineChart` (séries continues) ; `ActivityFeed` (événements ponctuels) ; `ServiceCalendar` (jours) ; `JourneyTimeline` (trajets) |
 | Comparer des itinéraires sur une fenêtre de départ (marche, transport, correspondances) | `JourneyTimeline` | `Timeline` (plages par entité) ; `RouteStopList` (arrêts d'une seule ligne) |
 | Mini-courbe dans une carte d'indicateur | `Card trend` (ou `LineChart compact`) | — |
+| Valeur vs capacité ou vs objectif dans une cellule de `DataTable` (charge, réalisation de l'offre, km) | `Meter size="sm"` (`thresholds`, `target`, `segments`) | `BulletChart` (graphique complet, une ligne par indicateur) |
 | Tendance dans une cellule de `DataTable` ou une ligne de liste | `Sparkline` | `LineChart compact` (axe, tooltip, seuils) ; `Card trend` (déjà intégré à la carte) |
 | Identité de ligne (code et couleur GTFS) | `LineBadge` | `Badge` (étiquette générique) |
 | Nom, commune et identifiant d'arrêt | `StopLabel` | — |
@@ -330,6 +331,8 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Performance vs objectif contractuel, plages malus / bonus (ponctualité, régularité, réalisation de l'offre) | `BulletChart` | `Gauge` (un seul KPI mis en avant) ; `Meter` (valeur vs capacité, sans plages) |
 | Distribution d'une mesure (retards, temps de parcours, intervalles entre passages) | `Histogram` | `BarChart` (catégories nommées, pas des classes de valeurs) |
 | Volume et taux sur une même période (fréquentation + ponctualité, offre + charge) | `ComboChart` | deux graphiques séparés ; `LineChart` (une seule unité) |
+| Comparer à la période précédente (N vs N-1, semaine type) | `LineChart` / `BarChart` avec une série `reference: true` | deux couleurs de palette (la référence se lirait comme une série de plus) |
+| Évolution sur un service de nuit, au-delà de minuit (heures de service jusqu'à 47:59) | `LineChart serviceTime` ; `Histogram serviceTime` (distribution d'heures) ; `BarChart` avec des catégories « 24 h », « 25 h » | des `Date` coupées à minuit (deux jours calendaires pour un seul jour de service) |
 | Valeur par paliers (offre par tranche horaire, capacité, tarifs) | `LineChart curve="step"` | `LineChart` lissé (suggère une variation continue) |
 | Parts d'un total (≤ 6 : parts modales, état du parc, causes) | `DonutChart` | `BarList` (classement, plus de 6 éléments) ; un camembert (non fourni) |
 | Choisir portée et format d'export | `ExportMenu` | L'app fabrique le fichier |
@@ -932,6 +935,7 @@ Une `Card` est **interactive** de deux façons :
 - ✅ Un objectif ou un seuil d'alerte est un `threshold` libellé (« Objectif 95 % », « Seuil d'alerte 5 min ») : ligne tiretée `--cadence-dataviz-threshold`. Avec `goodDirection`, les points du mauvais côté passent en `--cadence-dataviz-threshold-breach` et le libellé indique « franchi ».
 - ✅ Un événement daté (grève, travaux, incident) est une `annotation` : trait vertical ou bande, toujours libellée (« Grève 14/10 »), rappelée dans le tooltip.
 - ❌ Pas de seuil sans libellé, pas d'annotation sans date.
+- ✅ Comparaison à une période précédente : une série `reference: true` (`LineChart`, `BarChart`) libellée par sa période (« 2025 », « Semaine 42 »), recalée sur les abscisses de la période courante. Elle ne prend pas de couleur de la palette : ardoise tiretée. Une seule référence par graphique pour que l'écart soit rappelé.
 - ✅ `ComboChart` : chaque axe Y porte un titre et son unité (« Validations (k) », « Ponctualité (%) ») ; les seuils (`lineThresholds`) se lisent sur l'axe droit.
 - ❌ Pas de `ComboChart` pour deux mesures de même unité : un `LineChart` ou un `BarChart` à deux séries.
 
@@ -1080,11 +1084,11 @@ FormActions  →  Link · GhostButton · PrimaryButton
 
 ### Pattern — Tableau de bord de supervision
 
-**Quand l'utiliser** — suivi temps réel (indicateurs, alertes, fraîcheur). **Ne pas confondre avec** — Analyse. **Anatomie** : `PageHeader` (période) · `DataFreshness` · `InlineAlert` · `CardGrid`(`Card` cliquables). **Comportements** : la période filtre indicateurs et liste ; une carte cliquable ouvre la liste filtrée. **Règles** : ✅ `loading` par carte ; ✅ chaque carte cliquable porte son bouton visible (`actionLabel`), dont la zone couvre la carte. **Gabarit** — vérifié : [`src/patterns/SupervisionPattern.tsx`](src/patterns/SupervisionPattern.tsx).
+**Quand l'utiliser** — suivi temps réel (indicateurs, alertes, fraîcheur). **Ne pas confondre avec** — Analyse. **Anatomie** : `PageHeader` (période) · `DataFreshness` · `InlineAlert` · `CardGrid`(`Card` cliquables) · `BulletChart` (indicateurs du contrat vs objectif). **Comportements** : la période filtre indicateurs et liste ; une carte cliquable ouvre la liste filtrée. **Règles** : ✅ `loading` par carte ; ✅ chaque carte cliquable porte son bouton visible (`actionLabel`), dont la zone couvre la carte. **Gabarit** — vérifié : [`src/patterns/SupervisionPattern.tsx`](src/patterns/SupervisionPattern.tsx).
 
 ### Pattern — Tableau de bord d'analyse
 
-**Quand l'utiliser** — explorer sur une période (indicateurs, évolution, répartition, classement). **Ne pas confondre avec** — Supervision. **Anatomie** : `PageHeader` (période) · `CardGrid`(`Card`) · `LineChart` · `CardGrid min=360 fit`(`Heatmap`, `BarList`). **États** : chargement / erreur **par bloc** (`state`, `onRetry`). **Règles** : ✅ grilles fluides, jamais de px fixe ; ✅ graphiques encadrés (`framed`) pour les délimiter ; ❌ pas de graphique sans `title` ni état. **Gabarit** — vérifié : [`src/patterns/AnalysePattern.tsx`](src/patterns/AnalysePattern.tsx).
+**Quand l'utiliser** — explorer sur une période (indicateurs, évolution, répartition, classement). **Ne pas confondre avec** — Supervision. **Anatomie** : `PageHeader` (période) · `CardGrid`(`Card`) · `LineChart` (avec la période précédente en `reference`) · `CardGrid min=360 fit`(`Heatmap`, `BarList`) · `CardGrid min=360 fit`(`DonutChart`, `Histogram`). **États** : chargement / erreur **par bloc** (`state`, `onRetry`). **Règles** : ✅ grilles fluides, jamais de px fixe ; ✅ graphiques encadrés (`framed`) pour les délimiter ; ❌ pas de graphique sans `title` ni état. **Gabarit** — vérifié : [`src/patterns/AnalysePattern.tsx`](src/patterns/AnalysePattern.tsx).
 
 ### Pattern — Planification / temps
 
@@ -1728,7 +1732,7 @@ Barres empilées ou groupées, verticales ou horizontales : comparaison de caté
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
 | `categories` | `string[]` | **requis** | Libellés (axe X en vertical, axe Y en horizontal) |
-| `series` | `{ id, label, data: (number \| null)[], color? }[]` | **requis** | Une valeur par catégorie, dans l'ordre ; `color` : token attendu |
+| `series` | `{ id, label, data: (number \| null)[], color?, reference? }[]` | **requis** | Une valeur par catégorie, dans l'ordre ; `color` : token attendu. `reference: true` : trait tireté en travers de chaque catégorie (N-1), hors empilement et groupement ; écart avec la série (ou le total empilé) au survol |
 | `layout` | `"stacked" \| "grouped"` | `"stacked"` | Barres empilées ou côte à côte |
 | `orientation` | `"vertical" \| "horizontal"` | `"vertical"` | Horizontal pour des libellés longs ou de nombreuses catégories |
 | `unit` | `string` | — | Tooltip, tableau |
@@ -1993,7 +1997,7 @@ Tableau dense pour les gros volumes. Vrai `<table>` (rôles ARIA explicites), en
 | `id` | `string` | **requis** | Clé de tri et de masquage |
 | `header` | `string` | **requis** | Libellé FR (affiché en majuscules) |
 | `accessor` | `(row: T) => string \| number \| Date \| boolean \| null \| undefined` | **requis** | Valeur brute : tri et rendu par défaut |
-| `cell` | `(row: T) => ReactNode` | — | Rendu custom (`Badge`, `Indicator`…) |
+| `cell` | `(row: T) => ReactNode` | — | Rendu custom (`Badge`, `Indicator`, mini-graphiques `Sparkline` et `Meter size="sm"`…). Garder la valeur brute dans `accessor` pour le tri |
 | `align` | `"left" \| "right" \| "center"` | `"left"` (`"right"` si `numeric`) | — |
 | `numeric` | `boolean` | `false` | Police mono + alignement à droite |
 | `width` | `number` | — | Largeur fixe (px). Sans `width` : partage de l'espace restant |
@@ -2141,6 +2145,7 @@ Distribution d'une mesure : effectif par classe de valeurs, à partir des **obse
 | `showGrid` | `boolean` | `true` | Grille horizontale |
 | `hideTitle` | `boolean` | `false` | En-tête masqué visuellement (titre toujours lu) |
 | `height` | `number` | `280` | Hauteur du tracé |
+| `serviceTime` | `boolean` | `false` | Valeurs en minutes depuis 00:00 du jour de service (`1530` = 25h30) : classes alignées sur l'horloge (5 à 360 min), bornes « 22h30 », classes ouvertes « avant 06h00 » / « 25h00 et après » |
 
 Clavier : le tracé est focusable ; ←/→ d'une classe à l'autre, Début / Fin, Échap masque le tooltip.
 
@@ -2251,9 +2256,10 @@ Fraîcheur d'une donnée : un point coloré (ton de statut) et un libellé relat
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `series` | `{ id, label, data: { x: Date \| string, y: number \| null }[] }[]` | **requis** | `y: null` = trou dans la courbe |
+| `series` | `{ id, label, data: { x: Date \| string, y: number \| null }[], reference? }[]` | **requis** | `y: null` = trou dans la courbe. `reference: true` : série de comparaison (N-1, semaine type), trait tireté ardoise sans marqueur ni aire, hors empilement et hors seuils ; l'écart avec la série principale est rappelé au survol |
 | `variant` | `"line" \| "area"` | `"line"` | — |
 | `stacked` | `boolean` | `false` | Aires empilées (`variant="area"`) |
+| `serviceTime` | `boolean` | `false` | Abscisses en heures de service `"HH:mm"` jusqu'à `"47:59"` (`"25:30"` = 1 h 30 après minuit, même jour de service) : positions proportionnelles au temps, graduations d'horloge (« 24h00 », « 25h00 »), colonne « Heure » dans le tableau |
 | `curve` | `"smooth" \| "step"` | `"smooth"` | `"step"` : paliers, la valeur tient jusqu'au point suivant (offre par tranche horaire, capacité, tarifs) |
 | `thresholds` | `{ value, label }[]` | `[]` | Lignes de seuil libellées |
 | `annotations` | `{ at: Date \| string \| [début, fin], label }[]` | `[]` | Trait vertical ou bande libellés |
@@ -3129,7 +3135,10 @@ Mesure d'une valeur par rapport à une capacité, en barre horizontale (8px). Pr
 | `label` | `string` | **requis** | Libellé visible (nom accessible) |
 | `value` | `number` | — | Mode simple : valeur mesurée |
 | `segments` | `{ id, label, value, color? }[]` | — | Mode proportionnel : décomposition, dans l'ordre ; exclusif avec `value` |
-| `max` | `number` | `100` (simple) ; somme des segments (proportionnel) | Capacité. En proportionnel, un `max` inférieur à la somme est ignoré |
+| `max` | `number` | `100` (simple) ; somme des segments (proportionnel) | Capacité. En proportionnel, un `max` inférieur à la somme est ignoré ; sans `max`, seul le total est affiché |
+| `min` | `number` | `0` | Mode simple : début de l'échelle (`90` pour un taux lu entre 90 et 100 %) |
+| `target` | `number` | — | Mode simple : repère d'objectif (trait plus marqué que les seuils), rappelé dans la valeur lue (« objectif 98,5 % ») : un bullet compact |
+| `size` | `"md" \| "sm"` | `"md"` | `"sm"` : une rangée barre + valeur, pour une cellule de `DataTable` ou une ligne de liste ; libellé et statut masqués visuellement, toujours lus. En proportionnel, sans légende |
 | `unit` | `string` | — | « places », « km », « % ». Avec `"%"`, seule la valeur est affichée ; sinon « 96 / 120 places » |
 | `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | — |
 | `thresholds` | `{ value: number; label: string }[]` | — | Mode simple : seuils libellés, repères entre 0 et `max` |
@@ -3137,7 +3146,8 @@ Mesure d'une valeur par rapport à une capacité, en barre horizontale (8px). Pr
 | `showLegend` | `boolean` | `true` | Mode proportionnel : légende sous la barre |
 | `className` | `string` | — | Classe additionnelle |
 
-- ⚠️ `value` et `segments` sont exclusifs (erreur de typage si les deux sont passés) ; `thresholds` et `goodDirection` n'existent qu'en mode simple.
+- ⚠️ `value` et `segments` sont exclusifs (erreur de typage si les deux sont passés) ; `thresholds`, `goodDirection`, `min` et `target` n'existent qu'en mode simple.
+- ✅ Dans une cellule de `DataTable` : `size="sm"` avec un `label` qui nomme la ligne (« Charge à la pointe, ligne 13 ») — le libellé n'est pas visible, c'est le nom lu. Story : *Données et tableaux / DataTable → Mini-graphiques en cellule*.
 - ⚠️ Valeur ou `max` non finis, ou `max` ≤ 0 : piste vide, « Donnée indisponible ».
 
 ```tsx

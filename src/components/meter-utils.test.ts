@@ -15,6 +15,10 @@ describe("Meter", () => {
     expect(meterRatio(-4, 120)).toBe(0);
     expect(meterRatio(5, 0)).toBe(0);
     expect(meterRatio(NaN, 100)).toBe(0);
+    // Échelle min → max
+    expect(meterRatio(95, 100, 90)).toBe(0.5);
+    expect(meterRatio(85, 100, 90)).toBe(0);
+    expect(meterRatio(95, 90, 90)).toBe(0);
   });
 
   it("valeur seule en %, sinon valeur / capacité", () => {

@@ -6,6 +6,7 @@ import { ChartFrame, type ChartCommonProps } from "./ChartFrame";
 import { ChartTooltip } from "./ChartTooltip";
 import { formatKpiValue } from "./chart-format";
 import { binLabel, buildBins, describeHistogram, edgePosition, formatBinShare } from "./histogram-utils";
+import { formatClock } from "./timeline-utils";
 import { useChartWidth } from "./use-chart-size";
 import "./histogram.css";
 
@@ -39,6 +40,12 @@ export interface HistogramProps extends ChartCommonProps {
   hideTitle?: boolean;
   /** Hauteur du tracé. Défaut 280. */
   height?: number;
+  /**
+   * Valeurs en heures de service : minutes depuis 00:00 du jour de service,
+   * au-delà de 1 440 après minuit (1 530 = 25h30). Classes alignées sur
+   * l'horloge, bornes et tooltip en « 22h30 ». Défaut false.
+   */
+  serviceTime?: boolean;
 }
 
 const MARGIN = { top: 20, right: 16, bottom: 28, left: 52 };
@@ -59,6 +66,7 @@ export const Histogram = ({
   showGrid = true,
   hideTitle = false,
   height = 280,
+  serviceTime = false,
   ...frame
 }: HistogramProps) => {
   const titleId = useId();
@@ -69,7 +77,8 @@ export const Histogram = ({
   const [active, setActive] = useState<number | null>(null);
   const [origin, setOrigin] = useState({ left: 0, top: 0 });
 
-  const bins = useMemo(() => buildBins(values, binsProp), [values, binsProp]);
+  const bins = useMemo(() => buildBins(values, binsProp, serviceTime), [values, binsProp, serviceTime]);
+  const label = (b: (typeof bins)[number]) => binLabel(b, unit, format, serviceTime);
   const plotWidth = Math.max(0, width - MARGIN.left - MARGIN.right);
   const plotHeight = Math.max(0, height - MARGIN.top - MARGIN.bottom);
 
@@ -91,13 +100,13 @@ export const Histogram = ({
   const step = Math.max(1, Math.ceil((edges.length * 48) / Math.max(1, plotWidth)));
   const xTicks = edges
     .filter((_, i) => i % step === 0)
-    .map((v) => ({ key: String(v), position: x(v), label: formatKpiValue(v, format) }));
+    .map((v) => ({ key: String(v), position: x(v), label: serviceTime ? formatClock(v, "time") : formatKpiValue(v, format) }));
   const visibleThresholds = thresholds.filter((t) => Number.isFinite(t.value) && t.value >= domain[0] && t.value <= domain[1]);
 
   const activeBin = active !== null ? bins[active] : null;
   const describeBin = (i: number) => {
     const b = bins[i];
-    return `${binLabel(b, unit, format)} : ${formatKpiValue(b.count, COUNT_FORMAT)} ${countLabel}, ${formatBinShare(b.share)}`;
+    return `${label(b)} : ${formatKpiValue(b.count, COUNT_FORMAT)} ${countLabel}, ${formatBinShare(b.share)}`;
   };
 
   const activate = (index: number | null, element: HTMLElement) => {
@@ -145,7 +154,7 @@ export const Histogram = ({
       visible={show}
       columns={["Classe", `Effectif (${countLabel})`, "Part"]}
       numeric={[1, 2]}
-      rows={bins.map((b) => [binLabel(b, unit, format), formatKpiValue(b.count, COUNT_FORMAT), formatBinShare(b.share)])}
+      rows={bins.map((b) => [label(b), formatKpiValue(b.count, COUNT_FORMAT), formatBinShare(b.share)])}
     />
   );
 
@@ -218,7 +227,7 @@ export const Histogram = ({
           </g>
         </svg>
         <span id={summaryId} className="chart__sr-only">
-          {describeHistogram(values, bins, countLabel, unit, format)}
+          {describeHistogram(values, bins, countLabel, unit, format, serviceTime)}
         </span>
         <p className="chart__sr-only" aria-live="polite">
           {active !== null ? `${describeBin(active)}${notesFor(active) ? `. ${notesFor(active)}` : ""}` : ""}
@@ -228,7 +237,7 @@ export const Histogram = ({
         <ChartTooltip
           x={anchor.x}
           y={anchor.y}
-          title={binLabel(activeBin, unit, format)}
+          title={label(activeBin)}
           rows={[
             { id: "count", label: countLabel.charAt(0).toUpperCase() + countLabel.slice(1), value: formatKpiValue(activeBin.count, COUNT_FORMAT) },
             { id: "share", label: "Part", value: formatBinShare(activeBin.share) },
