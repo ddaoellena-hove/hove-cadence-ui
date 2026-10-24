@@ -46,6 +46,17 @@ export interface HistogramProps extends ChartCommonProps {
    * l'horloge, bornes et tooltip en « 22h30 ». Défaut false.
    */
   serviceTime?: boolean;
+  /**
+   * Événements ou périodes à signaler sur l'axe des valeurs : trait (une
+   * valeur) ou bande (`[début, fin]`), libellé, rappelé au survol de la classe.
+   */
+  annotations?: HistogramAnnotation[];
+}
+
+export interface HistogramAnnotation {
+  at: number | [number, number];
+  /** « Grève » */
+  label: string;
 }
 
 const MARGIN = { top: 20, right: 16, bottom: 28, left: 52 };
@@ -67,6 +78,7 @@ export const Histogram = ({
   hideTitle = false,
   height = 280,
   serviceTime = false,
+  annotations = [],
   ...frame
 }: HistogramProps) => {
   const titleId = useId();
@@ -145,8 +157,16 @@ export const Histogram = ({
     activate(next, e.currentTarget);
   };
 
+  const resolvedAnnotations = annotations.flatMap((a) => {
+    const [from, to] = Array.isArray(a.at) ? a.at : [a.at, a.at];
+    if (!Number.isFinite(from) || !Number.isFinite(to)) return [];
+    return [{ label: a.label, from: Math.min(from, to), to: Math.max(from, to), band: Array.isArray(a.at) }];
+  });
   const notesFor = (i: number) =>
-    visibleThresholds.filter((t) => t.value >= bins[i].x0 && t.value <= bins[i].x1).map((t) => t.label).join(" · ") || undefined;
+    [
+      ...visibleThresholds.filter((t) => t.value >= bins[i].x0 && t.value <= bins[i].x1).map((t) => t.label),
+      ...resolvedAnnotations.filter((a) => a.from <= bins[i].x1 && a.to >= bins[i].x0).map((a) => a.label),
+    ].join(" · ") || undefined;
 
   const table = (show: boolean) => (
     <ChartDataTable
@@ -212,6 +232,17 @@ export const Histogram = ({
                 </g>
               );
             })}
+
+            {/* Annotations : trait ou bande libellés (sous les seuils) */}
+            {resolvedAnnotations.map((a) => (
+              <g key={`${a.label}-${a.from}`} className="histogram__annotation">
+                {a.band && <rect className="histogram__annotation-band" x={x(a.from)} y={0} width={Math.max(1, x(a.to) - x(a.from))} height={plotHeight} />}
+                <line className="histogram__annotation-line" x1={x(a.from)} x2={x(a.from)} y1={0} y2={plotHeight} />
+                <text className="histogram__annotation-label" x={x(a.from) + 4} y={14}>
+                  {a.label}
+                </text>
+              </g>
+            ))}
 
             {/* Seuils : trait vertical tireté + libellé */}
             {visibleThresholds.map((t) => (

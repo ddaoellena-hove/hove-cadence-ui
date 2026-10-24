@@ -68,8 +68,8 @@ export const IndicateursContractuels: Story = {
     const list = canvas.getByRole("list", { name: "Indicateurs du contrat de service public" });
     const rows = within(list).getAllByRole("group");
     await expect(rows).toHaveLength(3);
-    await expect(rows[0]).toHaveAccessibleName("Ponctualité : 93,4 %, objectif 92 %, Objectif atteint — Bonus dès 92 %");
-    await expect(rows[2]).toHaveAccessibleName(/Objectif non atteint — Malus sous 97 %$/);
+    await expect(rows[0]).toHaveAccessibleName("Ponctualité : 93,4 %, objectif 92 %, Favorable — Bonus dès 92 %");
+    await expect(rows[2]).toHaveAccessibleName(/Défavorable — Malus sous 97 %$/);
     // Alternative tabulaire : en-tête + 3 indicateurs
     await expect(within(canvas.getByRole("table", { name: "Indicateurs du contrat de service public" })).getAllByRole("row")).toHaveLength(4);
   },

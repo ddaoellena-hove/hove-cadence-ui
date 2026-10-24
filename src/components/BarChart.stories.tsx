@@ -185,6 +185,25 @@ export const ComparaisonN1Empilees: Story = {
   },
 };
 
+/** Annotation : bande libellée sur une catégorie (grève), rappelée au survol. */
+export const Annotation: Story = {
+  args: {
+    title: "Perturbations par jour",
+    description: "Semaine 42, toutes causes",
+    unit: "perturbations",
+    categories: ["lun. 14", "mar. 15", "mer. 16", "jeu. 17", "ven. 18"],
+    series: [{ id: "all", label: "Perturbations", data: [14, 18, 31, 16, 15] }],
+    annotations: [{ at: "mer. 16", label: "Grève 16/10" }],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("Grève 16/10")).toBeInTheDocument();
+    await userEvent.click(canvas.getByRole("group", { name: /Perturbations par jour/ }));
+    await userEvent.keyboard("{Home}{ArrowRight}{ArrowRight}");
+    await expect(canvasElement.querySelector("[aria-live]")).toHaveTextContent(/^mer\. 16 — Perturbations : 31\sperturbations\. Grève 16\/10$/);
+  },
+};
+
 export const Chargement: Story = { args: { title: "Perturbations par cause", categories: [], series: [], state: "loading" } };
 
 export const Vide: Story = { args: { title: "Perturbations par cause", categories: [], series: [], state: "empty" } };

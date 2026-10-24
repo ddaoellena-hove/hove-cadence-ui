@@ -41,6 +41,16 @@
   min-width: 0;
 }
 
+.chart__actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 4px;
+}
+
+.chart__freshness {
+  margin-top: 2px;
+}
+
 .chart__title {
   color: var(--cadence-color-primary, #002830);
   font-size: 14px;

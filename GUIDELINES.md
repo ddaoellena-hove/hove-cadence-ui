@@ -933,7 +933,7 @@ Une `Card` est **interactive** de deux façons :
 ### Seuils et annotations
 
 - ✅ Un objectif ou un seuil d'alerte est un `threshold` libellé (« Objectif 95 % », « Seuil d'alerte 5 min ») : ligne tiretée `--cadence-dataviz-threshold`. Avec `goodDirection`, les points du mauvais côté passent en `--cadence-dataviz-threshold-breach` et le libellé indique « franchi ».
-- ✅ Un événement daté (grève, travaux, incident) est une `annotation` : trait vertical ou bande, toujours libellée (« Grève 14/10 »), rappelée dans le tooltip.
+- ✅ Un événement daté (grève, travaux, incident) est une `annotation` : trait vertical ou bande, toujours libellée (« Grève 14/10 »), rappelée dans le tooltip. `LineChart` (dates ou catégories), `BarChart` (catégories), `Histogram` (valeurs).
 - ❌ Pas de seuil sans libellé, pas d'annotation sans date.
 - ✅ Comparaison à une période précédente : une série `reference: true` (`LineChart`, `BarChart`) libellée par sa période (« 2025 », « Semaine 42 »), recalée sur les abscisses de la période courante. Elle ne prend pas de couleur de la palette : ardoise tiretée. Une seule référence par graphique pour que l'écart soit rappelé.
 - ✅ `ComboChart` : chaque axe Y porte un titre et son unité (« Validations (k) », « Ponctualité (%) ») ; les seuils (`lineThresholds`) se lisent sur l'axe droit.
@@ -945,6 +945,7 @@ Une `Card` est **interactive** de deux façons :
 - ✅ Alternative tabulaire : « Voir les données » affiche un vrai tableau, présent dans le DOM même masqué (`LineChart`, `BarChart` avec le total par catégorie, `BarList`, `DonutChart` avec les parts et le total, `BulletChart` avec l'objectif et le statut, `Histogram` (classe, effectif, part), `ComboChart` (une colonne par série, avec son unité), `Timeline` et `JourneyTimeline`) ; la `Heatmap` est elle-même une grille (`role="grid"`) avec en-têtes de lignes et de colonnes.
 - ✅ Clavier : `LineChart` (←/→, Début / Fin, tooltip annoncé), `BarChart` (←/→ ou ↑/↓ d'une catégorie à l'autre), `Heatmap` (flèches, Début / Fin, Ctrl+Début / Fin, Entrée), `BarList` (lignes cliquables = boutons nommés), `DonutChart` (←/→ d'une part à l'autre, en boucle, Début / Fin), `Histogram` (←/→ d'une classe à l'autre, Début / Fin), `ComboChart` (←/→ d'une catégorie à l'autre, Début / Fin), `BulletChart` (lignes nommées : valeur, objectif, statut), `Timeline` / `JourneyTimeline` (←/→ entre plages d'une ligne, ↑/↓ de ligne, Début / Fin, Entrée).
 - ✅ États `loading`, `empty`, `error` (avec `onRetry`) plutôt qu'un graphique vide.
+- ✅ Donnée live (supervision) : `freshness` date le graphique ; export de ce qui est affiché : `exportable`. Pas de PNG : plusieurs graphiques sont en partie en HTML (centre du `DonutChart`, `BulletChart`, `BarList`, `Timeline`), une image SVG serait incomplète.
 - ✅ Plusieurs graphiques sur une page (tableau de bord, graphiques côte à côte dans une `CardGrid`) : les encadrer avec `framed`, même surface qu'une `Card`. Sans cadre, deux graphiques voisins se confondent (titres, axes et légendes sans limite visible). Un graphique seul dans une `PageSection` peut rester sans cadre.
 - ✅ Les graphiques suivent la largeur de leur conteneur : jamais de largeur fixe en px. Hauteurs par défaut : `LineChart` et `BarChart` vertical 280px (`LineChart compact` : 48px), `BarChart` horizontal 36px par catégorie, `Heatmap` 28px par ligne, `BarList` 32px par ligne, `Timeline` / `JourneyTimeline` 32px par ligne, `DonutChart` 200px de diamètre (légende à côté, dessous si la place manque), `BulletChart` 48px par indicateur, `Histogram` 280px, `ComboChart` 300px.
 
@@ -1742,6 +1743,7 @@ Barres empilées ou groupées, verticales ou horizontales : comparaison de caté
 | `showGrid` | `boolean` | `true` | Lignes de grille |
 | `hideTitle` | `boolean` | `false` | En-tête masqué visuellement (titre toujours lu), ex. quand une `Card` affiche déjà le titre |
 | `height` | `number` | `280` en vertical ; 36px par catégorie en horizontal | Hauteur du tracé |
+| `annotations` | `{ at: string \| [début, fin], label }[]` | `[]` | Événements (grève, travaux) : bande libellée sur une catégorie ou un intervalle de catégories, rappelée au survol |
 
 Clavier : le tracé est focusable ; ←/→ (vertical) ou ↑/↓ (horizontal) d'une catégorie à l'autre, Début / Fin, Échap masque le tooltip ; la catégorie est annoncée (`aria-live`).
 
@@ -1762,7 +1764,7 @@ Clavier : le tracé est focusable ; ←/→ (vertical) ou ↑/↓ (horizontal) d
 
 ### BarList
 
-Classement horizontal : libellé, barre proportionnelle (`--cadence-dataviz-series-1`), valeur en mono alignée à droite, variation facultative. Hauteur : 32px par ligne. Props communes des graphiques : `title` (**requis**), `description`, `headingLevel` (3), `state` (`"ready" | "loading" | "empty" | "error"`), `emptyMessage`, `errorMessage`, `onRetry`, `framed` (false : cadre de carte — bordure, arrondi, marge — pour délimiter des graphiques voisins), `className`.
+Classement horizontal : libellé, barre proportionnelle (`--cadence-dataviz-series-1`), valeur en mono alignée à droite, variation facultative. Hauteur : 32px par ligne. Props communes des graphiques : `title` (**requis**), `description`, `headingLevel` (3), `state` (`"ready" | "loading" | "empty" | "error"`), `emptyMessage`, `errorMessage`, `onRetry`, `framed` (false : cadre de carte — bordure, arrondi, marge — pour délimiter des graphiques voisins), `exportable` (false ; `true` ou un nom de fichier : bouton « Exporter (CSV) » dans l'en-tête, qui télécharge l'alternative tabulaire en CSV `;` + BOM UTF-8, nombres sans espaces de groupement), `onExport` (reprend l'export : `{ columns, rows, numeric, csv, fileName }`), `freshness` (`{ updatedAt, now?, freshWithin?, staleWithin?, label? }` : `DataFreshness` sous la description), `className`. Export et fraîcheur valent pour tous les graphiques qui ont « Voir les données » (pas `Heatmap`, qui est elle-même une grille).
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
@@ -1824,7 +1826,7 @@ Clavier : l'anneau est focusable ; ←/→ (ou ↑/↓) d'une part à l'autre, e
 
 ### BulletChart
 
-Performance par rapport à un objectif : une ligne par indicateur, avec la barre de la valeur sur des plages qualitatives (insuffisant / moyen / bon en fond, tokens `--cadence-status-*-bg`), le repère d'objectif (trait `--cadence-dataviz-threshold`), la valeur en mono et le **statut écrit** sous le libellé (« Objectif atteint — Bonus dès 92 % »). Les plages sont jugées comme `Gauge` selon `goodDirection`. Lignes non interactives, nommées (`role="group"`) : « Ponctualité : 93,4 %, objectif 92 %, Objectif atteint — Bonus dès 92 % ». « Voir les données » : valeur, objectif, statut. Props communes : voir `BarList`.
+Performance par rapport à un objectif : une ligne par indicateur, avec la barre de la valeur sur des plages qualitatives (insuffisant / moyen / bon en fond, tokens `--cadence-status-*-bg`), le repère d'objectif (trait `--cadence-dataviz-threshold`), la valeur en mono et le **statut écrit** sous le libellé (« Favorable — Bonus dès 92 % »). Les plages sont jugées comme `Gauge` selon `goodDirection`. Lignes non interactives, nommées (`role="group"`) : « Ponctualité : 93,4 %, objectif 92 %, Favorable — Bonus dès 92 % ». « Voir les données » : valeur, objectif, statut. Props communes : voir `BarList`.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
@@ -2142,6 +2144,7 @@ Distribution d'une mesure : effectif par classe de valeurs, à partir des **obse
 | `countLabel` | `string` | `"observations"` | Ce que l'on compte, au pluriel (« courses », « passages ») |
 | `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | Format des bornes |
 | `thresholds` | `{ value, label }[]` | `[]` | Traits verticaux libellés (« Retard 5 min ») |
+| `annotations` | `{ at: number \| [début, fin], label }[]` | `[]` | Trait ou bande d'annotation (`--cadence-dataviz-annotation`), libellés, rappelés au survol de la classe (« Tolérance ±30 s ») |
 | `showGrid` | `boolean` | `true` | Grille horizontale |
 | `hideTitle` | `boolean` | `false` | En-tête masqué visuellement (titre toujours lu) |
 | `height` | `number` | `280` | Hauteur du tracé |
@@ -3108,7 +3111,7 @@ Mini-courbe sans axe ni interaction, pour une cellule de `DataTable`, une ligne 
 
 ### Gauge
 
-Proportion unique en arc 270° ou anneau. Valeur formatée en français, indicateur textuel d'objectif atteint/non atteint ou niveau intermédiaire. Valeur graphique bornée à [0, max] ; nombre brut conservé. Pas d'animation sous `prefers-reduced-motion`.
+Proportion unique en arc 270° ou anneau. Valeur formatée en français, statut écrit « Favorable », « Intermédiaire » ou « Défavorable », suivi du libellé de la borne qui décide (la zone favorable pour un niveau favorable ou intermédiaire, la zone défavorable sinon). Valeur graphique bornée à [0, max] ; nombre brut conservé. Pas d'animation sous `prefers-reduced-motion`.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
@@ -3126,7 +3129,7 @@ Avec `up` : sous le premier seuil → défavorable, à partir du dernier → fav
 
 Mesure d'une valeur par rapport à une capacité, en barre horizontale (8px). Primitive compacte comme `Gauge` : `label` visible au lieu de `title`, sans états `loading` / `error` (les gérer dans la composition avec `Skeleton` / `InlineAlert`). Deux modes exclusifs, selon la présence de `value` ou de `segments`.
 
-**Mode simple** (`value`) : remplissage coloré selon `goodDirection` et `thresholds` (même règle que `Gauge`), repères de seuil sur la barre et statut écrit dessous (« Niveau intermédiaire — Capacité 100 % »). `role="meter"` ; `aria-valuetext` reprend la valeur et le statut. Au-delà de `max`, la barre est pleine et le nombre réel reste affiché (« 112 % »).
+**Mode simple** (`value`) : remplissage coloré selon `goodDirection` et `thresholds` (même règle que `Gauge`), repères de seuil sur la barre et statut écrit dessous (« Intermédiaire — Charge élevée 80 % »). `role="meter"` ; `aria-valuetext` reprend la valeur et le statut. Au-delà de `max`, la barre est pleine et le nombre réel reste affiché (« 112 % »).
 
 **Mode proportionnel** (`segments`) : barre de 12px découpée en segments (couleur **et** motif par segment), légende dessous (libellé, valeur, part). Le reste jusqu'à `max` apparaît en piste vide. `role="img"` décrit par le résumé (« Commerciaux : 1 020 km (68 %), … Total 1 240 km sur 1 500 km. »).
 

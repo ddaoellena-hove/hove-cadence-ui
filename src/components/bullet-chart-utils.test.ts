@@ -39,11 +39,11 @@ describe("BulletChart", () => {
   });
 
   it("statut et nom accessible", () => {
-    expect(bulletStatus(93.4, contract, "up")).toEqual({ tone: "success", status: "Objectif atteint — Bonus dès 92 %" });
+    expect(bulletStatus(93.4, contract, "up")).toEqual({ tone: "success", status: "Favorable — Bonus dès 92 %" });
     expect(bulletStatus(88, contract, "up").tone).toBe("warning");
     expect(bulletStatus(NaN, contract, "up")).toEqual({ tone: "neutral", status: null });
-    expect(describeBullet("Ponctualité", 88, 92, "Niveau intermédiaire — Malus sous 85 %", "%")).toBe(
-      "Ponctualité : 88 %, objectif 92 %, Niveau intermédiaire — Malus sous 85 %",
+    expect(describeBullet("Ponctualité", 88, 92, "Intermédiaire — Bonus dès 92 %", "%")).toBe(
+      "Ponctualité : 88 %, objectif 92 %, Intermédiaire — Bonus dès 92 %",
     );
     expect(describeBullet("Régularité", NaN, 92, null)).toBe("Régularité : donnée indisponible");
   });

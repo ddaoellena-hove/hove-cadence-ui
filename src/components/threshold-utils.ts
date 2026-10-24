@@ -13,7 +13,9 @@ export type ThresholdTone = "neutral" | "success" | "warning" | "danger";
  * Teinte et libellé du seuil pertinent selon la valeur et le sens favorable.
  * `up` : sous le premier seuil → défavorable, à partir du dernier → favorable,
  * entre les deux → intermédiaire. `down` : l'inverse. Sans seuil ou `neutral`,
- * pas de jugement.
+ * pas de jugement. Le libellé cité est celui de la borne qui décide : la zone
+ * favorable pour un niveau favorable ou intermédiaire (ce qu'il reste à
+ * atteindre ou à ne pas dépasser), la zone défavorable sinon.
  */
 export function evaluateThresholds(
   value: number,
@@ -28,15 +30,17 @@ export function evaluateThresholds(
   if (dir === "up") {
     if (value >= high.value) return { tone: "success", label: high.label };
     if (value < low.value) return { tone: "danger", label: low.label };
-    return { tone: "warning", label: low.label };
+    return { tone: "warning", label: high.label };
   }
   if (value <= low.value) return { tone: "success", label: low.label };
   if (value > high.value) return { tone: "danger", label: high.label };
-  return { tone: "warning", label: high.label };
+  return { tone: "warning", label: low.label };
 }
 
-/** Phrase de statut : « Objectif atteint — Objectif 85 % ». */
+/**
+ * Phrase de statut : « Favorable — Bonus dès 92 % », « Intermédiaire —
+ * Charge élevée 80 % », « Défavorable — Capacité 100 % ». Formulation neutre,
+ * valable pour un objectif à atteindre comme pour un plafond à ne pas dépasser.
+ */
 export const thresholdStatus = (tone: ThresholdTone, label: string | null) =>
-  label
-    ? `${tone === "success" ? "Objectif atteint" : tone === "warning" ? "Niveau intermédiaire" : "Objectif non atteint"} — ${label}`
-    : null;
+  label ? `${tone === "success" ? "Favorable" : tone === "warning" ? "Intermédiaire" : "Défavorable"} — ${label}` : null;

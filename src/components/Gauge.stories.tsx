@@ -35,6 +35,6 @@ export const SansSeuil: Story = {
 export const ObjectifNonAtteint: Story = {
   args: { value: 72.5, unit: "%", thresholds: [{ value: 85, label: "85 %" }] },
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByRole("img")).toHaveAccessibleName(/72,5.*Objectif non atteint/);
+    await expect(within(canvasElement).getByRole("img")).toHaveAccessibleName(/72,5.*Défavorable/);
   },
 };

@@ -56,11 +56,15 @@ describe("Meter", () => {
       { value: 100, label: "Capacité 100 %" },
     ];
     expect(evaluateThresholds(62, load, "down")).toEqual({ tone: "success", label: "Charge élevée 80 %" });
-    expect(evaluateThresholds(92, load, "down")).toEqual({ tone: "warning", label: "Capacité 100 %" });
+    expect(evaluateThresholds(92, load, "down")).toEqual({ tone: "warning", label: "Charge élevée 80 %" });
     expect(evaluateThresholds(112, load, "down")).toEqual({ tone: "danger", label: "Capacité 100 %" });
     expect(evaluateThresholds(92, load, "neutral")).toEqual({ tone: "neutral", label: null });
     expect(evaluateThresholds(92, [{ value: 85, label: "Objectif 85 %" }], "up")).toEqual({ tone: "success", label: "Objectif 85 %" });
-    expect(thresholdStatus("warning", "Capacité 100 %")).toBe("Niveau intermédiaire — Capacité 100 %");
+    expect(thresholdStatus("warning", "Charge élevée 80 %")).toBe("Intermédiaire — Charge élevée 80 %");
+    expect(thresholdStatus("success", "Bonus dès 92 %")).toBe("Favorable — Bonus dès 92 %");
+    expect(thresholdStatus("danger", "Capacité 100 %")).toBe("Défavorable — Capacité 100 %");
+    // Intermédiaire en « up » : cite la borne à atteindre
+    expect(evaluateThresholds(88, [{ value: 85, label: "Malus sous 85 %" }, { value: 92, label: "Bonus dès 92 %" }], "up")).toEqual({ tone: "warning", label: "Bonus dès 92 %" });
     expect(thresholdStatus("neutral", null)).toBeNull();
   });
 });
