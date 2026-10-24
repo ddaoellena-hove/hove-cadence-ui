@@ -1,6 +1,6 @@
 # Proposition — `TimeSpaceDiagram` (graphique espace-temps de Marey)
 
-Statut : **phase 0, à valider**. Rien n'est implémenté. Lot 0.9.5 de la
+Statut : **validée** (25 octobre 2026) : arrêts de haut en bas dans l'ordre de l'aller, théorique et réalisé ensemble, ↑/↓ le long de la course, échelles fit / 2 h / 1 h, filtrage par l'application au-delà de ~300 courses. Lot 0.9.5 de la
 [feuille de route](0.9.0-dataviz-et-1.0.md) (§ 4 bis).
 
 ## 1. Besoin
