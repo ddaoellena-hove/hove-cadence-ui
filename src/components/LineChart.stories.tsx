@@ -188,6 +188,31 @@ export const ServiceDeNuit: Story = {
   },
 };
 
+/** Comparaison N vs N-1 : la série de référence (2025, recalée sur les dates 2026) est tiretée, l'écart est rappelé au survol. */
+export const ComparaisonN1: Story = {
+  name: "Comparaison N vs N-1",
+  args: {
+    title: "Ponctualité, octobre 2026 vs octobre 2025",
+    description: "Réseau bus, ponctualité quotidienne ; 2025 recalée sur les mêmes dates",
+    unit: "%",
+    yDomain: [85, 100],
+    thresholds: [{ value: 92, label: "Objectif 92 %" }],
+    series: [
+      { id: "n", label: "2026", data: dailyPunctuality },
+      { id: "n1", label: "2025", reference: true, data: dailyPunctuality.map((p, i) => ({ x: p.x, y: Math.round((94.1 + Math.sin(i / 3) * 1.4) * 10) / 10 })) },
+    ],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // Légende : la référence garde sa place, avec sa pastille tiretée
+    await expect(canvas.getByRole("button", { name: "2025" })).toBeInTheDocument();
+    // Clavier : l'écart avec la référence est annoncé
+    await userEvent.click(canvas.getByRole("group", { name: /Ponctualité, octobre 2026/ }));
+    await userEvent.keyboard("{Home}");
+    await expect(canvasElement.querySelector("[aria-live]")).toHaveTextContent(/Écart vs 2025 : [+−]\d+(,\d)?\spt/);
+  },
+};
+
 /** Mode compact, sans axes, pour une Card. */
 export const Compact: Story = {
   args: {

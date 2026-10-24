@@ -331,6 +331,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Performance vs objectif contractuel, plages malus / bonus (ponctualité, régularité, réalisation de l'offre) | `BulletChart` | `Gauge` (un seul KPI mis en avant) ; `Meter` (valeur vs capacité, sans plages) |
 | Distribution d'une mesure (retards, temps de parcours, intervalles entre passages) | `Histogram` | `BarChart` (catégories nommées, pas des classes de valeurs) |
 | Volume et taux sur une même période (fréquentation + ponctualité, offre + charge) | `ComboChart` | deux graphiques séparés ; `LineChart` (une seule unité) |
+| Comparer à la période précédente (N vs N-1, semaine type) | `LineChart` / `BarChart` avec une série `reference: true` | deux couleurs de palette (la référence se lirait comme une série de plus) |
 | Évolution sur un service de nuit, au-delà de minuit (heures de service jusqu'à 47:59) | `LineChart serviceTime` ; `Histogram serviceTime` (distribution d'heures) ; `BarChart` avec des catégories « 24 h », « 25 h » | des `Date` coupées à minuit (deux jours calendaires pour un seul jour de service) |
 | Valeur par paliers (offre par tranche horaire, capacité, tarifs) | `LineChart curve="step"` | `LineChart` lissé (suggère une variation continue) |
 | Parts d'un total (≤ 6 : parts modales, état du parc, causes) | `DonutChart` | `BarList` (classement, plus de 6 éléments) ; un camembert (non fourni) |
@@ -934,6 +935,7 @@ Une `Card` est **interactive** de deux façons :
 - ✅ Un objectif ou un seuil d'alerte est un `threshold` libellé (« Objectif 95 % », « Seuil d'alerte 5 min ») : ligne tiretée `--cadence-dataviz-threshold`. Avec `goodDirection`, les points du mauvais côté passent en `--cadence-dataviz-threshold-breach` et le libellé indique « franchi ».
 - ✅ Un événement daté (grève, travaux, incident) est une `annotation` : trait vertical ou bande, toujours libellée (« Grève 14/10 »), rappelée dans le tooltip.
 - ❌ Pas de seuil sans libellé, pas d'annotation sans date.
+- ✅ Comparaison à une période précédente : une série `reference: true` (`LineChart`, `BarChart`) libellée par sa période (« 2025 », « Semaine 42 »), recalée sur les abscisses de la période courante. Elle ne prend pas de couleur de la palette : ardoise tiretée. Une seule référence par graphique pour que l'écart soit rappelé.
 - ✅ `ComboChart` : chaque axe Y porte un titre et son unité (« Validations (k) », « Ponctualité (%) ») ; les seuils (`lineThresholds`) se lisent sur l'axe droit.
 - ❌ Pas de `ComboChart` pour deux mesures de même unité : un `LineChart` ou un `BarChart` à deux séries.
 
@@ -1730,7 +1732,7 @@ Barres empilées ou groupées, verticales ou horizontales : comparaison de caté
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
 | `categories` | `string[]` | **requis** | Libellés (axe X en vertical, axe Y en horizontal) |
-| `series` | `{ id, label, data: (number \| null)[], color? }[]` | **requis** | Une valeur par catégorie, dans l'ordre ; `color` : token attendu |
+| `series` | `{ id, label, data: (number \| null)[], color?, reference? }[]` | **requis** | Une valeur par catégorie, dans l'ordre ; `color` : token attendu. `reference: true` : trait tireté en travers de chaque catégorie (N-1), hors empilement et groupement ; écart avec la série (ou le total empilé) au survol |
 | `layout` | `"stacked" \| "grouped"` | `"stacked"` | Barres empilées ou côte à côte |
 | `orientation` | `"vertical" \| "horizontal"` | `"vertical"` | Horizontal pour des libellés longs ou de nombreuses catégories |
 | `unit` | `string` | — | Tooltip, tableau |
@@ -2254,7 +2256,7 @@ Fraîcheur d'une donnée : un point coloré (ton de statut) et un libellé relat
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `series` | `{ id, label, data: { x: Date \| string, y: number \| null }[] }[]` | **requis** | `y: null` = trou dans la courbe |
+| `series` | `{ id, label, data: { x: Date \| string, y: number \| null }[], reference? }[]` | **requis** | `y: null` = trou dans la courbe. `reference: true` : série de comparaison (N-1, semaine type), trait tireté ardoise sans marqueur ni aire, hors empilement et hors seuils ; l'écart avec la série principale est rappelé au survol |
 | `variant` | `"line" \| "area"` | `"line"` | — |
 | `stacked` | `boolean` | `false` | Aires empilées (`variant="area"`) |
 | `serviceTime` | `boolean` | `false` | Abscisses en heures de service `"HH:mm"` jusqu'à `"47:59"` (`"25:30"` = 1 h 30 après minuit, même jour de service) : positions proportionnelles au temps, graduations d'horloge (« 24h00 », « 25h00 »), colonne « Heure » dans le tableau |

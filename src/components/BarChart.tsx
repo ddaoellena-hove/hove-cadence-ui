@@ -5,13 +5,15 @@ import { ChartFrame, type ChartCommonProps } from "./ChartFrame";
 import { ChartLegend } from "./ChartLegend";
 import { ChartPatternDef, ChartPatternSwatch } from "./ChartPattern";
 import { ChartTooltip, type ChartTooltipRow } from "./ChartTooltip";
-import { formatKpiValue, formatValueWithUnit } from "./chart-format";
-import { seriesColor, seriesMarker, seriesPattern, svgId } from "./chart-palette";
+import { formatGap, formatKpiValue, formatValueWithUnit } from "./chart-format";
+import { paletteIndex, REFERENCE_COLOR, seriesColor, seriesMarker, seriesPattern, svgId } from "./chart-palette";
+import { ReferenceSwatch } from "./ChartMarker";
 import {
   buildCategoryScale,
   buildSeriesScale,
   buildValueScale,
   categoryTotal,
+  includeReferences,
   stackBars,
   type BarLayout,
 } from "./bar-chart-utils";
@@ -25,6 +27,11 @@ export interface BarChartSeries {
   data: (number | null)[];
   /** Couleur imposée (token attendu : `var(--cadence-dataviz-series-N)`). Défaut : palette, dans l'ordre. */
   color?: string;
+  /**
+   * Série de référence (période précédente, semaine type) : trait tireté
+   * ardoise en travers de chaque catégorie, hors empilement et groupement.
+   */
+  reference?: boolean;
 }
 
 export interface BarChartProps extends ChartCommonProps {
@@ -83,8 +90,15 @@ export const BarChart = ({
   const [origin, setOrigin] = useState({ left: 0, top: 0 });
 
   const horizontal = orientation === "horizontal";
-  const indexed = series.map((s, i) => ({ ...s, index: i, color: s.color ?? seriesColor(i), pattern: seriesPattern(i) }));
-  const visible = indexed.filter((s) => !hidden.has(s.id));
+  // Les références ne consomment pas de couleur ni de motif de la palette
+  const indexed = series.map((s, i) => ({
+    ...s,
+    index: i,
+    color: s.reference ? REFERENCE_COLOR : (s.color ?? seriesColor(paletteIndex(series, i))),
+    pattern: seriesPattern(paletteIndex(series, i)),
+  }));
+  const visible = indexed.filter((s) => !s.reference && !hidden.has(s.id));
+  const references = indexed.filter((s) => s.reference && !hidden.has(s.id));
   const stacked = layout === "stacked";
 
   // Marge gauche : valeurs (vertical) ou libellés de catégories (horizontal, ~6,5px par caractère)
@@ -100,7 +114,7 @@ export const BarChart = ({
   const valueLength = horizontal ? plotWidth : plotHeight;
   const band = buildCategoryScale(categories, categoryLength, layout);
   const subBand = buildSeriesScale(visible.map((s) => s.id), band.bandwidth());
-  const value = buildValueScale(visible, categories, valueLength, layout);
+  const value = includeReferences(buildValueScale(visible, categories, valueLength, layout), references);
   const layers = stacked ? stackBars(visible, categories) : [];
 
   const valueTicks = value.ticks(5);
@@ -142,8 +156,19 @@ export const BarChart = ({
           value: formatValue(s.data[active] ?? null),
           icon: <ChartPatternSwatch kind={s.pattern} color={s.color} />,
         }));
+  if (active !== null) {
+    for (const r of references) rows.push({ id: r.id, label: r.label, value: formatValue(r.data[active] ?? null), icon: <ReferenceSwatch /> });
+  }
   const total = active !== null && stacked && visible.length > 1 ? categoryTotal(visible, active) : null;
-  const note = total !== null ? `Total : ${formatValue(total)}` : undefined;
+  // Une seule référence : écart avec la série (ou le total empilé) de la catégorie
+  const gap = (() => {
+    if (active === null || references.length !== 1 || visible.length === 0 || (!stacked && visible.length !== 1)) return null;
+    const current = stacked ? categoryTotal(visible, active) : visible[0].data[active];
+    const previous = references[0].data[active];
+    if (current === null || current === undefined || previous === null || previous === undefined) return null;
+    return `Écart vs ${references[0].label} : ${formatGap(current - previous, unit, format)}`;
+  })();
+  const note = [total !== null ? `Total : ${formatValue(total)}` : null, gap].filter(Boolean).join(" · ") || undefined;
   const announcement =
     active === null ? "" : `${categories[active]} — ${rows.map((r) => `${r.label} : ${r.value}`).join(", ")}${note ? `. ${note}` : ""}`;
 
@@ -210,7 +235,7 @@ export const BarChart = ({
           label: s.label,
           color: s.color,
           marker: seriesMarker(s.index),
-          icon: <ChartPatternSwatch kind={s.pattern} color={s.color} />,
+          icon: s.reference ? <ReferenceSwatch /> : <ChartPatternSwatch kind={s.pattern} color={s.color} />,
           hidden: hidden.has(s.id),
         }))}
         onToggle={toggleSeries}
@@ -222,12 +247,18 @@ export const BarChart = ({
     <ChartDataTable
       caption={frame.title}
       visible={show}
-      columns={["Catégorie", ...visible.map((s) => (unit ? `${s.label} (${unit})` : s.label)), ...(withTotal ? ["Total"] : [])]}
-      numeric={[...visible.map((_, i) => i + 1), ...(withTotal ? [visible.length + 1] : [])]}
+      columns={[
+        "Catégorie",
+        ...visible.map((s) => (unit ? `${s.label} (${unit})` : s.label)),
+        ...(withTotal ? ["Total"] : []),
+        ...references.map((s) => (unit ? `${s.label} (${unit})` : s.label)),
+      ]}
+      numeric={[...visible, ...(withTotal ? [null] : []), ...references].map((_, i) => i + 1)}
       rows={categories.map((category, c) => [
         category,
         ...visible.map((s) => formatKpiValue(s.data[c] ?? "—", format)),
         ...(withTotal ? [formatKpiValue(categoryTotal(visible, c), format)] : []),
+        ...references.map((s) => formatKpiValue(s.data[c] ?? "—", format)),
       ])}
     />
   );
@@ -313,6 +344,24 @@ export const BarChart = ({
                     <rect {...rect} rx={2} fill={s.color} />
                     {s.pattern !== "solid" && <rect {...rect} rx={2} fill={`url(#${patternPrefix}-${s.index})`} />}
                   </g>
+                );
+              }),
+            )}
+
+            {/* Références : trait tireté en travers de la catégorie */}
+            {references.map((r) =>
+              categories.map((category, c) => {
+                const v = r.data[c];
+                if (v === null || v === undefined) return null;
+                const start = (band(category) ?? 0) - 3;
+                const end = (band(category) ?? 0) + band.bandwidth() + 3;
+                const at = horizontal ? value(v) : plotHeight - value(v);
+                return (
+                  <line
+                    key={`${r.id}-${category}`}
+                    className="bar-chart__reference"
+                    {...(horizontal ? { x1: at, x2: at, y1: start, y2: end } : { x1: start, x2: end, y1: at, y2: at })}
+                  />
                 );
               }),
             )}

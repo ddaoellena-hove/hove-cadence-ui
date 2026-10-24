@@ -26,3 +26,12 @@
   stroke-linejoin: round;
   stroke-width: 3px;
 }
+
+/* Série de référence (N-1, semaine type) : trait tireté ardoise sur un halo blanc */
+.bar-chart__reference {
+  paint-order: stroke;
+  stroke: var(--cadence-dataviz-series-8, #55606e);
+  stroke-dasharray: 4 3;
+  stroke-linecap: butt;
+  stroke-width: 2.5;
+}

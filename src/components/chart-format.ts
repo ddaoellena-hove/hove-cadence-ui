@@ -28,6 +28,16 @@ export const formatDelta = (value: number, unit: DeltaUnit = "%"): string => {
   return `${withTypographicMinus(number)}${unit ? `${NNBSP}${unit}` : ""}`;
 };
 
+/**
+ * Écart signé dans l'unité de la mesure : « +1,2 min », « −0,8 pt » (un écart
+ * entre deux taux en % se lit en points), « +12 ».
+ */
+export const formatGap = (value: number, unit?: string, format: Intl.NumberFormatOptions = { maximumFractionDigits: 1 }): string => {
+  const number = new Intl.NumberFormat("fr-FR", { ...format, signDisplay: "exceptZero" }).format(value);
+  const shown = unit === "%" ? "pt" : unit;
+  return `${withTypographicMinus(number)}${shown ? `${NNBSP}${shown}` : ""}`;
+};
+
 /** Couleur de la variation selon le sens favorable de l'indicateur. */
 export const getDeltaTone = (value: number, goodDirection: GoodDirection): DeltaTone => {
   if (value === 0 || goodDirection === "neutral") return "neutral";

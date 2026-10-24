@@ -145,6 +145,46 @@ export const Redimensionnement: Story = {
 };
 
 /** États : chargement, vide, erreur. */
+/** Comparaison N vs N-1 : la semaine précédente en trait tireté sur chaque catégorie, l'écart au survol. */
+export const ComparaisonN1: Story = {
+  name: "Comparaison N vs N-1",
+  args: {
+    title: "Perturbations, semaine 43 vs semaine 42",
+    description: "Toutes causes, par jour",
+    unit: "perturbations",
+    categories: ["lun.", "mar.", "mer.", "jeu.", "ven.", "sam.", "dim."],
+    series: [
+      { id: "s43", label: "Semaine 43", data: [14, 18, 31, 16, 15, 8, 6] },
+      { id: "s42", label: "Semaine 42", reference: true, data: [16, 15, 17, 19, 14, 9, 7] },
+    ],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvasElement.querySelectorAll(".bar-chart__reference")).toHaveLength(7);
+    await userEvent.click(canvas.getByRole("group", { name: /Perturbations, semaine 43/ }));
+    await userEvent.keyboard("{Home}{ArrowRight}{ArrowRight}");
+    await expect(canvasElement.querySelector("[aria-live]")).toHaveTextContent(/^mer\. — Semaine 43 : 31\sperturbations, Semaine 42 : 17\sperturbations\. Écart vs Semaine 42 : \+14\sperturbations$/);
+    // Tableau : la référence a sa colonne
+    const table = canvas.getByRole("table", { name: "Perturbations, semaine 43 vs semaine 42" });
+    await expect(within(table).getByRole("columnheader", { name: "Semaine 42 (perturbations)" })).toBeInTheDocument();
+  },
+};
+
+/** Empilées par cause, total comparé à la semaine précédente. */
+export const ComparaisonN1Empilees: Story = {
+  name: "Comparaison N vs N-1 (empilées)",
+  args: {
+    title: "Perturbations par cause, S43 vs S42",
+    unit: "perturbations",
+    categories: ["lun.", "mar.", "mer.", "jeu.", "ven."],
+    series: [
+      { id: "works", label: "Travaux", data: [6, 5, 4, 6, 5] },
+      { id: "technical", label: "Incident technique", data: [8, 11, 7, 6, 9] },
+      { id: "s42", label: "Total S42", reference: true, data: [12, 19, 16, 10, 12] },
+    ],
+  },
+};
+
 export const Chargement: Story = { args: { title: "Perturbations par cause", categories: [], series: [], state: "loading" } };
 
 export const Vide: Story = { args: { title: "Perturbations par cause", categories: [], series: [], state: "empty" } };
