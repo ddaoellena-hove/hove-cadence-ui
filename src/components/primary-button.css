@@ -1,19 +1,20 @@
 /* ── PrimaryButton : action principale, plein ─────────────────────────────── */
 /* Gabarit commun dans base-button.css. Repos --cadence-color-label, survol un
    cran plus foncé (--cadence-color-primary-hover), appui --cadence-color-primary.
-   Relief subtil (rgba, propre au composant) : reflet clair en haut, liseré
-   et ombre douce en bas, ombre portée de 1px (--_drop) ; au survol, l'ombre
+   Relief (rgba, propre au composant) : dégradé vertical (haut éclairci, bas
+   assombri), reflet clair en haut, liseré sombre en bas, ombre portée de 2px
+   (--_drop) ; au survol, l'ombre
    portée s'élargit (le bouton se soulève) ; à l'appui, le bouton s'enfonce.
    Le survol ne change que --_drop : focus, appui, outline et désactivé
    gardent leurs propres ombres. */
 .primary-button {
   background-color: var(--cadence-color-label, rgb(26, 62, 69));
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.1));
   border-color: var(--cadence-color-primary, rgb(0, 40, 48));
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.14),
-    inset 0 -8px 10px -8px rgba(0, 0, 0, 0.12),
-    var(--_drop, 0 1px 1px rgba(0, 40, 48, 0.08));
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    var(--_drop, 0 1px 2px rgba(0, 40, 48, 0.16));
   color: var(--cadence-color-white, rgb(255, 255, 255));
 }
 
@@ -24,7 +25,8 @@
 
 .primary-button:active:not(:disabled) {
   background-color: var(--cadence-color-primary, rgb(0, 40, 48));
-  /* Enfoncé : ombre interne en haut, plus d'ombre portée */
+  /* Enfoncé : le reflet s'éteint, le haut s'assombrit, plus d'ombre portée */
+  background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0) 60%);
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.18);
 }
 
@@ -32,11 +34,6 @@
 .primary-button--danger {
   background-color: var(--cadence-color-danger, rgb(218, 30, 40));
   border-color: var(--cadence-color-danger, rgb(218, 30, 40));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.14),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.1),
-    inset 0 -8px 10px -8px rgba(0, 0, 0, 0.1),
-    var(--_drop, 0 1px 1px rgba(0, 40, 48, 0.08));
 }
 
 .primary-button--danger:hover:not(:disabled) {
@@ -54,14 +51,14 @@
 /* ── Focus clavier ───────────────────────────────────────────────────────── */
 .primary-button:focus-visible {
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    inset 0 -8px 10px -8px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
     var(--cadence-focus-ring, 0 0 0 2px rgb(255, 255, 255), 0 0 0 4px rgb(26, 62, 69));
 }
 
 /* ── Désactivé (les deux tons) ───────────────────────────────────────────── */
 .primary-button:disabled {
   background-color: var(--cadence-color-border, rgb(229, 229, 229));
+  background-image: none;
   border-color: var(--cadence-color-border-strong, rgb(191, 201, 203));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
   color: var(--cadence-color-text-disabled, rgb(128, 128, 128));
@@ -74,6 +71,8 @@
    passe en --cadence-color-label. */
 .primary-button.primary-button--outline {
   background-color: var(--cadence-color-white, rgb(255, 255, 255));
+  /* Pas de dégradé du plein : les voiles de survol et d'appui l'occupent */
+  background-image: none;
   border-color: var(--cadence-color-border-strong, rgb(191, 201, 203));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.8),

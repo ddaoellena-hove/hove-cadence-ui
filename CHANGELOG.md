@@ -9,6 +9,10 @@ Version mineure, sans rupture d’API.
 - **`ModeIcon`** : famille de **30 pictogrammes de mode de transport** remplis (métro, train, tram, funiculaire, bus à la demande, bus de substitution, autocar, gare routière, avion, bateau, voiture, covoiturage, taxi, vélo, parking vélo, parking, parking relais, station, réseau, marche lente/moyenne/rapide, course, domicile, travail, PMR, ticket…). SVG inline (gabarit 80), suit `currentColor`, même interface qu’`Icons` (`size`, `color`, `title`). Famille **distincte** des icônes d’interface en trait d’`Icons`. Liste ordonnée `MODE_NAMES`, libellés FR `MODE_LABELS` et type `ModeName` exportés (galerie, sélecteur). Fiche GUIDELINES + ligne d’intention.
 - **`ModeFilter`** : filtre par mode de transport — rangée de **chips togglables** (`ModeIcon` + libellé), multi-sélection par défaut (`selection="single"` possible), boutons bascule (`aria-pressed`) dans un groupe nommé. Sélection vide = aucun filtre. Pour un tableau de bord ou une liste (dans une `FilterBar` / barre d’outils). Fiche GUIDELINES + ligne d’intention.
 
+### Modifié
+
+- **`PrimaryButton` plein** : relief un peu plus marqué — léger dégradé vertical (haut éclairci, bas assombri), reflet et liseré de 1px plus nets, ombre portée de 2px. À l’appui, le reflet s’éteint (bouton enfoncé). Le ton `danger` suit le même relief ; `outline` et désactivé sont inchangés. Visuel uniquement, sans changement d’API.
+
 ## 0.8.0 (non publiée)
 
 Version mineure, sans rupture d’API. Thème : **Page patterns**.
