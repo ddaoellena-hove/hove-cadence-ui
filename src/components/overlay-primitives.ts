@@ -311,8 +311,14 @@ export const useAnchoredPanel = ({
     document.addEventListener("mousedown", onDown);
     window.addEventListener("scroll", onMove, true);
     window.addEventListener("resize", onMove);
+    // Le contenu du panneau peut changer de taille après la première mesure
+    // (polices chargées, calendrier rendu) : le replacer, sinon un panneau
+    // aligné à droite déborde de la largeur gagnée.
+    const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(() => onMove(new Event("resize"))) : null;
+    if (panelRef.current) observer?.observe(panelRef.current);
     return () => {
       cancelAnimationFrame(frame);
+      observer?.disconnect();
       document.removeEventListener("mousedown", onDown);
       window.removeEventListener("scroll", onMove, true);
       window.removeEventListener("resize", onMove);

@@ -19,6 +19,7 @@ Version mineure, sans rupture d’API. Thème : **dataviz du pilotage transport*
 
 ### Modifié
 
+- **Panneaux ancrés** (`Popover`, menus, sélecteurs de date) : le panneau est replacé quand son contenu change de taille après l’ouverture (polices chargées, calendrier rendu). Un panneau aligné à droite pouvait déborder de la largeur gagnée ; le test `PageHeader / Défaut` en était instable.
 - **`Gauge`** : jugement des seuils extrait dans un module interne partagé avec `Meter` (`threshold-utils.ts`). Sans changement de comportement ni d’API.
 
 ## 0.8.1 (non publiée)
