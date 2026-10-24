@@ -44,14 +44,14 @@ export const bulletBands = (ranges: ValueThreshold[] | undefined, [low, high]: [
   });
 };
 
-/** Statut écrit d'une ligne : « Objectif atteint — Bonus dès 92 % », ou null sans plage. */
+/** Statut écrit d'une ligne : « Favorable — Bonus dès 92 % », ou null sans plage. */
 export const bulletStatus = (value: number, ranges: ValueThreshold[] | undefined, dir: BulletDirection) => {
   if (!Number.isFinite(value)) return { tone: "neutral" as const, status: null };
   const { tone, label } = evaluateThresholds(value, ranges, dir);
   return { tone, status: thresholdStatus(tone, label) };
 };
 
-/** Nom accessible d'une ligne : « Ponctualité : 91,2 %, objectif 92 %, Niveau intermédiaire — … ». */
+/** Nom accessible d'une ligne : « Ponctualité : 91,2 %, objectif 92 %, Intermédiaire — … ». */
 export const describeBullet = (
   label: string,
   value: number,

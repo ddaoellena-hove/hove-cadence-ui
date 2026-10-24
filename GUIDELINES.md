@@ -1824,7 +1824,7 @@ Clavier : l'anneau est focusable ; ←/→ (ou ↑/↓) d'une part à l'autre, e
 
 ### BulletChart
 
-Performance par rapport à un objectif : une ligne par indicateur, avec la barre de la valeur sur des plages qualitatives (insuffisant / moyen / bon en fond, tokens `--cadence-status-*-bg`), le repère d'objectif (trait `--cadence-dataviz-threshold`), la valeur en mono et le **statut écrit** sous le libellé (« Objectif atteint — Bonus dès 92 % »). Les plages sont jugées comme `Gauge` selon `goodDirection`. Lignes non interactives, nommées (`role="group"`) : « Ponctualité : 93,4 %, objectif 92 %, Objectif atteint — Bonus dès 92 % ». « Voir les données » : valeur, objectif, statut. Props communes : voir `BarList`.
+Performance par rapport à un objectif : une ligne par indicateur, avec la barre de la valeur sur des plages qualitatives (insuffisant / moyen / bon en fond, tokens `--cadence-status-*-bg`), le repère d'objectif (trait `--cadence-dataviz-threshold`), la valeur en mono et le **statut écrit** sous le libellé (« Favorable — Bonus dès 92 % »). Les plages sont jugées comme `Gauge` selon `goodDirection`. Lignes non interactives, nommées (`role="group"`) : « Ponctualité : 93,4 %, objectif 92 %, Favorable — Bonus dès 92 % ». « Voir les données » : valeur, objectif, statut. Props communes : voir `BarList`.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
@@ -3108,7 +3108,7 @@ Mini-courbe sans axe ni interaction, pour une cellule de `DataTable`, une ligne 
 
 ### Gauge
 
-Proportion unique en arc 270° ou anneau. Valeur formatée en français, indicateur textuel d'objectif atteint/non atteint ou niveau intermédiaire. Valeur graphique bornée à [0, max] ; nombre brut conservé. Pas d'animation sous `prefers-reduced-motion`.
+Proportion unique en arc 270° ou anneau. Valeur formatée en français, statut écrit « Favorable », « Intermédiaire » ou « Défavorable », suivi du libellé de la borne qui décide (la zone favorable pour un niveau favorable ou intermédiaire, la zone défavorable sinon). Valeur graphique bornée à [0, max] ; nombre brut conservé. Pas d'animation sous `prefers-reduced-motion`.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
@@ -3126,7 +3126,7 @@ Avec `up` : sous le premier seuil → défavorable, à partir du dernier → fav
 
 Mesure d'une valeur par rapport à une capacité, en barre horizontale (8px). Primitive compacte comme `Gauge` : `label` visible au lieu de `title`, sans états `loading` / `error` (les gérer dans la composition avec `Skeleton` / `InlineAlert`). Deux modes exclusifs, selon la présence de `value` ou de `segments`.
 
-**Mode simple** (`value`) : remplissage coloré selon `goodDirection` et `thresholds` (même règle que `Gauge`), repères de seuil sur la barre et statut écrit dessous (« Niveau intermédiaire — Capacité 100 % »). `role="meter"` ; `aria-valuetext` reprend la valeur et le statut. Au-delà de `max`, la barre est pleine et le nombre réel reste affiché (« 112 % »).
+**Mode simple** (`value`) : remplissage coloré selon `goodDirection` et `thresholds` (même règle que `Gauge`), repères de seuil sur la barre et statut écrit dessous (« Intermédiaire — Charge élevée 80 % »). `role="meter"` ; `aria-valuetext` reprend la valeur et le statut. Au-delà de `max`, la barre est pleine et le nombre réel reste affiché (« 112 % »).
 
 **Mode proportionnel** (`segments`) : barre de 12px découpée en segments (couleur **et** motif par segment), légende dessous (libellé, valeur, part). Le reste jusqu'à `max` apparaît en piste vide. `role="img"` décrit par le résumé (« Commerciaux : 1 020 km (68 %), … Total 1 240 km sur 1 500 km. »).
 

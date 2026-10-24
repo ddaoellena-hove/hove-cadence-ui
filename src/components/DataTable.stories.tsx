@@ -582,10 +582,10 @@ export const MiniGraphiques: Story = {
     // Tri par charge décroissante : RER A (112 %) en tête, jugé défavorable
     const loads = canvas.getAllByRole("meter", { name: /^Charge à la pointe/ });
     await expect(loads[0]).toHaveAccessibleName("Charge à la pointe, ligne A");
-    await expect(loads[0]).toHaveAttribute("aria-valuetext", "112 % — Objectif non atteint — Capacité 100 %");
+    await expect(loads[0]).toHaveAttribute("aria-valuetext", "112 % — Défavorable — Capacité 100 %");
     // Objectif rappelé dans la valeur lue
     const offer = canvas.getByRole("meter", { name: "Réalisation de l'offre, ligne 13" });
-    await expect(offer).toHaveAttribute("aria-valuetext", "97,2 % — objectif 98,5 % — Niveau intermédiaire — Malus sous 97 %");
+    await expect(offer).toHaveAttribute("aria-valuetext", "97,2 % — objectif 98,5 % — Intermédiaire — Bonus dès 98,5 %");
     // Décomposition résumée pour les lecteurs d'écran
     await expect(canvas.getByRole("img", { name: "Kilomètres du jour, ligne 4" })).toHaveAccessibleDescription(/^Commerciaux : 1\s520\skm/);
   },

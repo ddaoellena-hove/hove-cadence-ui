@@ -1,5 +1,13 @@
 # Changelog — @ddaoellena/cadence-ui
 
+## 0.9.1 (non publiée)
+
+Version corrective, sans rupture d’API. Thème : **socle des graphiques** (feuille de route § 4 bis, lot 0.9.1).
+
+### Modifié
+
+- **Statuts des seuils** (`Gauge`, `Meter`, `BulletChart`) : « Objectif atteint / Niveau intermédiaire / Objectif non atteint » deviennent **« Favorable / Intermédiaire / Défavorable »**, valables pour un objectif à atteindre comme pour un plafond à ne pas dépasser (taux de charge). Un niveau intermédiaire cite désormais la borne de la zone favorable — ce qu’il reste à atteindre (« Intermédiaire — Bonus dès 92 % ») ou à ne pas dépasser (« Intermédiaire — Charge élevée 80 % ») — au lieu de la borne déjà franchie. ⚠️ Les textes lus changent : adapter les tests qui les vérifient.
+
 ## 0.9.0 (non publiée)
 
 Version mineure, sans rupture d’API. Thème : **dataviz du pilotage transport** (feuille de route : `docs/proposals/0.9.0-dataviz-et-1.0.md`).

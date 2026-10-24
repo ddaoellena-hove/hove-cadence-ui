@@ -31,7 +31,7 @@ export const TauxDeCharge: Story = {
   play: async ({ canvasElement }) => {
     const meter = within(canvasElement).getByRole("meter", { name: "Ligne 13 — course de 8 h 12" });
     await expect(meter).toHaveAttribute("aria-valuenow", "92");
-    await expect(meter).toHaveAttribute("aria-valuetext", "92 % — Niveau intermédiaire — Capacité 100 %");
+    await expect(meter).toHaveAttribute("aria-valuetext", "92 % — Intermédiaire — Charge élevée 80 %");
   },
 };
 
@@ -41,7 +41,7 @@ export const Surcharge: Story = {
   play: async ({ canvasElement }) => {
     const meter = within(canvasElement).getByRole("meter");
     await expect(meter).toHaveAttribute("aria-valuenow", "100");
-    await expect(meter).toHaveAttribute("aria-valuetext", "112 % — Objectif non atteint — Capacité 100 %");
+    await expect(meter).toHaveAttribute("aria-valuetext", "112 % — Défavorable — Capacité 100 %");
   },
 };
 
