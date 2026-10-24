@@ -1,5 +1,17 @@
 # Changelog — @ddaoellena/cadence-ui
 
+## 0.9.4 (non publiée)
+
+Version mineure, sans rupture d’API. Thème : **thermomètre de ligne** (feuille de route § 4 bis, lot 0.9.4 ; proposition `docs/proposals/line-diagram.md`).
+
+### Ajouté
+
+- **`LineDiagram`** : thermomètre de ligne temps réel. Arrêts sur une voie à la couleur GTFS, véhicules de l’aller au-dessus et du retour au-dessous (pastille `ModeIcon` + numéro + écart, ou incident), statut par teinte et texte, arrêts fermés et tronçons perturbés, empilement des véhicules proches, espacement régulier ou à l’échelle des distances, défilement horizontal. Composant contrôlé (positions fournies par l’application), déplacements animés sauf `prefers-reduced-motion`. Clavier par file (aller, retour, arrêts), annonces des incidents regroupées au plus toutes les 10 s (`announce`), tableau des véhicules, fraîcheur et export via le cadre commun. Intégré au pattern Supervision.
+
+### Corrigé
+
+- **Panneaux ancrés** : le panneau est aussi replacé quand le conteneur de son déclencheur change de largeur (barre de défilement qui apparaît), et n’est plus remplacé quand sa position ne change pas (pas de rendu ni de refocalisation inutiles). Stabilise les tests `PageHeader / Défaut` et `ActionMenu / Dans une TableCard`.
+
 ## 0.9.3 (non publiée)
 
 Version mineure, sans rupture d’API. Thème : **graphiques d’analyse** (feuille de route § 4 bis, lot 0.9.3).

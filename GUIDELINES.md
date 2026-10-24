@@ -248,6 +248,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 |---|---|---|
 | Période, jours habituels et exceptions de circulation | `ServiceCalendar` | `DateRangePicker` (période seule) |
 | Succession des arrêts et horaires d’une course | `RouteStopList` | `Stepper` (étapes d’un processus) |
+| Positions temps réel des véhicules sur une ligne (supervision) | `LineDiagram` | `RouteStopList` (une course, horaires) ; une carte (géographie) |
 | Examiner les erreurs d’un import | Recette `Offre et qualité / Rapport qualité` | `ErrorSummary` (erreurs des champs d’un formulaire) |
 | Action principale de la vue (une seule) | `PrimaryButton` | `GhostButton` (secondaire) |
 | Action secondaire, action inline de formulaire | `GhostButton` | `SecondaryButton` (déprécié) ; `Link` (3e action) |
@@ -1094,7 +1095,7 @@ FormActions  →  Link · GhostButton · PrimaryButton
 
 ### Pattern — Tableau de bord de supervision
 
-**Quand l'utiliser** — suivi temps réel (indicateurs, alertes, fraîcheur). **Ne pas confondre avec** — Analyse. **Anatomie** : `PageHeader` (période) · `DataFreshness` · `InlineAlert` · `CardGrid`(`Card` cliquables) · `BulletChart` (indicateurs du contrat vs objectif). **Comportements** : la période filtre indicateurs et liste ; une carte cliquable ouvre la liste filtrée. **Règles** : ✅ `loading` par carte ; ✅ chaque carte cliquable porte son bouton visible (`actionLabel`), dont la zone couvre la carte. **Gabarit** — vérifié : [`src/patterns/SupervisionPattern.tsx`](src/patterns/SupervisionPattern.tsx).
+**Quand l'utiliser** — suivi temps réel (indicateurs, alertes, fraîcheur). **Ne pas confondre avec** — Analyse. **Anatomie** : `PageHeader` (période) · `DataFreshness` · `InlineAlert` · `CardGrid`(`Card` cliquables) · `BulletChart` (indicateurs du contrat vs objectif) · `LineDiagram` (thermomètre de la ligne en alerte). **Comportements** : la période filtre indicateurs et liste ; une carte cliquable ouvre la liste filtrée. **Règles** : ✅ `loading` par carte ; ✅ chaque carte cliquable porte son bouton visible (`actionLabel`), dont la zone couvre la carte. **Gabarit** — vérifié : [`src/patterns/SupervisionPattern.tsx`](src/patterns/SupervisionPattern.tsx).
 
 ### Pattern — Tableau de bord d'analyse
 
@@ -3150,6 +3151,40 @@ Rendu des étapes :
 - ✅ Couleurs de ligne issues des données GTFS, comme `LineBadge` : texte calculé pour AA.
 - ❌ Pas pour des plages par entité (perturbations, amplitudes) : `Timeline`.
 - ❌ Pas de calcul d'itinéraire : le composant affiche ce que l'app fournit.
+
+### LineDiagram
+
+Thermomètre de ligne temps réel : arrêts sur une voie horizontale à la couleur GTFS de la ligne, véhicules de l'aller **au-dessus**, du retour **au-dessous**, chacun en pastille `ModeIcon` + numéro + écart (« +4 », « −1 ») ou picto d'incident. Statut par teinte **et** texte : incident > retard > avance > à l'heure (tokens `--cadence-status-*`). Arrêt fermé : pastille barrée et libellé rayé ; arrêt perturbé : tronçon suivant tireté. Véhicules proches empilés sur trois niveaux, au-delà estompés (toujours au clavier et dans le tableau). Espacement régulier, ou à l'échelle si tous les arrêts ont une `distance` ; au moins 64 px par interarrêt, défilement horizontal au-delà. Composant **contrôlé** : l'application fournit les positions à chaque rafraîchissement (aucune requête). Déplacements animés (600 ms), sans animation sous `prefers-reduced-motion`. Props communes : voir `BarList` (dont `freshness` pour dater la donnée et `exportable`).
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `line` | `{ code, color?, textColor?, mode? }` | **requis** | Ligne GTFS : badge, couleur de la voie, picto des véhicules |
+| `stops` | `{ id, name, distance?, status?, note? }[]` | **requis** | Arrêts dans l'ordre de l'aller ; `status` `"normal" \| "disrupted" \| "closed"`, `note` lue et au survol |
+| `vehicles` | `LineDiagramVehicle[]` | **requis** | `{ id, label, direction: "outbound" \| "inbound", position, delay?, incident?, load? }` ; `position` `{ at }` ou `{ from, to, progress? }` (0 à 1, défaut 0,5) |
+| `directions` | `{ outbound?, inbound? }` | « Vers <terminus> » | Libellés des sens |
+| `show` | `"both" \| "outbound" \| "inbound"` | `"both"` | Sens affichés |
+| `delayThresholds` | `{ late, early }` | `{ late: 3, early: -1 }` | Seuils (min) du statut retard / avance |
+| `announce` | `"none" \| "incidents" \| "all"` | `"incidents"` | Annonces des changements non sollicités (nouvel incident, arrêt fermé ; `"all"` : aussi retard / avance), regroupées au plus toutes les 10 s |
+| `onVehicleClick` | `(vehicle) => void` | — | Clic ou Entrée sur un véhicule |
+| `onStopClick` | `(stop) => void` | — | Clic ou Entrée sur un arrêt ; ajoute la file des arrêts au clavier |
+
+Clavier : un seul arrêt de tabulation ; ←/→ d'un véhicule au suivant dans la file (ordre de la ligne), ↑/↓ change de file (aller, retour, puis arrêts si `onStopClick`), Début / Fin, Entrée, Échap. Annonce : « 4521, Vers Montparnasse, entre Basilique de Saint-Denis et Porte de Paris, retard 4 min, charge 92 % ». Description : « 4 véhicules vers Montparnasse, 3 vers Saint-Denis Université, 1 incident, 2 en retard, 1 arrêt fermé ». « Voir les données » : véhicule, sens, position, écart, charge, incident.
+
+- ⚠️ Ligne **linéaire** en v1 : pas de fourches ni de boucles, une ligne à la fois.
+- ⚠️ `vehicles` change à chaque rafraîchissement : garder des `id` stables pour que les véhicules glissent au lieu de réapparaître.
+- ❌ Pas une carte : pour la géographie, l'application garde sa carte ; pour l'espace-temps, `TimeSpaceDiagram` (prévu 0.9.5).
+
+```tsx
+<LineDiagram
+  title="Ligne 13 — supervision"
+  freshness={{ updatedAt: lastPoll }}
+  line={{ code: "13", mode: "metro", color: "#6ec4e8" }}
+  stops={arrets}
+  vehicles={positions}
+  directions={{ outbound: "Vers Montparnasse", inbound: "Vers Saint-Denis Université" }}
+  onVehicleClick={(v) => openVehicle(v.id)}
+/>
+```
 
 ### ColorField
 
