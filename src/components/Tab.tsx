@@ -52,7 +52,8 @@ export const Tab = ({
       tabIndex={inTabList ? (active ? 0 : -1) : undefined}
     >
       <span className="tab__label">{label}</span>
-      {variant === "active" && <span className="tab__underline" aria-hidden="true" />}
+      {/* Toujours rendu : l'actif le déploie, l'ancien le replie (transition CSS) */}
+      <span className="tab__underline" aria-hidden="true" />
     </button>
   );
 };
