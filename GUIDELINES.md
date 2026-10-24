@@ -325,6 +325,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Déposer/sélectionner des fichiers | `FileUpload` | L'app assure l'envoi et la validation métier |
 | Progression déterminée ou indéterminée | `ProgressBar` | `Gauge` (mesure, pas un traitement) |
 | Proportion unique, objectif | `Gauge` | `Card` (KPI chiffré) |
+| Parts d'un total (≤ 6 : parts modales, état du parc, causes) | `DonutChart` | `BarList` (classement, plus de 6 éléments) ; un camembert (non fourni) |
 | Choisir portée et format d'export | `ExportMenu` | L'app fabrique le fichier |
 | Masquer/réordonner les colonnes | `ColumnManager` | `DataTable` applique l'état |
 | Heure seule, y compris service après minuit | `TimePicker` | `DatePicker withTime` (date calendaire + heure) |
@@ -905,6 +906,7 @@ Une `Card` est **interactive** de deux façons :
 | Une valeur clé et sa tendance en haut de page ? | `Card` (`value`, `delta`, `trend`) |
 | La tendance de chaque ligne d'un tableau ? | `Sparkline` dans une cellule de `DataTable` |
 | Quand des plages se situent sur un axe temps (perturbations, amplitudes, travaux) ? | `Timeline` (une ligne par entité) ; `JourneyTimeline` (itinéraires comparés) |
+| Comment un total se répartit-il (6 parts au plus) ? | `DonutChart` (au-delà : `BarList`) |
 
 ### Palette
 
@@ -922,11 +924,11 @@ Une `Card` est **interactive** de deux façons :
 ### Accessibilité
 
 - ✅ Chaque graphique a un `title` (nom accessible) et, de préférence, une `description` (période, périmètre).
-- ✅ Alternative tabulaire : « Voir les données » affiche un vrai tableau, présent dans le DOM même masqué (`LineChart`, `BarChart` avec le total par catégorie, `BarList`, `Timeline` et `JourneyTimeline`) ; la `Heatmap` est elle-même une grille (`role="grid"`) avec en-têtes de lignes et de colonnes.
-- ✅ Clavier : `LineChart` (←/→, Début / Fin, tooltip annoncé), `BarChart` (←/→ ou ↑/↓ d'une catégorie à l'autre), `Heatmap` (flèches, Début / Fin, Ctrl+Début / Fin, Entrée), `BarList` (lignes cliquables = boutons nommés), `Timeline` / `JourneyTimeline` (←/→ entre plages d'une ligne, ↑/↓ de ligne, Début / Fin, Entrée).
+- ✅ Alternative tabulaire : « Voir les données » affiche un vrai tableau, présent dans le DOM même masqué (`LineChart`, `BarChart` avec le total par catégorie, `BarList`, `DonutChart` avec les parts et le total, `Timeline` et `JourneyTimeline`) ; la `Heatmap` est elle-même une grille (`role="grid"`) avec en-têtes de lignes et de colonnes.
+- ✅ Clavier : `LineChart` (←/→, Début / Fin, tooltip annoncé), `BarChart` (←/→ ou ↑/↓ d'une catégorie à l'autre), `Heatmap` (flèches, Début / Fin, Ctrl+Début / Fin, Entrée), `BarList` (lignes cliquables = boutons nommés), `DonutChart` (←/→ d'une part à l'autre, en boucle, Début / Fin), `Timeline` / `JourneyTimeline` (←/→ entre plages d'une ligne, ↑/↓ de ligne, Début / Fin, Entrée).
 - ✅ États `loading`, `empty`, `error` (avec `onRetry`) plutôt qu'un graphique vide.
 - ✅ Plusieurs graphiques sur une page (tableau de bord, graphiques côte à côte dans une `CardGrid`) : les encadrer avec `framed`, même surface qu'une `Card`. Sans cadre, deux graphiques voisins se confondent (titres, axes et légendes sans limite visible). Un graphique seul dans une `PageSection` peut rester sans cadre.
-- ✅ Les graphiques suivent la largeur de leur conteneur : jamais de largeur fixe en px. Hauteurs par défaut : `LineChart` et `BarChart` vertical 280px (`LineChart compact` : 48px), `BarChart` horizontal 36px par catégorie, `Heatmap` 28px par ligne, `BarList` 32px par ligne, `Timeline` / `JourneyTimeline` 32px par ligne.
+- ✅ Les graphiques suivent la largeur de leur conteneur : jamais de largeur fixe en px. Hauteurs par défaut : `LineChart` et `BarChart` vertical 280px (`LineChart compact` : 48px), `BarChart` horizontal 36px par catégorie, `Heatmap` 28px par ligne, `BarList` 32px par ligne, `Timeline` / `JourneyTimeline` 32px par ligne, `DonutChart` 200px de diamètre (légende à côté, dessous si la place manque).
 
 ---
 
@@ -1760,6 +1762,41 @@ Classement horizontal : libellé, barre proportionnelle (`--cadence-dataviz-seri
   limit={5}
   onShowAll={() => navigate("/lignes")}
   onItemClick={(item) => navigate(`/lignes/${item.id}`)}
+/>
+```
+
+### DonutChart
+
+Anneau des parts d'un total (six au plus) : total au centre, légende à côté avec valeur et part. Chaque part a une couleur (`--cadence-dataviz-series-N`) **et** un motif, repris dans la légende. Au-delà de `maxSlices`, les plus petites parts sont regroupées dans « Autres » (dernière part, couleur neutre de la série 8). Survol ou clavier : la part active s'agrandit, les autres s'estompent et le centre affiche sa part du total. « Voir les données » : parts et total. Props communes : voir `BarList`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `slices` | `{ id, label: string, value, color? }[]` | **requis** | Parts dans l'ordre d'affichage (sens horaire depuis midi). Valeurs nulles, négatives ou non finies ignorées ; `color` : token attendu |
+| `maxSlices` | `number` | `6` | Au-delà, regroupement dans « Autres » |
+| `othersLabel` | `string` | `"Autres"` | Libellé de la part regroupée (« Autres causes ») |
+| `unit` | `string` | — | Centre, tableau, annonces |
+| `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | — |
+| `centerLabel` | `string` | `"Total"` | Libellé sous le total (suivi de l'unité) |
+| `showLegend` | `boolean` | `true` | Légende (libellé, valeur, part) ; non cliquable : masquer une part fausserait le total |
+| `size` | `number` | `200` | Diamètre en px |
+| `hideTitle` | `boolean` | `false` | En-tête masqué visuellement (titre toujours lu) |
+
+Clavier : l'anneau est focusable ; ←/→ (ou ↑/↓) d'une part à l'autre, en boucle, Début / Fin, Échap désactive la part. La part est annoncée (`aria-live`) : « Bus : 1 240 trajets, 42,5 % » ; la description résume le total et la plus grande part.
+
+- ⚠️ Les parts sont calculées sur le total des valeurs fournies : pour une part d'un objectif ou d'une capacité, utiliser `Meter`.
+- ⚠️ Pas d'infobulle : le centre de l'anneau en tient lieu.
+
+```tsx
+<DonutChart
+  title="Parts modales"
+  description="Validations du 14 au 20 octobre 2026, en milliers"
+  unit="k validations"
+  slices={[
+    { id: "bus", label: "Bus", value: 1240 },
+    { id: "metro", label: "Métro", value: 980 },
+    { id: "tram", label: "Tramway", value: 420 },
+    { id: "rer", label: "RER", value: 278 },
+  ]}
 />
 ```
 

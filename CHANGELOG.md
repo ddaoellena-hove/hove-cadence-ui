@@ -4,6 +4,9 @@
 
 Version mineure, sans rupture d’API. Thème : **dataviz du pilotage transport** (feuille de route : `docs/proposals/0.9.0-dataviz-et-1.0.md`).
 
+### Ajouté
+
+- **`DonutChart`** : anneau des parts d’un total (six au plus), total au centre, légende avec valeur et part. Couleur **et** motif par part ; au-delà de `maxSlices` (6), regroupement des plus petites parts dans « Autres » (`othersLabel`). Survol et clavier (←/→ en boucle, Début / Fin, Échap) : la part active s’agrandit et le centre affiche sa part du total, annoncée (`aria-live`). Contrat commun des graphiques (`title`, `description`, états, `framed`, « Voir les données » avec parts et total). Pour les parts modales, l’état du parc, les causes de perturbation.
 
 ### Modifié
 
