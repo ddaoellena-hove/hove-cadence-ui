@@ -397,6 +397,8 @@ export const Sidebar = ({
         {scope && !isCollapsed && (
           <div className="sidebar__scope" role="group" aria-label="Périmètre">
             <Dropdown
+              variant="button"
+              aria-label="Périmètre"
               options={scope.options}
               value={scope.value}
               onChange={scope.onChange}
