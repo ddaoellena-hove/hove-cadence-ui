@@ -235,3 +235,28 @@ Branche `release/0.8.0`, version `0.8.0` non publiée. Commits atomiques, rien p
 - **Audit contraste** livré en checklist (non appliqué) : [`docs/audits/0.8.5/contraste-aa.md`](audits/0.8.5/contraste-aa.md). Constat clé : `icon-muted` est à 4,53:1 sur blanc (limite), et `text-secondary` **échoue aussi sur `surface-alt`** (4,24:1). Il faut décider s'il faut l'assombrir (candidat `#607075`).
 
 **Reste ouvert (0.8.5, utilisateur)** : appliquer la checklist contraste et trancher les états estompés ; garde-fou CSS « `icon-muted` interdit en texte » une fois corrigé ; tests lecteur d'écran ; apps consommatrices dédiées ; publication npm.
+
+## Mise à jour — 0.9.0 dataviz (terminée, non publiée)
+
+Feuille de route : [`docs/proposals/0.9.0-dataviz-et-1.0.md`](proposals/0.9.0-dataviz-et-1.0.md). Version du manifeste : `0.9.0`, **non publiée** sur npm.
+
+**Livré** (fusionné dans `main` pour les lots 1 à 4, branche `feat/dataviz-lot5` pour la suite)
+
+- Lots 1 à 4 : `DonutChart`, `Meter`, `BulletChart`, `Histogram`, `ComboChart`, `LineChart curve="step"` ; seuils partagés dans `threshold-utils.ts` (Gauge, Meter, BulletChart).
+- Lot 5 : heures de service au-delà de 24:00 (`LineChart serviceTime`, `Histogram serviceTime`) ; mini-graphiques en cellule (`Meter size="sm"`, `target`, `min` ; story *DataTable → Mini-graphiques en cellule*) ; comparaison N vs N-1 (`series[].reference` sur `LineChart` et `BarChart`, écart au survol via `formatGap`).
+- Patterns : Analyse (référence N-1, `DonutChart`, `Histogram`) et Supervision (`BulletChart`).
+- Hors dataviz, au passage : pictos `ModeIcon` dans `JourneyTimeline` ; la page ne défile plus hors du cadre d'`AppLayout` (`.app-layout__scroll` et `.chart` positionnés) ; CI réparée (runner `ubuntu-24.04`, alias Vite `@ddaoellena/cadence-ui` → sources) ; ref de `DateFields` compatible types React 18.
+
+**Décisions**
+
+- `Meter` est une primitive compacte (comme `Gauge`) : `label` au lieu de `title`, sans états ni tableau.
+- `Histogram` dessine chaque classe à largeur égale (classes métier inégales lisibles) ; bornes imposées → classes ouvertes hors bornes.
+- Une série de référence ne consomme pas de couleur de palette (ardoise tiretée) ; l'écart n'est rappelé qu'avec une seule référence.
+
+**Reste ouvert**
+
+- **Phrases de statut** de `Gauge` / `Meter` / `BulletChart` (« Objectif atteint — … », « Niveau intermédiaire — Malus sous 97 % » cite la borne basse) : à reformuler avec l'utilisateur, notamment pour un taux de charge.
+- Test `PageHeader / Défaut` instable dans la suite complète (position du popover), stable seul.
+- Le Storybook lancé avant l'alias Vite résout le paquet vers `dist/` : le redémarrer.
+- 0.9.x : P2 (`BoxPlot`, `Treemap`, `ScatterChart`) et candidates du § 2 bis ; puis la 1.0 (§ 5 de la feuille de route). Publication npm uniquement sur demande.
+
