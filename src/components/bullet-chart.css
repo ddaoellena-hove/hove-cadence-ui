@@ -1,0 +1,133 @@
+/* ── BulletChart ─────────────────────────────────────────────────────────── */
+/* Cadre, tableau et états : chart-frame.css (ChartFrame). */
+.bullet-chart__items {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Libellé + statut · tracé · valeur, colonnes alignées d'une ligne à l'autre */
+.bullet-chart__row {
+  align-items: center;
+  box-sizing: border-box;
+  color: var(--cadence-color-primary, #002830);
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(120px, 32%) 1fr 72px;
+  min-height: 48px;
+  padding: 4px 0;
+}
+
+.bullet-chart__heading {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.bullet-chart__label {
+  font-size: 13px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bullet-chart__status {
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.bullet-chart__row--success .bullet-chart__status {
+  color: var(--cadence-status-completed-fg, #15803d);
+}
+
+.bullet-chart__row--warning .bullet-chart__status {
+  color: var(--cadence-status-warning-fg, #c2410c);
+}
+
+.bullet-chart__row--danger .bullet-chart__status {
+  color: var(--cadence-status-critical-fg, #b91c1c);
+}
+
+/* ── Tracé : plages en fond, barre de valeur au centre, repère d'objectif ── */
+.bullet-chart__plot {
+  border-radius: 3px;
+  height: 20px;
+  overflow: hidden;
+  position: relative;
+}
+
+.bullet-chart__band {
+  height: 100%;
+  position: absolute;
+  top: 0;
+}
+
+/* Liseré blanc entre deux plages */
+.bullet-chart__band + .bullet-chart__band {
+  box-shadow: inset 1px 0 0 var(--cadence-color-white, #ffffff);
+}
+
+.bullet-chart__band--neutral {
+  background: var(--cadence-color-surface-alt, #eef1f4);
+}
+
+.bullet-chart__band--danger {
+  background: var(--cadence-status-critical-bg, #fee2e2);
+}
+
+.bullet-chart__band--warning {
+  background: var(--cadence-status-warning-bg, #fff7ed);
+}
+
+.bullet-chart__band--success {
+  background: var(--cadence-status-completed-bg, #dcfce7);
+}
+
+.bullet-chart__bar {
+  background: var(--cadence-color-primary, #002830);
+  border-radius: 2px;
+  height: 8px;
+  left: 0;
+  position: absolute;
+  top: 6px;
+}
+
+.bullet-chart__target {
+  background: var(--cadence-dataviz-threshold, #1a3e45);
+  border-radius: 1px;
+  height: 16px;
+  position: absolute;
+  top: 2px;
+  transform: translateX(-1.5px);
+  width: 3px;
+}
+
+.bullet-chart__value {
+  align-items: baseline;
+  display: inline-flex;
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  gap: 2px;
+  justify-content: flex-end;
+  white-space: nowrap;
+}
+
+.bullet-chart__unit {
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bullet-chart__bar {
+    transition: width 200ms ease;
+  }
+}

@@ -76,6 +76,7 @@ export * from './ServiceCalendar';
 export * from './RouteStopList';
 export * from './Sparkline';
 export * from './DonutChart';
+export * from './BulletChart';
 export * from './CopyableText';
 export * from './ColorField';
 export * from './Timeline';

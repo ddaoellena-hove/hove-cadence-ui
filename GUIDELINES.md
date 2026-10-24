@@ -327,6 +327,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Proportion unique, objectif | `Gauge` | `Card` (KPI chiffré) |
 | Valeur vs capacité en barre (taux de charge, parking relais, quota) | `Meter` | `ProgressBar` (avancement d'un traitement) ; `Gauge` (KPI mis en avant) |
 | Décomposition d'un total en barre (km commerciaux / haut-le-pied / annulés) | `Meter segments` | `BarChart` empilé (plusieurs catégories) ; `DonutChart` (parts sans capacité) |
+| Performance vs objectif contractuel, plages malus / bonus (ponctualité, régularité, réalisation de l'offre) | `BulletChart` | `Gauge` (un seul KPI mis en avant) ; `Meter` (valeur vs capacité, sans plages) |
 | Parts d'un total (≤ 6 : parts modales, état du parc, causes) | `DonutChart` | `BarList` (classement, plus de 6 éléments) ; un camembert (non fourni) |
 | Choisir portée et format d'export | `ExportMenu` | L'app fabrique le fichier |
 | Masquer/réordonner les colonnes | `ColumnManager` | `DataTable` applique l'état |
@@ -909,6 +910,7 @@ Une `Card` est **interactive** de deux façons :
 | La tendance de chaque ligne d'un tableau ? | `Sparkline` dans une cellule de `DataTable` |
 | Quand des plages se situent sur un axe temps (perturbations, amplitudes, travaux) ? | `Timeline` (une ligne par entité) ; `JourneyTimeline` (itinéraires comparés) |
 | Comment un total se répartit-il (6 parts au plus) ? | `DonutChart` (au-delà : `BarList`) |
+| Les indicateurs du contrat atteignent-ils leur objectif (malus, neutre, bonus) ? | `BulletChart` |
 | Où en est une valeur par rapport à sa capacité ou à ses seuils ? | `Meter` (barre) ; `Gauge` (KPI mis en avant) |
 | De quoi se compose un total, rapporté à une capacité ? | `Meter segments` |
 
@@ -928,11 +930,11 @@ Une `Card` est **interactive** de deux façons :
 ### Accessibilité
 
 - ✅ Chaque graphique a un `title` (nom accessible) et, de préférence, une `description` (période, périmètre).
-- ✅ Alternative tabulaire : « Voir les données » affiche un vrai tableau, présent dans le DOM même masqué (`LineChart`, `BarChart` avec le total par catégorie, `BarList`, `DonutChart` avec les parts et le total, `Timeline` et `JourneyTimeline`) ; la `Heatmap` est elle-même une grille (`role="grid"`) avec en-têtes de lignes et de colonnes.
-- ✅ Clavier : `LineChart` (←/→, Début / Fin, tooltip annoncé), `BarChart` (←/→ ou ↑/↓ d'une catégorie à l'autre), `Heatmap` (flèches, Début / Fin, Ctrl+Début / Fin, Entrée), `BarList` (lignes cliquables = boutons nommés), `DonutChart` (←/→ d'une part à l'autre, en boucle, Début / Fin), `Timeline` / `JourneyTimeline` (←/→ entre plages d'une ligne, ↑/↓ de ligne, Début / Fin, Entrée).
+- ✅ Alternative tabulaire : « Voir les données » affiche un vrai tableau, présent dans le DOM même masqué (`LineChart`, `BarChart` avec le total par catégorie, `BarList`, `DonutChart` avec les parts et le total, `BulletChart` avec l'objectif et le statut, `Timeline` et `JourneyTimeline`) ; la `Heatmap` est elle-même une grille (`role="grid"`) avec en-têtes de lignes et de colonnes.
+- ✅ Clavier : `LineChart` (←/→, Début / Fin, tooltip annoncé), `BarChart` (←/→ ou ↑/↓ d'une catégorie à l'autre), `Heatmap` (flèches, Début / Fin, Ctrl+Début / Fin, Entrée), `BarList` (lignes cliquables = boutons nommés), `DonutChart` (←/→ d'une part à l'autre, en boucle, Début / Fin), `BulletChart` (lignes nommées : valeur, objectif, statut), `Timeline` / `JourneyTimeline` (←/→ entre plages d'une ligne, ↑/↓ de ligne, Début / Fin, Entrée).
 - ✅ États `loading`, `empty`, `error` (avec `onRetry`) plutôt qu'un graphique vide.
 - ✅ Plusieurs graphiques sur une page (tableau de bord, graphiques côte à côte dans une `CardGrid`) : les encadrer avec `framed`, même surface qu'une `Card`. Sans cadre, deux graphiques voisins se confondent (titres, axes et légendes sans limite visible). Un graphique seul dans une `PageSection` peut rester sans cadre.
-- ✅ Les graphiques suivent la largeur de leur conteneur : jamais de largeur fixe en px. Hauteurs par défaut : `LineChart` et `BarChart` vertical 280px (`LineChart compact` : 48px), `BarChart` horizontal 36px par catégorie, `Heatmap` 28px par ligne, `BarList` 32px par ligne, `Timeline` / `JourneyTimeline` 32px par ligne, `DonutChart` 200px de diamètre (légende à côté, dessous si la place manque).
+- ✅ Les graphiques suivent la largeur de leur conteneur : jamais de largeur fixe en px. Hauteurs par défaut : `LineChart` et `BarChart` vertical 280px (`LineChart compact` : 48px), `BarChart` horizontal 36px par catégorie, `Heatmap` 28px par ligne, `BarList` 32px par ligne, `Timeline` / `JourneyTimeline` 32px par ligne, `DonutChart` 200px de diamètre (légende à côté, dessous si la place manque), `BulletChart` 48px par indicateur.
 
 ---
 
@@ -1800,6 +1802,42 @@ Clavier : l'anneau est focusable ; ←/→ (ou ↑/↓) d'une part à l'autre, e
     { id: "metro", label: "Métro", value: 980 },
     { id: "tram", label: "Tramway", value: 420 },
     { id: "rer", label: "RER", value: 278 },
+  ]}
+/>
+```
+
+### BulletChart
+
+Performance par rapport à un objectif : une ligne par indicateur, avec la barre de la valeur sur des plages qualitatives (insuffisant / moyen / bon en fond, tokens `--cadence-status-*-bg`), le repère d'objectif (trait `--cadence-dataviz-threshold`), la valeur en mono et le **statut écrit** sous le libellé (« Objectif atteint — Bonus dès 92 % »). Les plages sont jugées comme `Gauge` selon `goodDirection`. Lignes non interactives, nommées (`role="group"`) : « Ponctualité : 93,4 %, objectif 92 %, Objectif atteint — Bonus dès 92 % ». « Voir les données » : valeur, objectif, statut. Props communes : voir `BarList`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `items` | `BulletChartItem[]` | **requis** | Une ligne par indicateur (voir ci-dessous) |
+| `min` | `number` | `0` | Début de l'échelle par défaut : `80` pour un taux contractuel lu entre 80 et 100 % |
+| `max` | `number` | `100` | Fin de l'échelle par défaut |
+| `unit` | `string` | — | Unité par défaut des lignes (« % ») |
+| `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | — |
+| `goodDirection` | `"up" \| "down" \| "neutral"` | `"up"` | Sens favorable par défaut |
+| `hideTitle` | `boolean` | `false` | En-tête masqué visuellement (titre toujours lu) |
+
+`BulletChartItem` : `{ id, label, value, target?, ranges?: { value, label }[], min?, max?, unit?, goodDirection? }`. `ranges` donne les **bornes** libellées entre plages (« Malus sous 85 % », « Bonus dès 92 % ») : une borne → deux plages, deux bornes → trois. `min`, `max`, `unit` et `goodDirection` d'une ligne remplacent ceux du graphique (indicateurs d'unités différentes).
+
+- ✅ Des plages serrées (85 / 92 %) se lisent mieux avec `min={80}` : sur 0 → 100, elles tiennent dans le dernier cinquième de la barre. L'indiquer dans la `description` (« échelle de 80 à 100 % »).
+- ⚠️ L'échelle d'une ligne s'étend jusqu'à la valeur, l'objectif ou une borne qui sort de [`min`, `max`] : le nombre réel n'est jamais tronqué.
+- ⚠️ Sans `ranges` ou avec `goodDirection="neutral"` : une seule plage neutre, pas de statut.
+- ❌ Pas de plage sans libellé : le jugement doit se lire sans la couleur.
+
+```tsx
+<BulletChart
+  title="Indicateurs du contrat de service public"
+  description="Octobre 2026, réseau bus"
+  unit="%"
+  min={80}
+  items={[
+    { id: "ponctualite", label: "Ponctualité", value: 93.4, target: 92,
+      ranges: [{ value: 85, label: "Malus sous 85 %" }, { value: 92, label: "Bonus dès 92 %" }] },
+    { id: "offre", label: "Taux de réalisation de l'offre", value: 96.2, target: 98.5,
+      ranges: [{ value: 97, label: "Malus sous 97 %" }, { value: 98.5, label: "Bonus dès 98,5 %" }] },
   ]}
 />
 ```
