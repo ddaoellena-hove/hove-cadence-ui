@@ -1,5 +1,14 @@
 # Changelog — @ddaoellena/cadence-ui
 
+## 0.9.0 (non publiée)
+
+Version mineure, sans rupture d’API. Thème : **dataviz du pilotage transport** (feuille de route : `docs/proposals/0.9.0-dataviz-et-1.0.md`).
+
+
+### Modifié
+
+- **`Gauge`** : jugement des seuils extrait dans un module interne partagé avec `Meter` (`threshold-utils.ts`). Sans changement de comportement ni d’API.
+
 ## 0.8.1 (non publiée)
 
 Version mineure, sans rupture d’API.
