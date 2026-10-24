@@ -1,5 +1,7 @@
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
+import { DataFreshness, type DataFreshnessProps } from "./DataFreshness";
 import { GhostButton } from "./GhostButton";
+import { csvFileName, downloadCsv, readChartTable, toCsv, type CsvTable } from "./chart-export";
 import "./chart-frame.css";
 
 export type ChartState = "ready" | "loading" | "empty" | "error";
@@ -26,6 +28,20 @@ export interface ChartCommonProps {
    * graphiques se côtoient (grille, tableau de bord). Défaut false.
    */
   framed?: boolean;
+  /**
+   * Bouton « Exporter (CSV) » dans l'en-tête : télécharge l'alternative
+   * tabulaire (« Voir les données ») en CSV pour un tableur français. `true` :
+   * fichier nommé d'après le titre ; une chaîne : nom du fichier (sans
+   * extension). Défaut false.
+   */
+  exportable?: boolean | string;
+  /**
+   * Reprend l'export à la place du téléchargement (journalisation, export
+   * côté serveur) : reçoit les données du tableau et le CSV prêt.
+   */
+  onExport?: (data: CsvTable & { csv: string; fileName: string }) => void;
+  /** Fraîcheur de la donnée sous la description (`DataFreshness`) : « Mis à jour il y a 3 min ». */
+  freshness?: Pick<DataFreshnessProps, "updatedAt" | "now" | "freshWithin" | "staleWithin" | "label">;
   /** Classe CSS additionnelle. */
   className?: string;
 }
@@ -62,6 +78,9 @@ export const ChartFrame = ({
   errorMessage = "Impossible de charger les données.",
   onRetry,
   framed = false,
+  exportable = false,
+  onExport,
+  freshness,
   className,
   titleId,
   descriptionId,
@@ -74,6 +93,18 @@ export const ChartFrame = ({
   children,
 }: ChartFrameProps) => {
   const [showTable, setShowTable] = useState(false);
+  const rootRef = useRef<HTMLElement>(null);
+
+  // L'alternative tabulaire est toujours dans le DOM : l'export la relit telle qu'affichée
+  const exportCsv = () => {
+    const tableElement = rootRef.current?.querySelector<HTMLTableElement>("table.chart-table");
+    if (!tableElement) return;
+    const data = readChartTable(tableElement);
+    const csv = toCsv(data);
+    const fileName = csvFileName(typeof exportable === "string" ? exportable : title);
+    if (onExport) onExport({ ...data, csv, fileName });
+    else downloadCsv(fileName, csv);
+  };
   const Heading = `h${headingLevel}` as const;
   const ready = state === "ready";
 
@@ -83,6 +114,7 @@ export const ChartFrame = ({
 
   return (
     <section
+      ref={rootRef}
       className={rootClass}
       aria-labelledby={titleId}
       aria-describedby={description ? descriptionId : undefined}
@@ -98,14 +130,20 @@ export const ChartFrame = ({
               {description}
             </p>
           )}
+          {freshness && <DataFreshness className="chart__freshness" {...freshness} />}
         </div>
         {ready && table && !compact && !hideHeader && (
-          <GhostButton
-            size="sm"
-            iconStart={showTable ? "eye-off" : "eye"}
-            label={showTable ? "Masquer les données" : "Voir les données"}
-            onClick={() => setShowTable((v) => !v)}
-          />
+          <div className="chart__actions">
+            {exportable && (
+              <GhostButton size="sm" iconStart="download-02" label="Exporter (CSV)" aria-label={`Exporter (CSV) : ${title}`} onClick={exportCsv} />
+            )}
+            <GhostButton
+              size="sm"
+              iconStart={showTable ? "eye-off" : "eye"}
+              label={showTable ? "Masquer les données" : "Voir les données"}
+              onClick={() => setShowTable((v) => !v)}
+            />
+          </div>
         )}
       </div>
 

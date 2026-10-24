@@ -213,6 +213,37 @@ export const ComparaisonN1: Story = {
   },
 };
 
+const onExport = fn();
+
+/**
+ * Export CSV (`exportable`) et fraîcheur (`freshness`) dans l'en-tête, pour
+ * tous les graphiques qui ont « Voir les données ». Sans `onExport`, le
+ * fichier est téléchargé ; ici, il est intercepté.
+ */
+export const ExportEtFraicheur: Story = {
+  name: "Export CSV et fraîcheur",
+  args: {
+    title: "Retard moyen par heure",
+    description: "7 derniers jours, toutes lignes",
+    unit: "min",
+    series: [{ id: "delay", label: "Retard moyen", data: hourlyDelays.slice(0, 24) }],
+    exportable: "retards-par-heure",
+    onExport,
+    freshness: { updatedAt: "2026-10-20T08:12:00", now: "2026-10-20T08:15:00" },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    onExport.mockClear();
+    await expect(canvas.getByText(/Mis à jour il y a 3 min/)).toBeInTheDocument();
+    await userEvent.click(canvas.getByRole("button", { name: "Exporter (CSV) : Retard moyen par heure" }));
+    await expect(onExport).toHaveBeenCalledTimes(1);
+    const { csv, fileName, rows } = onExport.mock.calls[0][0];
+    await expect(fileName).toBe("retards-par-heure.csv");
+    await expect(csv.startsWith("\uFEFFDate;Retard moyen (min)\r\n")).toBe(true);
+    await expect(rows).toHaveLength(24);
+  },
+};
+
 /** Mode compact, sans axes, pour une Card. */
 export const Compact: Story = {
   args: {

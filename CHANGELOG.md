@@ -4,6 +4,11 @@
 
 Version corrective, sans rupture d’API. Thème : **socle des graphiques** (feuille de route § 4 bis, lot 0.9.1).
 
+### Ajouté
+
+- **Graphiques — export CSV** (`exportable`, `onExport`) : bouton « Exporter (CSV) » dans l’en-tête de tout graphique qui a « Voir les données ». Le fichier reprend l’alternative tabulaire telle qu’affichée : séparateur `;` et BOM UTF-8 pour un tableur français, nombres sans espaces de groupement, nom de fichier tiré du titre. `onExport` reprend l’export (journalisation, export serveur). Pas de PNG : plusieurs graphiques sont en partie en HTML.
+- **Graphiques — fraîcheur** (`freshness`) : `DataFreshness` sous la description (« Mis à jour il y a 3 min »), pour une donnée live.
+
 ### Modifié
 
 - **Statuts des seuils** (`Gauge`, `Meter`, `BulletChart`) : « Objectif atteint / Niveau intermédiaire / Objectif non atteint » deviennent **« Favorable / Intermédiaire / Défavorable »**, valables pour un objectif à atteindre comme pour un plafond à ne pas dépasser (taux de charge). Un niveau intermédiaire cite désormais la borne de la zone favorable — ce qu’il reste à atteindre (« Intermédiaire — Bonus dès 92 % ») ou à ne pas dépasser (« Intermédiaire — Charge élevée 80 % ») — au lieu de la borne déjà franchie. ⚠️ Les textes lus changent : adapter les tests qui les vérifient.
