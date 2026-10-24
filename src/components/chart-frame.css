@@ -13,6 +13,17 @@
   gap: 0;
 }
 
+/* Graphique encadré : même surface qu'une Card (bordure, arrondi, marge).
+   Dans une grille, height: 100% aligne les cadres voisins sur le plus haut. */
+.chart--framed {
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-lg, 10px);
+  box-sizing: border-box;
+  height: 100%;
+  padding: 16px 20px;
+}
+
 .chart__header {
   align-items: flex-start;
   display: flex;

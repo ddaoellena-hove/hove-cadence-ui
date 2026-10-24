@@ -20,6 +20,12 @@ export interface ChartCommonProps {
   errorMessage?: string;
   /** Action « Réessayer » de l'état d'erreur. */
   onRetry?: () => void;
+  /**
+   * Encadre le graphique d'une surface de carte (fond blanc, bordure, coins
+   * arrondis, marge intérieure), comme une `Card`. À utiliser quand plusieurs
+   * graphiques se côtoient (grille, tableau de bord). Défaut false.
+   */
+  framed?: boolean;
   /** Classe CSS additionnelle. */
   className?: string;
 }
@@ -55,6 +61,7 @@ export const ChartFrame = ({
   emptyMessage = "Aucune donnée sur la période.",
   errorMessage = "Impossible de charger les données.",
   onRetry,
+  framed = false,
   className,
   titleId,
   descriptionId,
@@ -70,7 +77,9 @@ export const ChartFrame = ({
   const Heading = `h${headingLevel}` as const;
   const ready = state === "ready";
 
-  const rootClass = ["chart", kind, compact ? "chart--compact" : "", className].filter(Boolean).join(" ");
+  const rootClass = ["chart", kind, compact ? "chart--compact" : "", framed ? "chart--framed" : "", className]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <section

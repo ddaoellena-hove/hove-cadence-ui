@@ -918,6 +918,7 @@ Une `Card` est **interactive** soit par `onClick` (toute la carte mène à la li
 - ✅ Alternative tabulaire : « Voir les données » affiche un vrai tableau, présent dans le DOM même masqué (`LineChart`, `BarChart` avec le total par catégorie, `BarList`, `Timeline` et `JourneyTimeline`) ; la `Heatmap` est elle-même une grille (`role="grid"`) avec en-têtes de lignes et de colonnes.
 - ✅ Clavier : `LineChart` (←/→, Début / Fin, tooltip annoncé), `BarChart` (←/→ ou ↑/↓ d'une catégorie à l'autre), `Heatmap` (flèches, Début / Fin, Ctrl+Début / Fin, Entrée), `BarList` (lignes cliquables = boutons nommés), `Timeline` / `JourneyTimeline` (←/→ entre plages d'une ligne, ↑/↓ de ligne, Début / Fin, Entrée).
 - ✅ États `loading`, `empty`, `error` (avec `onRetry`) plutôt qu'un graphique vide.
+- ✅ Plusieurs graphiques sur une page (tableau de bord, graphiques côte à côte dans une `CardGrid`) : les encadrer avec `framed`, même surface qu'une `Card`. Sans cadre, deux graphiques voisins se confondent (titres, axes et légendes sans limite visible). Un graphique seul dans une `PageSection` peut rester sans cadre.
 - ✅ Les graphiques suivent la largeur de leur conteneur : jamais de largeur fixe en px. Hauteurs par défaut : `LineChart` et `BarChart` vertical 280px (`LineChart compact` : 48px), `BarChart` horizontal 36px par catégorie, `Heatmap` 28px par ligne, `BarList` 32px par ligne, `Timeline` / `JourneyTimeline` 32px par ligne.
 
 ---
@@ -1056,7 +1057,7 @@ FormActions  →  Link · GhostButton · PrimaryButton
 
 ### Pattern — Tableau de bord d'analyse
 
-**Quand l'utiliser** — explorer sur une période (indicateurs, évolution, répartition, classement). **Ne pas confondre avec** — Supervision. **Anatomie** : `PageHeader` (période) · `CardGrid`(`Card`) · `LineChart` · `CardGrid min=360 fit`(`Heatmap`, `BarList`). **États** : chargement / erreur **par bloc** (`state`, `onRetry`). **Règles** : ✅ grilles fluides, jamais de px fixe ; ❌ pas de graphique sans `title` ni état. **Gabarit** — vérifié : [`src/patterns/AnalysePattern.tsx`](src/patterns/AnalysePattern.tsx).
+**Quand l'utiliser** — explorer sur une période (indicateurs, évolution, répartition, classement). **Ne pas confondre avec** — Supervision. **Anatomie** : `PageHeader` (période) · `CardGrid`(`Card`) · `LineChart` · `CardGrid min=360 fit`(`Heatmap`, `BarList`). **États** : chargement / erreur **par bloc** (`state`, `onRetry`). **Règles** : ✅ grilles fluides, jamais de px fixe ; ✅ graphiques encadrés (`framed`) pour les délimiter ; ❌ pas de graphique sans `title` ni état. **Gabarit** — vérifié : [`src/patterns/AnalysePattern.tsx`](src/patterns/AnalysePattern.tsx).
 
 ### Pattern — Planification / temps
 
@@ -1730,7 +1731,7 @@ Clavier : le tracé est focusable ; ←/→ (vertical) ou ↑/↓ (horizontal) d
 
 ### BarList
 
-Classement horizontal : libellé, barre proportionnelle (`--cadence-dataviz-series-1`), valeur en mono alignée à droite, variation facultative. Hauteur : 32px par ligne. Props communes des graphiques : `title` (**requis**), `description`, `headingLevel` (3), `state` (`"ready" | "loading" | "empty" | "error"`), `emptyMessage`, `errorMessage`, `onRetry`, `className`.
+Classement horizontal : libellé, barre proportionnelle (`--cadence-dataviz-series-1`), valeur en mono alignée à droite, variation facultative. Hauteur : 32px par ligne. Props communes des graphiques : `title` (**requis**), `description`, `headingLevel` (3), `state` (`"ready" | "loading" | "empty" | "error"`), `emptyMessage`, `errorMessage`, `onRetry`, `framed` (false : cadre de carte — bordure, arrondi, marge — pour délimiter des graphiques voisins), `className`.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
@@ -2812,7 +2813,7 @@ Plages horizontales sur un axe temps, une ligne par entité (ligne, arrêt, véh
 | `scales` | `number[]` | `[60, 30, 15]` | Échelles en plus de « Ajuster », en **minutes visibles dans la largeur**. `[]` masque le sélecteur |
 | `defaultScale` | `"fit" \| number` | `"fit"` | Échelle initiale |
 | `hint` | `string \| false` | phrase adaptée | Aide en pied ; `false` la masque |
-| `state` / `emptyMessage` / `errorMessage` / `onRetry` / `description` / `headingLevel` / `className` | — | — | Props communes des graphiques |
+| `state` / `emptyMessage` / `errorMessage` / `onRetry` / `description` / `headingLevel` / `framed` / `className` | — | — | Props communes des graphiques |
 
 - Clavier : une seule plage tabulable (`role="group"`), ←/→ dans la ligne, ↑/↓ de ligne, Début / Fin, Entrée, Échap. La plage focalisée est annoncée (`role="status"`) et ramenée dans la zone visible.
 - **Échelle** : « Ajuster » fait tenir toute la fenêtre dans la largeur ; une échelle fixe (1 h, 30 min, 15 min) montre cette durée dans la largeur et la frise défile horizontalement. Une échelle supérieure ou égale à la fenêtre est désactivée (« 1 h » sur une fenêtre de 40 min).
@@ -2849,7 +2850,7 @@ Comparaison d'**itinéraires** sur une fenêtre de départ : une ligne par itin�
 | `allowOvernight` | `boolean` | `false` | Heures de service au-delà de 24:00 |
 | `onJourneyClick` | `(journey) => void` | — | Clic sur une ligne, ou Entrée sur une de ses étapes |
 | `scales` / `defaultScale` / `hint` | — | comme `Timeline` | Échelle et aide |
-| `state` / `emptyMessage` / `errorMessage` / `onRetry` / `description` / `headingLevel` / `className` | — | — | Props communes des graphiques |
+| `state` / `emptyMessage` / `errorMessage` / `onRetry` / `description` / `headingLevel` / `framed` / `className` | — | — | Props communes des graphiques |
 
 Étape (`JourneySegment`) : `{ id; kind: "walk" | "transit" | "wait"; start; end; line?: { code; mode?; color?; textColor? }; label? }`. `label` est le détail de l'info-bulle (« Châtelet → Nation »).
 
