@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { BarChart } from "./BarChart";
-import { isDevMode } from "./dev-mode";
+import { warnOnce } from "./button-compat";
 import "./data-visualization.css";
 
 // Déprécié depuis la 0.5.0, supprimé en 1.0.0 : simple enveloppe de BarChart,
@@ -31,16 +31,13 @@ export interface DataVisualizationProps {
   className?: string;
 }
 
-const warned = new Set<string>();
-
-/** Avertit une fois, en développement. */
-const warnDeprecated = () => {
-  if (warned.has("DataVisualization") || !isDevMode()) return;
-  warned.add("DataVisualization");
-  console.warn(
-    '[cadence-ui] DataVisualization est déprécié et sera supprimé en 1.0.0 : utilisez BarChart (layout="stacked" | "grouped", orientation="vertical" | "horizontal", title obligatoire).',
+/** Avertit une fois, en développement (mémoire partagée, réinitialisable en test). */
+const warnDeprecated = () =>
+  warnOnce(
+    "DataVisualization",
+    "component",
+    'composant déprécié : utilisez BarChart (layout="stacked" | "grouped", orientation="vertical" | "horizontal", title obligatoire).',
   );
-};
 
 /**
  * @deprecated Utiliser `BarChart` (`layout="stacked" | "grouped"`,
