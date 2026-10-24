@@ -7,7 +7,7 @@
  * `timeline-shell__row`, `__gutter` et `__track` ; `pos(v)` donne la position
  * d'une valeur (minutes) en % de la piste, `px(minutes)` une durée en px.
  */
-import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useLayoutEffect, useRef, useState, type CSSProperties, type HTMLAttributes, type ReactNode } from "react";
 import { SegmentedControl } from "./SegmentedControl";
 import { clockTicks, formatClock, formatDuration, formatWindow, pickTickStep, scaleLabel, type TimeMode } from "./timeline-utils";
 import "./timeline-shell.css";
@@ -52,6 +52,12 @@ interface TimelineShellProps {
   hint?: string | false;
   /** Calque sous les lignes (annotations, repère « maintenant »), aligné sur la piste. */
   overlay?: (geometry: TimelineGeometry) => ReactNode;
+  /**
+   * Attributs de la zone qui défile : un appelant sans élément focusable dans
+   * ses lignes (TimeSpaceDiagram) y porte son groupe clavier (role, tabIndex,
+   * onKeyDown), sinon la zone défilante serait inatteignable au clavier.
+   */
+  scrollProps?: HTMLAttributes<HTMLDivElement>;
   children: (geometry: TimelineGeometry) => ReactNode;
 }
 
@@ -71,6 +77,7 @@ export const TimelineShell = ({
   meta,
   hint,
   overlay,
+  scrollProps,
   children,
 }: TimelineShellProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -138,7 +145,7 @@ export const TimelineShell = ({
         )}
       </div>
 
-      <div ref={scrollRef} className="timeline-shell__scroll cadence-scrollbar">
+      <div {...scrollProps} ref={scrollRef} className={`timeline-shell__scroll cadence-scrollbar${scrollProps?.className ? ` ${scrollProps.className}` : ""}`}>
         <div
           className={`timeline-shell__canvas${stickyGutter ? " timeline-shell__canvas--sticky" : ""}`}
           style={canvasStyle}
