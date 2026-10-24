@@ -1,5 +1,13 @@
 # Changelog — @ddaoellena/cadence-ui
 
+## 0.9.2 (non publiée)
+
+Version mineure, sans rupture d’API. Thème : **transport, à partir de `Heatmap`** (feuille de route § 4 bis, lot 0.9.2).
+
+### Ajouté
+
+- **`CalendarHeatmap`** : calendrier annuel en carte de chaleur (une colonne par semaine, lundi en tête, rampe séquentielle), étiquettes de mois, jours sans donnée hachurés, jours annotés (grève, travaux) entourés et rappelés. Grille accessible au clavier comme `Heatmap`, clic ou Entrée sur un jour. Pour la ponctualité quotidienne, les jours de circulation, les perturbations.
+
 ## 0.9.1 (non publiée)
 
 Version corrective, sans rupture d’API. Thème : **socle des graphiques** (feuille de route § 4 bis, lot 0.9.1).
