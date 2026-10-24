@@ -1,6 +1,6 @@
 # Proposition — `LineDiagram` (thermomètre de ligne temps réel)
 
-Statut : **phase 0, à valider**. Rien n'est implémenté. Lot 0.9.4 de la
+Statut : **validée** (24 octobre 2026) : espacement régulier par défaut, fourches en v2, pastille picto + numéro + écart, arrêts cliquables en seconde file, annonces « incidents » par défaut. Lot 0.9.4 de la
 [feuille de route](0.9.0-dataviz-et-1.0.md) (§ 4 bis).
 
 ## 1. Besoin
