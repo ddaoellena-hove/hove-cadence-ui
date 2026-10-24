@@ -80,6 +80,9 @@
 .tree-view__label {
   flex: 1 1 auto;
   min-width: 0;
+  /* ≥ 1,3 : avec overflow: hidden, « normal » (1 en ABC Diatype) rogne les
+     jambages (g, p, q) et les accents des capitales. */
+  line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
