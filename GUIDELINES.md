@@ -312,6 +312,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Plages sur un axe temps (perturbations, amplitudes, travaux) | `Timeline` | `LineChart` (séries continues) ; `ActivityFeed` (événements ponctuels) ; `ServiceCalendar` (jours) ; `JourneyTimeline` (trajets) |
 | Comparer des itinéraires sur une fenêtre de départ (marche, transport, correspondances) | `JourneyTimeline` | `Timeline` (plages par entité) ; `RouteStopList` (arrêts d'une seule ligne) |
 | Mini-courbe dans une carte d'indicateur | `Card trend` (ou `LineChart compact`) | — |
+| Valeur vs capacité ou vs objectif dans une cellule de `DataTable` (charge, réalisation de l'offre, km) | `Meter size="sm"` (`thresholds`, `target`, `segments`) | `BulletChart` (graphique complet, une ligne par indicateur) |
 | Tendance dans une cellule de `DataTable` ou une ligne de liste | `Sparkline` | `LineChart compact` (axe, tooltip, seuils) ; `Card trend` (déjà intégré à la carte) |
 | Identité de ligne (code et couleur GTFS) | `LineBadge` | `Badge` (étiquette générique) |
 | Nom, commune et identifiant d'arrêt | `StopLabel` | — |
@@ -1994,7 +1995,7 @@ Tableau dense pour les gros volumes. Vrai `<table>` (rôles ARIA explicites), en
 | `id` | `string` | **requis** | Clé de tri et de masquage |
 | `header` | `string` | **requis** | Libellé FR (affiché en majuscules) |
 | `accessor` | `(row: T) => string \| number \| Date \| boolean \| null \| undefined` | **requis** | Valeur brute : tri et rendu par défaut |
-| `cell` | `(row: T) => ReactNode` | — | Rendu custom (`Badge`, `Indicator`…) |
+| `cell` | `(row: T) => ReactNode` | — | Rendu custom (`Badge`, `Indicator`, mini-graphiques `Sparkline` et `Meter size="sm"`…). Garder la valeur brute dans `accessor` pour le tri |
 | `align` | `"left" \| "right" \| "center"` | `"left"` (`"right"` si `numeric`) | — |
 | `numeric` | `boolean` | `false` | Police mono + alignement à droite |
 | `width` | `number` | — | Largeur fixe (px). Sans `width` : partage de l'espace restant |
@@ -3132,7 +3133,10 @@ Mesure d'une valeur par rapport à une capacité, en barre horizontale (8px). Pr
 | `label` | `string` | **requis** | Libellé visible (nom accessible) |
 | `value` | `number` | — | Mode simple : valeur mesurée |
 | `segments` | `{ id, label, value, color? }[]` | — | Mode proportionnel : décomposition, dans l'ordre ; exclusif avec `value` |
-| `max` | `number` | `100` (simple) ; somme des segments (proportionnel) | Capacité. En proportionnel, un `max` inférieur à la somme est ignoré |
+| `max` | `number` | `100` (simple) ; somme des segments (proportionnel) | Capacité. En proportionnel, un `max` inférieur à la somme est ignoré ; sans `max`, seul le total est affiché |
+| `min` | `number` | `0` | Mode simple : début de l'échelle (`90` pour un taux lu entre 90 et 100 %) |
+| `target` | `number` | — | Mode simple : repère d'objectif (trait plus marqué que les seuils), rappelé dans la valeur lue (« objectif 98,5 % ») : un bullet compact |
+| `size` | `"md" \| "sm"` | `"md"` | `"sm"` : une rangée barre + valeur, pour une cellule de `DataTable` ou une ligne de liste ; libellé et statut masqués visuellement, toujours lus. En proportionnel, sans légende |
 | `unit` | `string` | — | « places », « km », « % ». Avec `"%"`, seule la valeur est affichée ; sinon « 96 / 120 places » |
 | `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | — |
 | `thresholds` | `{ value: number; label: string }[]` | — | Mode simple : seuils libellés, repères entre 0 et `max` |
@@ -3140,7 +3144,8 @@ Mesure d'une valeur par rapport à une capacité, en barre horizontale (8px). Pr
 | `showLegend` | `boolean` | `true` | Mode proportionnel : légende sous la barre |
 | `className` | `string` | — | Classe additionnelle |
 
-- ⚠️ `value` et `segments` sont exclusifs (erreur de typage si les deux sont passés) ; `thresholds` et `goodDirection` n'existent qu'en mode simple.
+- ⚠️ `value` et `segments` sont exclusifs (erreur de typage si les deux sont passés) ; `thresholds`, `goodDirection`, `min` et `target` n'existent qu'en mode simple.
+- ✅ Dans une cellule de `DataTable` : `size="sm"` avec un `label` qui nomme la ligne (« Charge à la pointe, ligne 13 ») — le libellé n'est pas visible, c'est le nom lu. Story : *Données et tableaux / DataTable → Mini-graphiques en cellule*.
 - ⚠️ Valeur ou `max` non finis, ou `max` ≤ 0 : piste vide, « Donnée indisponible ».
 
 ```tsx

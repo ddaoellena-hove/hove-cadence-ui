@@ -4,6 +4,9 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 import { DataTable, type DataTableColumn, type DataTableSort } from "./DataTable";
 import { GhostButton } from "./GhostButton";
+import { LineBadge } from "./LineBadge";
+import { Meter } from "./Meter";
+import { Sparkline } from "./Sparkline";
 import { Tooltip } from "./Tooltip";
 import type { IconName } from "./Icons";
 import { Pagination } from "./Pagination";
@@ -473,5 +476,117 @@ export const ColonneActionsEtroite: Story = {
         />
       </div>
     );
+  },
+};
+
+/* ── Mini-graphiques en cellule ── */
+
+interface LineQuality {
+  id: string;
+  code: string;
+  mode: "metro" | "bus" | "tram" | "rer";
+  color: string;
+  /** Ponctualité des 7 derniers jours (%), du plus ancien au plus récent. */
+  punctuality: number[];
+  /** Taux de charge à la pointe (%). */
+  load: number;
+  /** Taux de réalisation de l'offre (%). */
+  offer: number;
+  /** Kilomètres du jour : commerciaux, haut-le-pied, annulés. */
+  km: [number, number, number];
+}
+
+const LINE_QUALITY: LineQuality[] = [
+  { id: "m13", code: "13", mode: "metro", color: "#6ec4e8", punctuality: [93.1, 94.0, 92.4, 90.8, 93.5, 94.2, 95.0], load: 104, offer: 97.2, km: [1840, 120, 64] },
+  { id: "m4", code: "4", mode: "metro", color: "#bb4d98", punctuality: [95.2, 95.8, 96.1, 95.4, 96.0, 96.4, 96.2], load: 86, offer: 99.1, km: [1520, 90, 12] },
+  { id: "rera", code: "A", mode: "rer", color: "#e3051c", punctuality: [88.4, 87.1, 85.9, 89.2, 90.1, 88.7, 87.5], load: 112, offer: 95.4, km: [3210, 260, 180] },
+  { id: "t3a", code: "T3a", mode: "tram", color: "#ff7e2e", punctuality: [96.8, 97.1, 96.5, 97.4, 97.0, 96.9, 97.6], load: 64, offer: 99.6, km: [720, 40, 4] },
+  { id: "b91", code: "91", mode: "bus", color: "#82c8e6", punctuality: [82.5, 84.1, 80.9, 83.7, 85.2, 84.0, 86.3], load: 78, offer: 98.2, km: [640, 72, 22] },
+];
+
+const LOAD_THRESHOLDS = [
+  { value: 80, label: "Charge élevée 80 %" },
+  { value: 100, label: "Capacité 100 %" },
+];
+
+const QUALITY_COLUMNS: DataTableColumn<LineQuality>[] = [
+  { id: "line", header: "Ligne", accessor: (r) => r.code, width: 80, cell: (r) => <LineBadge code={r.code} mode={r.mode} color={r.color} /> },
+  { id: "punctuality", header: "Ponctualité", accessor: (r) => r.punctuality[r.punctuality.length - 1], align: "right", width: 132, cell: (r) => `${r.punctuality[r.punctuality.length - 1].toLocaleString("fr-FR")} %` },
+  { id: "trend", header: "Tendance 7 j", accessor: (r) => r.punctuality[r.punctuality.length - 1] - r.punctuality[0], width: 136, cell: (r) => <Sparkline values={r.punctuality} unit="%" color={1} /> },
+  {
+    id: "load",
+    header: "Charge à la pointe",
+    accessor: (r) => r.load,
+    width: 180,
+    cell: (r) => <Meter size="sm" label={`Charge à la pointe, ligne ${r.code}`} value={r.load} unit="%" goodDirection="down" thresholds={LOAD_THRESHOLDS} />,
+  },
+  {
+    id: "offer",
+    header: "Réalisation de l'offre",
+    accessor: (r) => r.offer,
+    width: 180,
+    cell: (r) => (
+      <Meter
+        size="sm"
+        label={`Réalisation de l'offre, ligne ${r.code}`}
+        value={r.offer}
+        min={90}
+        target={98.5}
+        unit="%"
+        thresholds={[
+          { value: 97, label: "Malus sous 97 %" },
+          { value: 98.5, label: "Bonus dès 98,5 %" },
+        ]}
+      />
+    ),
+  },
+  {
+    id: "km",
+    header: "Kilomètres du jour",
+    accessor: (r) => r.km[0] + r.km[1] + r.km[2],
+    width: 200,
+    cell: (r) => (
+      <Meter
+        size="sm"
+        label={`Kilomètres du jour, ligne ${r.code}`}
+        unit="km"
+        segments={[
+          { id: "commercial", label: "Commerciaux", value: r.km[0] },
+          { id: "hlp", label: "Haut-le-pied", value: r.km[1] },
+          { id: "annules", label: "Annulés", value: r.km[2] },
+        ]}
+      />
+    ),
+  },
+];
+
+/**
+ * Mini-graphiques en cellule : `Sparkline` pour la tendance, `Meter size="sm"`
+ * pour une valeur vs capacité (seuils), vs objectif (`target`, bullet
+ * compact, échelle `min` 90 → 100 %) ou décomposée (`segments`). La valeur brute reste triable par
+ * `accessor`.
+ */
+export const MiniGraphiques: Story = {
+  name: "Mini-graphiques en cellule",
+  render: () => (
+    <DataTable<LineQuality>
+      aria-label="Qualité de service par ligne"
+      columns={QUALITY_COLUMNS}
+      getRowId={(r) => r.id}
+      data={LINE_QUALITY}
+      defaultSort={[{ id: "load", desc: true }]}
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // Tri par charge décroissante : RER A (112 %) en tête, jugé défavorable
+    const loads = canvas.getAllByRole("meter", { name: /^Charge à la pointe/ });
+    await expect(loads[0]).toHaveAccessibleName("Charge à la pointe, ligne A");
+    await expect(loads[0]).toHaveAttribute("aria-valuetext", "112 % — Objectif non atteint — Capacité 100 %");
+    // Objectif rappelé dans la valeur lue
+    const offer = canvas.getByRole("meter", { name: "Réalisation de l'offre, ligne 13" });
+    await expect(offer).toHaveAttribute("aria-valuetext", "97,2 % — objectif 98,5 % — Niveau intermédiaire — Malus sous 97 %");
+    // Décomposition résumée pour les lecteurs d'écran
+    await expect(canvas.getByRole("img", { name: "Kilomètres du jour, ligne 4" })).toHaveAccessibleDescription(/^Commerciaux : 1\s520\skm/);
   },
 };
