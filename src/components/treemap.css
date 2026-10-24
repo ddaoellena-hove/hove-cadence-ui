@@ -1,0 +1,48 @@
+/* ── Treemap ─────────────────────────────────────────────────────────────── */
+/* Cadre, légende et tableau : chart-frame.css (ChartFrame). */
+.treemap__plot--clickable {
+  cursor: pointer;
+}
+
+/* Bandeau d'une branche : fond neutre, libellé et total */
+.treemap__group-frame {
+  fill: var(--cadence-color-surface-alt, #eef1f4);
+}
+
+.treemap__group-label {
+  fill: var(--cadence-color-label, #1a3e45);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Liseré blanc entre deux tuiles */
+.treemap__tile rect:first-child {
+  stroke: var(--cadence-color-white, #ffffff);
+  stroke-width: 1;
+}
+
+.treemap__tile--active rect:first-child {
+  stroke: var(--cadence-color-primary, #002830);
+  stroke-width: 2.5;
+}
+
+/* Libellé posé sur la couleur : texte blanc à halo sombre, lisible sur toutes les séries */
+.treemap__label {
+  fill: var(--cadence-color-white, #ffffff);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  font-size: 12px;
+  font-weight: 600;
+  paint-order: stroke;
+  pointer-events: none;
+  stroke: var(--cadence-color-primary, #002830);
+  stroke-linejoin: round;
+  stroke-opacity: 0.55;
+  stroke-width: 3px;
+}
+
+.treemap__value {
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-size: 11px;
+  font-weight: 500;
+}
