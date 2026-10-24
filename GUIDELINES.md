@@ -330,6 +330,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Performance vs objectif contractuel, plages malus / bonus (ponctualité, régularité, réalisation de l'offre) | `BulletChart` | `Gauge` (un seul KPI mis en avant) ; `Meter` (valeur vs capacité, sans plages) |
 | Distribution d'une mesure (retards, temps de parcours, intervalles entre passages) | `Histogram` | `BarChart` (catégories nommées, pas des classes de valeurs) |
 | Volume et taux sur une même période (fréquentation + ponctualité, offre + charge) | `ComboChart` | deux graphiques séparés ; `LineChart` (une seule unité) |
+| Évolution sur un service de nuit, au-delà de minuit (heures de service jusqu'à 47:59) | `LineChart serviceTime` ; `Histogram serviceTime` (distribution d'heures) ; `BarChart` avec des catégories « 24 h », « 25 h » | des `Date` coupées à minuit (deux jours calendaires pour un seul jour de service) |
 | Valeur par paliers (offre par tranche horaire, capacité, tarifs) | `LineChart curve="step"` | `LineChart` lissé (suggère une variation continue) |
 | Parts d'un total (≤ 6 : parts modales, état du parc, causes) | `DonutChart` | `BarList` (classement, plus de 6 éléments) ; un camembert (non fourni) |
 | Choisir portée et format d'export | `ExportMenu` | L'app fabrique le fichier |
@@ -2141,6 +2142,7 @@ Distribution d'une mesure : effectif par classe de valeurs, à partir des **obse
 | `showGrid` | `boolean` | `true` | Grille horizontale |
 | `hideTitle` | `boolean` | `false` | En-tête masqué visuellement (titre toujours lu) |
 | `height` | `number` | `280` | Hauteur du tracé |
+| `serviceTime` | `boolean` | `false` | Valeurs en minutes depuis 00:00 du jour de service (`1530` = 25h30) : classes alignées sur l'horloge (5 à 360 min), bornes « 22h30 », classes ouvertes « avant 06h00 » / « 25h00 et après » |
 
 Clavier : le tracé est focusable ; ←/→ d'une classe à l'autre, Début / Fin, Échap masque le tooltip.
 
@@ -2254,6 +2256,7 @@ Fraîcheur d'une donnée : un point coloré (ton de statut) et un libellé relat
 | `series` | `{ id, label, data: { x: Date \| string, y: number \| null }[] }[]` | **requis** | `y: null` = trou dans la courbe |
 | `variant` | `"line" \| "area"` | `"line"` | — |
 | `stacked` | `boolean` | `false` | Aires empilées (`variant="area"`) |
+| `serviceTime` | `boolean` | `false` | Abscisses en heures de service `"HH:mm"` jusqu'à `"47:59"` (`"25:30"` = 1 h 30 après minuit, même jour de service) : positions proportionnelles au temps, graduations d'horloge (« 24h00 », « 25h00 »), colonne « Heure » dans le tableau |
 | `curve` | `"smooth" \| "step"` | `"smooth"` | `"step"` : paliers, la valeur tient jusqu'au point suivant (offre par tranche horaire, capacité, tarifs) |
 | `thresholds` | `{ value, label }[]` | `[]` | Lignes de seuil libellées |
 | `annotations` | `{ at: Date \| string \| [début, fin], label }[]` | `[]` | Trait vertical ou bande libellés |

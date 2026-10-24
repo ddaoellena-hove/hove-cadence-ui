@@ -156,6 +156,38 @@ export const OffreParTranche: Story = {
   },
 };
 
+/** Heures de service (`serviceTime`) : la soirée continue après minuit, sans couper à 24:00. */
+export const ServiceDeNuit: Story = {
+  name: "Service de nuit (heures de service)",
+  args: {
+    title: "Voyageurs à bord — service de nuit",
+    description: "Noctilien N13, jour de service du 23 octobre 2026",
+    serviceTime: true,
+    unit: "voyageurs",
+    format: { maximumFractionDigits: 0 },
+    series: [
+      {
+        id: "n13",
+        label: "N13",
+        data: [
+          ["21:30", 140], ["22:00", 182], ["22:30", 205], ["23:00", 230], ["23:30", 260], ["24:00", 310],
+          ["24:30", 340], ["25:00", 290], ["25:30", 220], ["26:00", 160], ["27:00", 90], ["28:30", 40],
+        ].map(([x, y]) => ({ x: x as string, y: y as number })),
+      },
+    ],
+    annotations: [{ at: "24:00", label: "Changement de jour calendaire" }],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // Graduations d'horloge au-delà de 24h00
+    await expect(canvas.getAllByText("25h00").length).toBeGreaterThan(0);
+    // Alternative tabulaire : colonne « Heure », valeurs au format horaire
+    const table = canvas.getByRole("table", { name: "Voyageurs à bord — service de nuit" });
+    await expect(within(table).getByRole("columnheader", { name: "Heure" })).toBeInTheDocument();
+    await expect(within(table).getByRole("rowheader", { name: "25h30" })).toBeInTheDocument();
+  },
+};
+
 /** Mode compact, sans axes, pour une Card. */
 export const Compact: Story = {
   args: {

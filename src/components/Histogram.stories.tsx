@@ -92,6 +92,30 @@ export const IntervallesEntrePassages: Story = {
   },
 };
 
+/** Heures de service : derniers départs, classes alignées sur l'horloge au-delà de minuit. */
+export const DerniersDeparts: Story = {
+  name: "Derniers départs (heures de service)",
+  args: {
+    title: "Heure des derniers départs",
+    description: "Toutes lignes de bus, jour ouvré type — en heures de service",
+    values: (() => {
+      const random = seeded(11);
+      // Derniers départs entre 22h00 et 25h30 (minutes depuis 00:00 du jour de service)
+      return Array.from({ length: 140 }, () => Math.round(1320 + Math.pow(random(), 0.8) * 210));
+    })(),
+    bins: 7,
+    serviceTime: true,
+    countLabel: "lignes",
+    thresholds: [{ value: 1440, label: "Minuit" }],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const table = canvas.getByRole("table", { name: "Heure des derniers départs" });
+    await expect(within(table).getAllByRole("rowheader")[0]).toHaveTextContent(/^De 22h00 à 22h30$/);
+    await expect(canvas.getByRole("group", { name: "Heure des derniers départs" })).toHaveAccessibleDescription(/140 lignes, médiane \d{2}h\d{2}/);
+  },
+};
+
 /** États : chargement, vide, erreur. */
 export const Chargement: Story = { args: { title: "Distribution des retards", values: [], state: "loading" } };
 

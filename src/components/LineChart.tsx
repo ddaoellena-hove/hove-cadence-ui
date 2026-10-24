@@ -16,11 +16,13 @@ import {
   collectXs,
   nearestIndex,
   resolveAnnotations,
+  serviceMinutes,
   stackSeries,
   valueAt,
   xKey,
   type ChartX,
 } from "./line-chart-utils";
+import { formatClock } from "./timeline-utils";
 import { useChartWidth } from "./use-chart-size";
 import "./line-chart.css";
 
@@ -71,6 +73,12 @@ export interface LineChartProps extends ChartCommonProps {
   compact?: boolean;
   /** Hauteur du tracé. Défaut 280 (48 en compact). */
   height?: number;
+  /**
+   * Abscisses en heures de service « HH:mm », au-delà de 24:00 jusqu'à 47:59
+   * (« 25:30 » = 1 h 30 le lendemain, même jour de service) : positions
+   * proportionnelles au temps, graduations d'horloge. Défaut false.
+   */
+  serviceTime?: boolean;
 }
 
 // Motif de trait par série (en plus de la couleur et du marqueur)
@@ -95,6 +103,7 @@ export const LineChart = ({
   yDomain,
   compact = false,
   height: heightProp,
+  serviceTime = false,
   ...frame
 }: LineChartProps) => {
   const titleId = useId();
@@ -117,8 +126,8 @@ export const LineChart = ({
   const isStacked = isArea && stacked;
   const curveFactory = curve === "step" ? curveStepAfter : curveMonotoneX;
 
-  const xs = useMemo(() => collectXs(series), [series]);
-  const xScale = buildXScale(xs, plotWidth);
+  const xs = useMemo(() => collectXs(series, serviceTime), [series, serviceTime]);
+  const xScale = buildXScale(xs, plotWidth, serviceTime);
   const positions = xs.map(xScale.position);
   const yScale = buildYScale(visible, xs, plotHeight, {
     stacked: isStacked,
@@ -134,7 +143,8 @@ export const LineChart = ({
   const formatValue = (value: number | null) => (value === null ? "—" : formatValueWithUnit(value, unit, format));
   // Données horaires (heures ou minutes non nulles) : la date complète garde l'heure, quelle que soit l'étendue
   const withTime = xScale.time && (xs as Date[]).some((d) => d.getHours() !== 0 || d.getMinutes() !== 0);
-  const formatX = (x: ChartX) => (x instanceof Date ? formatFullDate(x, withTime ? "hour" : xScale.granularity) : x);
+  const formatX = (x: ChartX) =>
+    x instanceof Date ? formatFullDate(x, withTime ? "hour" : xScale.granularity) : xScale.service ? formatClock(serviceMinutes(x), "time") : x;
   const isBreach = (value: number | null) => thresholds.some((t) => breachesThreshold(value, t.value, goodDirection));
 
   // ── Tracés ──
@@ -273,7 +283,7 @@ export const LineChart = ({
     <ChartDataTable
       caption={frame.title}
       visible={show}
-      columns={[xScale.time ? "Date" : "Catégorie", ...visible.map((s) => (unit ? `${s.label} (${unit})` : s.label))]}
+      columns={[xScale.time ? "Date" : xScale.service ? "Heure" : "Catégorie", ...visible.map((s) => (unit ? `${s.label} (${unit})` : s.label))]}
       numeric={visible.map((_, i) => i + 1)}
       rows={xs.map((x) => [formatX(x), ...visible.map((s) => formatKpiValue(valueAt(s, x) ?? "—", format))])}
     />

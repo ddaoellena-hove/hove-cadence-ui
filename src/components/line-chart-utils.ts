@@ -5,6 +5,8 @@ import { bisector, max, min } from "d3-array";
 import { scaleLinear, scalePoint, scaleTime } from "d3-scale";
 import { stack } from "d3-shape";
 import { formatAxisDate, getDateGranularity, type DateGranularity, type GoodDirection } from "./chart-format";
+import { parseTime } from "./time-picker-utils";
+import { clockTicks, formatClock, pickTickStep } from "./timeline-utils";
 
 export type ChartX = Date | string;
 
@@ -22,12 +24,19 @@ export interface LineSeriesInput {
 /** Clé stable d'une abscisse (timestamp ou catégorie). */
 export const xKey = (x: ChartX) => (x instanceof Date ? String(x.getTime()) : x);
 
-/** Abscisses communes à toutes les séries, triées (dates) ou dans l'ordre d'apparition (catégories). */
-export const collectXs = (series: LineSeriesInput[]): ChartX[] => {
+/** Heure de service « HH:mm » (jusqu'à 47:59) en minutes depuis 00:00 du jour de service ; 0 si invalide. */
+export const serviceMinutes = (x: ChartX) => (typeof x === "string" ? (parseTime(x, true) ?? 0) : 0);
+
+/**
+ * Abscisses communes à toutes les séries, triées (dates, heures de service)
+ * ou dans l'ordre d'apparition (catégories).
+ */
+export const collectXs = (series: LineSeriesInput[], serviceTime = false): ChartX[] => {
   const seen = new Map<string, ChartX>();
   for (const s of series) for (const p of s.data) if (!seen.has(xKey(p.x))) seen.set(xKey(p.x), p.x);
   const xs = [...seen.values()];
-  return isTimeAxis(xs) ? (xs as Date[]).sort((a, b) => a.getTime() - b.getTime()) : xs;
+  if (isTimeAxis(xs)) return (xs as Date[]).sort((a, b) => a.getTime() - b.getTime());
+  return serviceTime ? xs.sort((a, b) => serviceMinutes(a) - serviceMinutes(b)) : xs;
 };
 
 export const isTimeAxis = (xs: ChartX[]) => xs.length > 0 && xs.every((x) => x instanceof Date);
@@ -40,25 +49,46 @@ export interface XScale {
   /** Position en px d'une abscisse. */
   position: (x: ChartX) => number;
   time: boolean;
+  /** Axe en heures de service (« HH:mm », au-delà de 24:00) : positions proportionnelles au temps. */
+  service: boolean;
   granularity: DateGranularity;
 }
 
-export const buildXScale = (xs: ChartX[], width: number): XScale => {
+export const buildXScale = (xs: ChartX[], width: number, serviceTime = false): XScale => {
   if (isTimeAxis(xs)) {
     const dates = xs as Date[];
     const first = dates[0];
     const last = dates[dates.length - 1];
     const scale = scaleTime().domain([first, last]).range([0, width]);
-    return { position: (x) => scale(x as Date), time: true, granularity: getDateGranularity(first, last) };
+    return { position: (x) => scale(x as Date), time: true, service: false, granularity: getDateGranularity(first, last) };
+  }
+  if (serviceTime && xs.length > 0) {
+    const minutes = xs.map(serviceMinutes);
+    const low = Math.min(...minutes);
+    const high = Math.max(...minutes);
+    const scale = scaleLinear().domain([low, high > low ? high : low + 60]).range([0, width]);
+    return { position: (x) => scale(serviceMinutes(x)), time: false, service: true, granularity: "hour" };
   }
   const scale = scalePoint<string>().domain(xs as string[]).range([0, width]).padding(0.5);
-  return { position: (x) => scale(x as string) ?? 0, time: false, granularity: "day" };
+  return { position: (x) => scale(x as string) ?? 0, time: false, service: false, granularity: "day" };
 };
 
 /** Graduations de l'axe X : ~1 étiquette tous les 90px. */
 export const buildXTicks = (xs: ChartX[], scale: XScale, width: number) => {
   if (xs.length === 0) return [];
   const count = Math.max(2, Math.floor(width / 90));
+  if (scale.service) {
+    // Graduations d'horloge (05h00, 06h00… 25h00), au moins 72px entre deux
+    const minutes = xs.map(serviceMinutes);
+    const low = Math.min(...minutes);
+    const high = Math.max(...minutes);
+    const step = pickTickStep(width / Math.max(1, high - low), 72);
+    return clockTicks(low, high, step, "time").map((t) => ({
+      key: String(t.value),
+      position: scale.position(formatServiceTime(t.value)),
+      label: formatClock(t.value, "time"),
+    }));
+  }
   if (scale.time) {
     const dates = xs as Date[];
     const time = scaleTime().domain([dates[0], dates[dates.length - 1]]);
@@ -74,6 +104,10 @@ export const buildXTicks = (xs: ChartX[], scale: XScale, width: number) => {
     .filter((_, i) => i % step === 0)
     .map((x) => ({ key: xKey(x), position: scale.position(x), label: String(x) }));
 };
+
+/** Minutes depuis 00:00 → « HH:mm » (jusqu'à 47:59). */
+const formatServiceTime = (minutes: number) =>
+  `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(Math.round(minutes) % 60).padStart(2, "0")}`;
 
 /** Séries empilées : [bas, haut] de chaque série à chaque abscisse (valeurs nulles = 0). */
 export const stackSeries = (series: LineSeriesInput[], xs: ChartX[]) => {
