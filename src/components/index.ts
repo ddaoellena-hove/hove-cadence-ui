@@ -84,6 +84,7 @@ export * from './BoxPlot';
 export * from './ScatterChart';
 export * from './Treemap';
 export * from './LineDiagram';
+export * from './SankeyChart';
 export * from './CopyableText';
 export * from './ColorField';
 export * from './Timeline';

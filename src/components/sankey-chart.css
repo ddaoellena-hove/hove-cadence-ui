@@ -1,0 +1,40 @@
+/* ── SankeyChart ─────────────────────────────────────────────────────────── */
+/* Cadre, tableau et états : chart-frame.css (ChartFrame). */
+.sankey-chart__plot--clickable {
+  cursor: pointer;
+}
+
+.sankey-chart__link path:first-child {
+  fill-opacity: 0.45;
+}
+
+.sankey-chart__link--active path:first-child {
+  fill-opacity: 0.75;
+}
+
+.sankey-chart__link--dimmed {
+  opacity: 0.4;
+}
+
+.sankey-chart__label {
+  fill: var(--cadence-color-primary, #002830);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  font-size: 12px;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: var(--cadence-color-white, #ffffff);
+  stroke-linejoin: round;
+  stroke-width: 3px;
+}
+
+.sankey-chart__value {
+  fill: var(--cadence-color-label, #1a3e45);
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-weight: 500;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .sankey-chart__link {
+    transition: opacity 150ms ease;
+  }
+}
