@@ -49,7 +49,10 @@
   overflow: hidden;
 }
 
-/* Zone qui défile, à l'intérieur du cadre */
+/* Zone qui défile, à l'intérieur du cadre. Positionnée : elle contient les
+   éléments absolus de la page (textes pour lecteurs d'écran…). Sans cela, ils
+   se placent par rapport au document, l'allongent, et la page défile quand la
+   souris est hors du cadre (Sidebar, marges). */
 .app-layout__scroll {
   box-sizing: border-box;
   flex: 1;
@@ -57,4 +60,5 @@
   min-width: 0;
   overflow: auto;
   padding: 24px 32px;
+  position: relative;
 }
