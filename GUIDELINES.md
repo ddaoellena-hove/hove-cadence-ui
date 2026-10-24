@@ -477,7 +477,7 @@ La taille ne porte **pas de sens** : elle suit le contexte, pas l'importance de 
 
 | `size` | Hauteur | Texte | Contextes |
 |---|---|---|---|
-| `md` (défaut) | 34px | 12px | **Actions principales** : en début de page (page liste, page de détail) et en fin de formulaire. Aussi : modale, empty state, action inline de formulaire |
+| `md` (défaut) | 34px | 13px | **Actions principales** : en début de page (page liste, page de détail) et en fin de formulaire. Aussi : modale, empty state, action inline de formulaire |
 | `sm` | 29px | 11px | **Actions plus discrètes** : **tout l'en-tête de dashboard**, action principale comprise (`PrimaryButton size="sm"` et `PrimaryButton outline size="sm"`) ; tableau, barre d'outils, barre de sélection, popover (`DatePicker`, `DateRangePicker`), toast, `FilterBar` |
 
 Il n'y a pas de grande taille : une action importante se distingue par son niveau (`PrimaryButton`), pas par sa taille. Les textes d'action restent entre **11 et 13px** (`Link` : 11 / 12 / 13px).
@@ -2256,7 +2256,7 @@ API identique pour les deux ; seul le rendu change (`PrimaryButton` plein ou con
 | `aria-label` | `string` | — | Nom accessible. Obligatoire avec `icon` |
 | `iconStart`, `iconEnd` | nom d'icône `Icons` | — | Icône avant / après le libellé |
 | `tone` | `"default" \| "danger"` | `"default"` | `"danger"` : action destructive (fond rouge / texte rouge) |
-| `size` | `"sm" \| "md"` | `"md"` | 29 / 34px, texte 11 / 12px. Dépend du contexte, ne porte pas de sens. ⚠️ Pas de `"lg"` |
+| `size` | `"sm" \| "md"` | `"md"` | 29 / 34px, texte 11 / 13px. Dépend du contexte, ne porte pas de sens. ⚠️ Pas de `"lg"` |
 | `outline` | `boolean` | `false` | **`PrimaryButton` uniquement** : variante contour (fond blanc, bordure `--cadence-color-border-strong`), pour les actions secondaires d'un dashboard |
 | `loading` | `boolean` | `false` | Clics ignorés, `aria-busy`, spinner (à la place de `iconStart`), largeur conservée |
 | `disabled` | `boolean` | `false` | — |

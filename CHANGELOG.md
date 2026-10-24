@@ -12,7 +12,7 @@ Version mineure, sans rupture d’API.
 ### Modifié
 
 - **`PrimaryButton` plein** : relief un peu plus marqué — léger dégradé vertical (haut éclairci, bas assombri), reflet et liseré de 1px plus nets, ombre portée de 2px. À l’appui, le reflet s’éteint (bouton enfoncé). Le ton `danger` suit le même relief ; `outline` et désactivé sont inchangés. Visuel uniquement, sans changement d’API.
-- **`PrimaryButton` `size="md"`** : libellé légèrement plus encré (contour de 0,25px à la couleur du texte), pour retrouver la densité du `sm`. Diatype n’ayant pas de graisse 600, c’est l’intermédiaire entre Medium et Bold. Plein et `outline` ; `GhostButton` inchangé.
+- **Boutons `size="md"`** (`PrimaryButton`, `GhostButton`) : libellé en **13px** (au lieu de 12px), interlignage et interlettrage ajustés en proportion. Plus d’encre et une hiérarchie plus nette avec le `sm` (11px). Hauteur inchangée (34px) ; les boutons s’élargissent d’environ 8 % à libellé égal.
 
 ## 0.8.0 (non publiée)
 
