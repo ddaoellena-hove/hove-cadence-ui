@@ -415,7 +415,7 @@ export const Sidebar = ({
         )}
         <button type="button" className="sidebar__logout" onClick={onLogout} title={isCollapsed ? "Se déconnecter" : undefined}>
           <LogoutIcon />
-          <span className="sidebar__logout-label">SE DÉCONNECTER</span>
+          <span className="sidebar__logout-label">Se déconnecter</span>
         </button>
       </div>
     </div>

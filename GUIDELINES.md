@@ -93,7 +93,7 @@ import { PrimaryButton, GhostButton, TextInput, TableCard, Modal } from "@ddaoel
 
 ### 4. Squelette d'application minimal
 
-Voir la [recette Layout d'application](#recette-1--layout-dapplication) — toute app commence par ce squelette : `AppLayout`, avec la `Sidebar` repliable (280 px dépliée, 80 px repliée) à gauche et le contenu de la page dans un conteneur blanc arrondi qui suit sa largeur.
+Voir la [recette Layout d'application](#recette-1--layout-dapplication) — toute app commence par ce squelette : `AppLayout`, avec la `Sidebar` repliable (220 px dépliée, 80 px repliée) à gauche et le contenu de la page dans un conteneur blanc arrondi qui suit sa largeur.
 
 ---
 
@@ -727,7 +727,7 @@ Pour une sélection multiple avec recherche et groupes, utiliser **`Autocomplete
 
 - ✅ Toute page vit dans `AppLayout`, qui reçoit la `Sidebar` (prop `sidebar`) et le contenu de la page (`children`).
 - ✅ Le fond de l'app prend la couleur produit de la Sidebar : la Sidebar s'y fond, sans arrondi ni ombre. Seul le conteneur blanc défile.
-- ✅ Quand la Sidebar se replie (280 px → 80 px), le conteneur s'élargit tout seul : pas de mesure de largeur, pas de `position: fixed`, pas de `marginLeft`.
+- ✅ Quand la Sidebar se replie (220 px → 80 px), le conteneur s'élargit tout seul : pas de mesure de largeur, pas de `position: fixed`, pas de `marginLeft`.
 - ✅ Périmètre (réseau, client) et utilisateur connecté vont en pied de Sidebar (`scope`, `user`). Il n'y a plus de `Header`.
 - ✅ Afficher `Breadcrumbs` dès que l'utilisateur est à plus d'un niveau de profondeur.
 - ✅ Le dernier item du breadcrumb est la page courante — sans `href`.
@@ -2378,7 +2378,9 @@ Composant unique : apparence de l’ancien Alt, pour les formulaires et les basc
 | `user` | `SidebarUser` | — | Utilisateur connecté en pied : `{ name, email?, avatarSrc? }`. Avatar seul quand la Sidebar est repliée |
 | `className` | `string` | — | — |
 
-**Repli** — géré en interne : le bouton « » fait passer la Sidebar de **280 px** (dépliée) à **80 px** (repliée), avec une transition de 250 ms. Il n'y a pas de prop pour piloter ou lire cet état. Dans `AppLayout`, le conteneur de la page suit cette largeur tout seul.
+**Repli** — géré en interne : le bouton « » fait passer la Sidebar de **220 px** (dépliée) à **80 px** (repliée), avec une transition de 250 ms. Il n'y a pas de prop pour piloter ou lire cet état. Dans `AppLayout`, le conteneur de la page suit cette largeur tout seul.
+
+**Apparence** — libellés en casse normale (14px, jamais en capitales) ; l'élément actif est une pastille claire en relief, texte blanc. ⚠️ À 220 px, un libellé de section dépasse vite (≈ 16 caractères avec chevron) et se tronque : préférer des libellés courts (« Données géo » plutôt que « Données Géographiques »).
 
 ```tsx
 <AppLayout

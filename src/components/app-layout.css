@@ -1,5 +1,5 @@
 /* ── AppLayout ───────────────────────────────────────────────────────────── */
-/* Ligne flex pleine hauteur : la Sidebar (280 px dépliée, 80 px repliée) pousse
+/* Ligne flex pleine hauteur : la Sidebar (220 px dépliée, 80 px repliée) pousse
    directement le contenu, sans position fixe ni mesure de largeur. */
 .app-layout {
   /* Fond de l'app = couleur produit de la Sidebar (datahub par défaut) */

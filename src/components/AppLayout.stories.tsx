@@ -94,9 +94,9 @@ export const Defaut: Story = {
     const canvas = within(canvasElement);
     const main = canvas.getByRole("main", { name: "Contenu principal" });
     const before = main.getBoundingClientRect().width;
-    // Repli de la Sidebar : le conteneur s'élargit sans mesure côté app
+    // Repli de la Sidebar (220 → 80 px) : le conteneur s'élargit sans mesure côté app
     await userEvent.click(canvas.getByRole("button", { name: "Réduire la sidebar" }));
-    await waitFor(() => expect(main.getBoundingClientRect().width).toBeGreaterThan(before + 150), { timeout: 2000 });
+    await waitFor(() => expect(main.getBoundingClientRect().width).toBeGreaterThan(before + 120), { timeout: 2000 });
     await userEvent.click(canvas.getByRole("button", { name: "Développer la sidebar" }));
   },
 };
