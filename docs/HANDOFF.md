@@ -224,3 +224,14 @@ Branche `release/0.8.0`, version `0.8.0` non publiée. Commits atomiques, rien p
 - Vérification dans des **apps consommatrices dédiées** React 18 / 19 (ESM + CJS) au-delà de `smoke:dist`.
 - Tests d'intégration des **menus en portail dans des dialogues**.
 - **Décision de publication npm** (rien n'est publié ; `npm version` déjà en 0.8.0).
+
+## Mise à jour — hygiène transversale avant la 0.8.5
+
+**Fait**
+
+- **Avertissements de dépréciation maîtrisés** dans les stories de démo (`PrimaryButton` « Anciennes props », `SecondaryButton` « Correspondance », `DataVisualization` (toutes), `Link` « Dépréciée — secondary ») : `beforeEach` réinitialise la mémoire « une seule fois » (`resetWarningsForTests`) puis espionne `console.warn` ; le `play` **asserte** le message. Plus de bruit dans la suite, et l'avertissement devient une garantie testée.
+- `DataVisualization` utilise désormais le `warnOnce` partagé de `button-compat` (avant : un `Set` local non réinitialisable). Le message prend le format commun `[cadence-ui] DataVisualization : composant déprécié … Suppression prévue en 1.0.0.`
+- **Garde-fou** `src/components/deprecated-api-usage.test.ts` : refuse `<SecondaryButton`, `<DataVisualization`, `withIcon=` hors des 4 stories de démo, du CHANGELOG et de GUIDELINES. Motifs volontairement non ambigus (pas `destructive` ni `size="large"`).
+- **Audit contraste** livré en checklist (non appliqué) : [`docs/audits/0.8.5/contraste-aa.md`](audits/0.8.5/contraste-aa.md). Constat clé : `icon-muted` est à 4,53:1 sur blanc (limite), et `text-secondary` **échoue aussi sur `surface-alt`** (4,24:1). Il faut décider s'il faut l'assombrir (candidat `#607075`).
+
+**Reste ouvert (0.8.5, utilisateur)** : appliquer la checklist contraste et trancher les états estompés ; garde-fou CSS « `icon-muted` interdit en texte » une fois corrigé ; tests lecteur d'écran ; apps consommatrices dédiées ; publication npm.
