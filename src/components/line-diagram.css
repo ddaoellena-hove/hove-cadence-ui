@@ -1,0 +1,209 @@
+/* ── LineDiagram ─────────────────────────────────────────────────────────── */
+/* Cadre, tableau, états et fraîcheur : chart-frame.css (ChartFrame). */
+.line-diagram__header {
+  align-items: center;
+  color: var(--cadence-color-label, #1a3e45);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 12px;
+  font-weight: 600;
+  gap: 8px 16px;
+}
+
+.line-diagram__direction {
+  align-items: center;
+  display: inline-flex;
+  gap: 4px;
+}
+
+.line-diagram__direction-hint {
+  color: var(--cadence-color-text-secondary, #64757a);
+  font-weight: 400;
+}
+
+/* Défilement horizontal au-delà de la largeur disponible */
+.line-diagram__scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.line-diagram__canvas {
+  position: relative;
+}
+
+/* ── Files de véhicules ── */
+.line-diagram__lane {
+  position: relative;
+}
+
+.line-diagram__vehicle {
+  align-items: center;
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border-strong, #bfc9cb);
+  border-radius: var(--cadence-radius-pill, 999px);
+  box-sizing: border-box;
+  color: var(--cadence-color-primary, #002830);
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 600;
+  gap: 4px;
+  height: 22px;
+  padding: 0 8px 0 6px;
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.line-diagram__vehicle--clickable {
+  cursor: pointer;
+}
+
+.line-diagram__vehicle-label {
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-variant-numeric: tabular-nums;
+}
+
+.line-diagram__vehicle-delay {
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Statut : teinte de fond ET texte (écart, picto), jamais la couleur seule */
+.line-diagram__vehicle--late {
+  background: var(--cadence-status-warning-bg, #fff7ed);
+  border-color: var(--cadence-status-warning-fg, #c2410c);
+  color: var(--cadence-status-warning-fg, #c2410c);
+}
+
+.line-diagram__vehicle--early {
+  background: var(--cadence-status-info-bg, #eff6ff);
+  border-color: var(--cadence-status-info-fg, #1d4ed8);
+  color: var(--cadence-status-info-fg, #1d4ed8);
+}
+
+.line-diagram__vehicle--incident {
+  background: var(--cadence-status-critical-bg, #fee2e2);
+  border-color: var(--cadence-status-critical-fg, #b91c1c);
+  color: var(--cadence-status-critical-fg, #b91c1c);
+}
+
+/* Au-delà de trois niveaux d'empilement : pastille estompée, détail au survol et au clavier */
+.line-diagram__vehicle--overflow {
+  opacity: 0.6;
+}
+
+.line-diagram__vehicle--active {
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+  opacity: 1;
+  z-index: 2;
+}
+
+/* ── Voie et arrêts ── */
+.line-diagram__track {
+  height: 24px;
+  position: relative;
+}
+
+.line-diagram__rail {
+  border-radius: 3px;
+  height: 6px;
+  position: absolute;
+  top: 9px;
+}
+
+/* Tronçon perturbé : tirets blancs posés sur la voie */
+.line-diagram__disrupted {
+  background: repeating-linear-gradient(90deg, var(--cadence-color-white, #ffffff) 0 6px, transparent 6px 12px);
+  height: 6px;
+  opacity: 0.85;
+  position: absolute;
+  top: 9px;
+}
+
+.line-diagram__stop {
+  align-items: center;
+  background: var(--cadence-color-white, #ffffff);
+  border: 3px solid;
+  border-radius: 50%;
+  box-sizing: border-box;
+  color: var(--cadence-color-white, #ffffff);
+  display: flex;
+  height: 14px;
+  justify-content: center;
+  position: absolute;
+  top: 5px;
+  transform: translateX(-50%);
+  width: 14px;
+}
+
+.line-diagram__stop--clickable {
+  cursor: pointer;
+}
+
+.line-diagram__stop--closed {
+  background: var(--cadence-status-critical-fg, #b91c1c);
+  border-color: var(--cadence-status-critical-fg, #b91c1c) !important;
+  height: 16px;
+  top: 4px;
+  width: 16px;
+}
+
+.line-diagram__stop--disrupted {
+  border-style: dashed;
+}
+
+.line-diagram__stop--active {
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+  z-index: 2;
+}
+
+/* ── Libellés d'arrêts ── */
+.line-diagram__names {
+  height: 24px;
+  margin-top: 4px;
+  position: relative;
+}
+
+.line-diagram__names--tight {
+  height: 40px;
+}
+
+.line-diagram__name {
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 11px;
+  overflow: hidden;
+  position: absolute;
+  text-align: center;
+  text-overflow: ellipsis;
+  top: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.line-diagram__name--first {
+  text-align: left;
+  transform: translateX(-12px);
+}
+
+.line-diagram__name--last {
+  text-align: right;
+  transform: translateX(calc(-100% + 12px));
+}
+
+.line-diagram__name--low {
+  top: 16px;
+}
+
+.line-diagram__name--closed {
+  color: var(--cadence-status-critical-fg, #b91c1c);
+  text-decoration: line-through;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .line-diagram__vehicle {
+    transition:
+      left 600ms ease,
+      top 600ms ease,
+      bottom 600ms ease;
+  }
+}
