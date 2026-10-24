@@ -9,7 +9,8 @@ on:
 jobs:
   test:
     name: React ${{ matrix.react }}
-    runs-on: ubuntu-latest
+    # Version fixée : ubuntu-latest est passé en 26.04, où Playwright n'installe pas Chromium
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
