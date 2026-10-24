@@ -15,6 +15,11 @@ type Story = StoryObj<typeof PlanificationPattern>;
 export const Defaut: Story = {
   name: "Défaut",
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).getByRole("heading", { level: 1, name: /Planifier un service de nuit/ })).toBeInTheDocument();
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("heading", { level: 1, name: /Planifier un service de nuit/ })).toBeInTheDocument();
+    // Échelle de la frise : gabarit compact (29px), pas la hauteur de champ
+    const echelle = canvas.getByRole("radiogroup", { name: "Échelle" });
+    await expect(echelle).toHaveClass("segmented-control--sm");
+    await expect(echelle.getBoundingClientRect().height).toBe(29);
   },
 };

@@ -1060,7 +1060,7 @@ FormActions  →  Link · GhostButton · PrimaryButton
 
 ### Pattern — Planification / temps
 
-**Quand l'utiliser** — visualiser et saisir du temps (amplitudes, plages, horaires de nuit ≤ 47:59). **Ne pas confondre avec** — Analyse. **Anatomie** : `PageHeader` · `Timeline`/`JourneyTimeline`/`ServiceCalendar` · `PageSection`(`FieldRow`(`TimePicker allowOvernight`)) · `ErrorSummary` · `FormActions`. **Règles** : ✅ `25:30` conservé tel quel ; ❌ pas de mélange de hauteurs dans une `FieldRow`. **Gabarit** — vérifié : [`src/patterns/PlanificationPattern.tsx`](src/patterns/PlanificationPattern.tsx).
+**Quand l'utiliser** — visualiser et saisir du temps (amplitudes, plages, horaires de nuit ≤ 47:59). **Ne pas confondre avec** — Analyse. **Anatomie** : `PageHeader` · `Timeline`/`JourneyTimeline`/`ServiceCalendar` · `PageSection`(`FieldRow`(`TimePicker allowOvernight`)) · `ErrorSummary` · `FormActions`. **Règles** : ✅ `25:30` conservé tel quel ; ✅ échelle de la `Timeline` en `SegmentedControl size="sm"` (intégrée, à ne pas recréer) ; ❌ pas de mélange de hauteurs dans une `FieldRow`. **Gabarit** — vérifié : [`src/patterns/PlanificationPattern.tsx`](src/patterns/PlanificationPattern.tsx).
 
 ### Pattern — Paramètres
 
