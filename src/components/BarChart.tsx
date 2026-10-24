@@ -17,6 +17,7 @@ import {
   stackBars,
   type BarLayout,
 } from "./bar-chart-utils";
+import { useChartSync } from "./chart-sync";
 import { useChartWidth } from "./use-chart-size";
 import "./bar-chart.css";
 
@@ -158,6 +159,11 @@ export const BarChart = ({
       ? { x: a, y: offset, width: b - a, height: thickness }
       : { x: offset, y: plotHeight - b, width: thickness, height: b - a };
   };
+
+  // Curseur synchronisé (ChartSyncGroup) : catégorie posée par un autre graphique, repérée sans tooltip
+  const syncedKey = useChartSync(active !== null ? (categories[active] ?? null) : null);
+  const syncedIndex = syncedKey === null ? -1 : categories.indexOf(syncedKey);
+  const shown = active ?? (syncedIndex >= 0 ? syncedIndex : null);
 
   // ── Catégorie active : tooltip et annonce ──
   const rows: ChartTooltipRow[] =
@@ -364,12 +370,12 @@ export const BarChart = ({
             })}
 
             {/* Catégorie active : bande de survol */}
-            {active !== null && (
+            {shown !== null && (
               <rect
                 className="bar-chart__hover"
                 {...(horizontal
-                  ? { x: 0, y: (band(categories[active]) ?? 0) - (band.step() - band.bandwidth()) / 2, width: plotWidth, height: band.step() }
-                  : { x: (band(categories[active]) ?? 0) - (band.step() - band.bandwidth()) / 2, y: 0, width: band.step(), height: plotHeight })}
+                  ? { x: 0, y: (band(categories[shown]) ?? 0) - (band.step() - band.bandwidth()) / 2, width: plotWidth, height: band.step() }
+                  : { x: (band(categories[shown]) ?? 0) - (band.step() - band.bandwidth()) / 2, y: 0, width: band.step(), height: plotHeight })}
               />
             )}
 

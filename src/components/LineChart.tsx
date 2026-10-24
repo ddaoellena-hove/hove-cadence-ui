@@ -23,6 +23,7 @@ import {
   type ChartX,
 } from "./line-chart-utils";
 import { formatClock } from "./timeline-utils";
+import { useChartSync } from "./chart-sync";
 import { useChartWidth } from "./use-chart-size";
 import "./line-chart.css";
 
@@ -85,6 +86,13 @@ export interface LineChartProps extends ChartCommonProps {
    * proportionnelles au temps, graduations d'horloge. Défaut false.
    */
   serviceTime?: boolean;
+  /**
+   * Sélection d'une période sur l'axe X : glisser sur le tracé, ou Maj + ←/→
+   * depuis le point actif puis Entrée. Reçoit les abscisses de début et de
+   * fin (Date, catégorie ou heure de service), par exemple pour régler le
+   * `DateRangePicker` de la page. Sans elle, pas de sélection.
+   */
+  onRangeSelect?: (range: [Date | string, Date | string]) => void;
 }
 
 // Motif de trait par série (en plus de la couleur et du marqueur)
@@ -110,6 +118,7 @@ export const LineChart = ({
   compact = false,
   height: heightProp,
   serviceTime = false,
+  onRangeSelect,
   ...frame
 }: LineChartProps) => {
   const titleId = useId();
@@ -214,6 +223,19 @@ export const LineChart = ({
 
   // ── Point actif : tooltip partagé et annonce ──
   const activeX = active !== null ? xs[active] : null;
+  // Curseur synchronisé (ChartSyncGroup) : abscisse posée par un autre graphique, repérée sans tooltip
+  const syncedKey = useChartSync(activeX !== null && activeX !== undefined ? xKey(activeX) : null);
+  const syncedIndex = syncedKey === null ? -1 : xs.findIndex((x) => xKey(x) === syncedKey);
+  const shown = active ?? (syncedIndex >= 0 ? syncedIndex : null);
+
+  // Sélection d'une période (onRangeSelect) : indices de début et de fin
+  const [selection, setSelection] = useState<{ from: number; to: number } | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const range = selection ? [Math.min(selection.from, selection.to), Math.max(selection.from, selection.to)] : null;
+  const commitSelection = () => {
+    if (range && range[1] > range[0]) onRangeSelect?.([xs[range[0]], xs[range[1]]]);
+    setSelection(null);
+  };
   const rows: ChartTooltipRow[] =
     activeX === null
       ? []
@@ -243,8 +265,11 @@ export const LineChart = ({
     return current === null || previous === null ? null : `Écart vs ${visibleRefs[0].label} : ${formatGap(current - previous, unit, format)}`;
   })();
   const note = [...activeNotes, ...breachedThresholds.map((t) => `${t.label} franchi`), ...(gap ? [gap] : [])].join(" · ") || undefined;
+  const selectionText = range && range[1] > range[0] ? `Sélection du ${formatX(xs[range[0]])} au ${formatX(xs[range[1]])}, Entrée pour valider, Échap pour annuler` : "";
   const announcement =
-    activeX === null ? "" : `${formatX(activeX)} — ${rows.map((r) => `${r.label} : ${r.value}`).join(", ")}${note ? `. ${note}` : ""}`;
+    activeX === null
+      ? ""
+      : `${formatX(activeX)} — ${rows.map((r) => `${r.label} : ${r.value}`).join(", ")}${note ? `. ${note}` : ""}${selectionText ? `. ${selectionText}` : ""}`;
 
   const anchor = (() => {
     if (active === null) return null;
@@ -260,16 +285,48 @@ export const LineChart = ({
     setActive(index);
   };
 
+  const indexAt = (e: MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    return nearestIndex(positions, e.clientX - rect.left - margin.left);
+  };
+
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (xs.length === 0) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    activate(nearestIndex(positions, e.clientX - rect.left - margin.left), e.currentTarget);
+    const index = indexAt(e);
+    activate(index, e.currentTarget);
+    if (dragging && selection) setSelection({ ...selection, to: index });
+  };
+
+  // Glisser pour sélectionner une période (seulement avec onRangeSelect)
+  const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
+    if (!onRangeSelect || xs.length === 0 || e.button !== 0) return;
+    const index = indexAt(e);
+    setSelection({ from: index, to: index });
+    setDragging(true);
+  };
+  const handleMouseUp = () => {
+    if (!dragging) return;
+    setDragging(false);
+    commitSelection();
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (xs.length === 0) return;
     const last = xs.length - 1;
     const current = active ?? 0;
+    // Maj + ←/→ : étend la sélection depuis le point actif ; Entrée la valide
+    if (onRangeSelect && e.shiftKey && (e.key === "ArrowRight" || e.key === "ArrowLeft")) {
+      e.preventDefault();
+      const to = e.key === "ArrowRight" ? Math.min(last, current + 1) : Math.max(0, current - 1);
+      setSelection((prev) => ({ from: prev?.from ?? current, to }));
+      activate(to, e.currentTarget);
+      return;
+    }
+    if (onRangeSelect && e.key === "Enter" && selection) {
+      e.preventDefault();
+      commitSelection();
+      return;
+    }
     const next =
       e.key === "ArrowRight"
         ? Math.min(last, current + 1)
@@ -281,7 +338,8 @@ export const LineChart = ({
               ? last
               : null;
     if (e.key === "Escape") {
-      setActive(null);
+      if (selection) setSelection(null);
+      else setActive(null);
       return;
     }
     if (next === null) return;
@@ -335,7 +393,7 @@ export const LineChart = ({
     >
       <div
         ref={plotRef}
-        className="chart__plot"
+        className={`chart__plot${onRangeSelect ? " line-chart__plot--selectable" : ""}`}
         style={{ height }}
         tabIndex={0}
         role="group"
@@ -343,7 +401,12 @@ export const LineChart = ({
         aria-labelledby={titleId}
         aria-describedby={frame.description ? descriptionId : undefined}
         onMouseMove={handleMouseMove}
-        onMouseLeave={() => setActive(null)}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={() => {
+          setActive(null);
+          if (dragging) handleMouseUp();
+        }}
         onFocus={(e) => activate(active ?? (xs.length ? 0 : null), e.currentTarget)}
         onBlur={() => setActive(null)}
         onKeyDown={handleKeyDown}
@@ -364,6 +427,11 @@ export const LineChart = ({
                 )}
               </g>
             ))}
+
+            {/* Période en cours de sélection (onRangeSelect) */}
+            {range && range[1] > range[0] && (
+              <rect className="line-chart__selection" x={positions[range[0]]} y={0} width={positions[range[1]] - positions[range[0]]} height={plotHeight} />
+            )}
 
             {/* Aires puis courbes */}
             {paths.map(({ s, color, areaPath }) =>
@@ -402,7 +470,7 @@ export const LineChart = ({
                 const y = plottedY(l, i);
                 const value = valueAt(s, x);
                 const breach = !s.reference && isBreach(value);
-                if (y === null || s.reference || (!showMarkers && !breach) || i === active) return null;
+                if (y === null || s.reference || (!showMarkers && !breach) || i === shown) return null;
                 return (
                   <ChartMarker
                     key={`${s.id}-${xKey(x)}`}
@@ -417,20 +485,20 @@ export const LineChart = ({
             )}
 
             {/* Point actif : repère vertical et marqueurs agrandis */}
-            {active !== null && (
+            {shown !== null && (
               <g className="line-chart__active">
-                <line className="line-chart__crosshair" x1={positions[active]} x2={positions[active]} y1={0} y2={plotHeight} />
+                <line className="line-chart__crosshair" x1={positions[shown]} x2={positions[shown]} y1={0} y2={plotHeight} />
                 {visible.map((s, l) => {
-                  const y = plottedY(l, active);
+                  const y = plottedY(l, shown);
                   if (y === null) return null;
                   return (
                     <ChartMarker
                       key={s.id}
                       shape={s.marker}
-                      x={positions[active]}
+                      x={positions[shown]}
                       y={y}
                       size={compact ? 3 : 5}
-                      color={!s.reference && isBreach(valueAt(s, xs[active])) ? "var(--cadence-dataviz-threshold-breach, #b91c1c)" : s.color}
+                      color={!s.reference && isBreach(valueAt(s, xs[shown])) ? "var(--cadence-dataviz-threshold-breach, #b91c1c)" : s.color}
                     />
                   );
                 })}
