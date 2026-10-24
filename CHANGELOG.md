@@ -1,5 +1,15 @@
 # Changelog — @ddaoellena/cadence-ui
 
+## 0.9.7 (non publiée)
+
+Version mineure, sans rupture d’API. Thème : **interactions de page** (feuille de route § 4 bis, lot 0.9.7).
+
+### Ajouté
+
+- **`ChartSyncGroup`** : curseur synchronisé entre les `LineChart` et `BarChart` d’un même groupe (même date, même catégorie) ; seul le graphique actif affiche son tooltip.
+- **`LineChart` — `onRangeSelect`** : sélection d’une période en glissant sur le tracé, ou Maj + ←/→ puis Entrée (Échap annule), annoncée ; à relier au `DateRangePicker` de la page pour zoomer.
+- **`SmallMultiples`** : un `LineChart` compact par élément, échelle commune, dernière valeur écrite, seuils communs, curseur synchronisé entre les cases, tableau (dernière valeur, minimum, maximum).
+
 ## 0.9.6 (non publiée)
 
 Version mineure, sans rupture d’API. Thème : **flux** (feuille de route § 4 bis, lot 0.9.6 ; décisions : `docs/proposals/sankey-chart.md`). La 0.9.5 (`TimeSpaceDiagram`) est reportée.

@@ -340,6 +340,9 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Volume et taux sur une même période (fréquentation + ponctualité, offre + charge) | `ComboChart` | deux graphiques séparés ; `LineChart` (une seule unité) |
 | Comparer à la période précédente (N vs N-1, semaine type) | `LineChart` / `BarChart` avec une série `reference: true` | deux couleurs de palette (la référence se lirait comme une série de plus) |
 | Évolution sur un service de nuit, au-delà de minuit (heures de service jusqu'à 47:59) | `LineChart serviceTime` ; `Histogram serviceTime` (distribution d'heures) ; `BarChart` avec des catégories « 24 h », « 25 h » | des `Date` coupées à minuit (deux jours calendaires pour un seul jour de service) |
+| Plusieurs graphiques d'une page à lire ensemble au même instant | `ChartSyncGroup` autour des `LineChart` / `BarChart` | des tooltips ouverts en parallèle |
+| Même mesure pour de nombreux éléments, formes à comparer (ponctualité de chaque ligne) | `SmallMultiples` | un `LineChart` à 10 séries (illisible) ; `Sparkline` en tableau (sans échelle commune visible) |
+| Choisir une période en la traçant sur le graphique (zoom) | `LineChart onRangeSelect` + `DateRangePicker` | — |
 | Valeur par paliers (offre par tranche horaire, capacité, tarifs) | `LineChart curve="step"` | `LineChart` lissé (suggère une variation continue) |
 | Parts d'un total (≤ 6 : parts modales, état du parc, causes) | `DonutChart` | `BarList` (classement, plus de 6 éléments) ; un camembert (non fourni) |
 | Choisir portée et format d'export | `ExportMenu` | L'app fabrique le fichier |
@@ -932,6 +935,7 @@ Une `Card` est **interactive** de deux façons :
 | Où vont les voyageurs de chaque origine, par quelles correspondances ? | `SankeyChart` |
 | Le volume et le taux évoluent-ils ensemble (fréquentation et ponctualité) ? | `ComboChart` (deux axes Y titrés) |
 | Une valeur tient-elle par paliers (offre par tranche horaire, capacité) ? | `LineChart curve="step"` |
+| Quelles lignes décrochent, toutes sur la même échelle ? | `SmallMultiples` |
 | Où en est une valeur par rapport à sa capacité ou à ses seuils ? | `Meter` (barre) ; `Gauge` (KPI mis en avant) |
 | De quoi se compose un total, rapporté à une capacité ? | `Meter segments` |
 
@@ -2386,6 +2390,7 @@ Fraîcheur d'une donnée : un point coloré (ton de statut) et un libellé relat
 | `series` | `{ id, label, data: { x: Date \| string, y: number \| null }[], reference? }[]` | **requis** | `y: null` = trou dans la courbe. `reference: true` : série de comparaison (N-1, semaine type), trait tireté ardoise sans marqueur ni aire, hors empilement et hors seuils ; l'écart avec la série principale est rappelé au survol |
 | `variant` | `"line" \| "area"` | `"line"` | — |
 | `stacked` | `boolean` | `false` | Aires empilées (`variant="area"`) |
+| `onRangeSelect` | `([début, fin]) => void` | — | Sélection d'une période : glisser sur le tracé, ou Maj + ←/→ depuis le point actif puis Entrée (Échap annule) ; à relier au `DateRangePicker` de la page (zoom) |
 | `serviceTime` | `boolean` | `false` | Abscisses en heures de service `"HH:mm"` jusqu'à `"47:59"` (`"25:30"` = 1 h 30 après minuit, même jour de service) : positions proportionnelles au temps, graduations d'horloge (« 24h00 », « 25h00 »), colonne « Heure » dans le tableau |
 | `curve` | `"smooth" \| "step"` | `"smooth"` | `"step"` : paliers, la valeur tient jusqu'au point suivant (offre par tranche horaire, capacité, tarifs) |
 | `thresholds` | `{ value, label }[]` | `[]` | Lignes de seuil libellées |
@@ -3207,6 +3212,45 @@ Clavier : un seul arrêt de tabulation ; ←/→ d'un véhicule au suivant dans 
   onVehicleClick={(v) => openVehicle(v.id)}
 />
 ```
+
+### ChartSyncGroup
+
+Groupe de graphiques à **curseur synchronisé**, sans rendu propre : envelopper la grille. Survoler ou parcourir au clavier une abscisse d'un `LineChart` ou d'un `BarChart` du groupe la repère (crosshair, bande de survol) dans tous les autres qui ont la même abscisse — même date (`Date`), même catégorie ou même heure de service. Seul le graphique actif affiche son tooltip et fait son annonce.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `children` | `ReactNode` | **requis** | Les graphiques, à n'importe quelle profondeur |
+
+- ✅ Pattern Analyse : évolution, volumes et taux sur la même période.
+- ⚠️ Les abscisses doivent être identiques (mêmes libellés de catégories, mêmes dates) pour se répondre.
+
+```tsx
+<ChartSyncGroup>
+  <CardGrid min={320} fit>
+    <LineChart framed title="Retard moyen" series={retards} />
+    <BarChart framed title="Perturbations" categories={jours} series={perturbations} />
+  </CardGrid>
+</ChartSyncGroup>
+```
+
+### SmallMultiples
+
+Petits multiples : un `LineChart` compact par élément (ligne, mode, arrêt) dans une grille fluide, sur une **échelle Y commune** (formes et niveaux comparables), libellé et dernière valeur au-dessus de chaque case, seuils communs. Curseur synchronisé entre les cases (`ChartSyncGroup` intégré), chaque case parcourable au clavier comme un `LineChart`. « Voir les données » : élément, dernière valeur, minimum, maximum. Props communes : voir `BarList`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `items` | `{ id, label, data: { x, y }[] }[]` | **requis** | Un petit graphique par élément |
+| `unit` | `string` | — | — |
+| `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | — |
+| `thresholds` | `{ value, label }[]` | `[]` | Seuils communs (ligne tiretée dans chaque case) |
+| `goodDirection` | `"up" \| "down" \| "neutral"` | `"up"` | Côté défavorable d'un seuil signalé |
+| `yDomain` | `[number, number]` | de min(0, valeurs) au max, arrondi | Échelle commune |
+| `serviceTime` | `boolean` | `false` | Abscisses en heures de service |
+| `minItemWidth` | `number` | `200` | Largeur minimale d'une case |
+| `itemHeight` | `number` | `56` | Hauteur du tracé d'une case |
+
+- ✅ Jusqu'à une vingtaine d'éléments ; au-delà, `DataTable` avec `Sparkline`.
+- ❌ Pas d'échelle propre à chaque case : l'intérêt est la comparaison.
 
 ### ColorField
 
