@@ -233,7 +233,7 @@ const ChevronDownIcon = ({ open }: { open: boolean }) => (
 );
 
 const LogoutIcon = () => (
-  <svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">
+  <svg width="16" height="16" viewBox="0 0 17 17" fill="none" aria-hidden="true">
     <path d="M6.5 15H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     <path d="M11.5 12.5l4-4-4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     <line x1="15.5" y1="8.5" x2="6.5" y2="8.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />

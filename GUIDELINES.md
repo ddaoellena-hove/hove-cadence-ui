@@ -2380,7 +2380,7 @@ Composant unique : apparence de l’ancien Alt, pour les formulaires et les basc
 
 **Repli** — géré en interne : le bouton « » fait passer la Sidebar de **220 px** (dépliée) à **80 px** (repliée), avec une transition de 250 ms. Il n'y a pas de prop pour piloter ou lire cet état. Dans `AppLayout`, le conteneur de la page suit cette largeur tout seul.
 
-**Apparence** — libellés en casse normale (14px, jamais en capitales) ; l'élément actif est une pastille claire en relief, texte blanc. ⚠️ À 220 px, un libellé de section dépasse vite (≈ 16 caractères avec chevron) et se tronque : préférer des libellés courts (« Données géo » plutôt que « Données Géographiques »).
+**Apparence** — libellés en casse normale (13px, jamais en capitales), icônes ramenées à 18px ; l'élément actif est une pastille claire en relief, texte blanc. ⚠️ À 220 px, un libellé de section dépasse vite (≈ 18 caractères avec chevron) et se tronque : préférer des libellés courts (« Données géo » plutôt que « Données Géographiques »).
 
 ```tsx
 <AppLayout
