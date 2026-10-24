@@ -6,6 +6,9 @@
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   gap: 12px;
   min-width: 0;
+  /* Contient les textes pour lecteurs d'écran (.chart__sr-only, en absolu) :
+     sinon ils se placent par rapport au document et peuvent l'allonger */
+  position: relative;
   width: 100%;
 }
 

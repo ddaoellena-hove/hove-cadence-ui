@@ -12,7 +12,8 @@ import { useId, useRef, useState, type CSSProperties, type KeyboardEvent } from 
 import { ChartFrame, type ChartCommonProps } from "./ChartFrame";
 import { ChartTooltip } from "./ChartTooltip";
 import { ChartDataTable } from "./ChartDataTable";
-import { Icons, type IconName } from "./Icons";
+import { Icons } from "./Icons";
+import { ModeIcon, type ModeName } from "./ModeIcon";
 import { LineBadge, type LineMode } from "./LineBadge";
 import { normalizeLineColor } from "./line-badge-utils";
 import { TimelineShell, type TimelineScaleProps } from "./TimelineShell";
@@ -65,15 +66,16 @@ export interface JourneyTimelineProps extends ChartCommonProps, TimelineScalePro
 const GUTTER = 48;
 const ROW_H = 48;
 
-const MODE_ICON: Record<LineMode, IconName> = {
-  metro: "train",
+// Pictos remplis de la famille ModeIcon (comme ModeFilter et TreeView)
+const MODE_ICON: Record<LineMode, ModeName> = {
+  metro: "metro",
   rer: "train",
   train: "train",
   tram: "tram",
   bus: "bus",
-  car: "bus",
+  car: "coach",
   navette: "bus",
-  bateau: "anchor",
+  bateau: "boat",
 };
 
 const MODE_NAME: Record<LineMode, string> = {
@@ -261,7 +263,8 @@ export const JourneyTimeline = ({
                       const end = num(seg.end);
                       const width = px(end - start);
                       const focused = cursor?.r === r && cursor?.i === i;
-                      const icon: IconName = seg.kind === "walk" ? "walk" : seg.kind === "wait" ? "clock" : seg.line?.mode ? MODE_ICON[seg.line.mode] : "route";
+                      // Marche et transport : picto de mode ; attente : horloge d'interface (pas de mode)
+                      const mode: ModeName | null = seg.kind === "walk" ? "walk" : seg.kind === "wait" ? null : seg.line?.mode ? MODE_ICON[seg.line.mode] : "all-pt";
                       // Contenu selon la place : picto, puis badge de ligne, puis durée.
                       const showBadge = seg.kind === "transit" && seg.line && width >= 56;
                       const showDuration = width >= (seg.kind === "transit" ? (showBadge ? 104 : 72) : 64);
@@ -280,7 +283,12 @@ export const JourneyTimeline = ({
                           onMouseEnter={(e) => setTip({ x: e.clientX, y: e.clientY, r, seg })}
                           onMouseLeave={() => setTip((t) => (t?.seg === seg ? null : t))}
                         >
-                          {width >= 22 && <Icons icon={icon} size={14} className="journey-timeline__seg-icon" />}
+                          {width >= 22 &&
+                            (mode ? (
+                              <ModeIcon mode={mode} size={16} className="journey-timeline__seg-icon" />
+                            ) : (
+                              <Icons icon="clock" size={14} className="journey-timeline__seg-icon" />
+                            ))}
                           {showBadge && seg.line && (
                             <LineBadge size="sm" code={seg.line.code} mode={seg.line.mode} color={seg.line.color} textColor={seg.line.textColor} />
                           )}
