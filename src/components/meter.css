@@ -1,0 +1,140 @@
+/* ── Meter ─────────────────────────────────────────────────────────────────
+   Libellé + valeur, piste neutre, remplissage selon la teinte (mode simple)
+   ou segments colorés et texturés (mode proportionnel). */
+
+.meter {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  gap: 6px;
+  min-width: 0;
+  width: 100%;
+}
+
+/* ── En-tête (libellé + valeur) ── */
+.meter__header {
+  align-items: baseline;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.meter__label {
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 13px;
+  font-weight: 500;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meter__value {
+  color: var(--cadence-color-primary, #002830);
+  flex-shrink: 0;
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* ── Piste ── */
+.meter__track {
+  background: var(--cadence-color-surface-alt, #eef1f4);
+  border-radius: 3px;
+  height: 8px;
+  position: relative;
+}
+
+.meter--proportional .meter__track {
+  height: 12px;
+  overflow: hidden;
+}
+
+/* ── Remplissage (mode simple) : couleur selon la teinte, comme Gauge ── */
+.meter__fill {
+  background: var(--cadence-color-primary, #002830);
+  border-radius: inherit;
+  display: block;
+  height: 100%;
+}
+
+.meter--success .meter__fill {
+  background: var(--cadence-color-success, #24a148);
+}
+
+.meter--warning .meter__fill {
+  background: var(--cadence-status-warning-fg, #c2410c);
+}
+
+.meter--danger .meter__fill {
+  background: var(--cadence-color-danger, #da1e28);
+}
+
+/* Repère de seuil : trait qui déborde de la piste, couleur des seuils de graphique */
+.meter__tick {
+  background: var(--cadence-dataviz-threshold, #1a3e45);
+  border-radius: 1px;
+  height: 14px;
+  position: absolute;
+  top: -3px;
+  transform: translateX(-1px);
+  width: 2px;
+}
+
+.meter__status {
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 12px;
+}
+
+/* ── Segments (mode proportionnel) ── */
+.meter__svg {
+  display: block;
+}
+
+/* Liseré blanc entre deux segments */
+.meter__segment rect:first-child {
+  stroke: var(--cadence-color-white, #ffffff);
+  stroke-width: 1;
+}
+
+.meter__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.meter__legend-item {
+  align-items: center;
+  color: var(--cadence-color-label, #1a3e45);
+  display: inline-flex;
+  font-size: 12px;
+  gap: 6px;
+}
+
+.meter__legend-value {
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Texte réservé aux lecteurs d'écran. */
+.meter__sr {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .meter__fill {
+    transition: width 240ms ease;
+  }
+}

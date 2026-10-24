@@ -1,0 +1,35 @@
+/* ── Histogram ───────────────────────────────────────────────────────────── */
+/* Cadre, axes et tableau : chart-frame.css (ChartFrame). */
+.histogram__bar {
+  fill: var(--cadence-dataviz-series-1, #6b3fd6);
+}
+
+/* Classe ouverte (« … et plus ») : même couleur, bord tireté pour la distinguer */
+.histogram__bar--open {
+  stroke: var(--cadence-dataviz-series-1, #6b3fd6);
+  stroke-dasharray: 3 2;
+  stroke-width: 1;
+  fill-opacity: 0.7;
+}
+
+.histogram__hover {
+  fill: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
+}
+
+/* ── Seuils ── */
+.histogram__threshold line {
+  stroke: var(--cadence-dataviz-threshold, #1a3e45);
+  stroke-dasharray: 6 4;
+  stroke-width: 1.5;
+}
+
+.histogram__threshold text {
+  fill: var(--cadence-dataviz-threshold, #1a3e45);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: var(--cadence-color-white, #ffffff);
+  stroke-linejoin: round;
+  stroke-width: 4px;
+}
