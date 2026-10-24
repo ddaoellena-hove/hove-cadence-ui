@@ -331,6 +331,9 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Valeur vs capacité en barre (taux de charge, parking relais, quota) | `Meter` | `ProgressBar` (avancement d'un traitement) ; `Gauge` (KPI mis en avant) |
 | Décomposition d'un total en barre (km commerciaux / haut-le-pied / annulés) | `Meter segments` | `BarChart` empilé (plusieurs catégories) ; `DonutChart` (parts sans capacité) |
 | Performance vs objectif contractuel, plages malus / bonus (ponctualité, régularité, réalisation de l'offre) | `BulletChart` | `Gauge` (un seul KPI mis en avant) ; `Meter` (valeur vs capacité, sans plages) |
+| Dispersion d'une mesure par groupe (temps de parcours par ligne ou par créneau) | `BoxPlot` | `Histogram` (une seule distribution, détaillée) |
+| Corrélation entre deux mesures, anomalies (charge vs retard) | `ScatterChart` | `ComboChart` (deux mesures dans le temps) |
+| Poids de chaque élément dans une hiérarchie (réseau → mode → ligne) | `Treemap` | `DonutChart` (un niveau, ≤ 6 parts) ; `BarList` (valeurs proches à comparer) |
 | Distribution d'une mesure (retards, temps de parcours, intervalles entre passages) | `Histogram` | `BarChart` (catégories nommées, pas des classes de valeurs) |
 | Volume et taux sur une même période (fréquentation + ponctualité, offre + charge) | `ComboChart` | deux graphiques séparés ; `LineChart` (une seule unité) |
 | Comparer à la période précédente (N vs N-1, semaine type) | `LineChart` / `BarChart` avec une série `reference: true` | deux couleurs de palette (la référence se lirait comme une série de plus) |
@@ -921,6 +924,9 @@ Une `Card` est **interactive** de deux façons :
 | Comment un total se répartit-il (6 parts au plus) ? | `DonutChart` (au-delà : `BarList`) |
 | Les indicateurs du contrat atteignent-ils leur objectif (malus, neutre, bonus) ? | `BulletChart` |
 | Comment se distribuent les retards, les temps de parcours, les intervalles ? | `Histogram` |
+| Quelle ligne, quel créneau est le plus irrégulier ? | `BoxPlot` |
+| Deux mesures vont-elles ensemble ? Quels éléments sortent du lot ? | `ScatterChart` |
+| Quel poids pour chaque mode et chaque ligne dans le total ? | `Treemap` |
 | Le volume et le taux évoluent-ils ensemble (fréquentation et ponctualité) ? | `ComboChart` (deux axes Y titrés) |
 | Une valeur tient-elle par paliers (offre par tranche horaire, capacité) ? | `LineChart curve="step"` |
 | Où en est une valeur par rapport à sa capacité ou à ses seuils ? | `Meter` (barre) ; `Gauge` (KPI mis en avant) |
@@ -946,11 +952,11 @@ Une `Card` est **interactive** de deux façons :
 
 - ✅ Chaque graphique a un `title` (nom accessible) et, de préférence, une `description` (période, périmètre).
 - ✅ Alternative tabulaire : « Voir les données » affiche un vrai tableau, présent dans le DOM même masqué (`LineChart`, `BarChart` avec le total par catégorie, `BarList`, `DonutChart` avec les parts et le total, `BulletChart` avec l'objectif et le statut, `Histogram` (classe, effectif, part), `ComboChart` (une colonne par série, avec son unité), `Timeline` et `JourneyTimeline`) ; la `Heatmap` est elle-même une grille (`role="grid"`) avec en-têtes de lignes et de colonnes.
-- ✅ Clavier : `LineChart` (←/→, Début / Fin, tooltip annoncé), `BarChart` (←/→ ou ↑/↓ d'une catégorie à l'autre), `Heatmap` (flèches, Début / Fin, Ctrl+Début / Fin, Entrée), `BarList` (lignes cliquables = boutons nommés), `DonutChart` (←/→ d'une part à l'autre, en boucle, Début / Fin), `Histogram` (←/→ d'une classe à l'autre, Début / Fin), `ComboChart` (←/→ d'une catégorie à l'autre, Début / Fin), `BulletChart` (lignes nommées : valeur, objectif, statut), `Timeline` / `JourneyTimeline` (←/→ entre plages d'une ligne, ↑/↓ de ligne, Début / Fin, Entrée).
+- ✅ Clavier : `LineChart` (←/→, Début / Fin, tooltip annoncé), `BarChart` (←/→ ou ↑/↓ d'une catégorie à l'autre), `Heatmap` (flèches, Début / Fin, Ctrl+Début / Fin, Entrée), `BarList` (lignes cliquables = boutons nommés), `DonutChart` (←/→ d'une part à l'autre, en boucle, Début / Fin), `Histogram` (←/→ d'une classe à l'autre, Début / Fin), `ComboChart` (←/→ d'une catégorie à l'autre, Début / Fin), `BoxPlot` (←/→ d'un groupe à l'autre), `ScatterChart` et `Treemap` (←/→ d'un point ou d'une tuile au suivant, Entrée), `BulletChart` (lignes nommées : valeur, objectif, statut), `Timeline` / `JourneyTimeline` (←/→ entre plages d'une ligne, ↑/↓ de ligne, Début / Fin, Entrée).
 - ✅ États `loading`, `empty`, `error` (avec `onRetry`) plutôt qu'un graphique vide.
 - ✅ Donnée live (supervision) : `freshness` date le graphique ; export de ce qui est affiché : `exportable`. Pas de PNG : plusieurs graphiques sont en partie en HTML (centre du `DonutChart`, `BulletChart`, `BarList`, `Timeline`), une image SVG serait incomplète.
 - ✅ Plusieurs graphiques sur une page (tableau de bord, graphiques côte à côte dans une `CardGrid`) : les encadrer avec `framed`, même surface qu'une `Card`. Sans cadre, deux graphiques voisins se confondent (titres, axes et légendes sans limite visible). Un graphique seul dans une `PageSection` peut rester sans cadre.
-- ✅ Les graphiques suivent la largeur de leur conteneur : jamais de largeur fixe en px. Hauteurs par défaut : `LineChart` et `BarChart` vertical 280px (`LineChart compact` : 48px), `BarChart` horizontal 36px par catégorie, `Heatmap` 28px par ligne, `BarList` 32px par ligne, `Timeline` / `JourneyTimeline` 32px par ligne, `DonutChart` 200px de diamètre (légende à côté, dessous si la place manque), `BulletChart` 48px par indicateur, `Histogram` 280px, `ComboChart` 300px.
+- ✅ Les graphiques suivent la largeur de leur conteneur : jamais de largeur fixe en px. Hauteurs par défaut : `LineChart` et `BarChart` vertical 280px (`LineChart compact` : 48px), `BarChart` horizontal 36px par catégorie, `Heatmap` 28px par ligne, `BarList` 32px par ligne, `Timeline` / `JourneyTimeline` 32px par ligne, `DonutChart` 200px de diamètre (légende à côté, dessous si la place manque), `BulletChart` 48px par indicateur, `Histogram` 280px, `ComboChart` 300px, `BoxPlot` 280px, `ScatterChart` 320px, `Treemap` 360px.
 
 ---
 
@@ -1899,6 +1905,27 @@ Clavier : le tracé est focusable ; ←/→ d'une catégorie à l'autre, Début 
 />
 ```
 
+### BoxPlot
+
+Boîtes à moustaches à partir des **observations brutes**, un groupe par boîte (ligne, créneau). Boîte du 1er au 3e quartile (`--cadence-dataviz-seq-2` bordée de `--cadence-dataviz-series-1`), médiane épaisse, moustaches de Tukey jusqu'aux valeurs extrêmes dans 1,5 × l'écart interquartile, valeurs aberrantes en cercles. Tooltip et annonce par groupe : « Bus 91 : médiane 38,4 min, moitié centrale de 35,7 à 41,4 min, de 30,6 à 45,8 min hors valeurs aberrantes, 3 valeurs aberrantes, 83 courses ». « Voir les données » : effectif, minimum, quartiles, médiane, maximum, nombre de valeurs aberrantes. Hauteur par défaut 280px. Props communes : voir `BarList`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `groups` | `{ id, label, values: number[] }[]` | **requis** | Une boîte par groupe, dans l'ordre ; valeurs non finies ignorées |
+| `unit` | `string` | — | Unité des valeurs (« min ») |
+| `countLabel` | `string` | `"observations"` | Ce que l'on compte, au pluriel (« courses ») |
+| `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | — |
+| `thresholds` | `{ value, label }[]` | `[]` | Lignes horizontales libellées (temps prévu, objectif) |
+| `yDomain` | `[number, number]` | englobe les valeurs, arrondi | Bornes de l'axe des valeurs |
+| `showGrid` | `boolean` | `true` | Grille horizontale |
+| `hideTitle` | `boolean` | `false` | En-tête masqué visuellement (titre toujours lu) |
+| `height` | `number` | `280` | Hauteur du tracé |
+
+Clavier : ←/→ d'un groupe à l'autre, Début / Fin, Échap.
+
+- ✅ Comparer la **dispersion** (régularité) entre lignes ou créneaux ; pour une seule distribution détaillée, `Histogram`.
+- ⚠️ Moins de 5 valeurs par groupe : quartiles peu parlants, préférer un tableau.
+
 ### Breadcrumbs
 
 | Prop | Type | Défaut | Description |
@@ -2202,6 +2229,45 @@ Clavier : le tracé est focusable ; ←/→ d'une classe à l'autre, Début / Fi
   thresholds={[{ value: 5, label: "Retard 5 min" }]}
 />
 ```
+
+### ScatterChart
+
+Nuage de points : corrélation entre deux mesures, un point par élément (ligne, course, arrêt). Une forme **et** une couleur par série (`--cadence-dataviz-series-N`), axes titrés avec leur unité, seuils sur l'un ou l'autre axe pour délimiter des quadrants. Tooltip au point le plus proche (24 px), parcours au clavier de gauche à droite, annonce « Ligne 13 (Métro) : Charge à la pointe 112 %, Retard moyen 4,6 min ». « Voir les données » : point, série, x, y. Hauteur par défaut 320px. Props communes : voir `BarList`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `series` | `{ id, label, points: { id, x, y, label? }[] }[]` | **requis** | Une à huit séries ; `label` nomme le point |
+| `xAxis`, `yAxis` | `{ label, unit?, format?, domain?, includeZero? }` | **requis** | Titre et unité de l'axe ; `domain` impose les bornes ; `includeZero` (défaut `true`) |
+| `thresholds` | `{ axis: "x" \| "y", value, label }[]` | `[]` | Traits tiretés libellés, verticaux (`x`) ou horizontaux (`y`) |
+| `onPointClick` | `(point, series) => void` | — | Clic ou Entrée sur le point actif |
+| `showLegend` | `boolean` | `true` | Légende cliquable (dès deux séries) |
+| `showGrid` | `boolean` | `true` | Grille |
+| `hideTitle` | `boolean` | `false` | En-tête masqué visuellement (titre toujours lu) |
+| `height` | `number` | `320` | Hauteur du tracé |
+
+Clavier : ←/→ (ou ↑/↓) d'un point au suivant dans l'ordre des abscisses, Début / Fin, Entrée, Échap.
+
+- ✅ Repérer des anomalies (lignes chargées **et** en retard) avec deux seuils.
+- ❌ Pas pour une évolution dans le temps : `LineChart`.
+
+### Treemap
+
+Pavage hiérarchique (squarify, `d3-hierarchy`) : aire proportionnelle à la valeur, réseau → mode → ligne. Les branches de premier niveau reçoivent une couleur **et** un motif, un bandeau avec leur libellé et leur total ; une feuille directe de la racine (« RER ») est sa propre branche. Libellé et valeur posés sur la tuile quand ils tiennent. Tooltip et annonce : « Bus › Ligne 91 : 640 km, 4,9 % du total ». « Voir les données » : chemin, valeur, part. Hauteur par défaut 360px. Props communes : voir `BarList`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `data` | `{ id, label, value?, children? }` | **requis** | Racine ; une valeur sur les feuilles (somme automatique), valeurs nulles ou négatives ignorées |
+| `unit` | `string` | — | Unité (« km ») |
+| `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | — |
+| `onTileClick` | `({ id, label, value, path }) => void` | — | Clic ou Entrée sur la tuile active |
+| `showLegend` | `boolean` | `true` | Légende des branches avec leur part (dès deux branches) |
+| `hideTitle` | `boolean` | `false` | En-tête masqué visuellement (titre toujours lu) |
+| `height` | `number` | `360` | Hauteur du pavage |
+
+Clavier : ←/→ (ou ↑/↓) d'une tuile à la suivante dans l'ordre de lecture (branches puis tuiles par valeur décroissante), Début / Fin, Entrée, Échap.
+
+- ✅ Au plus huit branches (une couleur chacune) ; au-delà, regrouper.
+- ❌ Pas pour comparer des valeurs proches : les aires se jugent mal, préférer `BarList`.
 
 ### Icons
 

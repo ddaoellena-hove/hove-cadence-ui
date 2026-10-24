@@ -1,5 +1,19 @@
 # Changelog — @ddaoellena/cadence-ui
 
+## 0.9.3 (non publiée)
+
+Version mineure, sans rupture d’API. Thème : **graphiques d’analyse** (feuille de route § 4 bis, lot 0.9.3).
+
+### Ajouté
+
+- **`BoxPlot`** : boîtes à moustaches à partir des observations brutes (quartiles, médiane, moustaches de Tukey à 1,5 × l’écart interquartile, valeurs aberrantes), seuils, tooltip et clavier par groupe, alternative tabulaire. Pour la dispersion des temps de parcours par ligne ou par créneau.
+- **`ScatterChart`** : nuage de points, une forme et une couleur par série, axes titrés, seuils sur chaque axe (quadrants), point le plus proche au survol, parcours au clavier, `onPointClick`. Pour la corrélation charge / retard, distance / temps, la détection d’anomalies.
+- **`Treemap`** : pavage hiérarchique (réseau → mode → ligne), une couleur et un motif par branche, bandeau avec le total de chaque branche, libellés quand ils tiennent, chemin annoncé, `onTileClick`.
+
+### Dépendances
+
+- **`d3-hierarchy` 3.1.2** (pavage du `Treemap`), externe au bundle comme les autres modules d3 : les applications l’installent avec la bibliothèque. Types : `@types/d3-hierarchy` 3.1.7 (développement).
+
 ## 0.9.2 (non publiée)
 
 Version mineure, sans rupture d’API. Thème : **transport, à partir de `Heatmap`** (feuille de route § 4 bis, lot 0.9.2).
