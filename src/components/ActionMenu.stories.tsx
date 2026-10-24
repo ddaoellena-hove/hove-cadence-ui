@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { ActionMenu, type ActionMenuItem } from "./ActionMenu";
 import { TableCard } from "./TableCard";
 import { Modal } from "./Modal";
@@ -94,16 +94,17 @@ export const DansUneTableCard: Story = {
     const menu = await body.findByRole("menu");
     await expect(menu).toBeInTheDocument();
     const items = body.getAllByRole("menuitem");
-    await expect(items[0]).toHaveFocus();
+    // Le focus suit le placement du menu (une image après son apparition)
+    await waitFor(() => expect(items[0]).toHaveFocus());
 
     // Flèche bas : focus sur l'item suivant.
     await userEvent.keyboard("{ArrowDown}");
-    await expect(items[1]).toHaveFocus();
+    await waitFor(() => expect(items[1]).toHaveFocus());
 
     // Échap : ferme et rend le focus au déclencheur.
     await userEvent.keyboard("{Escape}");
     await expect(body.queryByRole("menu")).not.toBeInTheDocument();
-    await expect(trigger).toHaveFocus();
+    await waitFor(() => expect(trigger).toHaveFocus());
   },
 };
 

@@ -305,17 +305,23 @@ export const useAnchoredPanel = ({
           callbacks.current.onTriggerHidden();
           return;
         }
-        setPos(placeAnchored(trigger, panel, align));
+        const next = placeAnchored(trigger, panel, align);
+        // Position inchangée : pas de nouveau rendu (ni de refocalisation dans les menus)
+        setPos((prev) =>
+          prev && prev.left === next.left && prev.top === next.top && prev.up === next.up && prev.zIndex === next.zIndex ? prev : next,
+        );
       });
     };
     document.addEventListener("mousedown", onDown);
     window.addEventListener("scroll", onMove, true);
     window.addEventListener("resize", onMove);
     // Le contenu du panneau peut changer de taille après la première mesure
-    // (polices chargées, calendrier rendu) : le replacer, sinon un panneau
-    // aligné à droite déborde de la largeur gagnée.
+    // (polices chargées, calendrier rendu), et le conteneur du déclencheur
+    // peut rétrécir (barre de défilement qui apparaît) sans défilement ni
+    // redimensionnement de la fenêtre : replacer le panneau dans les deux cas.
     const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(() => onMove(new Event("resize"))) : null;
     if (panelRef.current) observer?.observe(panelRef.current);
+    if (triggerRef.current?.parentElement) observer?.observe(triggerRef.current.parentElement);
     return () => {
       cancelAnimationFrame(frame);
       observer?.disconnect();
