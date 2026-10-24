@@ -7,6 +7,8 @@ Version mineure, sans rupture d’API. Thème : **dataviz du pilotage transport*
 ### Ajouté
 
 - **`DonutChart`** : anneau des parts d’un total (six au plus), total au centre, légende avec valeur et part. Couleur **et** motif par part ; au-delà de `maxSlices` (6), regroupement des plus petites parts dans « Autres » (`othersLabel`). Survol et clavier (←/→ en boucle, Début / Fin, Échap) : la part active s’agrandit et le centre affiche sa part du total, annoncée (`aria-live`). Contrat commun des graphiques (`title`, `description`, états, `framed`, « Voir les données » avec parts et total). Pour les parts modales, l’état du parc, les causes de perturbation.
+- **`Meter`** : valeur par rapport à une capacité, en barre. Mode simple (`value`) : seuils libellés, sens favorable, repères sur la barre et statut écrit, `role="meter"` (taux de charge, parking relais, quota ; surcharge affichée avec son nombre réel). Mode proportionnel (`segments`) : décomposition d’un total en segments colorés et texturés, reste jusqu’à `max` en piste vide, légende (km commerciaux / haut-le-pied / annulés). Primitive compacte comme `Gauge`, sans états de chargement.
+
 
 ### Modifié
 

@@ -323,8 +323,10 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Sections dépliables | `Accordion` | `TabList` (navigation) |
 | Étapes d'un import ou formulaire | `Stepper` | `ProgressBar` (avancement d'un traitement) |
 | Déposer/sélectionner des fichiers | `FileUpload` | L'app assure l'envoi et la validation métier |
-| Progression déterminée ou indéterminée | `ProgressBar` | `Gauge` (mesure, pas un traitement) |
+| Progression déterminée ou indéterminée | `ProgressBar` | `Gauge`, `Meter` (mesure, pas un traitement) |
 | Proportion unique, objectif | `Gauge` | `Card` (KPI chiffré) |
+| Valeur vs capacité en barre (taux de charge, parking relais, quota) | `Meter` | `ProgressBar` (avancement d'un traitement) ; `Gauge` (KPI mis en avant) |
+| Décomposition d'un total en barre (km commerciaux / haut-le-pied / annulés) | `Meter segments` | `BarChart` empilé (plusieurs catégories) ; `DonutChart` (parts sans capacité) |
 | Parts d'un total (≤ 6 : parts modales, état du parc, causes) | `DonutChart` | `BarList` (classement, plus de 6 éléments) ; un camembert (non fourni) |
 | Choisir portée et format d'export | `ExportMenu` | L'app fabrique le fichier |
 | Masquer/réordonner les colonnes | `ColumnManager` | `DataTable` applique l'état |
@@ -907,6 +909,8 @@ Une `Card` est **interactive** de deux façons :
 | La tendance de chaque ligne d'un tableau ? | `Sparkline` dans une cellule de `DataTable` |
 | Quand des plages se situent sur un axe temps (perturbations, amplitudes, travaux) ? | `Timeline` (une ligne par entité) ; `JourneyTimeline` (itinéraires comparés) |
 | Comment un total se répartit-il (6 parts au plus) ? | `DonutChart` (au-delà : `BarList`) |
+| Où en est une valeur par rapport à sa capacité ou à ses seuils ? | `Meter` (barre) ; `Gauge` (KPI mis en avant) |
+| De quoi se compose un total, rapporté à une capacité ? | `Meter segments` |
 
 ### Palette
 
@@ -2990,6 +2994,54 @@ Proportion unique en arc 270° ou anneau. Valeur formatée en français, indicat
 | `className` | `string` | — | Classe additionnelle |
 
 Avec `up` : sous le premier seuil → défavorable, à partir du dernier → favorable, entre les deux → intermédiaire. Avec `down` : jusqu'au premier → favorable, au-dessus du dernier → défavorable. Sans seuil ou avec `neutral`, pas de jugement. Valeur/max non finis ou max ≤ 0 → nom accessible « Donnée indisponible », piste vide. Ce composant n'a pas les états `loading`/`error` de `ChartFrame` : les gérer dans la composition avec `Skeleton`/`InlineAlert`.
+
+### Meter
+
+Mesure d'une valeur par rapport à une capacité, en barre horizontale (8px). Primitive compacte comme `Gauge` : `label` visible au lieu de `title`, sans états `loading` / `error` (les gérer dans la composition avec `Skeleton` / `InlineAlert`). Deux modes exclusifs, selon la présence de `value` ou de `segments`.
+
+**Mode simple** (`value`) : remplissage coloré selon `goodDirection` et `thresholds` (même règle que `Gauge`), repères de seuil sur la barre et statut écrit dessous (« Niveau intermédiaire — Capacité 100 % »). `role="meter"` ; `aria-valuetext` reprend la valeur et le statut. Au-delà de `max`, la barre est pleine et le nombre réel reste affiché (« 112 % »).
+
+**Mode proportionnel** (`segments`) : barre de 12px découpée en segments (couleur **et** motif par segment), légende dessous (libellé, valeur, part). Le reste jusqu'à `max` apparaît en piste vide. `role="img"` décrit par le résumé (« Commerciaux : 1 020 km (68 %), … Total 1 240 km sur 1 500 km. »).
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `label` | `string` | **requis** | Libellé visible (nom accessible) |
+| `value` | `number` | — | Mode simple : valeur mesurée |
+| `segments` | `{ id, label, value, color? }[]` | — | Mode proportionnel : décomposition, dans l'ordre ; exclusif avec `value` |
+| `max` | `number` | `100` (simple) ; somme des segments (proportionnel) | Capacité. En proportionnel, un `max` inférieur à la somme est ignoré |
+| `unit` | `string` | — | « places », « km », « % ». Avec `"%"`, seule la valeur est affichée ; sinon « 96 / 120 places » |
+| `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | — |
+| `thresholds` | `{ value: number; label: string }[]` | — | Mode simple : seuils libellés, repères entre 0 et `max` |
+| `goodDirection` | `"up" \| "down" \| "neutral"` | `"up"` | Mode simple : sens favorable. Taux de charge → `"down"` |
+| `showLegend` | `boolean` | `true` | Mode proportionnel : légende sous la barre |
+| `className` | `string` | — | Classe additionnelle |
+
+- ⚠️ `value` et `segments` sont exclusifs (erreur de typage si les deux sont passés) ; `thresholds` et `goodDirection` n'existent qu'en mode simple.
+- ⚠️ Valeur ou `max` non finis, ou `max` ≤ 0 : piste vide, « Donnée indisponible ».
+
+```tsx
+<Meter
+  label="Ligne 13 — course de 8 h 12"
+  value={92}
+  unit="%"
+  goodDirection="down"
+  thresholds={[
+    { value: 80, label: "Charge élevée 80 %" },
+    { value: 100, label: "Capacité 100 %" },
+  ]}
+/>
+
+<Meter
+  label="Kilomètres du jour"
+  unit="km"
+  max={1500}
+  segments={[
+    { id: "commercial", label: "Commerciaux", value: 1020 },
+    { id: "hlp", label: "Haut-le-pied", value: 140 },
+    { id: "annules", label: "Annulés", value: 80 },
+  ]}
+/>
+```
 
 ### ErrorSummary
 

@@ -67,6 +67,7 @@ export * from './FileUpload';
 export * from './ExportMenu';
 export * from './ColumnManager';
 export * from './Gauge';
+export * from './Meter';
 export * from './ErrorSummary';
 export * from './DescriptionList';
 export * from './ActivityFeed';
