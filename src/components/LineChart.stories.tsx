@@ -127,6 +127,35 @@ export const CoursesEmpilees: Story = {
   },
 };
 
+/** Paliers (`curve="step"`) : l'offre tient d'une tranche horaire à la suivante. */
+export const OffreParTranche: Story = {
+  name: "Offre par tranche horaire (paliers)",
+  args: {
+    title: "Passages par heure — Ligne 13",
+    description: "Offre planifiée, jour ouvré et samedi",
+    curve: "step",
+    unit: "passages",
+    format: { maximumFractionDigits: 0 },
+    series: [
+      {
+        id: "ouvre",
+        label: "Jour ouvré",
+        data: [6, 12, 20, 20, 14, 12, 12, 12, 14, 18, 20, 16, 10, 6].map((y, i) => ({ x: `${String(i + 5).padStart(2, "0")} h`, y })),
+      },
+      {
+        id: "samedi",
+        label: "Samedi",
+        data: [4, 6, 10, 12, 12, 12, 12, 12, 12, 12, 12, 10, 8, 6].map((y, i) => ({ x: `${String(i + 5).padStart(2, "0")} h`, y })),
+      },
+    ],
+  },
+  play: async ({ canvasElement }) => {
+    // Tracé en paliers : segments horizontaux puis verticaux (commandes H/V ou L alignées)
+    const line = canvasElement.querySelector(".line-chart__line");
+    await expect(line?.getAttribute("d")).not.toMatch(/C/);
+  },
+};
+
 /** Mode compact, sans axes, pour une Card. */
 export const Compact: Story = {
   args: {

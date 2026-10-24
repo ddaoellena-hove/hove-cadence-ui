@@ -328,6 +328,8 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Valeur vs capacité en barre (taux de charge, parking relais, quota) | `Meter` | `ProgressBar` (avancement d'un traitement) ; `Gauge` (KPI mis en avant) |
 | Décomposition d'un total en barre (km commerciaux / haut-le-pied / annulés) | `Meter segments` | `BarChart` empilé (plusieurs catégories) ; `DonutChart` (parts sans capacité) |
 | Performance vs objectif contractuel, plages malus / bonus (ponctualité, régularité, réalisation de l'offre) | `BulletChart` | `Gauge` (un seul KPI mis en avant) ; `Meter` (valeur vs capacité, sans plages) |
+| Distribution d'une mesure (retards, temps de parcours, intervalles entre passages) | `Histogram` | `BarChart` (catégories nommées, pas des classes de valeurs) |
+| Valeur par paliers (offre par tranche horaire, capacité, tarifs) | `LineChart curve="step"` | `LineChart` lissé (suggère une variation continue) |
 | Parts d'un total (≤ 6 : parts modales, état du parc, causes) | `DonutChart` | `BarList` (classement, plus de 6 éléments) ; un camembert (non fourni) |
 | Choisir portée et format d'export | `ExportMenu` | L'app fabrique le fichier |
 | Masquer/réordonner les colonnes | `ColumnManager` | `DataTable` applique l'état |
@@ -911,6 +913,8 @@ Une `Card` est **interactive** de deux façons :
 | Quand des plages se situent sur un axe temps (perturbations, amplitudes, travaux) ? | `Timeline` (une ligne par entité) ; `JourneyTimeline` (itinéraires comparés) |
 | Comment un total se répartit-il (6 parts au plus) ? | `DonutChart` (au-delà : `BarList`) |
 | Les indicateurs du contrat atteignent-ils leur objectif (malus, neutre, bonus) ? | `BulletChart` |
+| Comment se distribuent les retards, les temps de parcours, les intervalles ? | `Histogram` |
+| Une valeur tient-elle par paliers (offre par tranche horaire, capacité) ? | `LineChart curve="step"` |
 | Où en est une valeur par rapport à sa capacité ou à ses seuils ? | `Meter` (barre) ; `Gauge` (KPI mis en avant) |
 | De quoi se compose un total, rapporté à une capacité ? | `Meter segments` |
 
@@ -930,11 +934,11 @@ Une `Card` est **interactive** de deux façons :
 ### Accessibilité
 
 - ✅ Chaque graphique a un `title` (nom accessible) et, de préférence, une `description` (période, périmètre).
-- ✅ Alternative tabulaire : « Voir les données » affiche un vrai tableau, présent dans le DOM même masqué (`LineChart`, `BarChart` avec le total par catégorie, `BarList`, `DonutChart` avec les parts et le total, `BulletChart` avec l'objectif et le statut, `Timeline` et `JourneyTimeline`) ; la `Heatmap` est elle-même une grille (`role="grid"`) avec en-têtes de lignes et de colonnes.
-- ✅ Clavier : `LineChart` (←/→, Début / Fin, tooltip annoncé), `BarChart` (←/→ ou ↑/↓ d'une catégorie à l'autre), `Heatmap` (flèches, Début / Fin, Ctrl+Début / Fin, Entrée), `BarList` (lignes cliquables = boutons nommés), `DonutChart` (←/→ d'une part à l'autre, en boucle, Début / Fin), `BulletChart` (lignes nommées : valeur, objectif, statut), `Timeline` / `JourneyTimeline` (←/→ entre plages d'une ligne, ↑/↓ de ligne, Début / Fin, Entrée).
+- ✅ Alternative tabulaire : « Voir les données » affiche un vrai tableau, présent dans le DOM même masqué (`LineChart`, `BarChart` avec le total par catégorie, `BarList`, `DonutChart` avec les parts et le total, `BulletChart` avec l'objectif et le statut, `Histogram` (classe, effectif, part), `Timeline` et `JourneyTimeline`) ; la `Heatmap` est elle-même une grille (`role="grid"`) avec en-têtes de lignes et de colonnes.
+- ✅ Clavier : `LineChart` (←/→, Début / Fin, tooltip annoncé), `BarChart` (←/→ ou ↑/↓ d'une catégorie à l'autre), `Heatmap` (flèches, Début / Fin, Ctrl+Début / Fin, Entrée), `BarList` (lignes cliquables = boutons nommés), `DonutChart` (←/→ d'une part à l'autre, en boucle, Début / Fin), `Histogram` (←/→ d'une classe à l'autre, Début / Fin), `BulletChart` (lignes nommées : valeur, objectif, statut), `Timeline` / `JourneyTimeline` (←/→ entre plages d'une ligne, ↑/↓ de ligne, Début / Fin, Entrée).
 - ✅ États `loading`, `empty`, `error` (avec `onRetry`) plutôt qu'un graphique vide.
 - ✅ Plusieurs graphiques sur une page (tableau de bord, graphiques côte à côte dans une `CardGrid`) : les encadrer avec `framed`, même surface qu'une `Card`. Sans cadre, deux graphiques voisins se confondent (titres, axes et légendes sans limite visible). Un graphique seul dans une `PageSection` peut rester sans cadre.
-- ✅ Les graphiques suivent la largeur de leur conteneur : jamais de largeur fixe en px. Hauteurs par défaut : `LineChart` et `BarChart` vertical 280px (`LineChart compact` : 48px), `BarChart` horizontal 36px par catégorie, `Heatmap` 28px par ligne, `BarList` 32px par ligne, `Timeline` / `JourneyTimeline` 32px par ligne, `DonutChart` 200px de diamètre (légende à côté, dessous si la place manque), `BulletChart` 48px par indicateur.
+- ✅ Les graphiques suivent la largeur de leur conteneur : jamais de largeur fixe en px. Hauteurs par défaut : `LineChart` et `BarChart` vertical 280px (`LineChart compact` : 48px), `BarChart` horizontal 36px par catégorie, `Heatmap` 28px par ligne, `BarList` 32px par ligne, `Timeline` / `JourneyTimeline` 32px par ligne, `DonutChart` 200px de diamètre (légende à côté, dessous si la place manque), `BulletChart` 48px par indicateur, `Histogram` 280px.
 
 ---
 
@@ -2078,6 +2082,40 @@ Clavier : une seule cellule tabulable ; flèches, Début / Fin (ligne), Ctrl+Dé
 />
 ```
 
+### Histogram
+
+Distribution d'une mesure : effectif par classe de valeurs, à partir des **observations brutes** (retards en minutes, temps de parcours, intervalles entre passages). Classes contiguës (`--cadence-dataviz-series-1`), **toutes de même largeur à l'écran** : seule la hauteur (l'effectif) porte la valeur, même avec des bornes inégales comme `[0, 1, 2, 3, 5, 10]` ; une classe ouverte (« 10 min et plus ») a un bord tireté. Seuils en traits verticaux libellés. Tooltip et annonce : « De 2 à 3 min : 128 courses, 26,7 % » ; la description résume l'effectif, la médiane et la classe la plus fournie. « Voir les données » : classe, effectif, part. Hauteur par défaut 280px. Props communes : voir `BarList`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `values` | `number[]` | **requis** | Observations ; valeurs non finies ignorées |
+| `bins` | `number \| number[]` | règle de Sturges | Nombre de classes visé (bornes « rondes ») ou bornes imposées `[0, 1, 2, 3, 5, 10]` |
+| `unit` | `string` | — | Unité des valeurs (« min ») |
+| `countLabel` | `string` | `"observations"` | Ce que l'on compte, au pluriel (« courses », « passages ») |
+| `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | Format des bornes |
+| `thresholds` | `{ value, label }[]` | `[]` | Traits verticaux libellés (« Retard 5 min ») |
+| `showGrid` | `boolean` | `true` | Grille horizontale |
+| `hideTitle` | `boolean` | `false` | En-tête masqué visuellement (titre toujours lu) |
+| `height` | `number` | `280` | Hauteur du tracé |
+
+Clavier : le tracé est focusable ; ←/→ d'une classe à l'autre, Début / Fin, Échap masque le tooltip.
+
+- ✅ Bornes imposées pour un indicateur métier : `[0, 1, 2, 3, 5, 10]` pour les retards rend les classes comparables d'une période à l'autre.
+- ⚠️ Avec des bornes imposées, les valeurs en dehors rejoignent la première ou la dernière classe, alors **ouverte** (« moins de 1 min », « 5 min et plus ») : rien n'est perdu.
+- ❌ Pas d'`Histogram` pour des catégories nommées (lignes, modes) : `BarChart` ou `BarList`.
+
+```tsx
+<Histogram
+  title="Distribution des retards à l'arrivée"
+  description="Ligne 13, du 14 au 20 octobre 2026"
+  values={retardsEnMinutes}
+  bins={[0, 1, 2, 3, 5, 10]}
+  unit="min"
+  countLabel="courses"
+  thresholds={[{ value: 5, label: "Retard 5 min" }]}
+/>
+```
+
 ### Icons
 
 SVG inline issu de `@untitledui/icons` — aucune requête réseau. L'icône suit `currentColor` : par défaut elle prend la couleur du texte parent. Modes de transport : `"bus"`, `"tram"`, `"train"` (métro, RER, train), `"anchor"` (bateau) ; `"walk"` (marche) est dessinée au même gabarit, faute d'équivalent Untitled UI.
@@ -2172,6 +2210,7 @@ Fraîcheur d'une donnée : un point coloré (ton de statut) et un libellé relat
 | `series` | `{ id, label, data: { x: Date \| string, y: number \| null }[] }[]` | **requis** | `y: null` = trou dans la courbe |
 | `variant` | `"line" \| "area"` | `"line"` | — |
 | `stacked` | `boolean` | `false` | Aires empilées (`variant="area"`) |
+| `curve` | `"smooth" \| "step"` | `"smooth"` | `"step"` : paliers, la valeur tient jusqu'au point suivant (offre par tranche horaire, capacité, tarifs) |
 | `thresholds` | `{ value, label }[]` | `[]` | Lignes de seuil libellées |
 | `annotations` | `{ at: Date \| string \| [début, fin], label }[]` | `[]` | Trait vertical ou bande libellés |
 | `goodDirection` | `"up" \| "down" \| "neutral"` | `"up"` | Côté défavorable d'un seuil : points en `--cadence-dataviz-threshold-breach`, libellé « franchi » |

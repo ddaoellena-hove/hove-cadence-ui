@@ -1,5 +1,5 @@
 import { useId, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
-import { area as d3Area, curveMonotoneX, line as d3Line } from "d3-shape";
+import { area as d3Area, curveMonotoneX, curveStepAfter, line as d3Line } from "d3-shape";
 import { ChartAxisBottom, ChartAxisLeft } from "./ChartAxis";
 import { ChartDataTable } from "./ChartDataTable";
 import { ChartFrame, type ChartCommonProps } from "./ChartFrame";
@@ -51,6 +51,12 @@ export interface LineChartProps extends ChartCommonProps {
   variant?: "line" | "area";
   /** Aires empilées (variant "area"). Défaut false. */
   stacked?: boolean;
+  /**
+   * Tracé entre deux points. "smooth" (défaut) : courbe lissée ; "step" :
+   * paliers (la valeur tient jusqu'au point suivant), pour une offre par
+   * tranche horaire, une capacité ou des tarifs.
+   */
+  curve?: "smooth" | "step";
   thresholds?: LineChartThreshold[];
   annotations?: LineChartAnnotation[];
   /** Sens favorable, comme Card : les points du côté défavorable d'un seuil sont signalés. Défaut "up". */
@@ -80,6 +86,7 @@ export const LineChart = ({
   series,
   variant = "line",
   stacked = false,
+  curve = "smooth",
   thresholds = [],
   annotations = [],
   goodDirection = "up",
@@ -108,6 +115,7 @@ export const LineChart = ({
   const visible = indexed.filter((s) => !hidden.has(s.id));
   const isArea = variant === "area";
   const isStacked = isArea && stacked;
+  const curveFactory = curve === "step" ? curveStepAfter : curveMonotoneX;
 
   const xs = useMemo(() => collectXs(series), [series]);
   const xScale = buildXScale(xs, plotWidth);
@@ -139,11 +147,11 @@ export const LineChart = ({
         .x((_, i) => positions[i])
         .y0((d) => yScale(d[0]))
         .y1((d) => yScale(d[1]))
-        .curve(curveMonotoneX)(layer);
+        .curve(curveFactory)(layer);
       const topPath = d3Line<[number, number]>()
         .x((_, i) => positions[i])
         .y((d) => yScale(d[1]))
-        .curve(curveMonotoneX)(layer);
+        .curve(curveFactory)(layer);
       return { s, color, areaPath, linePath: topPath };
     }
     const points = xs.map((x) => ({ x, y: valueAt(s, x) }));
@@ -151,14 +159,14 @@ export const LineChart = ({
       .defined((p) => p.y !== null)
       .x((p) => xScale.position(p.x))
       .y((p) => yScale(p.y as number))
-      .curve(curveMonotoneX)(points);
+      .curve(curveFactory)(points);
     const areaPath = isArea
       ? d3Area<{ x: ChartX; y: number | null }>()
           .defined((p) => p.y !== null)
           .x((p) => xScale.position(p.x))
           .y0(baseline)
           .y1((p) => yScale(p.y as number))
-          .curve(curveMonotoneX)(points)
+          .curve(curveFactory)(points)
       : null;
     return { s, color, areaPath, linePath };
   });
