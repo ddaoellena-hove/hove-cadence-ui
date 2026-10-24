@@ -258,5 +258,5 @@ Feuille de route : [`docs/proposals/0.9.0-dataviz-et-1.0.md`](proposals/0.9.0-da
 - **Phrases de statut** de `Gauge` / `Meter` / `BulletChart` (« Objectif atteint — … », « Niveau intermédiaire — Malus sous 97 % » cite la borne basse) : à reformuler avec l'utilisateur, notamment pour un taux de charge.
 - Test `PageHeader / Défaut` instable dans la suite complète (position du popover), stable seul.
 - Le Storybook lancé avant l'alias Vite résout le paquet vers `dist/` : le redémarrer.
-- 0.9.x : P2 (`BoxPlot`, `Treemap`, `ScatterChart`) et candidates du § 2 bis ; puis la 1.0 (§ 5 de la feuille de route). Publication npm uniquement sur demande.
+- 0.9.x replanifiée (§ 4 bis de la feuille de route) : lots 0.9.1 à 0.9.7, dont les gros sujets avancés avant la 1.0 (thermomètre de ligne `LineDiagram`, Marey `TimeSpaceDiagram`, `SankeyChart`) ; puis la 1.0 (§ 5). Publication npm uniquement sur demande.
 
