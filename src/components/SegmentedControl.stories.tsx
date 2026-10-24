@@ -2,6 +2,7 @@ import React from "react";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { SegmentedControl } from "./SegmentedControl";
+import { PrimaryButton } from "./PrimaryButton";
 
 const twoTabs = [
   { value: "tab-1", label: "Tab 1" },
@@ -147,5 +148,38 @@ export const OptionDesactivee: Story = {
     await userEvent.keyboard("{ArrowRight}");
     await expect(canvas.getByRole("radio", { name: "30 min" })).toHaveFocus();
     await expect(canvas.getByRole("radio", { name: "30 min" })).toBeChecked();
+  },
+};
+
+/**
+ * `size="sm"` : 29px (`--cadence-control-height-compact`), pour un en-tête de
+ * dashboard ou une barre d'outils serrée. S'aligne sur les boutons `sm` et le
+ * `SearchInput` d'une rangée compacte ; garder `"md"` (40px) dans un formulaire.
+ */
+export const TailleSm: Story = {
+  name: "Taille sm (dashboard)",
+  render: () => (
+    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <SegmentedControl
+        size="sm"
+        aria-label="Échelle"
+        defaultValue="fit"
+        options={[
+          { value: "fit", label: "Ajuster" },
+          { value: "60", label: "1 h" },
+          { value: "30", label: "30 min" },
+          { value: "15", label: "15 min" },
+        ]}
+      />
+      <PrimaryButton size="sm" outline label="Exporter" iconStart="download-02" />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const group = within(canvasElement).getByRole("radiogroup", { name: "Échelle" });
+    await expect(group).toHaveClass("segmented-control--sm");
+    // Même hauteur que le bouton sm voisin : rangée compacte alignée
+    const button = within(canvasElement).getByRole("button", { name: "Exporter" });
+    await expect(group.getBoundingClientRect().height).toBe(29);
+    await expect(button.getBoundingClientRect().height).toBe(29);
   },
 };

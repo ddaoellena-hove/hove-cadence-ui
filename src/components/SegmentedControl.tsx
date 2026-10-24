@@ -27,6 +27,12 @@ export interface SegmentedControlProps {
   /** Disables all interaction when true. */
   disabled?: boolean;
 
+  /**
+   * Gabarit : `"md"` (40px, hauteur de champ — formulaires) ou `"sm"` (29px,
+   * hauteur compacte — en-tête de dashboard, barre d'outils). Défaut `"md"`.
+   */
+  size?: "sm" | "md";
+
   /** Optional extra class name on the root element. */
   className?: string;
 
@@ -46,6 +52,7 @@ export const SegmentedControl = React.forwardRef<HTMLDivElement, SegmentedContro
       defaultValue,
       onChange,
       disabled = false,
+      size = "md",
       className,
       "aria-label": ariaLabel = "Choix",
     },
@@ -109,6 +116,7 @@ export const SegmentedControl = React.forwardRef<HTMLDivElement, SegmentedContro
 
     const rootClass = [
       "segmented-control",
+      size === "sm" ? "segmented-control--sm" : "",
       disabled ? "segmented-control--disabled" : "",
       className,
     ]

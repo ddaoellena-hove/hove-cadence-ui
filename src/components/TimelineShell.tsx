@@ -125,6 +125,7 @@ export const TimelineShell = ({
               Échelle
             </span>
             <SegmentedControl
+              size="sm"
               aria-label="Échelle"
               value={effective === "fit" ? "fit" : String(effective)}
               onChange={(v) => setScale(v === "fit" ? "fit" : Number(v))}

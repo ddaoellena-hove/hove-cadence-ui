@@ -157,8 +157,8 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-radius-xl` | `12px` | Conteneurs : `AppLayout`, `CounterInput` |
 | `--cadence-radius-2xl` | `16px` | `Modal`, grandes cartes riches (`RichCheckbox` / `RichRadioButton` large) |
 | `--cadence-radius-pill` | `999px` | Pilules et cercles : boutons, `SearchInput`, `Toggle`, halos ronds |
-| `--cadence-control-height-compact` | `29px` | Hauteur des contrôles compacts : boutons `size="sm"`, `SearchInput`, déclencheurs `variant="button"` — voir [Hauteurs de contrôle](#hauteurs-de-contrôle-et-alignement-sur-une-rangée) |
-| `--cadence-control-height-field` | `40px` | Hauteur des champs d'une ligne (`TextInput`, `Dropdown`, `DatePicker`, `ColorField`…) et du `SegmentedControl` |
+| `--cadence-control-height-compact` | `29px` | Hauteur des contrôles compacts : boutons `size="sm"`, `SearchInput`, déclencheurs `variant="button"`, `SegmentedControl size="sm"` — voir [Hauteurs de contrôle](#hauteurs-de-contrôle-et-alignement-sur-une-rangée) |
+| `--cadence-control-height-field` | `40px` | Hauteur des champs d'une ligne (`TextInput`, `Dropdown`, `DatePicker`, `ColorField`…) et du `SegmentedControl` (`size="md"`) |
 
 **Statuts** — les 8 variantes d'`Indicator`, une paire texte (`-fg`) / fond (`-bg`) par variante :
 
@@ -375,8 +375,8 @@ Deux tokens fixent la hauteur extérieure (bordure comprise) des contrôles, pou
 
 | Token | Valeur | Groupe | Composants |
 |---|---|---|---|
-| `--cadence-control-height-compact` | `29px` | **Compact** : en-tête de dashboard, barre d'outils, `FilterBar`, barre de sélection | `PrimaryButton` / `GhostButton` `size="sm"` (plein, `outline`, icône seule), `SearchInput`, `Dropdown` / `DatePicker` / `DateRangePicker` / `TimePicker` en `variant="button"`, déclencheurs d'`ActionMenu`, `ExportMenu`, `ColumnManager`, `Popover` (boutons `sm`) |
-| `--cadence-control-height-field` | `40px` | **Champ** : formulaire, rangée de critères détaillés | `TextInput`, `Dropdown`, `DatePicker`, `DateRangePicker`, `TimePicker` et `CounterInput` en variante champ, `ColorField`, `DisruptionScopePicker`, `Autocomplete` (hauteur minimale), `SegmentedControl` |
+| `--cadence-control-height-compact` | `29px` | **Compact** : en-tête de dashboard, barre d'outils, `FilterBar`, barre de sélection | `PrimaryButton` / `GhostButton` `size="sm"` (plein, `outline`, icône seule), `SearchInput`, `Dropdown` / `DatePicker` / `DateRangePicker` / `TimePicker` en `variant="button"`, déclencheurs d'`ActionMenu`, `ExportMenu`, `ColumnManager`, `Popover` (boutons `sm`), `SegmentedControl size="sm"` (échelle de `Timeline`, bascule de vue d'un dashboard) |
+| `--cadence-control-height-field` | `40px` | **Champ** : formulaire, rangée de critères détaillés | `TextInput`, `Dropdown`, `DatePicker`, `DateRangePicker`, `TimePicker` et `CounterInput` en variante champ, `ColorField`, `DisruptionScopePicker`, `Autocomplete` (hauteur minimale), `SegmentedControl` (`size="md"`, défaut) |
 
 Principe de composition :
 
@@ -2349,6 +2349,7 @@ Composant unique : apparence de l’ancien Alt, pour les formulaires et les basc
 
 - ✅ Le `SegmentedControl` **épouse ses segments** (« hug ») : sa largeur est celle de ses options, alignées à gauche. Le composant fixe `width: fit-content`, donc il ne s'étire pas dans une colonne flex ou une grille.
 - ❌ Ne jamais l'étirer sur toute la largeur de la page ou de son conteneur (`width: 100%`, `flex: 1`, `alignSelf: "stretch"`, segments en `flex: 1`). Seul l'en-tête interne du popover de `DatePicker` le fait, et ce n'est pas un modèle à reproduire.
+- ✅ Choisir la taille selon la rangée : `"md"` (40px) parmi des champs de formulaire, `"sm"` (29px) dans un en-tête de dashboard ou une barre d'outils serrée, à côté de boutons `sm` et d'un `SearchInput` (ex. échelle de `Timeline`).
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
@@ -2357,6 +2358,7 @@ Composant unique : apparence de l’ancien Alt, pour les formulaires et les basc
 | `defaultValue` | `string` | — | Mode non contrôlé |
 | `onChange` | `(value: string) => void` | — | — |
 | `disabled` | `boolean` | `false` | — |
+| `size` | `"sm" \| "md"` | `"md"` | `"md"` : 40px (`--cadence-control-height-field`), texte 13px — formulaires. `"sm"` : 29px (`--cadence-control-height-compact`), texte 12px, piste et pastille resserrées — dashboard serré. ⚠️ Ne pas mêler `sm` et champs 40px sur une rangée |
 | `aria-label` | `string` | `"Choix"` | Fournir un nom précis du groupe |
 | `className` | `string` | — | Classe additionnelle |
 | `ref` | `Ref<HTMLDivElement>` | — | Conteneur du groupe |

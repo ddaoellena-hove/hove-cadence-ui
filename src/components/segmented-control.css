@@ -116,6 +116,28 @@
   color: var(--cadence-color-text-disabled, #808080);
 }
 
+/* ── Taille sm : hauteur compacte (dashboard, barre d'outils) ─────────────── */
+/* Même gabarit que les boutons sm, SearchInput et filtres variant="button" :
+   s'aligne sur une rangée compacte. Piste et pastille resserrées (2px). */
+.segmented-control--sm {
+  border-radius: var(--cadence-radius-md, 8px);
+  height: var(--cadence-control-height-compact, 29px);
+  padding: 2px;
+}
+
+.segmented-control--sm .segmented-control__pill {
+  border-radius: var(--cadence-radius-sm, 6px);
+  top: 2px;
+  bottom: 2px;
+}
+
+.segmented-control--sm .segmented-control__tab {
+  border-radius: var(--cadence-radius-sm, 6px);
+  font-size: 12px;
+  min-width: 56px;
+  padding: 0 12px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .segmented-control__pill, .segmented-control__tab { transition: none; }
 }
