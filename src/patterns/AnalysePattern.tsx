@@ -24,7 +24,7 @@ export const AnalysePattern = ({ state = "ready" }: { state?: "loading" | "error
       <CardGrid>
         <Card headingLevel={2} title="Retard moyen" value={3.4} unit="min" goodDirection="down" delta={{ value: 0.2, label: "vs période précédente" }} loading={state === "loading"} />
         <Card headingLevel={2} title="Ponctualité" value={94.2} unit="%" delta={{ value: -0.6, unit: "pt" }} loading={state === "loading"} />
-        <Card headingLevel={2} title="Perturbations" value={312} goodDirection="down" onClick={() => {}} loading={state === "loading"} />
+        <Card headingLevel={2} title="Perturbations" value={312} goodDirection="down" onClick={() => {}} actionLabel="Voir les perturbations" loading={state === "loading"} />
       </CardGrid>
 
       <LineChart framed headingLevel={2} title="Retard moyen par heure" description="Toutes lignes, sur la période"

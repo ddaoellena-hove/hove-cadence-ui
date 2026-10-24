@@ -864,7 +864,14 @@ Une `Card` réunit tout ce qu'une carte de tableau de bord peut porter ; seul le
 - **action** : un bouton `PrimaryButton outline size="sm"` (`actionLabel`, `onAction`, `actionIcon`) et une `illustration` décorative en bas à droite ;
 - **texte** : `description`, sous la valeur ou directement sous le titre.
 
-Une `Card` est **interactive** soit par `onClick` (toute la carte mène à la liste détaillée), soit par son bouton d'action — jamais les deux (le typage l'interdit). Interactive, elle se soulève de 4px au survol avec l'ombre `--cadence-shadow-raised` (ombre seule avec `prefers-reduced-motion`) ; informative, elle ne bouge pas.
+Une `Card` est **interactive** de deux façons :
+- **cliquable** (`onClick` + `actionLabel`, **obligatoire**) : toute la carte mène à la liste détaillée, et un bouton visible (`PrimaryButton outline size="sm"`, « Voir les perturbations ») **signale l'interactivité**. Ce bouton porte le clic : sa zone est étirée sur toute la carte, c'est la seule cible au clavier (pas de bouton dans une zone cliquable) et l'anneau de focus entoure la carte. Le typage refuse `onClick` sans `actionLabel` ;
+- **à bouton d'action** (`actionLabel` + `onAction`) : seul le bouton est cliquable.
+
+- ✅ Une carte cliquable a **toujours** un bouton visible au libellé explicite (« Voir les alertes », « Voir les courses ») : sans lui, rien n'indique que la carte est cliquable.
+- ❌ Jamais `onClick` et `onAction` ensemble (un clic de carte et un clic de bouton distincts) : le typage l'interdit.
+
+ Interactive, elle se soulève de 4px au survol avec l'ombre `--cadence-shadow-raised` (ombre seule avec `prefers-reduced-motion`) ; informative, elle ne bouge pas.
 
 - ✅ Toujours préciser `goodDirection` quand une hausse n'est pas favorable : `"down"` pour un retard, des suppressions, des perturbations ; `"neutral"` pour un volume sans jugement.
 - ✅ La variation est un nombre signé (`-12` → « −12 % ») ; `unit: "pt"` pour une variation de taux en points (`94,8 %` → `94,2 %` = « −0,6 pt »).
@@ -1053,7 +1060,7 @@ FormActions  →  Link · GhostButton · PrimaryButton
 
 ### Pattern — Tableau de bord de supervision
 
-**Quand l'utiliser** — suivi temps réel (indicateurs, alertes, fraîcheur). **Ne pas confondre avec** — Analyse. **Anatomie** : `PageHeader` (période) · `DataFreshness` · `InlineAlert` · `CardGrid`(`Card` cliquables). **Comportements** : la période filtre indicateurs et liste ; une carte cliquable ouvre la liste filtrée. **Règles** : ✅ `loading` par carte ; ❌ pas de bouton « Voir » en plus. **Gabarit** — vérifié : [`src/patterns/SupervisionPattern.tsx`](src/patterns/SupervisionPattern.tsx).
+**Quand l'utiliser** — suivi temps réel (indicateurs, alertes, fraîcheur). **Ne pas confondre avec** — Analyse. **Anatomie** : `PageHeader` (période) · `DataFreshness` · `InlineAlert` · `CardGrid`(`Card` cliquables). **Comportements** : la période filtre indicateurs et liste ; une carte cliquable ouvre la liste filtrée. **Règles** : ✅ `loading` par carte ; ✅ chaque carte cliquable porte son bouton visible (`actionLabel`), dont la zone couvre la carte. **Gabarit** — vérifié : [`src/patterns/SupervisionPattern.tsx`](src/patterns/SupervisionPattern.tsx).
 
 ### Pattern — Tableau de bord d'analyse
 
@@ -1455,7 +1462,7 @@ export const SupervisionPage = () => {
 
 ### Recette 6 — Tableau de bord de supervision
 
-Haut d'écran : période d'analyse, grille de `Card` indicateurs (cliquables par `onClick`) qui mènent à la liste filtrée, puis la liste (recette 5) filtrée par la même période.
+Haut d'écran : période d'analyse, grille de `Card` indicateurs (cliquables par `onClick` + `actionLabel`) qui mènent à la liste filtrée, puis la liste (recette 5) filtrée par la même période.
 
 ```tsx
 import { useState } from "react";
@@ -1496,7 +1503,7 @@ export const SupervisionDashboard = () => {
 
 - ✅ La période vit au niveau de la page : elle filtre à la fois les indicateurs et la liste.
 - ✅ `loading` sur chaque carte pendant le rechargement : la grille garde sa taille.
-- ✅ Une carte cliquable ouvre la liste déjà filtrée (`onClick`) — pas de bouton « Voir » en plus.
+- ✅ Une carte cliquable ouvre la liste déjà filtrée (`onClick`), avec son bouton visible (`actionLabel` : « Voir les perturbations »).
 
 ### Recette 7 — Tableau de bord d'analyse
 
@@ -1611,9 +1618,9 @@ Carte de tableau de bord : titre (obligatoire), statut, valeur et évolution, mi
 | `statusLabel` | `string` | label de la variante | — |
 | `trend` | `number[]` | — | Mini-courbe (2 points minimum), de la plus ancienne à la plus récente |
 | `loading` | `boolean` | `false` | Squelettes à la place de la valeur et de la variation |
-| `onClick` | `() => void` | — | Toute la carte devient cliquable (bouton nommé par `title`). ⚠️ Exclusif avec `actionLabel` |
-| `actionLabel` | `string` | — | Bouton `PrimaryButton outline size="sm"` en bas à gauche ; seul lui est cliquable. ⚠️ Exclusif avec `onClick` |
-| `onAction` | `() => void` | — | Clic sur le bouton d'action (exige `actionLabel`) |
+| `onClick` | `() => void` | — | Toute la carte devient cliquable. ⚠️ Exige `actionLabel` (bouton visible qui porte le clic, zone étirée sur la carte) ; exclusif avec `onAction` |
+| `actionLabel` | `string` | — | Bouton `PrimaryButton outline size="sm"` en bas à gauche. Avec `onClick` : **obligatoire**, il signale et porte le clic de toute la carte. Avec `onAction` : seul lui est cliquable |
+| `onAction` | `() => void` | — | Clic sur le bouton d'action seul (exige `actionLabel`). ⚠️ Exclusif avec `onClick` |
 | `actionIcon` | nom d'icône `Icons` | — | Icône avant le libellé du bouton |
 | `illustration` | `ReactNode` | — | Illustration décorative en bas à droite (`aria-hidden`), hauteur max 96px, largeur max 50 % |
 | `className` | `string` | — | — |

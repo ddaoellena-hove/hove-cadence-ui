@@ -28,7 +28,7 @@ export const SupervisionPattern = ({ loading = false }: { loading?: boolean } = 
         <Card headingLevel={2} title="Retard moyen" value={3.4} unit="min" goodDirection="down" delta={{ value: 0.2, label: "vs hier" }} loading={loading} />
         <Card headingLevel={2} title="Courses réalisées" value={12430} delta={{ value: 1.8, label: "vs hier" }} loading={loading} />
         <Card headingLevel={2} title="Perturbations actives" value={27} goodDirection="down"
-          status="critical" statusLabel="Seuil dépassé" onClick={() => {}} loading={loading} />
+          status="critical" statusLabel="Seuil dépassé" onClick={() => {}} actionLabel="Voir les alertes" loading={loading} />
       </CardGrid>
 
       {/* La liste filtrée par la même période suit (voir Pattern — Liste / index). */}

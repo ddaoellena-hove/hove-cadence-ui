@@ -67,23 +67,23 @@
   min-width: 0;
 }
 
-/* Bouton étiré : sa zone cliquable couvre toute la carte */
-.card__stretched {
-  background: none;
-  border: none;
-  color: inherit;
-  cursor: pointer;
-  font: inherit;
-  outline: none;
-  padding: 0;
-  text-align: left;
+/* Carte cliquable : le bouton visible (PrimaryButton outline sm) porte le
+   clic ; sa zone (::after) est étirée sur toute la carte. Le bouton reste
+   statique pour que ::after se positionne sur la carte (position: relative). */
+.card__stretched.base-button {
+  position: static;
 }
 
 .card__stretched::after {
-  border-radius: inherit;
+  border-radius: var(--cadence-radius-lg, 10px);
   content: "";
   inset: 0;
   position: absolute;
+}
+
+/* L'anneau de focus entoure toute la carte (voir .card--clickable) */
+.card__stretched.base-button:focus-visible {
+  box-shadow: none;
 }
 
 /* ── Valeur, variation, courbe ───────────────────────────────────────────── */

@@ -97,7 +97,11 @@ export const AvecCourbe: Story = {
 
 const onOpen = fn();
 
-/** Toute la carte est cliquable (`onClick`) : elle se soulève au survol. */
+/**
+ * Toute la carte est cliquable (`onClick`) : elle se soulève au survol. Le
+ * bouton visible (`actionLabel`, obligatoire) signale l'interactivité ; sa
+ * zone est étirée sur toute la carte.
+ */
 export const Cliquable: Story = {
   args: {
     title: "Courses supprimées",
@@ -105,16 +109,20 @@ export const Cliquable: Story = {
     goodDirection: "down",
     delta: { value: -8, label: "vs hier" },
     onClick: onOpen,
+    actionLabel: "Voir les courses",
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     onOpen.mockClear();
     await expect(canvasElement.querySelector(".card")).toHaveClass("card--interactive");
-    // Au-dessus de la valeur (hors du titre), c'est la zone étirée du bouton
-    // qui reçoit le pointeur : toute la carte est cliquable
+    // Un seul bouton visible, seule cible au clavier
+    const button = canvas.getByRole("button", { name: "Voir les courses" });
+    await expect(canvas.getAllByRole("button")).toHaveLength(1);
+    // Au-dessus de la valeur, c'est la zone étirée du bouton qui reçoit le
+    // pointeur : toute la carte est cliquable
     const rect = canvas.getByText("42").getBoundingClientRect();
     const hit = document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2);
-    await expect(hit?.closest("button")).toBe(canvas.getByRole("button", { name: "Courses supprimées" }));
+    await expect(hit?.closest("button")).toBe(button);
     await userEvent.click(hit as Element);
     await expect(onOpen).toHaveBeenCalledTimes(1);
   },
@@ -203,6 +211,7 @@ export const Grille: Story = {
         goodDirection="down"
         delta={{ value: 35, label: "vs hier" }}
         onClick={() => {}}
+        actionLabel="Voir les perturbations"
       />
       <Card
         title="Importer un réseau GTFS"

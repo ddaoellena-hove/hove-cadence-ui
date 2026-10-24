@@ -4,6 +4,7 @@ import { Indicator, type IndicatorVariant } from "./Indicator";
 import { PrimaryButton } from "./PrimaryButton";
 import { Skeleton } from "./Skeleton";
 import { Sparkline } from "./Sparkline";
+import { errorOnce } from "./button-compat";
 import {
   describeDelta,
   formatDelta,
@@ -57,12 +58,27 @@ interface CardBaseProps {
   className?: string;
 }
 
-/** Toute la carte est cliquable (accès à la liste détaillée). */
-interface CardClickableProps {
-  onClick?: () => void;
+/** Carte informative : ni clic ni bouton. */
+interface CardStaticProps {
+  onClick?: never;
   actionLabel?: never;
   onAction?: never;
   actionIcon?: never;
+}
+
+/**
+ * Toute la carte est cliquable (accès à la liste détaillée). Un bouton visible
+ * (`actionLabel`) est obligatoire : il signale l'interactivité et porte le
+ * clic, étiré sur toute la carte.
+ */
+interface CardClickableProps {
+  /** Clic sur la carte entière (et son bouton). */
+  onClick: () => void;
+  /** Libellé du bouton qui signale le clic (« Voir les perturbations »). Obligatoire. */
+  actionLabel: string;
+  /** Icône avant le libellé du bouton. */
+  actionIcon?: IconName;
+  onAction?: never;
 }
 
 /** Seul le bouton d'action (PrimaryButton outline sm) est cliquable. */
@@ -76,9 +92,12 @@ interface CardActionProps {
   onClick?: never;
 }
 
-// Clic sur toute la carte OU bouton d'action, jamais les deux : un bouton dans
-// une zone cliquable n'est pas accessible
-export type CardProps = CardBaseProps & (CardClickableProps | CardActionProps);
+// Carte cliquable = bouton visible étiré sur toute la carte : une seule cible
+// (pas de bouton dans une zone cliquable), et l'interactivité se voit.
+export type CardProps = CardBaseProps & (CardStaticProps | CardClickableProps | CardActionProps);
+
+// Libellé de repli si une carte cliquable arrive sans `actionLabel` (JS non typé)
+const FALLBACK_ACTION_LABEL = "Voir le détail";
 
 
 /**
@@ -110,6 +129,10 @@ export const Card = (props: CardProps) => {
   } = props;
 
   const Heading = `h${headingLevel}` as const;
+  if (onClick && !actionLabel) {
+    errorOnce("Card", "missingActionLabel", "une carte cliquable (`onClick`) exige un bouton visible : fournissez `actionLabel`.");
+  }
+  const buttonLabel = actionLabel || (onClick ? FALLBACK_ACTION_LABEL : undefined);
   const hasFigures = value !== undefined || loading;
   const interactive = Boolean(onClick || actionLabel);
   const deltaUnit = delta?.unit ?? "%";
@@ -128,16 +151,7 @@ export const Card = (props: CardProps) => {
   return (
     <div className={rootClass} aria-busy={loading || undefined}>
       <div className="card__header">
-        <Heading className="card__title">
-          {onClick ? (
-            // Bouton étiré sur toute la carte : la carte entière est cliquable
-            <button type="button" className="card__stretched" onClick={onClick}>
-              {title}
-            </button>
-          ) : (
-            title
-          )}
-        </Heading>
+        <Heading className="card__title">{title}</Heading>
         {status && !loading && <Indicator variant={status} label={statusLabel} />}
       </div>
 
@@ -175,11 +189,19 @@ export const Card = (props: CardProps) => {
 
       {description && !loading && <p className="card__description">{description}</p>}
 
-      {(actionLabel || illustration) && (
+      {(buttonLabel || illustration) && (
         <div className="card__footer">
-          {actionLabel && (
+          {buttonLabel && (
             <div className="card__actions">
-              <PrimaryButton outline size="sm" label={actionLabel} iconStart={actionIcon} onClick={onAction} />
+              {/* Carte cliquable : la zone du bouton est étirée sur toute la carte */}
+              <PrimaryButton
+                outline
+                size="sm"
+                label={buttonLabel}
+                iconStart={actionIcon}
+                className={onClick ? "card__stretched" : undefined}
+                onClick={onClick ?? onAction}
+              />
             </div>
           )}
           {illustration && (
