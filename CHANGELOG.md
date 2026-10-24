@@ -1,5 +1,13 @@
 # Changelog — @ddaoellena/cadence-ui
 
+## 0.9.6 (non publiée)
+
+Version mineure, sans rupture d’API. Thème : **flux** (feuille de route § 4 bis, lot 0.9.6 ; décisions : `docs/proposals/sankey-chart.md`). La 0.9.5 (`TimeSpaceDiagram`) est reportée.
+
+### Ajouté
+
+- **`SankeyChart`** : diagramme de flux entre étapes (origine → destination, correspondances), colonnes imposées ou déduites des liens, nœuds et rubans proportionnels aux volumes, couleur et motif de l’origine, flux parcourus au clavier avec chemin et part annoncés, `onLinkClick`, alternative tabulaire. Mise en page maison : pas de dépendance à `d3-sankey` (qui tirerait d’anciennes versions de `d3-array` et `d3-shape`).
+
 ## 0.9.4 (non publiée)
 
 Version mineure, sans rupture d’API. Thème : **thermomètre de ligne** (feuille de route § 4 bis, lot 0.9.4 ; proposition `docs/proposals/line-diagram.md`).

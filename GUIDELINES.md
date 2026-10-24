@@ -308,7 +308,8 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Identité utilisateur (initiales / photo) | `Avatar` | — |
 | Évolution dans le temps (retards, ponctualité, volumes) | `LineChart` | `BarChart` (comparaison de catégories) |
 | Motif jour × heure, ligne × jour | `Heatmap` | `LineChart` (une seule dimension temporelle) |
-| Flux entre arrêts, zones ou lignes (matrice origine-destination) | `Heatmap showTotals sort="desc"` | un `SankeyChart` (prévu 0.9.6) pour des flux détaillés |
+| Flux entre arrêts, zones ou lignes (matrice origine-destination) | `Heatmap showTotals sort="desc"` | `SankeyChart` (chemin des volumes) |
+| Chemin des volumes entre étapes (origine → destination, correspondances) | `SankeyChart` | `Heatmap showTotals` (valeurs croisées) ; `Treemap` (hiérarchie, pas des flux) |
 | Une valeur par jour sur une année (ponctualité quotidienne, jours de grève, jours de circulation) | `CalendarHeatmap` | `ServiceCalendar` (saisie des jours de circulation) ; `LineChart` (tendance, pas le motif hebdomadaire) |
 | Classement (lignes les plus impactées) | `BarList` | `BarChart orientation="horizontal"` (plusieurs séries) |
 | Comparaison de catégories (barres empilées / groupées) | `BarChart` | `BarList` (classement à une valeur) ; `DataVisualization` est déprécié |
@@ -928,6 +929,7 @@ Une `Card` est **interactive** de deux façons :
 | Quelle ligne, quel créneau est le plus irrégulier ? | `BoxPlot` |
 | Deux mesures vont-elles ensemble ? Quels éléments sortent du lot ? | `ScatterChart` |
 | Quel poids pour chaque mode et chaque ligne dans le total ? | `Treemap` |
+| Où vont les voyageurs de chaque origine, par quelles correspondances ? | `SankeyChart` |
 | Le volume et le taux évoluent-ils ensemble (fréquentation et ponctualité) ? | `ComboChart` (deux axes Y titrés) |
 | Une valeur tient-elle par paliers (offre par tranche horaire, capacité) ? | `LineChart curve="step"` |
 | Où en est une valeur par rapport à sa capacité ou à ses seuils ? | `Meter` (barre) ; `Gauge` (KPI mis en avant) |
@@ -2230,6 +2232,26 @@ Clavier : le tracé est focusable ; ←/→ d'une classe à l'autre, Début / Fi
   thresholds={[{ value: 5, label: "Retard 5 min" }]}
 />
 ```
+
+### SankeyChart
+
+Diagramme de flux (Sankey / alluvial) : volumes entre étapes de gauche à droite (origine → destination, mode d'arrivée → pôle → mode de départ). Nœuds empilés par colonne, hauteur proportionnelle au volume (max des arrivées et des départs) ; rubans de l'épaisseur du flux, à la couleur **et** au motif de leur origine (première colonne ; ensuite, origine de la plus grosse arrivée). Libellés et volumes à gauche de la première colonne, à droite des autres. Tooltip et annonce par flux : « Châtelet → La Défense : 88 k voyages, 62 % des départs de Châtelet ». « Voir les données » : origine, destination, volume, part de l'origine. Mise en page maison, sans `d3-sankey` (voir `docs/proposals/sankey-chart.md`). Hauteur par défaut 360px. Props communes : voir `BarList`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `nodes` | `{ id, label, column? }[]` | **requis** | `column` (à partir de 0) sur **tous** les nœuds impose les étapes ; sinon déduites des liens (plus long chemin) |
+| `links` | `{ source, target, value }[]` | **requis** | Flux orientés ; volumes nuls ou négatifs, nœuds inconnus et retours vers une étape antérieure ignorés (avertissement en développement) |
+| `unit` | `string` | — | « k voyages » |
+| `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | — |
+| `onLinkClick` | `({ source, target, value }) => void` | — | Clic ou Entrée sur le flux actif |
+| `hideTitle` | `boolean` | `false` | En-tête masqué visuellement (titre toujours lu) |
+| `height` | `number` | `360` | Hauteur du tracé |
+
+Clavier : ←/→ (ou ↑/↓) d'un flux au suivant (par origine, puis par destination), Début / Fin, Entrée, Échap.
+
+- ✅ Au plus une douzaine de nœuds par colonne : regrouper côté application (« Autres gares »).
+- ⚠️ Pas de cycles : un Sankey va de gauche à droite.
+- ❌ Pour lire des valeurs croisées origine × destination : `Heatmap showTotals`.
 
 ### ScatterChart
 
