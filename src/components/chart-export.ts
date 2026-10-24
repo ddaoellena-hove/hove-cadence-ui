@@ -10,10 +10,10 @@ export interface CsvTable {
   numeric?: number[];
 }
 
-const BOM = "﻿";
+const BOM = "\uFEFF";
 
-/** Nombre fr-FR lisible par un tableur : « 1 240,5 » → « 1240,5 », « −3 » → « -3 ». */
-export const csvNumber = (cell: string) => cell.replace(/[  \s]/g, "").replace(/−/g, "-");
+/** Nombre fr-FR lisible par un tableur : espaces de groupement retirés, vrai signe moins remplacé par « - ». */
+export const csvNumber = (cell: string) => cell.replace(/[\u202f\u00a0\s]/g, "").replace(/\u2212/g, "-");
 
 /** Échappement d'un champ : entre guillemets s'il contient « ; », « " » ou un saut de ligne. */
 export const csvField = (cell: string) => (/[;"\r\n]/.test(cell) ? `"${cell.replace(/"/g, '""')}"` : cell);
@@ -30,7 +30,7 @@ export const csvFileName = (name: string) =>
   `${
     name
       .normalize("NFD")
-      .replace(/[̀-ͯ]/g, "")
+      .replace(/[\u0300-\u036f]/g, "")
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "") || "donnees"
