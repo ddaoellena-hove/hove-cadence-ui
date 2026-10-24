@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, within } from "storybook/test";
+import { expect, spyOn, within } from "storybook/test";
 import { SecondaryButton } from "./SecondaryButton";
+import { resetWarningsForTests } from "./button-compat";
 
 /**
  * ⚠️ **Déprécié** — suppression en 1.0.0. Le bleu plein n'est plus utilisé pour
@@ -23,6 +24,12 @@ type Story = StoryObj<typeof SecondaryButton>;
 
 /** Rendu de l'enveloppe : outline → Primary outline sm, plein → Primary sm. */
 export const Correspondance: Story = {
+  beforeEach: () => {
+    // Avertissement « une seule fois » : on repart d'une mémoire vierge pour l'asserter
+    resetWarningsForTests();
+    const warn = spyOn(console, "warn").mockImplementation(() => {});
+    return () => warn.mockRestore();
+  },
   render: () => (
     <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
       <SecondaryButton outline label="Exporter" />
@@ -36,5 +43,6 @@ export const Correspondance: Story = {
     await expect(canvas.getByRole("button", { name: "Exporter" })).toHaveClass("primary-button--outline", "base-button--sm");
     await expect(canvas.getByRole("button", { name: "Appliquer" })).toHaveClass("primary-button", "base-button--sm");
     await expect(canvas.getByRole("button", { name: "Large → md" })).toHaveClass("base-button--md");
+    await expect(console.warn).toHaveBeenCalledWith(expect.stringMatching(/SecondaryButton : composant déprécié/));
   },
 };

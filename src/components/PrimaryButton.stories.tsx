@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, fn, userEvent, within } from "storybook/test";
+import { expect, fn, spyOn, userEvent, within } from "storybook/test";
 import { PrimaryButton } from "./PrimaryButton";
+import { resetWarningsForTests } from "./button-compat";
 import { GhostButton } from "./GhostButton";
 
 const meta: Meta<typeof PrimaryButton> = {
@@ -120,6 +121,12 @@ export const Groupe: Story = {
  */
 export const AnciennesProps: Story = {
   name: "Anciennes props (dépréciées)",
+  beforeEach: () => {
+    // Avertissement « une seule fois » : on repart d'une mémoire vierge pour l'asserter
+    resetWarningsForTests();
+    const warn = spyOn(console, "warn").mockImplementation(() => {});
+    return () => warn.mockRestore();
+  },
   render: () => (
     <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
       <PrimaryButton outline label="outline (variante contour)" />
@@ -134,5 +141,9 @@ export const AnciennesProps: Story = {
     await expect(canvas.getByRole("button", { name: "destructive → danger" })).toHaveClass("primary-button--danger");
     await expect(canvas.getByRole("button", { name: "withIcon + large" })).toHaveClass("base-button--md", "base-button--icon-start");
     await expect(canvas.getByRole("button", { name: "Supprimer" })).toHaveClass("base-button--icon-only");
+    // Chaque ancienne prop est signalée
+    for (const prop of ["destructive", "withIcon", "size"]) {
+      await expect(console.warn).toHaveBeenCalledWith(expect.stringMatching(new RegExp(`PrimaryButton : .*${prop}`)));
+    }
   },
 };

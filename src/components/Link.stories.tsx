@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, within } from "storybook/test";
+import { expect, spyOn, within } from "storybook/test";
 import { Link } from "./Link";
+import { resetWarningsForTests } from "./button-compat";
 
 const meta: Meta<typeof Link> = {
   title: "Composants/Actions/Link",
@@ -116,6 +117,12 @@ export const WithIcon: Story = {
  */
 export const DeprecieeSecondary: Story = {
   name: "Dépréciée — secondary",
+  beforeEach: () => {
+    // Avertissement « une seule fois » : on repart d'une mémoire vierge pour l'asserter
+    resetWarningsForTests();
+    const warn = spyOn(console, "warn").mockImplementation(() => {});
+    return () => warn.mockRestore();
+  },
   args: {
     children: "Enregistrer comme brouillon",
     variant: "secondary",
@@ -125,5 +132,6 @@ export const DeprecieeSecondary: Story = {
   play: async ({ canvasElement }) => {
     // Alias de primary : même classe, même rendu
     await expect(within(canvasElement).getByRole("button")).toHaveClass("link--primary");
+    await expect(console.warn).toHaveBeenCalledWith(expect.stringMatching(/Link : `variant=.secondary.` est déprécié/));
   },
 };

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect } from "storybook/test";
+import { expect, spyOn } from "storybook/test";
 import { DataVisualization } from "./DataVisualization";
+import { resetWarningsForTests } from "./button-compat";
 import { disruptionsByModeWeekly, WEEKS } from "../stories/fixtures/transport";
 
 // Déprécié : enveloppe de BarChart. Ces stories vérifient que l'ancienne API
@@ -23,6 +24,12 @@ const meta = {
     },
   },
   args: { categories: WEEKS, series, height: 260 },
+  beforeEach: () => {
+    // Avertissement « une seule fois » : on repart d'une mémoire vierge pour l'asserter
+    resetWarningsForTests();
+    const warn = spyOn(console, "warn").mockImplementation(() => {});
+    return () => warn.mockRestore();
+  },
 } satisfies Meta<typeof DataVisualization>;
 
 export default meta;
@@ -37,6 +44,7 @@ export const StackedVertical: Story = {
     // Empilé : une barre par série et par semaine, un seul total par semaine dans le tableau
     await expect(canvasElement.querySelectorAll(".bar-chart__bar")).toHaveLength(12);
     await expect(canvasElement.querySelector("th")?.closest("table")?.textContent).toContain("Total");
+    await expect(console.warn).toHaveBeenCalledWith(expect.stringMatching(/DataVisualization : composant déprécié/));
   },
 };
 
