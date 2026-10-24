@@ -18,6 +18,8 @@ export const Defaut: Story = {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { level: 1, name: "Supervision" })).toBeInTheDocument();
     await expect(canvas.getByRole("heading", { level: 2, name: "Ponctualité" })).toBeInTheDocument();
+    // Indicateurs du contrat : statut écrit par ligne
+    await expect(canvas.getByRole("group", { name: /^Ponctualité : 94,2\s%, objectif 92\s%, Objectif atteint/ })).toBeInTheDocument();
   },
 };
 

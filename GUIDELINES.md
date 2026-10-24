@@ -1084,11 +1084,11 @@ FormActions  →  Link · GhostButton · PrimaryButton
 
 ### Pattern — Tableau de bord de supervision
 
-**Quand l'utiliser** — suivi temps réel (indicateurs, alertes, fraîcheur). **Ne pas confondre avec** — Analyse. **Anatomie** : `PageHeader` (période) · `DataFreshness` · `InlineAlert` · `CardGrid`(`Card` cliquables). **Comportements** : la période filtre indicateurs et liste ; une carte cliquable ouvre la liste filtrée. **Règles** : ✅ `loading` par carte ; ✅ chaque carte cliquable porte son bouton visible (`actionLabel`), dont la zone couvre la carte. **Gabarit** — vérifié : [`src/patterns/SupervisionPattern.tsx`](src/patterns/SupervisionPattern.tsx).
+**Quand l'utiliser** — suivi temps réel (indicateurs, alertes, fraîcheur). **Ne pas confondre avec** — Analyse. **Anatomie** : `PageHeader` (période) · `DataFreshness` · `InlineAlert` · `CardGrid`(`Card` cliquables) · `BulletChart` (indicateurs du contrat vs objectif). **Comportements** : la période filtre indicateurs et liste ; une carte cliquable ouvre la liste filtrée. **Règles** : ✅ `loading` par carte ; ✅ chaque carte cliquable porte son bouton visible (`actionLabel`), dont la zone couvre la carte. **Gabarit** — vérifié : [`src/patterns/SupervisionPattern.tsx`](src/patterns/SupervisionPattern.tsx).
 
 ### Pattern — Tableau de bord d'analyse
 
-**Quand l'utiliser** — explorer sur une période (indicateurs, évolution, répartition, classement). **Ne pas confondre avec** — Supervision. **Anatomie** : `PageHeader` (période) · `CardGrid`(`Card`) · `LineChart` · `CardGrid min=360 fit`(`Heatmap`, `BarList`). **États** : chargement / erreur **par bloc** (`state`, `onRetry`). **Règles** : ✅ grilles fluides, jamais de px fixe ; ✅ graphiques encadrés (`framed`) pour les délimiter ; ❌ pas de graphique sans `title` ni état. **Gabarit** — vérifié : [`src/patterns/AnalysePattern.tsx`](src/patterns/AnalysePattern.tsx).
+**Quand l'utiliser** — explorer sur une période (indicateurs, évolution, répartition, classement). **Ne pas confondre avec** — Supervision. **Anatomie** : `PageHeader` (période) · `CardGrid`(`Card`) · `LineChart` (avec la période précédente en `reference`) · `CardGrid min=360 fit`(`Heatmap`, `BarList`) · `CardGrid min=360 fit`(`DonutChart`, `Histogram`). **États** : chargement / erreur **par bloc** (`state`, `onRetry`). **Règles** : ✅ grilles fluides, jamais de px fixe ; ✅ graphiques encadrés (`framed`) pour les délimiter ; ❌ pas de graphique sans `title` ni état. **Gabarit** — vérifié : [`src/patterns/AnalysePattern.tsx`](src/patterns/AnalysePattern.tsx).
 
 ### Pattern — Planification / temps
 
