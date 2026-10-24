@@ -16,6 +16,11 @@ export const Defaut: Story = {
   name: "Défaut",
   play: async ({ canvasElement }) => {
     await expect(within(canvasElement).getByRole("heading", { level: 1, name: /Analyse des perturbations/ })).toBeInTheDocument();
+    // Chaque graphique est encadré ; les deux voisins de la grille ont la même hauteur
+    const charts = [...canvasElement.querySelectorAll("section.chart")];
+    await expect(charts).toHaveLength(3);
+    for (const chart of charts) await expect(chart).toHaveClass("chart--framed");
+    await expect(charts[1].getBoundingClientRect().height).toBe(charts[2].getBoundingClientRect().height);
   },
 };
 

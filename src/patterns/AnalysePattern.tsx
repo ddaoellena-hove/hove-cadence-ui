@@ -6,7 +6,8 @@ import {
 // Pattern — Tableau de bord d'analyse (P8).
 // Période partagée · grille d'indicateurs · évolution (LineChart) · motif
 // jour × heure (Heatmap) à côté du classement (BarList). Chaque bloc gère son
-// état (`state`) à partir de la requête.
+// état (`state`) à partir de la requête ; les graphiques sont encadrés
+// (`framed`) pour rester délimités côte à côte.
 const HOURS = ["6h", "8h", "10h", "12h", "14h", "16h", "18h"];
 const WEEKDAYS = ["Lun", "Mar", "Mer", "Jeu", "Ven"];
 const CELLS = WEEKDAYS.flatMap((y, j) => HOURS.map((x, h) => ({ x, y, value: (j + h) % 5 })));
@@ -26,15 +27,15 @@ export const AnalysePattern = ({ state = "ready" }: { state?: "loading" | "error
         <Card headingLevel={2} title="Perturbations" value={312} goodDirection="down" onClick={() => {}} loading={state === "loading"} />
       </CardGrid>
 
-      <LineChart headingLevel={2} title="Retard moyen par heure" description="Toutes lignes, sur la période"
+      <LineChart framed headingLevel={2} title="Retard moyen par heure" description="Toutes lignes, sur la période"
         state={state} onRetry={() => {}} unit="min" goodDirection="down"
         series={[{ id: "delay", label: "Retard moyen", data: DELAYS }]}
         thresholds={[{ value: 5, label: "Seuil d'alerte 5 min" }]} />
 
       <CardGrid min={360} fit>
-        <Heatmap headingLevel={2} title="Perturbations par jour et par heure" state={state}
+        <Heatmap framed headingLevel={2} title="Perturbations par jour et par heure" state={state}
           unit="perturbations" xLabels={HOURS} yLabels={WEEKDAYS} cells={CELLS} onCellClick={() => {}} />
-        <BarList headingLevel={2} title="Lignes les plus impactées" state={state} unit="perturbations" goodDirection="down"
+        <BarList framed headingLevel={2} title="Lignes les plus impactées" state={state} unit="perturbations" goodDirection="down"
           items={[{ id: "m1", label: "Ligne 1", value: 84 }, { id: "ra", label: "RER A", value: 61 }, { id: "m4", label: "Ligne 4", value: 47 }]}
           limit={5} onItemClick={() => {}} />
       </CardGrid>
