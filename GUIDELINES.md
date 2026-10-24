@@ -2374,7 +2374,7 @@ Composant unique : apparence de l’ancien Alt, pour les formulaires et les basc
 | `onItemClick` | `(id: string) => void` | — | — |
 | `onCollapse` | `() => void` | — | Clic sur le bouton replier / déplier. ⚠️ N'indique pas l'état (replié ou non) ; dans `AppLayout`, rien à faire : le conteneur suit la largeur |
 | `onLogout` | `() => void` | — | Bouton déconnexion |
-| `scope` | `SidebarScope` | — | Sélecteur de périmètre en pied, déclencheur compact 29px (`Dropdown variant="button"`, nom accessible « Périmètre ») étiré sur la largeur : `{ options, value?, onChange?, placeholder? }` (options au format `Dropdown`, ⚠️ clé `id`). Masqué quand la Sidebar est repliée ; le menu s'ouvre vers le haut |
+| `scope` | `SidebarScope` | — | Sélecteur de périmètre en pied : `{ options, value?, onChange?, placeholder? }` (options au format `Dropdown`, ⚠️ clé `id`). Masqué quand la Sidebar est repliée ; le menu s'ouvre vers le haut |
 | `user` | `SidebarUser` | — | Utilisateur connecté en pied : `{ name, email?, avatarSrc? }`. Avatar seul quand la Sidebar est repliée |
 | `className` | `string` | — | — |
 

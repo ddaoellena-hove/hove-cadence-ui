@@ -379,19 +379,6 @@
   width: 100%;
 }
 
-/* Déclencheur compact (29px, variante bouton du Dropdown) étiré sur la
-   largeur : texte à gauche, tronqué au besoin, chevron à droite. */
-.sidebar__scope .button-trigger {
-  justify-content: space-between;
-  width: 100%;
-}
-
-.sidebar__scope .button-trigger__text {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 /* En pied de Sidebar, le menu s'ouvre vers le haut (sinon coupé en bas d'écran) */
 .sidebar__scope .dropdown__menu {
   bottom: calc(100% + 6px);
