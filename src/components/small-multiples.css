@@ -1,0 +1,44 @@
+/* ── SmallMultiples ──────────────────────────────────────────────────────── */
+/* Cadre, tableau et états : chart-frame.css (ChartFrame). */
+.small-multiples__grid {
+  display: grid;
+  gap: 12px 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.small-multiples__item {
+  border-top: 1px solid var(--cadence-color-divider, #f0f0f0);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding-top: 8px;
+}
+
+.small-multiples__header {
+  align-items: baseline;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.small-multiples__label {
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.small-multiples__value {
+  color: var(--cadence-color-primary, #002830);
+  flex-shrink: 0;
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}

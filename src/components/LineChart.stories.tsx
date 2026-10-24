@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
+import { DateRangePicker } from "./DateRangePicker";
 import { LineChart } from "./LineChart";
 import {
   dailyPunctuality,
@@ -241,6 +242,44 @@ export const ExportEtFraicheur: Story = {
     await expect(fileName).toBe("retards-par-heure.csv");
     await expect(csv.startsWith("\uFEFFDate;Retard moyen (min)\r\n")).toBe(true);
     await expect(rows).toHaveLength(24);
+  },
+};
+
+/**
+ * Sélection d'une période (`onRangeSelect`) : glisser sur le tracé, ou Maj + ←/→
+ * puis Entrée ; la période choisie règle le `DateRangePicker` de la page.
+ */
+export const SelectionDePeriode: Story = {
+  name: "Sélection de période (zoom)",
+  render: () => {
+    const [period, setPeriod] = useState<{ start: Date | null; end: Date | null }>({ start: new Date(2026, 8, 21), end: new Date(2026, 9, 20) });
+    const inPeriod = dailyPunctuality.filter((p) => (!period.start || p.x >= period.start) && (!period.end || p.x <= period.end));
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "flex-start" }}>
+        <DateRangePicker variant="button" aria-label="Période" value={period} onChange={setPeriod} />
+        <div style={{ width: "100%" }}>
+          <LineChart
+            title="Ponctualité quotidienne"
+            description="Glisser sur le tracé (ou Maj + flèches puis Entrée) pour choisir la période"
+            unit="%"
+            yDomain={[85, 100]}
+            series={[{ id: "p", label: "Ponctualité", data: inPeriod }]}
+            onRangeSelect={([start, end]) => setPeriod({ start: start as Date, end: end as Date })}
+          />
+        </div>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const plot = canvas.getByRole("group", { name: "Ponctualité quotidienne" });
+    plot.focus();
+    await userEvent.keyboard("{Home}{Shift>}{ArrowRight}{ArrowRight}{ArrowRight}{/Shift}");
+    await expect(canvasElement.querySelector(".line-chart__selection")).not.toBeNull();
+    await expect(canvasElement.querySelector("[aria-live]")).toHaveTextContent(/Sélection du lundi 21 septembre 2026 au jeudi 24 septembre 2026/);
+    await userEvent.keyboard("{Enter}");
+    // La période de la page suit : il ne reste que 4 jours tracés
+    await waitFor(() => expect(within(canvas.getByRole("table", { name: "Ponctualité quotidienne" })).getAllByRole("row")).toHaveLength(5));
   },
 };
 

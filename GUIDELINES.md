@@ -308,7 +308,8 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Identité utilisateur (initiales / photo) | `Avatar` | — |
 | Évolution dans le temps (retards, ponctualité, volumes) | `LineChart` | `BarChart` (comparaison de catégories) |
 | Motif jour × heure, ligne × jour | `Heatmap` | `LineChart` (une seule dimension temporelle) |
-| Flux entre arrêts, zones ou lignes (matrice origine-destination) | `Heatmap showTotals sort="desc"` | un `SankeyChart` (prévu 0.9.6) pour des flux détaillés |
+| Flux entre arrêts, zones ou lignes (matrice origine-destination) | `Heatmap showTotals sort="desc"` | `SankeyChart` (chemin des volumes) |
+| Chemin des volumes entre étapes (origine → destination, correspondances) | `SankeyChart` | `Heatmap showTotals` (valeurs croisées) ; `Treemap` (hiérarchie, pas des flux) |
 | Une valeur par jour sur une année (ponctualité quotidienne, jours de grève, jours de circulation) | `CalendarHeatmap` | `ServiceCalendar` (saisie des jours de circulation) ; `LineChart` (tendance, pas le motif hebdomadaire) |
 | Classement (lignes les plus impactées) | `BarList` | `BarChart orientation="horizontal"` (plusieurs séries) |
 | Comparaison de catégories (barres empilées / groupées) | `BarChart` | `BarList` (classement à une valeur) ; `DataVisualization` est déprécié |
@@ -339,6 +340,9 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Volume et taux sur une même période (fréquentation + ponctualité, offre + charge) | `ComboChart` | deux graphiques séparés ; `LineChart` (une seule unité) |
 | Comparer à la période précédente (N vs N-1, semaine type) | `LineChart` / `BarChart` avec une série `reference: true` | deux couleurs de palette (la référence se lirait comme une série de plus) |
 | Évolution sur un service de nuit, au-delà de minuit (heures de service jusqu'à 47:59) | `LineChart serviceTime` ; `Histogram serviceTime` (distribution d'heures) ; `BarChart` avec des catégories « 24 h », « 25 h » | des `Date` coupées à minuit (deux jours calendaires pour un seul jour de service) |
+| Plusieurs graphiques d'une page à lire ensemble au même instant | `ChartSyncGroup` autour des `LineChart` / `BarChart` | des tooltips ouverts en parallèle |
+| Même mesure pour de nombreux éléments, formes à comparer (ponctualité de chaque ligne) | `SmallMultiples` | un `LineChart` à 10 séries (illisible) ; `Sparkline` en tableau (sans échelle commune visible) |
+| Choisir une période en la traçant sur le graphique (zoom) | `LineChart onRangeSelect` + `DateRangePicker` | — |
 | Valeur par paliers (offre par tranche horaire, capacité, tarifs) | `LineChart curve="step"` | `LineChart` lissé (suggère une variation continue) |
 | Parts d'un total (≤ 6 : parts modales, état du parc, causes) | `DonutChart` | `BarList` (classement, plus de 6 éléments) ; un camembert (non fourni) |
 | Choisir portée et format d'export | `ExportMenu` | L'app fabrique le fichier |
@@ -928,8 +932,10 @@ Une `Card` est **interactive** de deux façons :
 | Quelle ligne, quel créneau est le plus irrégulier ? | `BoxPlot` |
 | Deux mesures vont-elles ensemble ? Quels éléments sortent du lot ? | `ScatterChart` |
 | Quel poids pour chaque mode et chaque ligne dans le total ? | `Treemap` |
+| Où vont les voyageurs de chaque origine, par quelles correspondances ? | `SankeyChart` |
 | Le volume et le taux évoluent-ils ensemble (fréquentation et ponctualité) ? | `ComboChart` (deux axes Y titrés) |
 | Une valeur tient-elle par paliers (offre par tranche horaire, capacité) ? | `LineChart curve="step"` |
+| Quelles lignes décrochent, toutes sur la même échelle ? | `SmallMultiples` |
 | Où en est une valeur par rapport à sa capacité ou à ses seuils ? | `Meter` (barre) ; `Gauge` (KPI mis en avant) |
 | De quoi se compose un total, rapporté à une capacité ? | `Meter segments` |
 
@@ -2231,6 +2237,26 @@ Clavier : le tracé est focusable ; ←/→ d'une classe à l'autre, Début / Fi
 />
 ```
 
+### SankeyChart
+
+Diagramme de flux (Sankey / alluvial) : volumes entre étapes de gauche à droite (origine → destination, mode d'arrivée → pôle → mode de départ). Nœuds empilés par colonne, hauteur proportionnelle au volume (max des arrivées et des départs) ; rubans de l'épaisseur du flux, à la couleur **et** au motif de leur origine (première colonne ; ensuite, origine de la plus grosse arrivée). Libellés et volumes à gauche de la première colonne, à droite des autres. Tooltip et annonce par flux : « Châtelet → La Défense : 88 k voyages, 62 % des départs de Châtelet ». « Voir les données » : origine, destination, volume, part de l'origine. Mise en page maison, sans `d3-sankey` (voir `docs/proposals/sankey-chart.md`). Hauteur par défaut 360px. Props communes : voir `BarList`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `nodes` | `{ id, label, column? }[]` | **requis** | `column` (à partir de 0) sur **tous** les nœuds impose les étapes ; sinon déduites des liens (plus long chemin) |
+| `links` | `{ source, target, value }[]` | **requis** | Flux orientés ; volumes nuls ou négatifs, nœuds inconnus et retours vers une étape antérieure ignorés (avertissement en développement) |
+| `unit` | `string` | — | « k voyages » |
+| `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | — |
+| `onLinkClick` | `({ source, target, value }) => void` | — | Clic ou Entrée sur le flux actif |
+| `hideTitle` | `boolean` | `false` | En-tête masqué visuellement (titre toujours lu) |
+| `height` | `number` | `360` | Hauteur du tracé |
+
+Clavier : ←/→ (ou ↑/↓) d'un flux au suivant (par origine, puis par destination), Début / Fin, Entrée, Échap.
+
+- ✅ Au plus une douzaine de nœuds par colonne : regrouper côté application (« Autres gares »).
+- ⚠️ Pas de cycles : un Sankey va de gauche à droite.
+- ❌ Pour lire des valeurs croisées origine × destination : `Heatmap showTotals`.
+
 ### ScatterChart
 
 Nuage de points : corrélation entre deux mesures, un point par élément (ligne, course, arrêt). Une forme **et** une couleur par série (`--cadence-dataviz-series-N`), axes titrés avec leur unité, seuils sur l'un ou l'autre axe pour délimiter des quadrants. Tooltip au point le plus proche (24 px), parcours au clavier de gauche à droite, annonce « Ligne 13 (Métro) : Charge à la pointe 112 %, Retard moyen 4,6 min ». « Voir les données » : point, série, x, y. Hauteur par défaut 320px. Props communes : voir `BarList`.
@@ -2364,6 +2390,7 @@ Fraîcheur d'une donnée : un point coloré (ton de statut) et un libellé relat
 | `series` | `{ id, label, data: { x: Date \| string, y: number \| null }[], reference? }[]` | **requis** | `y: null` = trou dans la courbe. `reference: true` : série de comparaison (N-1, semaine type), trait tireté ardoise sans marqueur ni aire, hors empilement et hors seuils ; l'écart avec la série principale est rappelé au survol |
 | `variant` | `"line" \| "area"` | `"line"` | — |
 | `stacked` | `boolean` | `false` | Aires empilées (`variant="area"`) |
+| `onRangeSelect` | `([début, fin]) => void` | — | Sélection d'une période : glisser sur le tracé, ou Maj + ←/→ depuis le point actif puis Entrée (Échap annule) ; à relier au `DateRangePicker` de la page (zoom) |
 | `serviceTime` | `boolean` | `false` | Abscisses en heures de service `"HH:mm"` jusqu'à `"47:59"` (`"25:30"` = 1 h 30 après minuit, même jour de service) : positions proportionnelles au temps, graduations d'horloge (« 24h00 », « 25h00 »), colonne « Heure » dans le tableau |
 | `curve` | `"smooth" \| "step"` | `"smooth"` | `"step"` : paliers, la valeur tient jusqu'au point suivant (offre par tranche horaire, capacité, tarifs) |
 | `thresholds` | `{ value, label }[]` | `[]` | Lignes de seuil libellées |
@@ -3185,6 +3212,45 @@ Clavier : un seul arrêt de tabulation ; ←/→ d'un véhicule au suivant dans 
   onVehicleClick={(v) => openVehicle(v.id)}
 />
 ```
+
+### ChartSyncGroup
+
+Groupe de graphiques à **curseur synchronisé**, sans rendu propre : envelopper la grille. Survoler ou parcourir au clavier une abscisse d'un `LineChart` ou d'un `BarChart` du groupe la repère (crosshair, bande de survol) dans tous les autres qui ont la même abscisse — même date (`Date`), même catégorie ou même heure de service. Seul le graphique actif affiche son tooltip et fait son annonce.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `children` | `ReactNode` | **requis** | Les graphiques, à n'importe quelle profondeur |
+
+- ✅ Pattern Analyse : évolution, volumes et taux sur la même période.
+- ⚠️ Les abscisses doivent être identiques (mêmes libellés de catégories, mêmes dates) pour se répondre.
+
+```tsx
+<ChartSyncGroup>
+  <CardGrid min={320} fit>
+    <LineChart framed title="Retard moyen" series={retards} />
+    <BarChart framed title="Perturbations" categories={jours} series={perturbations} />
+  </CardGrid>
+</ChartSyncGroup>
+```
+
+### SmallMultiples
+
+Petits multiples : un `LineChart` compact par élément (ligne, mode, arrêt) dans une grille fluide, sur une **échelle Y commune** (formes et niveaux comparables), libellé et dernière valeur au-dessus de chaque case, seuils communs. Curseur synchronisé entre les cases (`ChartSyncGroup` intégré), chaque case parcourable au clavier comme un `LineChart`. « Voir les données » : élément, dernière valeur, minimum, maximum. Props communes : voir `BarList`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `items` | `{ id, label, data: { x, y }[] }[]` | **requis** | Un petit graphique par élément |
+| `unit` | `string` | — | — |
+| `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | — |
+| `thresholds` | `{ value, label }[]` | `[]` | Seuils communs (ligne tiretée dans chaque case) |
+| `goodDirection` | `"up" \| "down" \| "neutral"` | `"up"` | Côté défavorable d'un seuil signalé |
+| `yDomain` | `[number, number]` | de min(0, valeurs) au max, arrondi | Échelle commune |
+| `serviceTime` | `boolean` | `false` | Abscisses en heures de service |
+| `minItemWidth` | `number` | `200` | Largeur minimale d'une case |
+| `itemHeight` | `number` | `56` | Hauteur du tracé d'une case |
+
+- ✅ Jusqu'à une vingtaine d'éléments ; au-delà, `DataTable` avec `Sparkline`.
+- ❌ Pas d'échelle propre à chaque case : l'intérêt est la comparaison.
 
 ### ColorField
 
