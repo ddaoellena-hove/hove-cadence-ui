@@ -1,0 +1,47 @@
+/* ── BoxPlot ─────────────────────────────────────────────────────────────── */
+/* Cadre, axes et tableau : chart-frame.css (ChartFrame). */
+.box-plot__box {
+  fill: var(--cadence-dataviz-seq-2, #c6e2e5);
+  stroke: var(--cadence-dataviz-series-1, #6b3fd6);
+  stroke-width: 1.5;
+}
+
+.box-plot__median {
+  stroke: var(--cadence-dataviz-series-1, #6b3fd6);
+  stroke-linecap: round;
+  stroke-width: 3;
+}
+
+.box-plot__whisker,
+.box-plot__cap {
+  stroke: var(--cadence-color-label, #1a3e45);
+  stroke-width: 1.5;
+}
+
+.box-plot__outlier {
+  fill: var(--cadence-color-white, #ffffff);
+  stroke: var(--cadence-dataviz-series-1, #6b3fd6);
+  stroke-width: 1.5;
+}
+
+.box-plot__hover {
+  fill: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
+}
+
+/* ── Seuils ── */
+.box-plot__threshold line {
+  stroke: var(--cadence-dataviz-threshold, #1a3e45);
+  stroke-dasharray: 6 4;
+  stroke-width: 1.5;
+}
+
+.box-plot__threshold text {
+  fill: var(--cadence-dataviz-threshold, #1a3e45);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: var(--cadence-color-white, #ffffff);
+  stroke-linejoin: round;
+  stroke-width: 4px;
+}
