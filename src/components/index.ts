@@ -85,6 +85,8 @@ export * from './ScatterChart';
 export * from './Treemap';
 export * from './LineDiagram';
 export * from './SankeyChart';
+export * from './ChartSyncGroup';
+export * from './SmallMultiples';
 export * from './CopyableText';
 export * from './ColorField';
 export * from './Timeline';
