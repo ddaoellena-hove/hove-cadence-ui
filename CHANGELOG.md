@@ -11,6 +11,7 @@ Version mineure, sans rupture d’API. Thème : **dataviz du pilotage transport*
 
 - **`BulletChart`** : performance par rapport à un objectif, une ligne par indicateur. Barre de la valeur sur des plages qualitatives (insuffisant / moyen / bon) délimitées par des bornes libellées (« Malus sous 85 % », « Bonus dès 92 % »), repère d’objectif, valeur et statut écrits. Échelle `min` → `max` (par exemple 80 → 100 % pour des plages serrées), sens favorable et unité réglables par ligne ; échelle étendue si la valeur en sort. Pour les indicateurs des contrats de service public.
 - **`Histogram`** : distribution d’une mesure à partir des observations brutes (retards, temps de parcours, intervalles entre passages). Classes automatiques (bornes « rondes ») ou imposées, avec classes ouvertes pour les valeurs hors bornes (« 5 min et plus ») ; seuils verticaux libellés ; tooltip, clavier (←/→), résumé lu (effectif, médiane, classe la plus fournie), « Voir les données ».
+- **`ComboChart`** : barres (axe gauche) et courbes (axe droit) sur les mêmes catégories, à deux axes Y titrés avec leur unité. Barres groupées ou empilées, seuils sur l’axe droit, bornes de l’axe droit imposables, tooltip par catégorie, clavier, légende cliquable, « Voir les données ». Pour la fréquentation et la ponctualité, l’offre et la charge.
 - **`LineChart` — `curve="step"`** : tracé en paliers (la valeur tient jusqu’au point suivant), pour l’offre par tranche horaire, une capacité ou des tarifs. `curve="smooth"` (courbe lissée) reste le défaut.
 
 ### Modifié

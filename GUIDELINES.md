@@ -329,6 +329,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Décomposition d'un total en barre (km commerciaux / haut-le-pied / annulés) | `Meter segments` | `BarChart` empilé (plusieurs catégories) ; `DonutChart` (parts sans capacité) |
 | Performance vs objectif contractuel, plages malus / bonus (ponctualité, régularité, réalisation de l'offre) | `BulletChart` | `Gauge` (un seul KPI mis en avant) ; `Meter` (valeur vs capacité, sans plages) |
 | Distribution d'une mesure (retards, temps de parcours, intervalles entre passages) | `Histogram` | `BarChart` (catégories nommées, pas des classes de valeurs) |
+| Volume et taux sur une même période (fréquentation + ponctualité, offre + charge) | `ComboChart` | deux graphiques séparés ; `LineChart` (une seule unité) |
 | Valeur par paliers (offre par tranche horaire, capacité, tarifs) | `LineChart curve="step"` | `LineChart` lissé (suggère une variation continue) |
 | Parts d'un total (≤ 6 : parts modales, état du parc, causes) | `DonutChart` | `BarList` (classement, plus de 6 éléments) ; un camembert (non fourni) |
 | Choisir portée et format d'export | `ExportMenu` | L'app fabrique le fichier |
@@ -914,6 +915,7 @@ Une `Card` est **interactive** de deux façons :
 | Comment un total se répartit-il (6 parts au plus) ? | `DonutChart` (au-delà : `BarList`) |
 | Les indicateurs du contrat atteignent-ils leur objectif (malus, neutre, bonus) ? | `BulletChart` |
 | Comment se distribuent les retards, les temps de parcours, les intervalles ? | `Histogram` |
+| Le volume et le taux évoluent-ils ensemble (fréquentation et ponctualité) ? | `ComboChart` (deux axes Y titrés) |
 | Une valeur tient-elle par paliers (offre par tranche horaire, capacité) ? | `LineChart curve="step"` |
 | Où en est une valeur par rapport à sa capacité ou à ses seuils ? | `Meter` (barre) ; `Gauge` (KPI mis en avant) |
 | De quoi se compose un total, rapporté à une capacité ? | `Meter segments` |
@@ -930,21 +932,27 @@ Une `Card` est **interactive** de deux façons :
 - ✅ Un objectif ou un seuil d'alerte est un `threshold` libellé (« Objectif 95 % », « Seuil d'alerte 5 min ») : ligne tiretée `--cadence-dataviz-threshold`. Avec `goodDirection`, les points du mauvais côté passent en `--cadence-dataviz-threshold-breach` et le libellé indique « franchi ».
 - ✅ Un événement daté (grève, travaux, incident) est une `annotation` : trait vertical ou bande, toujours libellée (« Grève 14/10 »), rappelée dans le tooltip.
 - ❌ Pas de seuil sans libellé, pas d'annotation sans date.
+- ✅ `ComboChart` : chaque axe Y porte un titre et son unité (« Validations (k) », « Ponctualité (%) ») ; les seuils (`lineThresholds`) se lisent sur l'axe droit.
+- ❌ Pas de `ComboChart` pour deux mesures de même unité : un `LineChart` ou un `BarChart` à deux séries.
 
 ### Accessibilité
 
 - ✅ Chaque graphique a un `title` (nom accessible) et, de préférence, une `description` (période, périmètre).
-- ✅ Alternative tabulaire : « Voir les données » affiche un vrai tableau, présent dans le DOM même masqué (`LineChart`, `BarChart` avec le total par catégorie, `BarList`, `DonutChart` avec les parts et le total, `BulletChart` avec l'objectif et le statut, `Histogram` (classe, effectif, part), `Timeline` et `JourneyTimeline`) ; la `Heatmap` est elle-même une grille (`role="grid"`) avec en-têtes de lignes et de colonnes.
-- ✅ Clavier : `LineChart` (←/→, Début / Fin, tooltip annoncé), `BarChart` (←/→ ou ↑/↓ d'une catégorie à l'autre), `Heatmap` (flèches, Début / Fin, Ctrl+Début / Fin, Entrée), `BarList` (lignes cliquables = boutons nommés), `DonutChart` (←/→ d'une part à l'autre, en boucle, Début / Fin), `Histogram` (←/→ d'une classe à l'autre, Début / Fin), `BulletChart` (lignes nommées : valeur, objectif, statut), `Timeline` / `JourneyTimeline` (←/→ entre plages d'une ligne, ↑/↓ de ligne, Début / Fin, Entrée).
+- ✅ Alternative tabulaire : « Voir les données » affiche un vrai tableau, présent dans le DOM même masqué (`LineChart`, `BarChart` avec le total par catégorie, `BarList`, `DonutChart` avec les parts et le total, `BulletChart` avec l'objectif et le statut, `Histogram` (classe, effectif, part), `ComboChart` (une colonne par série, avec son unité), `Timeline` et `JourneyTimeline`) ; la `Heatmap` est elle-même une grille (`role="grid"`) avec en-têtes de lignes et de colonnes.
+- ✅ Clavier : `LineChart` (←/→, Début / Fin, tooltip annoncé), `BarChart` (←/→ ou ↑/↓ d'une catégorie à l'autre), `Heatmap` (flèches, Début / Fin, Ctrl+Début / Fin, Entrée), `BarList` (lignes cliquables = boutons nommés), `DonutChart` (←/→ d'une part à l'autre, en boucle, Début / Fin), `Histogram` (←/→ d'une classe à l'autre, Début / Fin), `ComboChart` (←/→ d'une catégorie à l'autre, Début / Fin), `BulletChart` (lignes nommées : valeur, objectif, statut), `Timeline` / `JourneyTimeline` (←/→ entre plages d'une ligne, ↑/↓ de ligne, Début / Fin, Entrée).
 - ✅ États `loading`, `empty`, `error` (avec `onRetry`) plutôt qu'un graphique vide.
 - ✅ Plusieurs graphiques sur une page (tableau de bord, graphiques côte à côte dans une `CardGrid`) : les encadrer avec `framed`, même surface qu'une `Card`. Sans cadre, deux graphiques voisins se confondent (titres, axes et légendes sans limite visible). Un graphique seul dans une `PageSection` peut rester sans cadre.
-- ✅ Les graphiques suivent la largeur de leur conteneur : jamais de largeur fixe en px. Hauteurs par défaut : `LineChart` et `BarChart` vertical 280px (`LineChart compact` : 48px), `BarChart` horizontal 36px par catégorie, `Heatmap` 28px par ligne, `BarList` 32px par ligne, `Timeline` / `JourneyTimeline` 32px par ligne, `DonutChart` 200px de diamètre (légende à côté, dessous si la place manque), `BulletChart` 48px par indicateur, `Histogram` 280px.
+- ✅ Les graphiques suivent la largeur de leur conteneur : jamais de largeur fixe en px. Hauteurs par défaut : `LineChart` et `BarChart` vertical 280px (`LineChart compact` : 48px), `BarChart` horizontal 36px par catégorie, `Heatmap` 28px par ligne, `BarList` 32px par ligne, `Timeline` / `JourneyTimeline` 32px par ligne, `DonutChart` 200px de diamètre (légende à côté, dessous si la place manque), `BulletChart` 48px par indicateur, `Histogram` 280px, `ComboChart` 300px.
 
 ---
 
 ### Proportion unique
 
-`Gauge` complète les KPI : arc/anneau, sens favorable et seuils libellés. Employer une `Card` pour une valeur seule ; `ProgressBar` pour l'avancement d'une tâche.
+`Gauge` complète les KPI : arc/anneau, sens favorable et seuils libellés. `Meter` porte la même mesure en barre, plus compacte, pour une liste de lignes ou de courses (taux de charge), ou décompose un total (`segments`). Employer une `Card` pour une valeur seule ; `ProgressBar` pour l'avancement d'une tâche.
+
+- ✅ Un taux de charge se juge avec `goodDirection="down"` et des seuils libellés (« Charge élevée 80 % », « Capacité 100 % »).
+- ❌ Pas de `Meter` ni de `Gauge` pour un traitement en cours : c'est une `ProgressBar`.
+- ❌ Pas de `DonutChart` au-delà de six parts ni pour comparer des périodes : `BarList` ou `BarChart`.
 
 ## Feedback
 
@@ -1843,6 +1851,42 @@ Performance par rapport à un objectif : une ligne par indicateur, avec la barre
     { id: "offre", label: "Taux de réalisation de l'offre", value: 96.2, target: 98.5,
       ranges: [{ value: 97, label: "Malus sous 97 %" }, { value: 98.5, label: "Bonus dès 98,5 %" }] },
   ]}
+/>
+```
+
+### ComboChart
+
+Barres et courbes sur une même période, à **deux axes Y titrés** : volumes en barres sur l'axe gauche, taux en courbes sur l'axe droit. Les couleurs des courbes suivent celles des barres dans la palette (jamais la même couleur deux fois) ; barres avec motif, courbes avec marqueur et motif de trait. Tooltip par catégorie (toutes les séries, chacune avec son unité), légende cliquable, « Voir les données ». Hauteur par défaut 300px. Props communes : voir `BarList`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `categories` | `string[]` | **requis** | Libellés de l'axe X (jours, semaines, tranches horaires) |
+| `bars` | `{ id, label, data: (number \| null)[] }[]` | **requis** | Séries en barres (axe gauche) |
+| `lines` | `{ id, label, data: (number \| null)[] }[]` | **requis** | Séries en courbes (axe droit) |
+| `barAxis` | `{ label, unit?, format? }` | **requis** | Titre, unité et format de l'axe gauche |
+| `lineAxis` | `{ label, unit?, format?, domain? }` | **requis** | Idem pour l'axe droit ; `domain` impose ses bornes (« 70 → 100 % ») |
+| `barLayout` | `"grouped" \| "stacked"` | `"grouped"` | Plusieurs séries de barres côte à côte ou empilées |
+| `lineThresholds` | `{ value, label }[]` | `[]` | Seuils libellés, lus sur l'axe droit |
+| `showLegend` | `boolean` | `true` | Légende cliquable (masquer une série) |
+| `showGrid` | `boolean` | `true` | Grille de l'axe gauche |
+| `hideTitle` | `boolean` | `false` | En-tête masqué visuellement (titre toujours lu) |
+| `height` | `number` | `300` | Hauteur du tracé |
+
+Clavier : le tracé est focusable ; ←/→ d'une catégorie à l'autre, Début / Fin, Échap masque le tooltip ; la catégorie est annoncée (`aria-live`) : « mer. 16 — Validations : 236 k, Ponctualité : 81,5 % ».
+
+- ⚠️ Les deux axes ont des échelles indépendantes : un croisement visuel entre une barre et une courbe ne signifie rien. Le dire dans la `description` si le public n'est pas averti.
+- ⚠️ `lineAxis.domain` resserré (« 80 → 100 % ») accentue les écarts : l'indiquer par le titre ou la description.
+
+```tsx
+<ComboChart
+  title="Fréquentation et ponctualité"
+  description="Ligne 13, du 14 au 20 octobre 2026"
+  categories={["lun. 14", "mar. 15", "mer. 16", …]}
+  bars={[{ id: "validations", label: "Validations", data: [412, 428, 236, …] }]}
+  lines={[{ id: "ponctualite", label: "Ponctualité", data: [94.2, 93.8, 81.5, …] }]}
+  barAxis={{ label: "Validations", unit: "k" }}
+  lineAxis={{ label: "Ponctualité", unit: "%", domain: [70, 100] }}
+  lineThresholds={[{ value: 92, label: "Objectif 92 %" }]}
 />
 ```
 
