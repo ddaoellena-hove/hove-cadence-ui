@@ -1,5 +1,17 @@
 # Changelog — @ddaoellena/cadence-ui
 
+## 0.9.8 (non publiée)
+
+Version mineure, sans rupture d’API. Thème : **graphique espace-temps** (lot 0.9.5 de la feuille de route, livré après la 0.9.7 ; proposition `docs/proposals/time-space-diagram.md`).
+
+### Ajouté
+
+- **`TimeSpaceDiagram`** : graphique de Marey. Une ligne brisée par course (arrivée puis départ à chaque arrêt), arrêts de haut en bas dans l’ordre de l’aller, heures de service au-delà de 24:00, espacement régulier ou à l’échelle des distances. Couleur et motif par sens, réalisé en trait plein sur le théorique en pointillé, courses supprimées et incidents, repère « maintenant ». Fenêtre, échelles (`fit` / 2 h / 1 h) et défilement de `Timeline`. Clavier course par course et le long de la course, écart annoncé, tableau des courses.
+
+### Modifié
+
+- **`TimelineShell`** (interne) : `scrollProps` pour porter le groupe clavier sur la zone qui défile quand les lignes n’ont pas d’élément focusable.
+
 ## 0.9.7 (non publiée)
 
 Version mineure, sans rupture d’API. Thème : **interactions de page** (feuille de route § 4 bis, lot 0.9.7).

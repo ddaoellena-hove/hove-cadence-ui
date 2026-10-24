@@ -248,6 +248,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 |---|---|---|
 | Période, jours habituels et exceptions de circulation | `ServiceCalendar` | `DateRangePicker` (période seule) |
 | Succession des arrêts et horaires d’une course | `RouteStopList` | `Stepper` (étapes d’un processus) |
+| Horaires et exploitation d'une ligne sur une journée (fréquence, croisements, théorique / réalisé) | `TimeSpaceDiagram` | `Timeline` (plages par entité) ; `RouteStopList` (une seule course) |
 | Positions temps réel des véhicules sur une ligne (supervision) | `LineDiagram` | `RouteStopList` (une course, horaires) ; une carte (géographie) |
 | Examiner les erreurs d’un import | Recette `Offre et qualité / Rapport qualité` | `ErrorSummary` (erreurs des champs d’un formulaire) |
 | Action principale de la vue (une seule) | `PrimaryButton` | `GhostButton` (secondaire) |
@@ -2234,6 +2235,39 @@ Clavier : le tracé est focusable ; ←/→ d'une classe à l'autre, Début / Fi
   unit="min"
   countLabel="courses"
   thresholds={[{ value: 5, label: "Retard 5 min" }]}
+/>
+```
+
+### TimeSpaceDiagram
+
+Graphique espace-temps (Marey) : une ligne brisée par course, **arrêts de haut en bas** dans l'ordre de l'aller, heures de service en abscisse (au-delà de 24:00). Arrivée puis départ à chaque arrêt : le palier montre l'arrêt en station, la pente la vitesse. Aller en `--cadence-dataviz-series-1` trait plein, retour en `--cadence-dataviz-series-2` tireté ; avec un réalisé, celui-ci est en trait plein et le théorique en pointillé fin. Course supprimée : estompée et pointillée ; incident : `--cadence-status-critical-fg`. Repère « maintenant » en option. Fenêtre, sélecteur d'échelle et défilement de `Timeline` (gouttière des arrêts collée à gauche). Composant **contrôlé** : l'application fournit les courses (GTFS `stop_times`, temps réel). Props communes : voir `BarList`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `line` | `{ code, color?, textColor?, mode? }` | **requis** | Ligne GTFS (badge en tête) |
+| `stops` | `{ id, name, distance? }[]` | **requis** | Ordre de l'aller, de haut en bas ; `distance` sur tous : espacement à l'échelle (comme `LineDiagram`) |
+| `trips` | `TimeSpaceTrip[]` | **requis** | `{ id, label, direction: "outbound" \| "inbound", scheduled, actual?, status?, note? }` ; passages `{ stopId, arrival?, departure? }` en `"HH:mm"` ou `"HH:mm:ss"` jusqu'à `47:59` |
+| `range` | `[début, fin]` (`"HH:mm"`) | englobe les courses, au quart d'heure | Fenêtre affichée |
+| `scales` | `("fit" \| "4h" \| "2h" \| "1h" \| "30min")[]` | `["fit", "2h", "1h"]` | Échelles du sélecteur (la première est l'échelle initiale) |
+| `now` | `string` (`"HH:mm"`) | — | Repère vertical « maintenant » |
+| `show` | `"both" \| "outbound" \| "inbound"` | `"both"` | Sens affichés |
+| `directions` | `{ outbound?, inbound? }` | « Vers <terminus> » | Libellés des sens |
+| `onTripClick` | `(trip) => void` | — | Clic ou Entrée sur une course (ouvrir ses passages, `RouteStopList`) |
+
+Clavier : un seul arrêt de tabulation (la zone qui défile) ; ←/→ d'une course à la suivante dans le sens courant (ordre de départ), ↓/↑ d'un passage au suivant **le long de la course**, Maj + ↑/↓ change de sens, Début / Fin, Entrée, Échap. Annonce : « Course 13-0712 vers Montparnasse, Garibaldi : prévu 06h39, réalisé 06h42, retard 3 min ». Description : « 48 courses dans la fenêtre, 24 vers Montparnasse, 24 vers Saint-Denis Université, 1 supprimée, 1 incident ». « Voir les données » : course, sens, départ, arrivée, écart max, statut.
+
+- ⚠️ Ligne **linéaire** en v1 ; au-delà de ~300 courses, filtrer côté application (sens, période).
+- ⚠️ Pas d'édition des courses : le graphique se lit, il ne se manipule pas.
+
+```tsx
+<TimeSpaceDiagram
+  title="Ligne 13 — graphique espace-temps"
+  line={{ code: "13", mode: "metro", color: "#6ec4e8" }}
+  stops={arrets}
+  trips={courses}
+  range={["05:30", "09:30"]}
+  now={heureDeService}
+  onTripClick={(t) => openTrip(t.id)}
 />
 ```
 
