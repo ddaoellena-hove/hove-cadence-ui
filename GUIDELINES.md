@@ -1769,7 +1769,7 @@ Classement horizontal : libellé, barre proportionnelle (`--cadence-dataviz-seri
 
 ### TreeView
 
-Arborescence dépliable pour une hiérarchie profonde (réseau → mode → ligne → parcours, dépôt → véhicules…). Motif ARIA `tree` **aplati** : chaque ligne est un `treeitem` qui porte `aria-level` / `aria-setsize` / `aria-posinset` (pas de `group` imbriqué), ce qui autorise la virtualisation. Une seule ligne est tabulable (tabindex roving). Au clavier : ↑/↓ entre lignes visibles, → déplie puis entre dans le 1ᵉʳ enfant, ← replie puis remonte au parent, Début / Fin, `*` déplie tous les frères, saisie de la première lettre, Entrée active (`onNodeClick`). Un picto et un contenu secondaire non focusable (`TreeNode.meta` : compteur, `Badge`) sont possibles. Picto : `TreeNode.mode` (picto de mode `ModeIcon`, rempli, 20px) pour les nœuds de réseau (Métro, Tramway, Bus → `coach`, RER → `train`) ; sinon `TreeNode.icon` (icône d'interface en trait, 16px). ✅ Un mode de transport s'affiche toujours avec `mode`, jamais avec une icône d'interface (`train`, `bus`, `tram` du registre `Icons`). Si les deux sont fournis, `mode` l'emporte.
+Arborescence dépliable pour une hiérarchie profonde (réseau → mode → ligne → parcours, dépôt → véhicules…). Motif ARIA `tree` **aplati** : chaque ligne est un `treeitem` qui porte `aria-level` / `aria-setsize` / `aria-posinset` (pas de `group` imbriqué), ce qui autorise la virtualisation. Une seule ligne est tabulable (tabindex roving). Au clavier : ↑/↓ entre lignes visibles, → déplie puis entre dans le 1ᵉʳ enfant, ← replie puis remonte au parent, Début / Fin, `*` déplie tous les frères, saisie de la première lettre, Entrée active (`onNodeClick`). Un picto et un contenu secondaire non focusable (`TreeNode.meta` : compteur, `Badge`) sont possibles. Picto : `TreeNode.mode` (picto de mode `ModeIcon`, rempli, 20px) pour les nœuds de réseau (Métro → `metro`, Tramway → `tram`, Bus → `bus`, RER → `train`) ; sinon `TreeNode.icon` (icône d'interface en trait, 16px). ✅ Un mode de transport s'affiche toujours avec `mode`, jamais avec une icône d'interface (`train`, `bus`, `tram` du registre `Icons`). Si les deux sont fournis, `mode` l'emporte.
 
 Sélection `none` | `single` (défaut) | `multiple`. En `multiple`, chaque ligne porte une case **tri-état** (`aria-checked` mixte) : cocher un parent coche tout son sous-arbre, cocher une partie des enfants remonte en « indéterminé ». La sélection est une liste d'identifiants de feuilles (et de parents non encore chargés) — contrôlée (`selectedIds`) ou non (`defaultSelectedIds`).
 
@@ -2014,13 +2014,13 @@ SVG inline issu de `@untitledui/icons` — aucune requête réseau. L'icône sui
 
 ### ModeIcon
 
-Pictogramme **rempli** d'un mode de transport (30 modes), famille distincte des icônes d'interface en trait d'`Icons`. SVG inline (gabarit 80), aucune requête réseau, suit `currentColor`. Même interface que `Icons` (`size`, `color`, `title`). La liste ordonnée `MODE_NAMES` (et le type `ModeName`) sert à itérer : galerie, sélecteur de mode.
+Pictogramme **rempli** d'un mode de transport (31 modes), famille distincte des icônes d'interface en trait d'`Icons`. SVG inline (gabarit 80), aucune requête réseau, suit `currentColor`. Même interface que `Icons` (`size`, `color`, `title`). La liste ordonnée `MODE_NAMES` (et le type `ModeName`) sert à itérer : galerie, sélecteur de mode.
 
-Modes : `all-pt`, `metro`, `metro-alt`, `train`, `tram`, `funicular`, `bus-on-demand`, `substitute-bus-alt`, `coach`, `coach-station`, `plane`, `boat`, `car`, `carpool`, `taxi`, `bike`, `bike-parking`, `parking`, `park-and-ride-alt`, `station`, `network`, `walk`, `slow-walk`, `mid-walk`, `fast-walk`, `run`, `home`, `work`, `wheelchair`, `ticket`.
+Modes : `all-pt`, `metro`, `metro-alt`, `train`, `tram`, `funicular`, `bus`, `bus-on-demand`, `substitute-bus-alt`, `coach`, `coach-station`, `plane`, `boat`, `car`, `carpool`, `taxi`, `bike`, `bike-parking`, `parking`, `park-and-ride-alt`, `station`, `network`, `walk`, `slow-walk`, `mid-walk`, `fast-walk`, `run`, `home`, `work`, `wheelchair`, `ticket`.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `mode` | `ModeName` (30 valeurs) | **requis** | Mode de transport |
+| `mode` | `ModeName` (31 valeurs) | **requis** | Mode de transport |
 | `size` | `number` | `24` | Taille en px (largeur = hauteur) |
 | `color` | `string` | `"currentColor"` | Remplissage. Laisser à `currentColor` pour piloter en CSS |
 | `title` | `string` | — | Si fourni → `role="img"` + `aria-label` ; sinon `aria-hidden` |

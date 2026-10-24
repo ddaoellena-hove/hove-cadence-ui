@@ -10,6 +10,7 @@ const LABELS: Record<ModeName, string> = {
   train: "Train",
   tram: "Tramway",
   funicular: "Funiculaire",
+  bus: "Bus",
   "bus-on-demand": "Bus à la demande",
   "substitute-bus-alt": "Bus de substitution",
   coach: "Autocar",
@@ -46,7 +47,7 @@ const meta: Meta<typeof ModeIcon> = {
 export default meta;
 type Story = StoryObj<typeof ModeIcon>;
 
-/** Les 30 pictogrammes de mode (remplis, `currentColor`). */
+/** Les 31 pictogrammes de mode (remplis, `currentColor`). */
 export const Galerie: Story = {
   render: () => (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))", gap: 16, maxWidth: 760, color: "var(--cadence-color-primary, #002830)" }}>
@@ -61,8 +62,8 @@ export const Galerie: Story = {
   ),
   play: async ({ canvasElement }) => {
     await expect(within(canvasElement).getByText("Métro")).toBeInTheDocument();
-    // 30 pictos décoratifs (aria-hidden) + libellés visibles.
-    await expect(canvasElement.querySelectorAll("svg.icons").length).toBe(30);
+    // 31 pictos décoratifs (aria-hidden) + libellés visibles.
+    await expect(canvasElement.querySelectorAll("svg.icons").length).toBe(31);
   },
 };
 

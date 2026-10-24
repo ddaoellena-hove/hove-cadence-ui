@@ -24,7 +24,7 @@ const RESEAU: TreeNode[] = [
       { id: "rb", label: "RER B" },
     ],
   },
-  { id: "bus", label: "Bus", mode: "coach", hasChildren: true },
+  { id: "bus", label: "Bus", mode: "bus", hasChildren: true },
 ];
 
 const meta: Meta<typeof DisruptionScopePicker> = {
