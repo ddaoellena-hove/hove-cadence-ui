@@ -51,6 +51,9 @@ function evaluate(value: number, thresholds: GaugeThreshold[] | undefined, dir: 
 const SIZE = 160;
 const R = 68;
 const THICK = 14;
+// Retrait de l'arc de valeur dans la piste : un liseré gris reste visible
+// autour (côtés et extrémités), comme une barre dans son rail.
+const PAD = 3;
 
 export const Gauge = ({ value, max = 100, unit, thresholds, goodDirection = "up", shape = "arc", className }: GaugeProps) => {
   const titleId = useId();
@@ -72,7 +75,15 @@ export const Gauge = ({ value, max = 100, unit, thresholds, goodDirection = "up"
     .outerRadius(R)
     .cornerRadius(THICK / 2);
   const trackPath = gen({ startAngle: start, endAngle: start + sweep }) ?? undefined;
-  const valuePath = gen({ startAngle: start, endAngle: start + sweep * proportion }) ?? undefined;
+  // Arc de valeur plus fin (PAD de chaque côté) et décalé de PAD aux extrémités
+  const padAngle = PAD / (R - THICK / 2);
+  const valueStart = start + padAngle;
+  const valueSweep = Math.max(0, sweep - 2 * padAngle);
+  const valueGen = arc<{ startAngle: number; endAngle: number }>()
+    .innerRadius(R - THICK + PAD)
+    .outerRadius(R - PAD)
+    .cornerRadius((THICK - 2 * PAD) / 2);
+  const valuePath = proportion > 0 ? (valueGen({ startAngle: valueStart, endAngle: valueStart + valueSweep * proportion }) ?? undefined) : undefined;
 
   const rootClass = ["gauge", `gauge--${tone}`, `gauge--${shape}`, className].filter(Boolean).join(" ");
   const srText = valid ? `${displayValue}${unit ? ` ${unit}` : ""} sur ${numberFormat.format(max)}${status ? ` — ${status}` : ""}` : "Donnée indisponible";
