@@ -73,6 +73,41 @@ export const formatDate = (date: Date, withTime = false): string => {
   return `${dd}/${mm}/${yyyy}`;
 };
 
+/**
+ * Cases de saisie d'une date : [JJ, MM, AAAA] (+ [HH, mm] si withTime).
+ * Vides pour une valeur absente.
+ */
+export const dateToParts = (date: Date | null, withTime = false): string[] => {
+  if (!date) return withTime ? ["", "", "", "", ""] : ["", "", ""];
+  const parts = [String(date.getDate()).padStart(2, "0"), String(date.getMonth() + 1).padStart(2, "0"), String(date.getFullYear())];
+  return withTime ? [...parts, String(date.getHours()).padStart(2, "0"), String(date.getMinutes()).padStart(2, "0")] : parts;
+};
+
+/**
+ * Cases saisies → Date, ou null si la date n'existe pas (31/02, mois 13…),
+ * si l'année n'a pas 4 chiffres ou si l'heure est hors 00:00–23:59.
+ */
+export const partsToDate = (parts: string[], withTime = false): Date | null => {
+  const [dd, mm, yyyy, hh = "0", min = "0"] = parts;
+  if (!/^\d{1,2}$/.test(dd) || !/^\d{1,2}$/.test(mm) || !/^\d{4}$/.test(yyyy)) return null;
+  if (withTime && (!/^\d{1,2}$/.test(hh) || !/^\d{1,2}$/.test(min))) return null;
+  const [day, month, year, hour, minute] = [dd, mm, yyyy, hh, min].map(Number);
+  if (hour > 23 || minute > 59) return null;
+  const date = new Date(year, month - 1, day, withTime ? hour : 0, withTime ? minute : 0);
+  // Date roulée (31/02 → 03/03) : la date saisie n'existe pas
+  return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day ? date : null;
+};
+
+/** Texte collé « 12/06/2026 » (+ « 14:30 ») → cases, ou null s'il ne correspond pas. */
+export const parseDateText = (text: string, withTime = false): string[] | null => {
+  const match = text.trim().match(/^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})(?:[ T]+(\d{1,2})[:h](\d{2}))?$/);
+  if (!match) return null;
+  const [, dd, mm, yyyy, hh, min] = match;
+  const parts = [dd.padStart(2, "0"), mm.padStart(2, "0"), yyyy];
+  if (!withTime) return parts;
+  return [...parts, (hh ?? "").padStart(hh ? 2 : 0, "0"), min ?? ""];
+};
+
 /** Date en toutes lettres pour les lecteurs d'écran : « lundi 19 octobre 2026 ». */
 export const formatLongDate = (date: Date): string => longDateFormat.format(date);
 

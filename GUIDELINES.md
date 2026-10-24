@@ -1885,12 +1885,14 @@ Autres props : `series` `{ label, data, color? }[]` → `{ id, label, data, colo
 
 ### DatePicker
 
+**Variante champ** (défaut) : la date se **saisit au clavier** dans des cases **JJ / MM / AAAA** (+ **HH : mm** avec `withTime`) séparées de « / » fixes, à l'allure d'un `TextInput`, comme `TimePicker`. Le curseur passe seul à la case suivante quand une case est remplie (taper « / » aussi) ; Retour arrière sur une case vide revient à la précédente ; coller « 12/06/2026 » remplit tout. Cliquer le champ place le curseur — **il n'ouvre pas le calendrier** ; seule l'**icône calendrier** à droite (`GhostButton` sans infobulle) ouvre le panneau, positionné sur la date saisie. Entrée ou quitter le champ valide la saisie ; Échap l'annule. Une date inexistante (31/02) ou hors bornes affiche un message d'erreur sous le champ, sans appeler `onChange`. Largeur 220px (260px avec `withTime`). **Variante bouton** : inchangée, le déclencheur entier ouvre le calendrier.
+
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
 | `value` | `Date \| null` | — | Date sélectionnée |
-| `onChange` | `(date: Date) => void` | — | — |
-| `label` | `string` | — | Label au-dessus |
-| `placeholder` | `string` | `"JJ/MM/AAAA"` (`"JJ/MM/AAAA HH:mm"` avec `withTime`) | — |
+| `onChange` | `(date: Date) => void` | — | Appelé avec une date valide et dans les bornes (saisie validée ou jour choisi). ⚠️ Pas d'effacement : vider les cases rétablit la valeur |
+| `label` | `string` | — | Label au-dessus ; cible la case du jour |
+| `placeholder` | `string` | `"JJ/MM/AAAA"` (`"JJ/MM/AAAA HH:mm"` avec `withTime`) | Texte du déclencheur sans valeur. ⚠️ Variante bouton seulement : en variante champ, chaque case a son repère fixe (JJ, MM, AAAA, HH, mm) |
 | `disabled` | `boolean` | `false` | — |
 | `minDate`, `maxDate` | `Date` | — | Bornes (jours hors bornes désactivés) |
 | `withTime` | `boolean` | `false` | Heures/minutes + bouton de validation |
@@ -1901,11 +1903,11 @@ Autres props : `series` `{ label, data, color? }[]` → `{ id, label, data, colo
 
 Affichage en français : format `JJ/MM/AAAA` (`JJ/MM/AAAA HH:mm` avec `withTime`), mois en toutes lettres (« Octobre 2026 »), semaine commençant le **lundi** (`Lu Ma Me Je Ve Sa Di`). ⚠️ Pas de prop `locale`.
 
-Clavier : un seul jour dans l'ordre de tabulation ; ←/→ (jour), ↑/↓ (semaine), Début/Fin (lundi/dimanche), Page préc./suiv. (mois), Entrée pour choisir, Échap pour fermer (le focus revient au déclencheur). Les jours sont annoncés en toutes lettres (« lundi 19 octobre 2026 »).
+Clavier du calendrier : à l'ouverture, le focus va sur le jour sélectionné (ou saisi) ; un seul jour dans l'ordre de tabulation ; ←/→ (jour), ↑/↓ (semaine), Début/Fin (lundi/dimanche), Page préc./suiv. (mois), Entrée pour choisir, Échap pour fermer (le focus revient à l'icône calendrier, ou au déclencheur en variante bouton). Les jours sont annoncés en toutes lettres (« lundi 19 octobre 2026 »).
 
 ### DateRangePicker
 
-Sélection d'une période. Même déclencheur et même calendrier que `DatePicker`. Sélection en deux clics (la fin peut précéder le début : les dates sont inversées), validée par « Appliquer » ; un clic sur un préréglage applique directement. Le popover s'ouvre aligné à gauche du déclencheur et se décale vers la gauche s'il sortirait de l'écran ou du conteneur (idem `DatePicker` et le menu de `Dropdown`).
+Sélection d'une période. Même calendrier que `DatePicker` ; le déclencheur (champ ou bouton) ouvre le calendrier en entier, sans saisie au clavier. Sélection en deux clics (la fin peut précéder le début : les dates sont inversées), validée par « Appliquer » ; un clic sur un préréglage applique directement. Le popover s'ouvre aligné à gauche du déclencheur et se décale vers la gauche s'il sortirait de l'écran ou du conteneur (idem `DatePicker` et le menu de `Dropdown`).
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|

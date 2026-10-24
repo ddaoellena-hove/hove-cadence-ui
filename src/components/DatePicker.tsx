@@ -1,4 +1,6 @@
 import { TimeFields } from "./TimeFields";
+import { DateFields } from "./DateFields";
+import { GhostButton } from "./GhostButton";
 import { SegmentedControl } from "./SegmentedControl";
 import { useState, useRef, useEffect, useId, type KeyboardEvent } from "react";
 import { PrimaryButton } from "./PrimaryButton";
@@ -6,7 +8,7 @@ import { ButtonTriggerContent } from "./ButtonTrigger";
 import { buttonTriggerClass, type TriggerVariant } from "./button-trigger-utils";
 import { Icons } from "./Icons";
 import { CalendarMonth } from "./CalendarMonth";
-import { dayKey, formatDate, getKeyboardTarget, isOutsideBounds, isSameDay } from "./date-utils";
+import { dateToParts, dayKey, formatDate, getKeyboardTarget, isOutsideBounds, isSameDay, parseDateText, partsToDate } from "./date-utils";
 import { usePopoverFit } from "./use-popover-fit";
 import "./date-picker.css";
 
@@ -46,6 +48,12 @@ export interface DatePickerProps {
   "aria-label"?: string;
 }
 
+/**
+ * Variante `field` (défaut) : la date se saisit au clavier dans des cases
+ * JJ / MM / AAAA (+ HH:mm) séparées de « / » fixes, comme TimePicker. Seule
+ * l'icône calendrier à droite ouvre le panneau. Quitter le champ ou Entrée
+ * valide la saisie ; une date invalide ou hors bornes affiche un message.
+ */
 export const DatePicker = ({
   value = null,
   onChange,
@@ -76,7 +84,9 @@ export const DatePicker = ({
   const [hour, setHour] = useState<number>(value ? value.getHours() : 9);
   const [minute, setMinute] = useState<number>(value ? value.getMinutes() : 0);
   const containerRef = useRef<HTMLDivElement>(null);
+  // Déclencheur du panneau : bouton (variante bouton) ou icône calendrier (champ)
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const firstFieldRef = useRef<HTMLInputElement>(null);
   // Le popover reste dans la zone visible (ex. déclencheur au bord droit d'un en-tête)
   const popoverRef = useRef<HTMLDivElement>(null);
   usePopoverFit(popoverRef, open);
@@ -100,10 +110,16 @@ export const DatePicker = ({
     return () => document.removeEventListener("mousedown", handleClick);
   }, [open]);
 
-  // Nouvelle valeur reçue : on recale le mois affiché, la date en attente et l'heure
+  // Saisie en cours dans les cases du champ, et son éventuelle erreur
+  const [parts, setParts] = useState(() => dateToParts(value, withTime));
+  const [localError, setLocalError] = useState("");
+
+  // Nouvelle valeur reçue : on recale les cases, le mois affiché, la date en attente et l'heure
   const [syncedValue, setSyncedValue] = useState(value);
   if (value !== syncedValue) {
     setSyncedValue(value);
+    setParts(dateToParts(value, withTime));
+    setLocalError("");
     if (value) {
       setViewYear(value.getFullYear());
       setViewMonth(value.getMonth());
@@ -131,6 +147,57 @@ export const DatePicker = ({
   };
 
   const isDisabledDay = (date: Date): boolean => isOutsideBounds(date, minDate, maxDate);
+
+  const format = withTime ? "JJ/MM/AAAA HH:mm" : "JJ/MM/AAAA";
+  const boundsMessage =
+    minDate && maxDate
+      ? `Choisissez une date entre le ${formatDate(minDate)} et le ${formatDate(maxDate)}.`
+      : minDate
+        ? `Choisissez une date à partir du ${formatDate(minDate)}.`
+        : `Choisissez une date jusqu'au ${maxDate ? formatDate(maxDate) : ""}.`;
+
+  // Valide la saisie des cases : date réelle et dans les bornes
+  const commit = () => {
+    if (disabled) return;
+    if (parts.every((part) => part === "")) {
+      // Pas d'effacement (onChange reçoit toujours une Date) : on rétablit la valeur
+      setParts(dateToParts(value, withTime));
+      setLocalError("");
+      return;
+    }
+    const typed = partsToDate(parts, withTime);
+    if (!typed) { setLocalError(`Saisissez une date valide au format ${format}.`); return; }
+    if (isDisabledDay(typed)) { setLocalError(boundsMessage); return; }
+    setLocalError("");
+    if (!value || typed.getTime() !== value.getTime()) onChange?.(typed);
+    else setParts(dateToParts(typed, withTime));
+  };
+
+  const editPart = (index: number, next: string) => {
+    setParts((current) => current.map((part, i) => (i === index ? next : part)));
+    setLocalError("");
+  };
+
+  const pasteDate = (text: string) => {
+    const pasted = parseDateText(text, withTime);
+    if (!pasted) return false;
+    setParts(pasted);
+    setLocalError("");
+    return true;
+  };
+
+  const openPanel = () => {
+    // Une date déjà saisie positionne le calendrier
+    const typed = partsToDate(parts, withTime);
+    if (typed) {
+      setViewYear(typed.getFullYear());
+      setViewMonth(typed.getMonth());
+      setFocusedDate(typed);
+      setPendingDate(typed);
+    }
+    keyboardNavRef.current = true;
+    setOpen(true);
+  };
 
   // Le jour focalisable reste dans le mois affiché
   const focusInView =
@@ -162,11 +229,13 @@ export const DatePicker = ({
   const handleDayClick = (date: Date) => {
     if (isDisabledDay(date)) return;
     setFocusedDate(date);
+    setLocalError("");
     if (withTime) {
       setPendingDate(date);
     } else {
+      setParts(dateToParts(date));
       onChange?.(date);
-      setOpen(false);
+      close();
     }
   };
 
@@ -174,8 +243,10 @@ export const DatePicker = ({
     if (!pendingDate) return;
     const result = new Date(pendingDate);
     result.setHours(hour, minute, 0, 0);
+    setParts(dateToParts(result, true));
+    setLocalError("");
     onChange?.(result);
-    setOpen(false);
+    close();
   };
 
   const cycleHour = (delta: number) => setHour((h) => (h + delta + 24) % 24);
@@ -185,6 +256,15 @@ export const DatePicker = ({
   // Effective selected date for display in trigger
   const displayValue = withTime ? (value ?? null) : value;
   const isButton = variant === "button";
+  const name = label || ariaLabel || "Date";
+  const messageId = `${triggerId}-message`;
+
+  // ARIA que GhostButton ne transmet pas : posé sur l'icône calendrier (champ)
+  useEffect(() => {
+    if (isButton) return;
+    triggerRef.current?.setAttribute("aria-haspopup", "dialog");
+    triggerRef.current?.setAttribute("aria-expanded", String(open));
+  }, [isButton, open]);
 
   return (
     <div
@@ -203,64 +283,78 @@ export const DatePicker = ({
           {label}
         </label>
       )}
-      <button
-        ref={triggerRef}
-        id={triggerId}
-        type="button"
-        className={
-          isButton
-            ? buttonTriggerClass(true, open)
-            : `date-picker__trigger${open ? " date-picker__trigger--open" : ""}`
-        }
-        onClick={() => !disabled && setOpen((o) => !o)}
-        disabled={disabled}
-        aria-haspopup="dialog"
-        aria-expanded={open}
-        aria-label={!label && ariaLabel ? `${ariaLabel} : ${displayValue ? formatDate(displayValue, withTime) : "aucune date"}` : undefined}
-      >
-        {isButton ? (
+      {isButton ? (
+        <button
+          ref={triggerRef}
+          id={triggerId}
+          type="button"
+          className={buttonTriggerClass(true, open)}
+          onClick={() => !disabled && (open ? setOpen(false) : openPanel())}
+          disabled={disabled}
+          aria-haspopup="dialog"
+          aria-expanded={open}
+          aria-label={!label && ariaLabel ? `${ariaLabel} : ${displayValue ? formatDate(displayValue, withTime) : "aucune date"}` : undefined}
+        >
           <ButtonTriggerContent
             start={<Icons icon="calendar" size={12} />}
             text={displayValue ? formatDate(displayValue, withTime) : resolvedPlaceholder}
             isPlaceholder={!displayValue}
             open={open}
           />
-        ) : (
-          <>
-            <span
-              className={`date-picker__trigger-text${!displayValue ? " date-picker__trigger-text--placeholder" : ""}`}
-            >
-              {displayValue ? formatDate(displayValue, withTime) : resolvedPlaceholder}
-            </span>
-            <svg
-              className="date-picker__icon"
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <rect
-                x="1"
-                y="3"
-                width="14"
-                height="12"
-                rx="2"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              />
-              <path d="M1 7h14" stroke="currentColor" strokeWidth="1.5" />
-              <path
-                d="M5 1v4M11 1v4"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            </svg>
-          </>
-        )}
-      </button>
+        </button>
+      ) : (
+        // Champ éditable (allure TextInput). Un clic sur la zone vide cible la
+        // case du jour ; quitter le champ valide la saisie.
+        <div
+          className={`date-picker__field${open ? " date-picker__field--open" : ""}${withTime ? " date-picker__field--time" : ""}${localError ? " date-picker__field--error" : ""}`}
+          onPointerDown={(e) => {
+            if (e.target === e.currentTarget) {
+              e.preventDefault();
+              firstFieldRef.current?.focus();
+            }
+          }}
+          onBlur={(e) => {
+            if (!open && !containerRef.current?.contains(e.relatedTarget as Node)) commit();
+          }}
+        >
+          <DateFields
+            parts={parts}
+            withTime={withTime}
+            id={triggerId}
+            firstRef={firstFieldRef}
+            label={name}
+            disabled={disabled}
+            invalid={Boolean(localError)}
+            describedBy={localError ? messageId : undefined}
+            onEdit={editPart}
+            onPaste={pasteDate}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                commit();
+              } else if (e.key === "Escape" && !open) {
+                // Échap annule la saisie en cours
+                setParts(dateToParts(value, withTime));
+                setLocalError("");
+              }
+            }}
+          />
+          <GhostButton
+            ref={triggerRef}
+            className="date-picker__calendar"
+            size="sm"
+            icon="calendar"
+            aria-label={`Ouvrir le calendrier — ${name.toLowerCase()}`}
+            disabled={disabled}
+            onClick={() => (open ? close() : openPanel())}
+          />
+        </div>
+      )}
+      {!isButton && localError && (
+        <p id={messageId} className="date-picker__message" role="alert">
+          {localError}
+        </p>
+      )}
 
       {open && (
         <div

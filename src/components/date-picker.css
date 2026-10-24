@@ -50,57 +50,61 @@
   pointer-events: none;
 }
 
-/* ── Trigger button ──────────────────────────────────────────────────── */
-.date-picker__trigger {
+/* ── Champ éditable (allure TextInput, comme TimePicker) ─────────────── */
+.date-picker__field {
+  box-sizing: border-box; /* le token est la hauteur extérieure, bordure comprise */
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  gap: 4px;
   width: 220px;
-  box-sizing: border-box; /* le token est la hauteur extérieure, bordure comprise */
   height: var(--cadence-control-height-field, 40px);
-  padding: 0 20px;
+  padding: 0 6px 0 12px;
   background-color: var(--cadence-color-white, #ffffff);
   border: 1px solid var(--cadence-color-border, #e5e5e5);
   border-radius: var(--cadence-radius-lg, 10px);
-  cursor: pointer;
+  box-shadow: var(--cadence-shadow-sm, 0px 1px 3px rgba(0, 0, 0, 0.06), 0px 1px 2px rgba(0, 0, 0, 0.04));
   transition:
     box-shadow 120ms ease,
     border-color 120ms ease;
-  outline: none;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
-.date-picker__trigger:hover:not(:disabled) {
-  border-color: var(--cadence-color-border, #e5e5e5);
+/* Date + heure : un peu plus large pour « JJ/MM/AAAA HH:mm » */
+.date-picker__field--time {
+  width: 260px;
+}
+
+.date-picker__field:hover {
   box-shadow: var(--cadence-shadow-md, 0px 0px 12px rgba(0, 0, 0, 0.08), 0px 0px 2px rgba(0, 0, 0, 0.25));
 }
 
-.date-picker__trigger--open {
+/* Focus ou panneau ouvert : mêmes couleurs que TextInput (liseré + halo) */
+.date-picker__field:focus-within,
+.date-picker__field--open {
   border: 1.5px solid var(--cadence-color-field-focus, #2d5f6b);
   box-shadow: var(--cadence-field-focus-ring, 0 0 0 4px rgba(45, 95, 107, 0.12));
 }
 
-.date-picker__trigger:disabled {
-  cursor: not-allowed;
+.date-picker__field--error,
+.date-picker__field--error:focus-within {
+  border: 2px solid var(--cadence-color-danger, #da1e28);
 }
 
-.date-picker__trigger-text {
-  font-family: var(--cadence-font-sans, "Inter", Helvetica);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--cadence-color-primary, #002830);
-  line-height: 1;
+/* Icône calendrier : GhostButton sans infobulle, collée à droite */
+.date-picker__field > .base-button-tip,
+.date-picker__calendar {
+  margin-left: auto;
 }
 
-.date-picker__trigger-text--placeholder {
-  color: var(--cadence-color-placeholder, #737373);
-  font-weight: 400;
+.date-picker__field .base-button-tip__bubble {
+  display: none;
 }
 
-.date-picker__icon {
-  color: var(--cadence-color-border-strong, #bfc9cb);
-  flex-shrink: 0;
+.date-picker__message {
+  margin: 6px 0 0 8px;
+  max-width: 260px;
+  color: var(--cadence-color-danger-text, #b91c1c);
+  font-size: var(--cadence-font-size-caption, 11px);
+  line-height: 1.5;
 }
 
 /* ── Popover ─────────────────────────────────────────────────────────── */

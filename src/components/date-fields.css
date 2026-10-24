@@ -1,0 +1,13 @@
+/* ── DateFields (interne) : cases JJ / MM / AAAA (+ HH:mm) dans un champ ── */
+/* Même allure que les cases en ligne de TimePicker (time-fields--inline). */
+.date-fields { display: inline-flex; align-items: center; min-width: 0; }
+.date-fields__segment { display: inline-flex; align-items: center; }
+.date-fields__box { box-sizing: content-box; height: auto; min-width: 0; margin: 0; padding: 4px 2px; border: 0; border-radius: 4px; background: transparent; text-align: center; font: 500 14px/1 var(--cadence-font-sans, Inter); color: var(--cadence-color-primary, #002830); font-variant-numeric: tabular-nums; }
+.date-fields__box--2 { width: 2.6ch; }
+.date-fields__box--4 { width: 4.8ch; }
+.date-fields__box::placeholder { color: var(--cadence-color-placeholder, #737373); font-weight: 400; }
+/* Le champ porte le halo de focus : on signale juste la case active. */
+.date-fields__box:focus, .date-fields__box:focus-visible { outline: none; background: var(--cadence-color-surface-alt, #eef1f4); }
+.date-fields__box:disabled { background: transparent; color: var(--cadence-color-text-disabled, #808080); }
+.date-fields__sep { color: var(--cadence-color-primary, #002830); font: 500 14px/1 var(--cadence-font-sans, Inter); padding: 0 1px; }
+.date-fields__sep--space { width: 6px; padding: 0; }

@@ -1,6 +1,6 @@
 import { useState, type ComponentProps } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, fn, userEvent, within } from "storybook/test";
 import { DatePicker } from "./DatePicker";
 
 const meta: Meta<typeof DatePicker> = {
@@ -206,43 +206,45 @@ export const WithLabel: Story = {
 };
 
 /**
- * Navigation au clavier : flèches (jour / semaine), Début / Fin (semaine),
- * Page préc. / suiv. (mois), Entrée pour choisir, Échap pour fermer.
+ * Saisie directe (défaut) : on tape la date dans les cases JJ / MM / AAAA, les
+ * « / » sont fixes et le curseur passe seul à la case suivante. Seule l'icône
+ * calendrier ouvre le panneau. Une date inexistante affiche un message.
  */
-export const Clavier: Story = {
+export const SaisieDirecte: Story = {
+  name: "Saisie directe",
   render: (args) => <ControlledTemplate {...args} />,
-  args: {
-    label: "Date de début",
-    value: new Date(2026, 9, 19),
-  },
+  args: { label: "Date de début", onChange: fn() },
   parameters: { a11y: { test: "error" } },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     const user = userEvent.setup();
-    const trigger = canvas.getByRole("button", { name: /Date de début/ });
+    const day = canvas.getByRole("textbox", { name: "Jour — Date de début" });
 
-    await user.click(trigger);
-    // Un seul jour dans l'ordre de tabulation : le jour sélectionné
-    const selected = canvas.getByRole("button", { name: /lundi 19 octobre 2026/ });
-    await expect(selected).toHaveAttribute("tabindex", "0");
-    selected.focus();
+    // Le label cible la case du jour ; la saisie avance seule de case en case
+    await user.click(canvas.getByText("Date de début"));
+    await expect(day).toHaveFocus();
+    await user.keyboard("31022026");
+    // Quitter le composant (case → icône → hors du champ) valide la saisie
+    await user.tab();
+    await user.tab();
+    await expect(canvas.getByRole("alert")).toHaveTextContent("Saisissez une date valide");
 
-    // → puis ↓ : mardi 20, puis mardi 27
-    await user.keyboard("{ArrowRight}{ArrowDown}");
-    await expect(canvas.getByRole("button", { name: /mardi 27 octobre 2026/ })).toHaveFocus();
+    // Correction : 27/11/2026, validée en quittant le champ
+    await user.click(day);
+    await user.keyboard("27112026{Enter}");
+    await expect(args.onChange).toHaveBeenLastCalledWith(new Date(2026, 10, 27));
+    await expect(canvas.queryByRole("alert")).not.toBeInTheDocument();
 
-    // Page suiv. : même jour du mois suivant
-    await user.keyboard("{PageDown}");
+    // Cliquer dans les cases n'ouvre pas le calendrier ; l'icône, si
+    await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+    const icon = canvas.getByRole("button", { name: "Ouvrir le calendrier — date de début" });
+    await user.click(icon);
+    await expect(canvas.getByRole("dialog", { name: "Calendrier" })).toBeInTheDocument();
+    // Le jour saisi porte le focus ; Échap ferme et rend le focus à l'icône
     await expect(canvas.getByRole("button", { name: /vendredi 27 novembre 2026/ })).toHaveFocus();
-
-    await user.keyboard("{Enter}");
-    await expect(trigger).toHaveTextContent("27/11/2026");
-
-    // Échap ferme sans valider et rend le focus au déclencheur
-    await user.click(trigger);
     await user.keyboard("{Escape}");
     await expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-    await expect(trigger).toHaveFocus();
+    await expect(icon).toHaveFocus();
   },
 };
 

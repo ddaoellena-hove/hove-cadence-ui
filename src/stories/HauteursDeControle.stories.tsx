@@ -123,7 +123,7 @@ export const RangeeDeChamps: Story = {
       ".text-input__field",
       ".segmented-control",
       ".dropdown__trigger",
-      ".date-picker__trigger",
+      ".date-picker__field",
       ".counter-input",
       ".time-picker__field",
       ".autocomplete__field",

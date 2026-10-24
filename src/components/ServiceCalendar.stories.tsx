@@ -20,7 +20,7 @@ export const Exceptions: Story = {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("checkbox", { name: "Samedi" }));
     await expect(args.onChange).toHaveBeenLastCalledWith(expect.objectContaining({ weekdays: [1, 2, 3, 4, 5, 6] }));
-    await userEvent.click(canvas.getByRole("button", { name: /Date d’exception/ }));
+    await userEvent.click(canvas.getByRole("button", { name: "Ouvrir le calendrier — date d’exception" }));
     await userEvent.click(canvas.getByRole("button", { name: /mercredi 11 novembre 2026/ }));
     await userEvent.click(canvas.getByRole("radio", { name: "Circule" }));
     await userEvent.click(canvas.getByRole("button", { name: "Appliquer l’exception" }));

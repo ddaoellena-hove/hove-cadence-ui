@@ -3,12 +3,15 @@ import {
   addMonths,
   buildWeeks,
   countDays,
+  dateToParts,
   endOfDay,
   formatDate,
   formatLongDate,
   formatMonthLabel,
   getKeyboardTarget,
   isOutsideBounds,
+  parseDateText,
+  partsToDate,
 } from "./date-utils";
 
 describe("buildWeeks", () => {
@@ -81,5 +84,38 @@ describe("getKeyboardTarget", () => {
 
   it("ignore les autres touches", () => {
     expect(getKeyboardTarget(monday19, "a")).toBeNull();
+  });
+});
+
+describe("saisie d'une date en cases", () => {
+  it("découpe une date en JJ / MM / AAAA (+ HH:mm)", () => {
+    expect(dateToParts(new Date(2026, 5, 3))).toEqual(["03", "06", "2026"]);
+    expect(dateToParts(new Date(2026, 5, 3, 9, 5), true)).toEqual(["03", "06", "2026", "09", "05"]);
+    expect(dateToParts(null)).toEqual(["", "", ""]);
+    expect(dateToParts(null, true)).toEqual(["", "", "", "", ""]);
+  });
+
+  it("reconstruit une date réelle", () => {
+    expect(partsToDate(["3", "6", "2026"])).toEqual(new Date(2026, 5, 3));
+    expect(partsToDate(["29", "02", "2028"])).toEqual(new Date(2028, 1, 29));
+    expect(partsToDate(["03", "06", "2026", "14", "30"], true)).toEqual(new Date(2026, 5, 3, 14, 30));
+  });
+
+  it("refuse une date qui n'existe pas ou incomplète", () => {
+    expect(partsToDate(["31", "02", "2026"])).toBeNull();
+    expect(partsToDate(["29", "02", "2026"])).toBeNull();
+    expect(partsToDate(["12", "13", "2026"])).toBeNull();
+    expect(partsToDate(["12", "06", "26"])).toBeNull();
+    expect(partsToDate(["", "06", "2026"])).toBeNull();
+    expect(partsToDate(["12", "06", "2026", "24", "00"], true)).toBeNull();
+    expect(partsToDate(["12", "06", "2026", "", ""], true)).toBeNull();
+  });
+
+  it("lit un texte collé", () => {
+    expect(parseDateText("12/06/2026")).toEqual(["12", "06", "2026"]);
+    expect(parseDateText(" 3.6.2026 ")).toEqual(["03", "06", "2026"]);
+    expect(parseDateText("12/06/2026 14:30", true)).toEqual(["12", "06", "2026", "14", "30"]);
+    expect(parseDateText("12/06/2026", true)).toEqual(["12", "06", "2026", "", ""]);
+    expect(parseDateText("demain")).toBeNull();
   });
 });
