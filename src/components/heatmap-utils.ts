@@ -70,3 +70,24 @@ export const moveInGrid = (
 /** Une étiquette de colonne sur `every` quand la place manque (~28px par étiquette). */
 export const columnLabelEvery = (plotWidth: number, cols: number, minLabelWidth = 32) =>
   cols === 0 ? 1 : Math.max(1, Math.ceil(minLabelWidth / (plotWidth / cols)));
+
+/** Totaux par ligne (y), par colonne (x) et total général ; cellules sans donnée ignorées. */
+export const axisTotals = (cells: HeatmapCellInput[]) => {
+  const rows = new Map<string, number>();
+  const cols = new Map<string, number>();
+  let grand = 0;
+  for (const c of cells) {
+    if (c.value === null || !Number.isFinite(c.value)) continue;
+    rows.set(c.y, (rows.get(c.y) ?? 0) + c.value);
+    cols.set(c.x, (cols.get(c.x) ?? 0) + c.value);
+    grand += c.value;
+  }
+  return { rows, cols, grand };
+};
+
+/** Libellés triés par total décroissant (ordre fourni conservé à égalité). */
+export const sortByTotal = (labels: string[], totals: Map<string, number>) =>
+  labels
+    .map((label, i) => ({ label, i, total: totals.get(label) ?? 0 }))
+    .sort((a, b) => b.total - a.total || a.i - b.i)
+    .map((e) => e.label);

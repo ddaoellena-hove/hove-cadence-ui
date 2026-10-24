@@ -95,6 +95,43 @@ export const RetardLigneJour: Story = {
 };
 
 /** États : chargement, vide, erreur. */
+const STATIONS = ["Châtelet", "Gare de Lyon", "La Défense", "Nation", "Gare du Nord"];
+// Voyages origine → destination (milliers), diagonale sans objet
+const OD_VALUES = [
+  [null, 42, 88, 31, 57],
+  [39, null, 46, 22, 18],
+  [91, 41, null, 12, 24],
+  [28, 19, 9, null, 14],
+  [61, 16, 27, 11, null],
+];
+const OD_CELLS = STATIONS.flatMap((y, i) => STATIONS.map((x, j) => ({ x, y, value: OD_VALUES[i][j] })));
+
+/** Matrice origine-destination : totaux par origine et par destination, tri par total décroissant. */
+export const MatriceOrigineDestination: Story = {
+  name: "Matrice origine-destination",
+  args: {
+    title: "Voyages origine → destination",
+    description: "Lignes = origine, colonnes = destination ; jour ouvré type, en milliers",
+    unit: "k voyages",
+    xLabels: STATIONS,
+    yLabels: STATIONS,
+    cells: OD_CELLS,
+    showTotals: true,
+    sort: "desc",
+    rowHeight: 32,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const grid = canvas.getByRole("grid", { name: "Voyages origine → destination" });
+    // Tri par total : Châtelet (218 k) puis La Défense (168 k) en tête des origines
+    const rowHeaders = within(grid).getAllByRole("rowheader").map((h) => h.textContent);
+    await expect(rowHeaders.slice(0, 2)).toEqual(["Châtelet", "La Défense"]);
+    await expect(rowHeaders[rowHeaders.length - 1]).toBe("Total");
+    await expect(within(grid).getByRole("gridcell", { name: /^Total Châtelet : 218\sk voyages$/ })).toBeInTheDocument();
+    await expect(within(grid).getByRole("gridcell", { name: /^Total général : 696\sk voyages$/ })).toBeInTheDocument();
+  },
+};
+
 export const Chargement: Story = {
   args: { title: "Perturbations par jour et par heure", xLabels: [], yLabels: [], cells: [], state: "loading" },
 };

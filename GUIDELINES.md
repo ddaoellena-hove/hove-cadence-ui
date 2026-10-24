@@ -307,6 +307,8 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Identité utilisateur (initiales / photo) | `Avatar` | — |
 | Évolution dans le temps (retards, ponctualité, volumes) | `LineChart` | `BarChart` (comparaison de catégories) |
 | Motif jour × heure, ligne × jour | `Heatmap` | `LineChart` (une seule dimension temporelle) |
+| Flux entre arrêts, zones ou lignes (matrice origine-destination) | `Heatmap showTotals sort="desc"` | un `SankeyChart` (prévu 0.9.6) pour des flux détaillés |
+| Une valeur par jour sur une année (ponctualité quotidienne, jours de grève, jours de circulation) | `CalendarHeatmap` | `ServiceCalendar` (saisie des jours de circulation) ; `LineChart` (tendance, pas le motif hebdomadaire) |
 | Classement (lignes les plus impactées) | `BarList` | `BarChart orientation="horizontal"` (plusieurs séries) |
 | Comparaison de catégories (barres empilées / groupées) | `BarChart` | `BarList` (classement à une valeur) ; `DataVisualization` est déprécié |
 | Plages sur un axe temps (perturbations, amplitudes, travaux) | `Timeline` | `LineChart` (séries continues) ; `ActivityFeed` (événements ponctuels) ; `ServiceCalendar` (jours) ; `JourneyTimeline` (trajets) |
@@ -910,6 +912,7 @@ Une `Card` est **interactive** de deux façons :
 |---|---|
 | Comment une mesure évolue dans le temps ? Franchit-elle un objectif ? | `LineChart` (une à huit séries, aire empilée pour une composition) |
 | Quand les perturbations se concentrent-elles (jour × heure) ? | `Heatmap` |
+| Quels jours de l'année ont décroché (ponctualité quotidienne, grèves) ? | `CalendarHeatmap` |
 | Quelles lignes sont les plus touchées ? | `BarList` |
 | Comment se répartissent des catégories, série par série ? | `BarChart` (`layout="stacked" | "grouped"`, `orientation="vertical" | "horizontal"`) |
 | Une valeur clé et sa tendance en haut de page ? | `Card` (`value`, `delta`, `trend`) |
@@ -2117,6 +2120,8 @@ Grille à deux catégories (jour × heure, ligne × jour) sur la rampe séquenti
 | `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | — |
 | `onCellClick` | `(cell) => void` | — | Clic ou Entrée sur une cellule renseignée (ouvrir la liste filtrée) |
 | `rowHeight` | `number` | `28` | Hauteur d'une ligne |
+| `showTotals` | `boolean` | `false` | Matrice origine-destination : total par ligne (dernière colonne), par colonne (dernière ligne) et total général, en chiffres hors rampe ; cases de total focusables et nommées (« Total Châtelet : 218 k voyages ») |
+| `sort` | `"none" \| "desc"` | `"none"` | `"desc"` : lignes et colonnes triées par total décroissant |
 
 Clavier : une seule cellule tabulable ; flèches, Début / Fin (ligne), Ctrl+Début / Fin (grille), Entrée ; tooltip au survol et au focus. Quand la place manque, une étiquette de colonne sur deux ou trois est masquée visuellement (toujours lue).
 
@@ -2129,6 +2134,36 @@ Clavier : une seule cellule tabulable ; flèches, Début / Fin (ligne), Ctrl+Dé
   yLabels={days}
   cells={cells}
   onCellClick={(c) => navigate(`/perturbations?jour=${c.y}&heure=${c.x}`)}
+/>
+```
+
+### CalendarHeatmap
+
+Calendrier annuel en carte de chaleur : une colonne par semaine, une ligne par jour (lundi en tête), la rampe séquentielle de `Heatmap` en 7 classes. Étiquettes de mois sur la semaine du 1er, un jour de la semaine sur deux affiché (tous lus). Jour sans donnée : hachures ; jour annoté : contour `--cadence-dataviz-annotation`. Cases carrées de 8 à 18 px selon la largeur ; défilement horizontal si la place manque. Grille accessible (`role="grid"`), sans « Voir les données » (la grille est elle-même l'alternative). Props communes : voir `BarList`.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `values` | `{ date: Date \| "AAAA-MM-JJ", value: number \| null }[]` | **requis** | Une valeur par jour ; jour absent ou `null` = pas de donnée |
+| `range` | `[début, fin]` | année civile du jour le plus récent | Période affichée (jours locaux, sans décalage de fuseau) |
+| `domain` | `[number, number]` | `[0, max]` | Bornes de la rampe (`[75, 100]` pour une ponctualité) |
+| `unit` | `string` | — | Tooltip, légende et nom des jours |
+| `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | — |
+| `annotations` | `{ date, label }[]` | `[]` | Jours marqués (« Grève ») : contour, tooltip, nom du jour, entrée « Événement » de la légende |
+| `onDayClick` | `({ date, key, value }) => void` | — | Clic ou Entrée sur un jour renseigné |
+
+Clavier : une seule case tabulable ; ←/→ d'une semaine à l'autre (même jour), ↑/↓ d'un jour à l'autre, Début / Fin (ligne), Ctrl+Début / Fin, Entrée. Nom d'un jour : « vendredi 16 octobre 2026 : 78 %. Grève ».
+
+- ⚠️ La rampe va du clair (bas) au foncé (haut) : pour une ponctualité, les mauvais jours sont les plus clairs. Resserrer `domain` pour que les écarts se voient.
+- ❌ Pas pour saisir des jours de circulation : `ServiceCalendar`.
+
+```tsx
+<CalendarHeatmap
+  title="Ponctualité quotidienne 2026"
+  unit="%"
+  domain={[75, 100]}
+  values={jours}
+  annotations={[{ date: "2026-10-16", label: "Grève" }]}
+  onDayClick={(d) => navigate(`/ponctualite/${d.key}`)}
 />
 ```
 

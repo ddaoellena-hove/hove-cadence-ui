@@ -4,12 +4,14 @@ import { ChartTooltip } from "./ChartTooltip";
 import { formatKpiValue, formatValueWithUnit } from "./chart-format";
 import { sequentialColor } from "./chart-palette";
 import {
+  axisTotals,
   buildStepScale,
   columnLabelEvery,
   heatmapDomain,
   indexCells,
   moveInGrid,
   rampThresholds,
+  sortByTotal,
   type GridPosition,
 } from "./heatmap-utils";
 import { useChartWidth } from "./use-chart-size";
@@ -40,9 +42,46 @@ export interface HeatmapProps extends ChartCommonProps {
   onCellClick?: (cell: HeatmapCell) => void;
   /** Hauteur d'une ligne. Défaut 28. */
   rowHeight?: number;
+  /**
+   * Totaux par ligne (dernière colonne), par colonne (dernière ligne) et total
+   * général, en chiffres hors rampe : matrice origine-destination. Défaut false.
+   */
+  showTotals?: boolean;
+  /** "desc" : lignes et colonnes triées par total décroissant. Défaut "none" (ordre fourni). */
+  sort?: "none" | "desc";
 }
 
 const LABEL_COLUMN = 56;
+
+/** Case de total (matrice OD) : chiffre hors rampe, focusable comme les autres cases de la grille. */
+const TotalCell = ({
+  row,
+  col,
+  focused,
+  label,
+  onFocus,
+  grand = false,
+  children,
+}: {
+  row: number;
+  col: number;
+  focused: boolean;
+  label: string;
+  onFocus: (position: GridPosition) => void;
+  grand?: boolean;
+  children: string;
+}) => (
+  <td
+    role="gridcell"
+    data-cell={`${row}-${col}`}
+    tabIndex={focused ? 0 : -1}
+    aria-label={label}
+    className={`heatmap__cell heatmap__total${grand ? " heatmap__total--grand" : ""}`}
+    onFocus={() => onFocus({ row, col })}
+  >
+    <span aria-hidden="true">{children}</span>
+  </td>
+);
 
 /**
  * Carte de chaleur à deux catégories (jour × heure, ligne × jour) sur la
@@ -58,6 +97,8 @@ export const Heatmap = ({
   format,
   onCellClick,
   rowHeight = 28,
+  showTotals = false,
+  sort = "none",
   ...frame
 }: HeatmapProps) => {
   const titleId = useId();
@@ -70,13 +111,23 @@ export const Heatmap = ({
   const domain = heatmapDomain(cells, domainProp);
   const stepOf = buildStepScale(domain);
   const byKey = indexCells(cells);
+  const totals = axisTotals(cells);
+  const xs = sort === "desc" ? sortByTotal(xLabels, totals.cols) : xLabels;
+  const ys = sort === "desc" ? sortByTotal(yLabels, totals.rows) : yLabels;
+  // Avec les totaux, une colonne et une ligne de plus dans la grille (navigation comprise)
+  const gridRows = ys.length + (showTotals ? 1 : 0);
+  const gridCols = xs.length + (showTotals ? 1 : 0);
+  const isTotal = (row: number, col: number) => showTotals && (row === ys.length || col === xs.length);
   const cellAt = (row: number, col: number): HeatmapCell => {
-    const x = xLabels[col];
-    const y = yLabels[row];
+    const x = xs[col];
+    const y = ys[row];
     return byKey.get(`${y}|${x}`) ?? { x, y, value: null };
   };
-  const labelEvery = columnLabelEvery(width - LABEL_COLUMN, xLabels.length);
-  const height = rowHeight * (yLabels.length + 1) + 40;
+  // Colonne des libellés de ligne : selon le plus long (~6,5px par caractère), bornée
+  const labelColumn = Math.min(160, Math.max(LABEL_COLUMN, Math.max(0, ...ys.map((y) => y.length), showTotals ? 5 : 0) * 6.5 + 16));
+  const labelEvery = columnLabelEvery(width - labelColumn, gridCols);
+  const height = rowHeight * (gridRows + 1) + 40;
+  const totalName = (label: string, value: number) => `Total ${label} : ${formatValueWithUnit(value, unit, format)}`;
 
   const describe = (cell: HeatmapCell) =>
     `${cell.y}, ${cell.x} : ${cell.value === null ? "pas de donnée" : formatValueWithUnit(cell.value, unit, format)}`;
@@ -96,6 +147,7 @@ export const Heatmap = ({
   const handleKeyDown = (e: KeyboardEvent<HTMLTableElement>) => {
     if ((e.key === "Enter" || e.key === " ") && onCellClick) {
       e.preventDefault();
+      if (isTotal(focus.row, focus.col)) return;
       const cell = cellAt(focus.row, focus.col);
       if (cell.value !== null) onCellClick(cell);
       return;
@@ -104,7 +156,7 @@ export const Heatmap = ({
       setTooltip(null);
       return;
     }
-    const next = moveInGrid(focus, e.key, e.ctrlKey || e.metaKey, yLabels.length, xLabels.length);
+    const next = moveInGrid(focus, e.key, e.ctrlKey || e.metaKey, gridRows, gridCols);
     if (!next) return;
     e.preventDefault();
     focusCell(next);
@@ -149,21 +201,26 @@ export const Heatmap = ({
         >
           <thead>
             <tr>
-              <td className="heatmap__corner" style={{ width: LABEL_COLUMN }} />
-              {xLabels.map((x, col) => (
+              <td className="heatmap__corner" style={{ width: labelColumn }} />
+              {xs.map((x, col) => (
                 <th key={x} scope="col" className="heatmap__col-label">
                   <span className={col % labelEvery === 0 ? undefined : "chart__sr-only"}>{x}</span>
                 </th>
               ))}
+              {showTotals && (
+                <th scope="col" className="heatmap__col-label heatmap__total-label">
+                  Total
+                </th>
+              )}
             </tr>
           </thead>
           <tbody>
-            {yLabels.map((y, row) => (
+            {ys.map((y, row) => (
               <tr key={y}>
                 <th scope="row" className="heatmap__row-label">
                   {y}
                 </th>
-                {xLabels.map((x, col) => {
+                {xs.map((x, col) => {
                   const cell = cellAt(row, col);
                   const step = stepOf(cell.value);
                   const isFocus = focus.row === row && focus.col === col;
@@ -194,8 +251,35 @@ export const Heatmap = ({
                     />
                   );
                 })}
+                {showTotals && (
+                  <TotalCell row={row} col={xs.length} focused={focus.row === row && focus.col === xs.length} label={totalName(y, totals.rows.get(y) ?? 0)} onFocus={setFocus}>
+                    {formatKpiValue(totals.rows.get(y) ?? 0, format)}
+                  </TotalCell>
+                )}
               </tr>
             ))}
+            {showTotals && (
+              <tr className="heatmap__totals">
+                <th scope="row" className="heatmap__row-label heatmap__total-label">
+                  Total
+                </th>
+                {xs.map((x, col) => (
+                  <TotalCell key={x} row={ys.length} col={col} focused={focus.row === ys.length && focus.col === col} label={totalName(x, totals.cols.get(x) ?? 0)} onFocus={setFocus}>
+                    {formatKpiValue(totals.cols.get(x) ?? 0, format)}
+                  </TotalCell>
+                ))}
+                <TotalCell
+                  row={ys.length}
+                  col={xs.length}
+                  focused={focus.row === ys.length && focus.col === xs.length}
+                  label={`Total général : ${formatValueWithUnit(totals.grand, unit, format)}`}
+                  onFocus={setFocus}
+                  grand
+                >
+                  {formatKpiValue(totals.grand, format)}
+                </TotalCell>
+              </tr>
+            )}
           </tbody>
         </table>
         <p className="chart__sr-only" aria-live="polite">

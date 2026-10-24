@@ -79,6 +79,7 @@ export * from './DonutChart';
 export * from './BulletChart';
 export * from './Histogram';
 export * from './ComboChart';
+export * from './CalendarHeatmap';
 export * from './CopyableText';
 export * from './ColorField';
 export * from './Timeline';

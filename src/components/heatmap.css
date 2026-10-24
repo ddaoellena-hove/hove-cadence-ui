@@ -97,3 +97,28 @@
   gap: 6px;
   margin-left: 12px;
 }
+
+/* ── Totaux (matrice origine-destination) : chiffres hors rampe ── */
+.heatmap__total {
+  color: var(--cadence-color-primary, #002830);
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  padding: 0 4px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.heatmap__total--grand {
+  background: var(--cadence-color-surface-alt, #eef1f4);
+}
+
+.heatmap__total-label {
+  color: var(--cadence-color-label, #1a3e45);
+  font-weight: 600;
+}
+
+.heatmap__totals .heatmap__cell {
+  border-top: 1px solid var(--cadence-color-border, #e5e5e5);
+}
