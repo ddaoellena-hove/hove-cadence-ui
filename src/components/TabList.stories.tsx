@@ -44,7 +44,19 @@ const Rangee = ({ activation, initial = "current" }: { activation?: TabListProps
         ))}
       </TabList>
       {TABS.filter((tab) => tab.id === active).map((tab) => (
-        <div key={tab.id} role="tabpanel" id={`panel-${tab.id}`} aria-labelledby={`tab-${tab.id}`} tabIndex={0}>
+        <div
+          key={tab.id}
+          role="tabpanel"
+          id={`panel-${tab.id}`}
+          aria-labelledby={`tab-${tab.id}`}
+          tabIndex={0}
+          // Texte libre de la démo : police et couleur du DS (sinon serif du navigateur)
+          style={{
+            fontFamily: "var(--cadence-font-sans, \"ABC Diatype\", Inter, sans-serif)",
+            fontSize: 13,
+            color: "var(--cadence-color-label, #1a3e45)",
+          }}
+        >
           Scénarios : {tab.label.toLowerCase()}
         </div>
       ))}
