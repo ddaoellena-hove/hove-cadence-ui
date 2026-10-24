@@ -3001,7 +3001,12 @@ Liste sémantique de propriétés (`dl` / `dt` / `dd`) pour un détail, un panne
 
 ### ActivityFeed
 
-Historique d'événements ponctuels. Liste ordonnée avec icône, état **textuel**, auteur facultatif, date absolue et description. Ne trie pas les données et ne les récupère pas : l'app contrôle l'ordre, la pagination éventuelle et l'autorisation d'accès.
+Historique d'événements ponctuels. Liste ordonnée, reliée par un fil vertical. Hiérarchie de chaque étape, du plus au moins visible :
+1. **titre** (14px, gras) et **statut** dans un `Indicator` coloré (Succès vert, Avertissement orange, Erreur rouge) ; le marqueur à gauche reprend la couleur ;
+2. **auteur et date** en secondaire (12px) : mini-avatar 20px à initiales (décoratif, le nom est écrit à côté), nom, « · », date absolue ;
+3. **contenu** (`description`) **mis en avant** dans un encadré (bordure, fond `surface-subtle`, 14px).
+
+Ne trie pas les données et ne les récupère pas : l'app contrôle l'ordre, la pagination éventuelle et l'autorisation d'accès.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
@@ -3014,7 +3019,7 @@ Historique d'événements ponctuels. Liste ordonnée avec icône, état **textue
 
 **`ActivityItem`** : `id: string` (unique), `title: string`, `date: Date`, `author?: string`, `description?: ReactNode`, `tone?: ActivityTone` (défaut `"neutral"`), `icon?: IconName` (surcharge de l'icône par défaut).
 
-`ActivityTone` : `"neutral" | "success" | "warning" | "danger"`. Les états affichés sont « Information », « Succès », « Avertissement », « Erreur ». Dates formatées en `fr-FR`, avec `<time dateTime={date.toISOString()}>` ; une Date invalide affiche « Date indisponible ». Pas de temps relatif ni de mise à jour périodique. Le fuseau par défaut UTC garantit le même rendu serveur/client ; une configuration IANA invalide doit être corrigée par l'app.
+`ActivityTone` : `"neutral" | "success" | "warning" | "danger"`. Statuts affichés (`Indicator`) : « Succès » (`completed`), « Avertissement » (`warning`), « Erreur » (`critical`). ⚠️ `"neutral"` n'affiche **pas** de statut (seul le marqueur gris) : un événement ordinaire ne porte pas de pastille. Dates formatées en `fr-FR`, avec `<time dateTime={date.toISOString()}>` ; une Date invalide affiche « Date indisponible ». Pas de temps relatif ni de mise à jour périodique. Le fuseau par défaut UTC garantit le même rendu serveur/client ; une configuration IANA invalide doit être corrigée par l'app.
 
 ⚠️ Ce composant ne remplace ni une frise de périodes (`Timeline`), ni un journal d'audit serveur. Une erreur de récupération se compose avec `InlineAlert`/`EmptyState variant="error"`.
 

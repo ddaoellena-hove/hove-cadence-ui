@@ -1,15 +1,31 @@
 .activity-feed { min-width: 0; font-family: var(--cadence-font-sans, "Inter", sans-serif); }
 .activity-feed__list { list-style: none; margin: 0; padding: 0; }
-.activity-feed__item { position: relative; display: flex; align-items: flex-start; gap: 12px; padding-bottom: 24px; }
+.activity-feed__item { position: relative; display: flex; align-items: flex-start; gap: 12px; padding-bottom: 28px; }
 .activity-feed__item:last-child { padding-bottom: 0; }
-.activity-feed__item:not(:last-child)::before { content: ""; position: absolute; width: 1px; left: 13px; top: 28px; bottom: 0; background: var(--cadence-color-border-strong, #bfc9cb); }
+/* Fil vertical entre deux marqueurs */
+.activity-feed__item:not(:last-child)::before { content: ""; position: absolute; width: 1px; left: 13px; top: 32px; bottom: 4px; background: var(--cadence-color-border, #e5e5e5); }
 .activity-feed__marker { display: flex; align-items: center; justify-content: center; flex: 0 0 28px; height: 28px; border-radius: 50%; color: var(--cadence-color-label, #1a3e45); background: var(--cadence-color-surface-alt, #eef1f4); }
-.activity-feed__body { flex: 1; min-width: 0; padding-top: 4px; }
-.activity-feed__heading { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
-.activity-feed__title { color: var(--cadence-color-primary, #002830); font-size: 13px; font-weight: 600; line-height: 1.5; overflow-wrap: anywhere; }
-.activity-feed__tone { color: var(--cadence-color-label, #1a3e45); font-size: 11px; line-height: 1.5; }
-.activity-feed__meta { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 4px; color: var(--cadence-color-label, #1a3e45); font-size: 12px; line-height: 1.5; }
-.activity-feed__description { margin-top: 8px; color: var(--cadence-color-primary, #002830); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.activity-feed__body { flex: 1; min-width: 0; padding-top: 3px; }
+
+/* ── 1. Titre + statut ── */
+.activity-feed__heading { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.activity-feed__title { color: var(--cadence-color-primary, #002830); font-size: 14px; font-weight: 600; line-height: 1.5; overflow-wrap: anywhere; }
+.activity-feed__status { flex-shrink: 0; }
+
+/* ── 2. Auteur et date : secondaires ── */
+.activity-feed__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin-top: 6px; color: var(--cadence-color-text-secondary, #64757a); font-size: 12px; line-height: 1.5; }
+/* Séparateur « · » entre auteur et date */
+.activity-feed__author + time::before, .activity-feed__author + span::before { content: "·"; margin-right: 6px; }
+.activity-feed__author { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+.activity-feed__author-name { color: var(--cadence-color-label, #1a3e45); font-weight: 500; }
+/* Avatar réduit à 20px : repère visuel de l'auteur, sans voler la vedette */
+.activity-feed__avatar { display: inline-flex; }
+.activity-feed__avatar .avatar { width: 20px; height: 20px; font-size: 9px; }
+
+/* ── 3. Contenu de l'étape : mis en avant ── */
+.activity-feed__description { margin-top: 10px; padding: 10px 14px; border: 1px solid var(--cadence-color-border, #e5e5e5); border-radius: var(--cadence-radius-lg, 10px); background: var(--cadence-color-surface-subtle, #fafafa); color: var(--cadence-color-primary, #002830); font-size: 14px; line-height: 1.55; overflow-wrap: anywhere; }
+
+/* ── Marqueur coloré selon le statut ── */
 .activity-feed__item--success .activity-feed__marker { color: var(--cadence-status-completed-fg, #15803d); background: var(--cadence-status-completed-bg, #dcfce7); }
 .activity-feed__item--warning .activity-feed__marker { color: var(--cadence-status-warning-fg, #c2410c); background: var(--cadence-status-warning-bg, #fff7ed); }
 .activity-feed__item--danger .activity-feed__marker { color: var(--cadence-status-critical-fg, #b91c1c); background: var(--cadence-status-critical-bg, #fee2e2); }
