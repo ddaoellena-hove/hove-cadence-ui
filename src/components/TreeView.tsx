@@ -19,6 +19,7 @@
 import { useId, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Icons } from "./Icons";
+import { ModeIcon } from "./ModeIcon";
 import { Skeleton } from "./Skeleton";
 import {
   collectSelectableLeafIds,
@@ -424,9 +425,11 @@ export const TreeView = ({
       >
         {renderTwisty(row)}
         {selection === "multiple" && renderCheck(checkState, !!node.disabled)}
-        {node.icon && (
+        {/* Picto de mode (rempli, 20px : son gabarit a une marge interne) prioritaire
+            sur l'icône d'interface (trait, 16px) */}
+        {(node.mode || node.icon) && (
           <span className="tree-view__icon" aria-hidden="true">
-            <Icons icon={node.icon} size={16} />
+            {node.mode ? <ModeIcon mode={node.mode} size={20} /> : <Icons icon={node.icon!} size={16} />}
           </span>
         )}
         <span className="tree-view__label">{node.label}</span>

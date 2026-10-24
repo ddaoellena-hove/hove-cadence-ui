@@ -1769,7 +1769,7 @@ Classement horizontal : libellé, barre proportionnelle (`--cadence-dataviz-seri
 
 ### TreeView
 
-Arborescence dépliable pour une hiérarchie profonde (réseau → mode → ligne → parcours, dépôt → véhicules…). Motif ARIA `tree` **aplati** : chaque ligne est un `treeitem` qui porte `aria-level` / `aria-setsize` / `aria-posinset` (pas de `group` imbriqué), ce qui autorise la virtualisation. Une seule ligne est tabulable (tabindex roving). Au clavier : ↑/↓ entre lignes visibles, → déplie puis entre dans le 1ᵉʳ enfant, ← replie puis remonte au parent, Début / Fin, `*` déplie tous les frères, saisie de la première lettre, Entrée active (`onNodeClick`). Un picto (`TreeNode.icon`) et un contenu secondaire non focusable (`TreeNode.meta` : compteur, `Badge`) sont possibles.
+Arborescence dépliable pour une hiérarchie profonde (réseau → mode → ligne → parcours, dépôt → véhicules…). Motif ARIA `tree` **aplati** : chaque ligne est un `treeitem` qui porte `aria-level` / `aria-setsize` / `aria-posinset` (pas de `group` imbriqué), ce qui autorise la virtualisation. Une seule ligne est tabulable (tabindex roving). Au clavier : ↑/↓ entre lignes visibles, → déplie puis entre dans le 1ᵉʳ enfant, ← replie puis remonte au parent, Début / Fin, `*` déplie tous les frères, saisie de la première lettre, Entrée active (`onNodeClick`). Un picto et un contenu secondaire non focusable (`TreeNode.meta` : compteur, `Badge`) sont possibles. Picto : `TreeNode.mode` (picto de mode `ModeIcon`, rempli, 20px) pour les nœuds de réseau (Métro, Tramway, Bus → `coach`, RER → `train`) ; sinon `TreeNode.icon` (icône d'interface en trait, 16px). ✅ Un mode de transport s'affiche toujours avec `mode`, jamais avec une icône d'interface (`train`, `bus`, `tram` du registre `Icons`). Si les deux sont fournis, `mode` l'emporte.
 
 Sélection `none` | `single` (défaut) | `multiple`. En `multiple`, chaque ligne porte une case **tri-état** (`aria-checked` mixte) : cocher un parent coche tout son sous-arbre, cocher une partie des enfants remonte en « indéterminé ». La sélection est une liste d'identifiants de feuilles (et de parents non encore chargés) — contrôlée (`selectedIds`) ou non (`defaultSelectedIds`).
 
@@ -1777,7 +1777,7 @@ Chargement à la demande : un nœud `hasChildren` sans `children` déclenche `lo
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `nodes` | `TreeNode[]` | **requis** | `{ id, label, icon?, children?, hasChildren?, disabled?, meta? }` |
+| `nodes` | `TreeNode[]` | **requis** | `{ id, label, mode?, icon?, children?, hasChildren?, disabled?, meta? }` — `mode` : `ModeName` (prioritaire sur `icon`) |
 | `aria-label` | `string` | **requis** | Nom accessible de l'arbre |
 | `selection` | `"none" \| "single" \| "multiple"` | `"single"` | Mode de sélection |
 | `expandedIds` / `defaultExpandedIds` | `string[]` | — | Nœuds dépliés (contrôlé / au montage) |

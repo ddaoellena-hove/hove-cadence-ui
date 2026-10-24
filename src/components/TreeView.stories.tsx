@@ -7,7 +7,7 @@ const NETWORK: TreeNode[] = [
   {
     id: "metro",
     label: "Métro",
-    icon: "train",
+    mode: "metro",
     children: [
       {
         id: "m1",
@@ -30,13 +30,13 @@ const NETWORK: TreeNode[] = [
   {
     id: "tram",
     label: "Tramway",
-    icon: "tram",
+    mode: "tram",
     children: [
       { id: "t3a", label: "T3a", meta: "32 arrêts" },
       { id: "t3b", label: "T3b (hors service)", meta: "26 arrêts", disabled: true },
     ],
   },
-  { id: "bus", label: "Bus", icon: "bus", hasChildren: true },
+  { id: "bus", label: "Bus", mode: "coach", hasChildren: true },
 ];
 
 const meta: Meta<typeof TreeView> = {

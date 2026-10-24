@@ -5,6 +5,7 @@
 
 import type { ReactNode } from "react";
 import type { IconName } from "./Icons";
+import type { ModeName } from "./mode-icons";
 
 export interface TreeNode {
   /** Identifiant unique dans tout l'arbre. */
@@ -13,6 +14,11 @@ export interface TreeNode {
   label: string;
   /** Picto optionnel avant le libellé (registre d'icônes). */
   icon?: IconName;
+  /**
+   * Picto de mode de transport (`ModeIcon`) avant le libellé, pour un nœud
+   * de réseau (Métro, Tramway…). Prioritaire sur `icon`.
+   */
+  mode?: ModeName;
   /** Enfants déjà connus. `undefined` + `hasChildren` = chargement à la demande. */
   children?: TreeNode[];
   /** Marque un parent dont les enfants se chargent à la demande (`loadChildren`). */

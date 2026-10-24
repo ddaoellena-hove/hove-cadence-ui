@@ -8,7 +8,7 @@ const RESEAU: TreeNode[] = [
   {
     id: "metro",
     label: "Métro",
-    icon: "train",
+    mode: "metro",
     children: [
       { id: "m1", label: "Ligne 1" },
       { id: "m4", label: "Ligne 4" },
@@ -18,13 +18,13 @@ const RESEAU: TreeNode[] = [
   {
     id: "rer",
     label: "RER",
-    icon: "train",
+    mode: "train",
     children: [
       { id: "ra", label: "RER A" },
       { id: "rb", label: "RER B" },
     ],
   },
-  { id: "bus", label: "Bus", icon: "bus", hasChildren: true },
+  { id: "bus", label: "Bus", mode: "coach", hasChildren: true },
 ];
 
 const meta: Meta<typeof DisruptionScopePicker> = {
