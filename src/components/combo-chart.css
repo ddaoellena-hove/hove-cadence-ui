@@ -1,0 +1,45 @@
+/* ── ComboChart ──────────────────────────────────────────────────────────── */
+/* Cadre, axes, légende et tableau : chart-frame.css (ChartFrame). */
+
+/* Titres des axes gauche (barres) et droit (courbes) */
+.combo-chart__axis-title {
+  fill: var(--cadence-color-label, #1a3e45);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Liseré blanc entre segments empilés et barres groupées, comme BarChart */
+.combo-chart__bar rect:first-child {
+  stroke: var(--cadence-color-white, #ffffff);
+  stroke-width: 1;
+}
+
+.combo-chart__hover {
+  fill: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
+}
+
+.combo-chart__line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+/* ── Seuils (axe droit) ── */
+.combo-chart__threshold line {
+  stroke: var(--cadence-dataviz-threshold, #1a3e45);
+  stroke-dasharray: 6 4;
+  stroke-width: 1.5;
+}
+
+.combo-chart__threshold text {
+  fill: var(--cadence-dataviz-threshold, #1a3e45);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: var(--cadence-color-white, #ffffff);
+  stroke-linejoin: round;
+  stroke-width: 4px;
+}

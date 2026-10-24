@@ -1,5 +1,23 @@
 # Changelog — @ddaoellena/cadence-ui
 
+## 0.9.0 (non publiée)
+
+Version mineure, sans rupture d’API. Thème : **dataviz du pilotage transport** (feuille de route : `docs/proposals/0.9.0-dataviz-et-1.0.md`).
+
+### Ajouté
+
+- **`DonutChart`** : anneau des parts d’un total (six au plus), total au centre, légende avec valeur et part. Couleur **et** motif par part ; au-delà de `maxSlices` (6), regroupement des plus petites parts dans « Autres » (`othersLabel`). Survol et clavier (←/→ en boucle, Début / Fin, Échap) : la part active s’agrandit et le centre affiche sa part du total, annoncée (`aria-live`). Contrat commun des graphiques (`title`, `description`, états, `framed`, « Voir les données » avec parts et total). Pour les parts modales, l’état du parc, les causes de perturbation.
+- **`Meter`** : valeur par rapport à une capacité, en barre. Mode simple (`value`) : seuils libellés, sens favorable, repères sur la barre et statut écrit, `role="meter"` (taux de charge, parking relais, quota ; surcharge affichée avec son nombre réel). Mode proportionnel (`segments`) : décomposition d’un total en segments colorés et texturés, reste jusqu’à `max` en piste vide, légende (km commerciaux / haut-le-pied / annulés). Primitive compacte comme `Gauge`, sans états de chargement.
+
+- **`BulletChart`** : performance par rapport à un objectif, une ligne par indicateur. Barre de la valeur sur des plages qualitatives (insuffisant / moyen / bon) délimitées par des bornes libellées (« Malus sous 85 % », « Bonus dès 92 % »), repère d’objectif, valeur et statut écrits. Échelle `min` → `max` (par exemple 80 → 100 % pour des plages serrées), sens favorable et unité réglables par ligne ; échelle étendue si la valeur en sort. Pour les indicateurs des contrats de service public.
+- **`Histogram`** : distribution d’une mesure à partir des observations brutes (retards, temps de parcours, intervalles entre passages). Classes automatiques (bornes « rondes ») ou imposées, avec classes ouvertes pour les valeurs hors bornes (« 5 min et plus ») ; seuils verticaux libellés ; tooltip, clavier (←/→), résumé lu (effectif, médiane, classe la plus fournie), « Voir les données ».
+- **`ComboChart`** : barres (axe gauche) et courbes (axe droit) sur les mêmes catégories, à deux axes Y titrés avec leur unité. Barres groupées ou empilées, seuils sur l’axe droit, bornes de l’axe droit imposables, tooltip par catégorie, clavier, légende cliquable, « Voir les données ». Pour la fréquentation et la ponctualité, l’offre et la charge.
+- **`LineChart` — `curve="step"`** : tracé en paliers (la valeur tient jusqu’au point suivant), pour l’offre par tranche horaire, une capacité ou des tarifs. `curve="smooth"` (courbe lissée) reste le défaut.
+
+### Modifié
+
+- **`Gauge`** : jugement des seuils extrait dans un module interne partagé avec `Meter` (`threshold-utils.ts`). Sans changement de comportement ni d’API.
+
 ## 0.8.1 (non publiée)
 
 Version mineure, sans rupture d’API.

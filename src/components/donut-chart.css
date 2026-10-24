@@ -1,0 +1,113 @@
+/* ── DonutChart ──────────────────────────────────────────────────────────── */
+/* Cadre, tableau et états : chart-frame.css (ChartFrame). */
+
+/* Anneau puis légende ; la légende passe dessous si la place manque */
+.donut-chart__body {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+}
+
+.donut-chart__plot {
+  flex-shrink: 0;
+}
+
+.donut-chart__track {
+  stroke: var(--cadence-color-surface-alt, #eef1f4);
+}
+
+/* Liseré blanc entre deux parts, comme les segments empilés de BarChart */
+.donut-chart__slice path:first-child {
+  stroke: var(--cadence-color-white, #ffffff);
+  stroke-width: 1;
+}
+
+.donut-chart__slice--dimmed {
+  opacity: 0.45;
+}
+
+/* ── Centre : total, ou part active ── */
+.donut-chart__center {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  inset: 0;
+  justify-content: center;
+  pointer-events: none;
+  position: absolute;
+  text-align: center;
+}
+
+.donut-chart__number {
+  color: var(--cadence-color-primary, #002830);
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.donut-chart__caption {
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 12px;
+  font-weight: 500;
+  max-width: 55%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Légende : pastille · libellé · valeur · part ── */
+.donut-chart__legend {
+  display: flex;
+  flex: 1 1 220px;
+  flex-direction: column;
+  gap: 2px;
+  list-style: none;
+  margin: 0;
+  min-width: 0;
+  padding: 0;
+}
+
+.donut-chart__legend-item {
+  align-items: center;
+  border-radius: var(--cadence-radius-sm, 6px);
+  color: var(--cadence-color-primary, #002830);
+  display: grid;
+  font-size: 13px;
+  gap: 8px;
+  grid-template-columns: 14px minmax(0, 1fr) auto 56px;
+  min-height: 28px;
+  padding: 2px 6px;
+}
+
+.donut-chart__legend-item--active {
+  background: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
+}
+
+.donut-chart__legend-label {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.donut-chart__legend-value,
+.donut-chart__legend-share {
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* Encre label : reste AA sur le fond de survol (text-secondary passe sous 4,5:1) */
+.donut-chart__legend-share {
+  color: var(--cadence-color-label, #1a3e45);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .donut-chart__slice {
+    transition: opacity 150ms ease;
+  }
+}

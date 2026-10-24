@@ -14,6 +14,9 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: [
+      // Le nom du paquet pointe vers les sources (comme `paths` dans tsconfig.app.json) :
+      // les gabarits de src/patterns s'importent ainsi, sans dépendre d'un dist/ construit
+      { find: /^@ddaoellena\/cadence-ui$/, replacement: path.resolve(dirname, './src/components/index.ts') },
       // Allows both "src/components" and "src/components/" (trailing slash)
       { find: /^src\/components\/?$/, replacement: path.resolve(dirname, './src/components/index.ts') },
       { find: /^src\//, replacement: path.resolve(dirname, './src/') },

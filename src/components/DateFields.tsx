@@ -88,7 +88,8 @@ export function DateFields({
               refs.current[index] = el;
               if (index === 0 && firstRef) {
                 if (typeof firstRef === "function") firstRef(el);
-                else firstRef.current = el;
+                // RefObject est en lecture seule dans les types React 18 : même cast que DisruptionScopePicker
+                else (firstRef as { current: HTMLInputElement | null }).current = el;
               }
             }}
             id={index === 0 ? id : undefined}
