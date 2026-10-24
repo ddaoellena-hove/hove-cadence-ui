@@ -119,17 +119,23 @@ export interface IndicatorProps {
   variant: IndicatorVariant;
   /** Overrides the default label for this variant. */
   label?: string;
+  /**
+   * Masque le picto : couleur et libellé seuls. Pour un contexte où l'état est
+   * déjà signalé par un picto voisin (marqueur d'ActivityFeed). Défaut false.
+   */
+  hideIcon?: boolean;
   /** Optional extra class name. */
   className?: string;
 }
 
-export const Indicator = ({ variant, label, className }: IndicatorProps) => {
+export const Indicator = ({ variant, label, hideIcon = false, className }: IndicatorProps) => {
   const config = CONFIG[variant];
   const displayLabel = label ?? config.label;
 
   const rootClass = [
     "indicator",
     `indicator--${variant}`,
+    hideIcon ? "indicator--no-icon" : "",
     className,
   ]
     .filter(Boolean)
@@ -137,7 +143,7 @@ export const Indicator = ({ variant, label, className }: IndicatorProps) => {
 
   return (
     <div className={rootClass}>
-      <span className="indicator__icon">{config.icon}</span>
+      {!hideIcon && <span className="indicator__icon">{config.icon}</span>}
       <span className="indicator__label">{displayLabel}</span>
     </div>
   );

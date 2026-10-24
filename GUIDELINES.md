@@ -2060,6 +2060,10 @@ Filtre par mode de transport : une rangée de **chips togglables** (picto `ModeI
 |---|---|---|---|
 | `variant` | `"active" \| "upcoming" \| "completed" \| "draft" \| "warning" \| "info" \| "critical" \| "nominal"` | **requis** | Statut sémantique (picto + couleurs) |
 | `label` | `string` | label de la variante | Surcharge du libellé |
+| `hideIcon` | `boolean` | `false` | Masque le picto : couleur et libellé seuls |
+
+- ✅ Garder le picto par défaut : il double la couleur pour qui ne la distingue pas (WCAG 1.4.1).
+- ✅ `hideIcon` seulement quand un picto voisin porte déjà l'état (marqueur coloré d'`ActivityFeed`) : sinon il est redondant.
 
 ### DataFreshness
 
@@ -3002,7 +3006,7 @@ Liste sémantique de propriétés (`dl` / `dt` / `dd`) pour un détail, un panne
 ### ActivityFeed
 
 Historique d'événements ponctuels. Liste ordonnée, reliée par un fil vertical. Hiérarchie de chaque étape, du plus au moins visible :
-1. **titre** (14px, gras) et **statut** dans un `Indicator` coloré (Succès vert, Avertissement orange, Erreur rouge) ; le marqueur à gauche reprend la couleur ;
+1. **titre** (14px, gras) et **statut** dans un `Indicator hideIcon` coloré (Succès vert, Avertissement orange, Erreur rouge), sans picto : le marqueur à gauche porte déjà l'icône et la couleur ;
 2. **auteur et date** en secondaire (12px) : mini-avatar 20px à initiales (décoratif, le nom est écrit à côté), nom, « · », date absolue ;
 3. **contenu** (`description`) **mis en avant** dans un encadré (bordure, fond `surface-subtle`, 14px).
 

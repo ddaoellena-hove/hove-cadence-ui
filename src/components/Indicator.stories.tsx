@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect } from "storybook/test";
 import { Indicator, type IndicatorVariant } from "./Indicator";
 
 const meta: Meta<typeof Indicator> = {
@@ -82,6 +83,26 @@ export const AllVariants: Story = {
       ))}
     </div>
   ),
+};
+
+/**
+ * Sans icône (`hideIcon`) : couleur et libellé seuls, quand un picto voisin
+ * porte déjà l'état (marqueur d'`ActivityFeed`). Sinon, garder l'icône : elle
+ * double la couleur pour qui ne la distingue pas.
+ */
+export const SansIcone: Story = {
+  name: "Sans icône",
+  render: () => (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 10, padding: 24 }}>
+      {ALL_VARIANTS.map((v) => (
+        <Indicator key={v} variant={v} hideIcon />
+      ))}
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelectorAll(".indicator")).toHaveLength(ALL_VARIANTS.length);
+    await expect(canvasElement.querySelector(".indicator__icon")).toBeNull();
+  },
 };
 
 /** Exemple contextuel — liste de perturbations avec leur statut. */

@@ -13,6 +13,11 @@
   width: fit-content;
 }
 
+/* Sans picto : marge intérieure symétrique */
+.indicator--no-icon {
+  padding: 5px 8px;
+}
+
 .indicator__icon {
   align-items: center;
   display: flex;
