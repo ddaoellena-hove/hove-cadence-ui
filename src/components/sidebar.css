@@ -426,11 +426,3 @@
   white-space: nowrap;
 }
 
-.sidebar__user-email {
-  color: var(--cadence-color-on-dark-muted, rgba(255, 255, 255, 0.6));
-  font-size: 11px;
-  line-height: 1.3;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}

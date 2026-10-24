@@ -1105,7 +1105,7 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
             },
           ]}
           scope={{ options: reseaux, value: reseauId, onChange: setReseauId }}
-          user={{ name: "Hector Malot", email: "hector.malot@hove.com" }}
+          user={{ name: "Hector Malot" }}
           onLogout={logout}
         />
       }
@@ -2375,7 +2375,7 @@ Composant unique : apparence de l’ancien Alt, pour les formulaires et les basc
 | `onCollapse` | `() => void` | — | Clic sur le bouton replier / déplier. ⚠️ N'indique pas l'état (replié ou non) ; dans `AppLayout`, rien à faire : le conteneur suit la largeur |
 | `onLogout` | `() => void` | — | Bouton déconnexion |
 | `scope` | `SidebarScope` | — | Sélecteur de périmètre en pied : `{ options, value?, onChange?, placeholder? }` (options au format `Dropdown`, ⚠️ clé `id`). Masqué quand la Sidebar est repliée ; le menu s'ouvre vers le haut |
-| `user` | `SidebarUser` | — | Utilisateur connecté en pied : `{ name, email?, avatarSrc? }`. Avatar seul quand la Sidebar est repliée |
+| `user` | `SidebarUser` | — | Utilisateur connecté en pied : `{ name, avatarSrc? }` — avatar et nom seuls. ⚠️ `email` est déprécié et ignoré (plus affiché). Avatar seul quand la Sidebar est repliée |
 | `className` | `string` | — | — |
 
 **Repli** — géré en interne : le bouton « » fait passer la Sidebar de **220 px** (dépliée) à **80 px** (repliée), avec une transition de 250 ms. Il n'y a pas de prop pour piloter ou lire cet état. Dans `AppLayout`, le conteneur de la page suit cette largeur tout seul.
@@ -2390,7 +2390,7 @@ Composant unique : apparence de l’ancien Alt, pour les formulaires et les basc
       clientName="Bordeaux Métropole"
       sections={sections}
       scope={{ options: reseaux, value: reseauId, onChange: setReseauId }}
-      user={{ name: "Hector Malot", email: "hector.malot@hove.com" }}
+      user={{ name: "Hector Malot" }}
     />
   }
 >

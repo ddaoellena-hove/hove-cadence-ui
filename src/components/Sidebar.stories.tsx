@@ -334,7 +334,7 @@ export const PerimetreEtUtilisateur: Story = {
           activeId={activeId}
           onItemClick={setActiveId}
           scope={{ options: RESEAUX, value: reseau, onChange: setReseau }}
-          user={{ name: "Hector Malot", email: "hector.malot@hove.com" }}
+          user={{ name: "Hector Malot" }}
           onLogout={() => alert("Déconnexion")}
         />
       </SidebarWrapper>

@@ -20,7 +20,7 @@ export const Shell = ({ children, active = "disruptions" }: { children: ReactNod
           { id: "planning", label: "Planification", icon: <Icons icon="calendar" size={20} /> },
           { id: "settings", label: "Paramètres", icon: <Icons icon="settings-01" size={20} /> },
         ]}
-        user={{ name: "Hector Malot", email: "hector.malot@hove.com" }}
+        user={{ name: "Hector Malot" }}
       />
     }
   >

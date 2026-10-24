@@ -55,7 +55,7 @@ const AppSidebar = ({ product = "datahub" }: { product?: SidebarProduct }) => {
       activeId={activeId}
       onItemClick={setActiveId}
       scope={{ options: RESEAUX, value: reseau, onChange: setReseau }}
-      user={{ name: "Hector Malot", email: "hector.malot@hove.com" }}
+      user={{ name: "Hector Malot" }}
     />
   );
 };

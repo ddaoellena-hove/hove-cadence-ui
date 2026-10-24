@@ -12,7 +12,7 @@ import { LINES, STOPS } from "./data/network";
 function DemoLayout({ children, activeId }: { children: ReactNode; activeId: string }) {
   return <AppLayout sidebar={<Sidebar product="datahub" clientName="Réseau de démonstration" activeId={activeId}
     sections={[{ id: activeId, label: activeId === "import" ? "Import réseau" : "Perturbations", icon: <Icons icon="route" size={20} /> }]}
-    user={{ name: "Camille Martin", email: "camille@example.com" }} />}>
+    user={{ name: "Camille Martin" }} />}>
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>{children}</div>
   </AppLayout>;
 }

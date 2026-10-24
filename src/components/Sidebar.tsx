@@ -44,7 +44,7 @@ export interface SidebarScope {
 export interface SidebarUser {
   /** Nom affiché ; les initiales de l'avatar en sont tirées. */
   name: string;
-  /** Sous-titre sous le nom (email, rôle…). */
+  /** @deprecated Ignoré : le pied de Sidebar n'affiche plus que le nom. */
   email?: string;
   /** Photo de l'avatar (sinon initiales). */
   avatarSrc?: string;
@@ -409,7 +409,6 @@ export const Sidebar = ({
             <Avatar name={user.name} src={user.avatarSrc} alt={user.avatarSrc ? user.name : undefined} size="sm" />
             <span className="sidebar__user-text">
               <span className="sidebar__user-name">{user.name}</span>
-              {user.email && <span className="sidebar__user-email">{user.email}</span>}
             </span>
           </div>
         )}

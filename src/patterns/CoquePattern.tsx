@@ -37,7 +37,7 @@ export const CoquePattern = ({ children }: { children?: ReactNode } = {}) => {
             value: reseau,
             onChange: setReseau,
           }}
-          user={{ name: "Hector Malot", email: "hector.malot@hove.com" }}
+          user={{ name: "Hector Malot" }}
           onLogout={() => {}}
         />
       }
