@@ -33,16 +33,12 @@
   box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
 }
 
-/* Mode sélectionné (bascule active). */
+/* Mode sélectionné (bascule active) : contour accentué, intérieur blanc. */
 .mode-filter__chip[aria-pressed="true"] {
-  background: var(--cadence-color-selected-surface, #c8d6e4);
-  border-color: var(--cadence-color-border-strong, #bfc9cb);
+  background: var(--cadence-color-white, #ffffff);
+  border-color: var(--cadence-color-primary-hover, #10353d);
   color: var(--cadence-color-primary, #002830);
   font-weight: 500;
-}
-
-.mode-filter__chip[aria-pressed="true"]:hover {
-  background: var(--cadence-color-selected-surface, #c8d6e4);
 }
 
 .mode-filter__label {
