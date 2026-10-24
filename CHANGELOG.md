@@ -7,6 +7,7 @@ Version corrective, sans rupture d’API. Thème : **socle des graphiques** (feu
 ### Ajouté
 
 - **Graphiques — export CSV** (`exportable`, `onExport`) : bouton « Exporter (CSV) » dans l’en-tête de tout graphique qui a « Voir les données ». Le fichier reprend l’alternative tabulaire telle qu’affichée : séparateur `;` et BOM UTF-8 pour un tableur français, nombres sans espaces de groupement, nom de fichier tiré du titre. `onExport` reprend l’export (journalisation, export serveur). Pas de PNG : plusieurs graphiques sont en partie en HTML.
+- **Annotations sur `BarChart` et `Histogram`** (`annotations`) : comme `LineChart`, une bande libellée sur une catégorie ou un intervalle de catégories (`BarChart`), un trait ou une bande sur l’axe des valeurs (`Histogram`), rappelés au survol et annoncés.
 - **Graphiques — fraîcheur** (`freshness`) : `DataFreshness` sous la description (« Mis à jour il y a 3 min »), pour une donnée live.
 
 ### Modifié

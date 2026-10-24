@@ -933,7 +933,7 @@ Une `Card` est **interactive** de deux façons :
 ### Seuils et annotations
 
 - ✅ Un objectif ou un seuil d'alerte est un `threshold` libellé (« Objectif 95 % », « Seuil d'alerte 5 min ») : ligne tiretée `--cadence-dataviz-threshold`. Avec `goodDirection`, les points du mauvais côté passent en `--cadence-dataviz-threshold-breach` et le libellé indique « franchi ».
-- ✅ Un événement daté (grève, travaux, incident) est une `annotation` : trait vertical ou bande, toujours libellée (« Grève 14/10 »), rappelée dans le tooltip.
+- ✅ Un événement daté (grève, travaux, incident) est une `annotation` : trait vertical ou bande, toujours libellée (« Grève 14/10 »), rappelée dans le tooltip. `LineChart` (dates ou catégories), `BarChart` (catégories), `Histogram` (valeurs).
 - ❌ Pas de seuil sans libellé, pas d'annotation sans date.
 - ✅ Comparaison à une période précédente : une série `reference: true` (`LineChart`, `BarChart`) libellée par sa période (« 2025 », « Semaine 42 »), recalée sur les abscisses de la période courante. Elle ne prend pas de couleur de la palette : ardoise tiretée. Une seule référence par graphique pour que l'écart soit rappelé.
 - ✅ `ComboChart` : chaque axe Y porte un titre et son unité (« Validations (k) », « Ponctualité (%) ») ; les seuils (`lineThresholds`) se lisent sur l'axe droit.
@@ -1743,6 +1743,7 @@ Barres empilées ou groupées, verticales ou horizontales : comparaison de caté
 | `showGrid` | `boolean` | `true` | Lignes de grille |
 | `hideTitle` | `boolean` | `false` | En-tête masqué visuellement (titre toujours lu), ex. quand une `Card` affiche déjà le titre |
 | `height` | `number` | `280` en vertical ; 36px par catégorie en horizontal | Hauteur du tracé |
+| `annotations` | `{ at: string \| [début, fin], label }[]` | `[]` | Événements (grève, travaux) : bande libellée sur une catégorie ou un intervalle de catégories, rappelée au survol |
 
 Clavier : le tracé est focusable ; ←/→ (vertical) ou ↑/↓ (horizontal) d'une catégorie à l'autre, Début / Fin, Échap masque le tooltip ; la catégorie est annoncée (`aria-live`).
 
@@ -2143,6 +2144,7 @@ Distribution d'une mesure : effectif par classe de valeurs, à partir des **obse
 | `countLabel` | `string` | `"observations"` | Ce que l'on compte, au pluriel (« courses », « passages ») |
 | `format` | `Intl.NumberFormatOptions` | `{ maximumFractionDigits: 1 }` | Format des bornes |
 | `thresholds` | `{ value, label }[]` | `[]` | Traits verticaux libellés (« Retard 5 min ») |
+| `annotations` | `{ at: number \| [début, fin], label }[]` | `[]` | Trait ou bande d'annotation (`--cadence-dataviz-annotation`), libellés, rappelés au survol de la classe (« Tolérance ±30 s ») |
 | `showGrid` | `boolean` | `true` | Grille horizontale |
 | `hideTitle` | `boolean` | `false` | En-tête masqué visuellement (titre toujours lu) |
 | `height` | `number` | `280` | Hauteur du tracé |

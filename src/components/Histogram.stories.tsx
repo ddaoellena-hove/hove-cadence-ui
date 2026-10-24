@@ -89,6 +89,11 @@ export const IntervallesEntrePassages: Story = {
     unit: "min",
     countLabel: "passages",
     thresholds: [{ value: 6, label: "Intervalle prévu 6 min" }],
+    annotations: [{ at: [5.5, 6.5], label: "Tolérance ±30 s" }],
+  },
+  play: async ({ canvasElement }) => {
+    await expect(within(canvasElement).getByText("Tolérance ±30 s")).toBeInTheDocument();
+    await expect(canvasElement.querySelector(".histogram__annotation-band")).not.toBeNull();
   },
 };
 

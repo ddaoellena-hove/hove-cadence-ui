@@ -57,6 +57,18 @@ export interface BarChartProps extends ChartCommonProps {
   hideTitle?: boolean;
   /** Hauteur du tracé. Défaut 280 en vertical ; 36px par catégorie en horizontal. */
   height?: number;
+  /**
+   * Événements datés (grève, travaux, météo) : bande sur une catégorie ou un
+   * intervalle de catégories `[début, fin]`, toujours libellée, rappelée au survol.
+   */
+  annotations?: BarChartAnnotation[];
+}
+
+export interface BarChartAnnotation {
+  /** Catégorie, ou intervalle de catégories (bornes comprises). */
+  at: string | [string, string];
+  /** « Grève 16/10 » */
+  label: string;
 }
 
 const BAR_ROW = 36;
@@ -78,6 +90,7 @@ export const BarChart = ({
   showGrid = true,
   hideTitle = false,
   height: heightProp,
+  annotations = [],
   ...frame
 }: BarChartProps) => {
   const titleId = useId();
@@ -105,7 +118,7 @@ export const BarChart = ({
   const longestLabel = Math.max(0, ...categories.map((c) => c.length));
   const margin = horizontal
     ? { top: 8, right: showValues ? 48 : 16, bottom: 28, left: Math.min(180, Math.max(56, longestLabel * 6.5 + 16)) }
-    : { top: showValues ? 20 : 12, right: 16, bottom: 28, left: 52 };
+    : { top: showValues || annotations.length > 0 ? 20 : 12, right: 16, bottom: 28, left: 52 };
   const height = heightProp ?? (horizontal ? categories.length * BAR_ROW + margin.top + margin.bottom : 280);
   const plotWidth = Math.max(0, width - margin.left - margin.right);
   const plotHeight = Math.max(0, height - margin.top - margin.bottom);
@@ -168,7 +181,15 @@ export const BarChart = ({
     if (current === null || current === undefined || previous === null || previous === undefined) return null;
     return `Écart vs ${references[0].label} : ${formatGap(current - previous, unit, format)}`;
   })();
-  const note = [total !== null ? `Total : ${formatValue(total)}` : null, gap].filter(Boolean).join(" · ") || undefined;
+  // Annotations : index des catégories couvertes (inconnues ignorées)
+  const resolvedAnnotations = annotations.flatMap((a) => {
+    const [from, to] = Array.isArray(a.at) ? a.at : [a.at, a.at];
+    const i = categories.indexOf(from);
+    const j = categories.indexOf(to);
+    return i < 0 || j < 0 ? [] : [{ label: a.label, first: Math.min(i, j), last: Math.max(i, j) }];
+  });
+  const activeAnnotations = active === null ? [] : resolvedAnnotations.filter((a) => active >= a.first && active <= a.last).map((a) => a.label);
+  const note = [...activeAnnotations, total !== null ? `Total : ${formatValue(total)}` : null, gap].filter(Boolean).join(" · ") || undefined;
   const announcement =
     active === null ? "" : `${categories[active]} — ${rows.map((r) => `${r.label} : ${r.value}`).join(", ")}${note ? `. ${note}` : ""}`;
 
@@ -323,6 +344,24 @@ export const BarChart = ({
             ) : (
               <ChartAxisLeft ticks={valueAxisTicks} plotWidth={plotWidth} grid={showGrid} />
             )}
+
+            {/* Annotations : bande libellée sur une ou plusieurs catégories */}
+            {resolvedAnnotations.map((a) => {
+              const gapPx = (band.step() - band.bandwidth()) / 2;
+              const start = (band(categories[a.first]) ?? 0) - gapPx;
+              const end = (band(categories[a.last]) ?? 0) + band.bandwidth() + gapPx;
+              return (
+                <g key={`${a.label}-${a.first}`} className="bar-chart__annotation">
+                  <rect
+                    className="bar-chart__annotation-band"
+                    {...(horizontal ? { x: 0, y: start, width: plotWidth, height: end - start } : { x: start, y: 0, width: end - start, height: plotHeight })}
+                  />
+                  <text className="bar-chart__annotation-label" {...(horizontal ? { x: plotWidth - 4, y: start + 12, textAnchor: "end" } : { x: start + 4, y: -6 })}>
+                    {a.label}
+                  </text>
+                </g>
+              );
+            })}
 
             {/* Catégorie active : bande de survol */}
             {active !== null && (
