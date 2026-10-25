@@ -1,4 +1,4 @@
-import React from "react";
+import type { CSSProperties } from "react";
 import "./table-header.css";
 import { SortIcon } from "./SortIcon";
 
@@ -39,7 +39,7 @@ export const TableHeader = ({ columns, className }: TableHeaderProps) => {
     <div className={rootClass} role="table" aria-label="En-têtes de colonnes">
       <div className="table-header__row" role="row">
       {columns.map((col) => {
-        const style: React.CSSProperties = col.width
+        const style: CSSProperties = col.width
           ? { width: col.width, minWidth: col.width, flexShrink: 0 }
           : col.flex
             ? { flexGrow: col.flex, flexShrink: 1, minWidth: 0 }

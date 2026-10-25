@@ -1,4 +1,4 @@
-import React, { useState, useId } from "react";
+import { forwardRef, useEffect, useId, useState, type ChangeEventHandler } from "react";
 import "./text-area.css";
 
 export interface TextAreaProps {
@@ -6,7 +6,7 @@ export interface TextAreaProps {
   label?: string;
   placeholder?: string;
   value?: string;
-  onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
+  onChange?: ChangeEventHandler<HTMLTextAreaElement>;
   helperText?: string;
   rows?: number;
   className?: string;
@@ -14,7 +14,7 @@ export interface TextAreaProps {
   "aria-label"?: string;
 }
 
-export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
+export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   (
     {
       state: stateProp = "enabled",
@@ -38,7 +38,7 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
       isDisabled ? "disabled" : stateProp
     );
 
-    React.useEffect(() => {
+    useEffect(() => {
       setInternalState(isDisabled ? "disabled" : stateProp);
     }, [stateProp, isDisabled]);
 

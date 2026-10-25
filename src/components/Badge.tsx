@@ -1,4 +1,6 @@
-import React from "react";
+// Alias « React… » : un type importé sous le nom d’un type DOM global est mal
+// renommé par le regroupement des déclarations (build:types).
+import type { DragEvent as ReactDragEvent } from "react";
 import "./badge.css";
 
 export interface BadgeProps {
@@ -15,8 +17,8 @@ export interface BadgeProps {
   mono?: boolean;
   /** Called when the × button is clicked. */
   onDismiss?: () => void;
-  onDragStart?: (e: React.DragEvent<HTMLDivElement>) => void;
-  onDragEnd?: (e: React.DragEvent<HTMLDivElement>) => void;
+  onDragStart?: (e: ReactDragEvent<HTMLDivElement>) => void;
+  onDragEnd?: (e: ReactDragEvent<HTMLDivElement>) => void;
   /** Optional extra class name. */
   className?: string;
 }

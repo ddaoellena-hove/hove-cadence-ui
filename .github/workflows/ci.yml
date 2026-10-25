@@ -33,6 +33,7 @@ jobs:
           npx vitest run
           npm run build:lib
           npm run smoke:dist
+          npm run check:types
       - name: React 18
         if: matrix.react == 18
         run: npm run test:react18

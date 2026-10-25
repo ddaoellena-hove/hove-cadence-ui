@@ -1,11 +1,13 @@
-import React from "react";
+// Alias « React… » : un type importé sous le nom d’un type DOM global est mal
+// renommé par le regroupement des déclarations (build:types).
+import type { CSSProperties, MouseEvent as ReactMouseEvent, ReactNode } from "react";
 import "./link.css";
 
 export interface LinkProps {
   /** Link text content */
-  children: React.ReactNode;
+  children: ReactNode;
   /** Optional icon element rendered before the text */
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   /** URL destination */
   href?: string;
   /**
@@ -20,11 +22,11 @@ export interface LinkProps {
   /** Open in new tab */
   target?: "_blank" | "_self" | "_parent" | "_top";
   /** Optional click handler (renders as button if no href) */
-  onClick?: (e: React.MouseEvent) => void;
+  onClick?: (e: ReactMouseEvent) => void;
   /** Additional class name */
   className?: string;
   /** Optional inline styles */
-  style?: React.CSSProperties;
+  style?: CSSProperties;
   /** Hide the default arrow icon (useful when used as a plain text button) */
   hideArrow?: boolean;
 }

@@ -1,5 +1,5 @@
 /** Sélecteur unique pour choix exclusifs et bascule de vue (apparence Alt conservée). */
-import React, { useState, useRef, useLayoutEffect } from "react";
+import { forwardRef, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 import "./segmented-control.css";
 
 export interface SegmentedControlOption {
@@ -44,7 +44,7 @@ export interface SegmentedControlProps {
  * SegmentedControl renders a soft-pill tab bar with an active segment that
  * lifts with a white card shadow, inspired by the iOS-style segmented picker.
  */
-export const SegmentedControl = React.forwardRef<HTMLDivElement, SegmentedControlProps>(
+export const SegmentedControl = forwardRef<HTMLDivElement, SegmentedControlProps>(
   (
     {
       options,
@@ -91,7 +91,7 @@ export const SegmentedControl = React.forwardRef<HTMLDivElement, SegmentedContro
     };
 
     const handleKeyDown = (
-      e: React.KeyboardEvent<HTMLButtonElement>,
+      e: KeyboardEvent<HTMLButtonElement>,
       idx: number
     ) => {
       if (disabled || options.length === 0) return;

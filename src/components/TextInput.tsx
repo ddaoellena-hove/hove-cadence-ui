@@ -4,7 +4,7 @@
  * A fully-featured labeled text input supporting enabled, hover, focus, disabled,
  * error, and success states with inline helper/error messaging.
  */
-import React, { useState, useId } from "react";
+import { forwardRef, useEffect, useId, useState, type ChangeEventHandler, type HTMLInputTypeAttribute } from "react";
 import "./text-input.css";
 
 export interface TextInputProps {
@@ -21,13 +21,13 @@ export interface TextInputProps {
   value?: string;
 
   /** Change handler (controlled). */
-  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
 
   /** Helper or error message displayed below the input. */
   helperText?: string;
 
   /** Native input type (text, email, password, etc.). */
-  type?: React.HTMLInputTypeAttribute;
+  type?: HTMLInputTypeAttribute;
 
   /** Optional extra class name for the root element. */
   className?: string;
@@ -43,7 +43,7 @@ export interface TextInputProps {
  * TextInput renders a labeled input field with full state support: enabled,
  * hover, focus, disabled, error, and success — matching the project design system.
  */
-export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
+export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
   (
     {
       state: stateProp = "enabled",
@@ -68,7 +68,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
     );
 
     // Keep internalState in sync when props change
-    React.useEffect(() => {
+    useEffect(() => {
       setInternalState(isDisabled ? "disabled" : stateProp);
     }, [stateProp, isDisabled]);
 

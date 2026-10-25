@@ -1,4 +1,4 @@
-import React from "react";
+import type { ReactNode } from "react";
 import "./indicator.css";
 
 // ── Variants ───────────────────────────────────────────────────────────────
@@ -101,7 +101,7 @@ const IconNominal = () => (
 
 const CONFIG: Record<
   IndicatorVariant,
-  { icon: React.ReactNode; label: string }
+  { icon: ReactNode; label: string }
 > = {
   active:    { icon: <IconActive />,    label: "En cours"     },
   upcoming:  { icon: <IconUpcoming />,  label: "À venir"      },
