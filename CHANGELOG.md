@@ -2,7 +2,7 @@
 
 ## 1.0.0 (non publiée)
 
-Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0 (feuille de route § 5). Le guide de migration ci-dessous couvre le passage de n'importe quelle 0.x à la 1.0.
+Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, nettoyage du Storybook, contrastes AA et vérification du paquet (feuille de route § 5). Le guide de migration ci-dessous couvre le passage de n'importe quelle 0.x à la 1.0.
 
 ### ⚠️ Supprimé
 
@@ -16,6 +16,10 @@ Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0 (
 
 - Les shims de compatibilité sont retirés (`button-compat`, avertissements de dépréciation). Les avertissements de développement restants (contenu des boutons, contraste de `LineBadge`, carte cliquable sans `actionLabel`) passent par un module interne `dev-warnings`.
 - Garde-fou : `removed-api-usage.test.ts` refuse désormais aussi les API retirées en 1.0.0 dans GUIDELINES, les guides et les stories (il remplace `deprecated-api-usage.test.ts` et `link-secondary-usage.test.ts`).
+
+### Corrigé
+
+- **Types publics sans d3** : `BarChart`, `ComboChart` et `ScatterChart` n'exposent plus de types `d3-scale` dans leurs déclarations (`BarLayout` et `ScatterPointInput` déplacés dans un module sans d3). Une application en `skipLibCheck: false` compilait en erreur faute de `@types/d3-scale`.
 
 ### Accessibilité
 

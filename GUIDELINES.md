@@ -17,8 +17,10 @@ Design system React pour les produits Hove (transport public). Ce document est l
 11. [Statuts & étiquettes](#statuts--étiquettes)
 12. [Data visualisation](#data-visualisation)
 13. [Feedback](#feedback)
-14. [Recettes de pages complètes](#recettes-de-pages-complètes)
-15. [Référence API des composants](#référence-api-des-composants)
+14. [Page patterns](#page-patterns)
+15. [Recettes de pages complètes](#recettes-de-pages-complètes)
+16. [Référence API des composants](#référence-api-des-composants)
+17. [Compositions métier transport](#compositions-métier-transport)
 
 ---
 
@@ -64,6 +66,8 @@ Règles impératives pour générer du code avec ce design system :
 ```bash
 npm install @ddaoellena/cadence-ui
 ```
+
+Prérequis : `react` et `react-dom` 18 ou 19 (dépendances paires). Les icônes (`@untitledui/icons`), `@tanstack/react-table`, `@tanstack/react-virtual` et les modules `d3-*` sont des dépendances du paquet, installées avec lui et laissées hors du bundle. Migration depuis une 0.x : guide en tête du `CHANGELOG.md`.
 
 ### 1. Importer les styles (une seule fois, à la racine)
 
@@ -377,7 +381,7 @@ Toutes les distances utilisent cette échelle (px) : **4, 8, 12, 16, 20, 24, 32,
 ### Constantes de layout
 
 ```tsx
-const SIDEBAR_WIDTH = 280;            // largeur de la Sidebar dépliée (fixée par sidebar.css)
+const SIDEBAR_WIDTH = 220;            // largeur de la Sidebar dépliée (fixée par sidebar.css)
 const SIDEBAR_WIDTH_COLLAPSED = 80;   // largeur de la Sidebar repliée (fixée par sidebar.css)
 ```
 
@@ -882,7 +886,7 @@ Une `Card` est **interactive** de deux façons :
 - ✅ Toujours préciser `goodDirection` quand une hausse n'est pas favorable : `"down"` pour un retard, des suppressions, des perturbations ; `"neutral"` pour un volume sans jugement.
 - ✅ La variation est un nombre signé (`-12` → « −12 % ») ; `unit: "pt"` pour une variation de taux en points (`94,8 %` → `94,2 %` = « −0,6 pt »).
 - ✅ Bouton d'action : le libellé dit l'action (« Importer », « Configurer »), le titre dit ce que l'on obtient.
-- ✅ En grille : `gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))"`, `gap: 16`. Les cartes d'une ligne prennent la même hauteur et les boutons s'alignent en bas.
+- ✅ En grille : `CardGrid` (colonnes fluides de 240px minimum, `gap` 16). Les cartes d'une ligne prennent la même hauteur et les boutons s'alignent en bas.
 - ✅ `headingLevel` suit la hiérarchie de la page (h3 par défaut, sous un h2 de section ; h2 directement sous le `PageHeader`).
 - ❌ Ne pas colorer une variation à la main (vert / rouge) : la couleur vient de `goodDirection`.
 - ❌ Une seule action par carte : pour plusieurs actions, utiliser une liste (`TableCard` + `GhostButton` icône seule).
@@ -922,6 +926,8 @@ Une `Card` est **interactive** de deux façons :
 | Le volume et le taux évoluent-ils ensemble (fréquentation et ponctualité) ? | `ComboChart` (deux axes Y titrés) |
 | Une valeur tient-elle par paliers (offre par tranche horaire, capacité) ? | `LineChart curve="step"` |
 | Quelles lignes décrochent, toutes sur la même échelle ? | `SmallMultiples` |
+| Comment une ligne a-t-elle été exploitée sur la journée (fréquence, croisements, théorique / réalisé) ? | `TimeSpaceDiagram` |
+| Où sont les véhicules d'une ligne en ce moment, en retard ou en incident ? | `LineDiagram` |
 | Où en est une valeur par rapport à sa capacité ou à ses seuils ? | `Meter` (barre) ; `Gauge` (KPI mis en avant) |
 | De quoi se compose un total, rapporté à une capacité ? | `Meter segments` |
 
@@ -1274,10 +1280,13 @@ export const ScenarioListPage = () => {
 
 ### Recette 3 — Page formulaire
 
-Formulaire en sections, largeur contenue, soumission en bas à droite. Les **panneaux de premier niveau** (formulaire puis synthèse) s'empilent verticalement ; le multi-colonnes n'apparaît qu'**à l'intérieur** des sections. Voir [Composition des panneaux](#composition-des-panneaux-sur-une-page-formulaire).
+Formulaire en sections, largeur contenue, soumission en bas à droite. Les **panneaux de premier niveau** (formulaire puis synthèse) s'empilent verticalement ; le multi-colonnes n'apparaît qu'**à l'intérieur** des sections (`FieldRow`). Voir [Composition des panneaux](#composition-des-panneaux-sur-une-page-formulaire) et le pattern **Formulaire**.
 
 ```tsx
-import { PageHeader, TextInput, TextArea, Dropdown, DatePicker, CounterInput, SegmentedControl, DescriptionList, PrimaryButton, Link, GhostButton } from "@ddaoellena/cadence-ui";
+import {
+  PageHeader, PageSection, FieldRow, FormActions, TextInput, TextArea, Dropdown, DatePicker, CounterInput,
+  SegmentedControl, DescriptionList, PrimaryButton, GhostButton, Link,
+} from "@ddaoellena/cadence-ui";
 
 export const ScenarioFormPage = () => (
   // Conteneur de page : flexDirection "column" → les panneaux de premier niveau s'empilent
@@ -1285,56 +1294,35 @@ export const ScenarioFormPage = () => (
     <PageHeader title="Créer un scénario" />
 
     {/* ══ PANNEAU 1 — Formulaire ══ */}
-    <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-      {/* ── Section : informations générales ── */}
-      <section style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-        <h2 style={{ fontFamily: "var(--cadence-font-sans)", fontSize: 16, fontWeight: 600, color: "var(--cadence-color-primary)", margin: 0 }}>
-          Informations générales
-        </h2>
-        <TextInput label="Titre" placeholder="Ex : Tronçon Melun – Montereau" value={title} onChange={(e) => setTitle(e.target.value)} />
-        {/* ✅ multi-colonnes AUTORISÉ à l'intérieur d'une section */}
-        <div style={{ display: "flex", gap: 12 }}>
-          <div style={{ flex: 1 }}>
-            <Dropdown label="Type" options={typeOptions} value={type} onChange={setType} placeholder="Sélectionner" />
-          </div>
-          <div style={{ flex: 1 }}>
-            <Dropdown label="Cause" options={causeOptions} value={cause} onChange={setCause} placeholder="Sélectionner" />
-          </div>
-        </div>
-        <SegmentedControl
-          options={[{ value: "planned", label: "Planifiée" }, { value: "immediate", label: "Immédiate" }]}
-          value={mode}
-          onChange={setMode}
-          aria-label="Mode de déclenchement"
-        />
-      </section>
+    <PageSection title="Informations générales">
+      <TextInput label="Titre" placeholder="Ex : Tronçon Melun – Montereau" value={title} onChange={(e) => setTitle(e.target.value)} />
+      {/* ✅ multi-colonnes AUTORISÉ à l'intérieur d'une section */}
+      <FieldRow>
+        <Dropdown label="Type" options={typeOptions} value={type} onChange={setType} placeholder="Sélectionner" />
+        <Dropdown label="Cause" options={causeOptions} value={cause} onChange={setCause} placeholder="Sélectionner" />
+      </FieldRow>
+      <SegmentedControl
+        options={[{ value: "planned", label: "Planifiée" }, { value: "immediate", label: "Immédiate" }]}
+        value={mode}
+        onChange={setMode}
+        aria-label="Mode de déclenchement"
+      />
+    </PageSection>
 
-      {/* ── Section : période ── */}
-      <section style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-        <h2 style={{ fontFamily: "var(--cadence-font-sans)", fontSize: 16, fontWeight: 600, color: "var(--cadence-color-primary)", margin: 0 }}>
-          Période
-        </h2>
-        {/* Exception « saisie avec heures » : DateRangePicker ne gère pas les heures,
-            d'où deux DatePicker withTime. Sans heure → un seul DateRangePicker. */}
-        <div style={{ display: "flex", gap: 12 }}>
-          <div style={{ flex: 1 }}>
-            <DatePicker label="Début" value={start} onChange={setStart} withTime />
-          </div>
-          <div style={{ flex: 1 }}>
-            <DatePicker label="Fin" value={end} onChange={setEnd} withTime />
-          </div>
-        </div>
-        <CounterInput label="Durée estimée" min={0} max={480} step={15} unit="min" value={duration} onChange={setDuration} />
-        <TextArea label="Description" placeholder="Impacts attendus, mesures prises…" rows={4} value={desc} onChange={(e) => setDesc(e.target.value)} />
-      </section>
-    </div>
+    <PageSection title="Période">
+      {/* Exception « saisie avec heures » : DateRangePicker ne gère pas les heures,
+          d'où deux DatePicker withTime. Sans heure → un seul DateRangePicker. */}
+      <FieldRow>
+        <DatePicker label="Début" value={start} onChange={setStart} withTime />
+        <DatePicker label="Fin" value={end} onChange={setEnd} withTime />
+      </FieldRow>
+      <CounterInput label="Durée estimée" min={0} max={480} step={15} unit="min" value={duration} onChange={setDuration} />
+      <TextArea label="Description" placeholder="Impacts attendus, mesures prises…" rows={4} value={desc} onChange={(e) => setDesc(e.target.value)} />
+    </PageSection>
 
     {/* ══ PANNEAU 2 — Synthèse / vérification ══ */}
     {/* ❌ JAMAIS à droite du formulaire — toujours EN DESSOUS */}
-    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-      <h2 style={{ fontFamily: "var(--cadence-font-sans)", fontSize: 16, fontWeight: 600, color: "var(--cadence-color-primary)", margin: 0 }}>
-        Récapitulatif
-      </h2>
+    <PageSection title="Récapitulatif" gap={12}>
       <DescriptionList
         aria-label="Scénario à créer"
         items={[
@@ -1344,14 +1332,14 @@ export const ScenarioFormPage = () => (
           { id: "duration", label: "Durée estimée", value: `${duration} min` },
         ]}
       />
-    </div>
+    </PageSection>
 
     {/* ══ Soumission ══ */}
-    <div style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "flex-end" }}>
+    <FormActions>
       <Link hideArrow onClick={onSaveDraft}>Enregistrer comme brouillon</Link>
       <GhostButton label="Réinitialiser" onClick={onReset} />
       <PrimaryButton label="Créer le scénario" onClick={onSubmit} />
-    </div>
+    </FormActions>
   </div>
 );
 ```
@@ -1493,7 +1481,7 @@ Haut d'écran : période d'analyse, grille de `Card` indicateurs (cliquables par
 
 ```tsx
 import { useState } from "react";
-import { Card, DateRangePicker, PageHeader, type DateRange } from "@ddaoellena/cadence-ui";
+import { Card, CardGrid, DateRangePicker, PageHeader, type DateRange } from "@ddaoellena/cadence-ui";
 
 export const SupervisionDashboard = () => {
   const [period, setPeriod] = useState<DateRange>(last7Days());
@@ -1510,7 +1498,7 @@ export const SupervisionDashboard = () => {
         }
       />
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16 }}>
+      <CardGrid>
         <Card headingLevel={2} title="Courses réalisées" value={stats.trips} delta={{ value: stats.tripsDelta, label: "vs période précédente" }}
           loading={stats.loading} />
         <Card headingLevel={2} title="Ponctualité" value={stats.punctuality} unit="%" delta={{ value: stats.punctualityDelta, unit: "pt" }}
@@ -1519,8 +1507,8 @@ export const SupervisionDashboard = () => {
           delta={{ value: stats.delayDelta, label: "vs période précédente" }} loading={stats.loading} />
         <Card headingLevel={2} title="Perturbations actives" value={stats.disruptions} goodDirection="down"
           status={stats.disruptions > 20 ? "critical" : undefined} statusLabel="Seuil dépassé"
-          onClick={() => navigate("/perturbations?etat=actives")} loading={stats.loading} />
-      </div>
+          actionLabel="Voir les perturbations" onClick={() => navigate("/perturbations?etat=actives")} loading={stats.loading} />
+      </CardGrid>
 
       {/* Liste filtrée par la même période : voir la recette 5 */}
     </div>
@@ -1538,7 +1526,7 @@ export const SupervisionDashboard = () => {
 
 ```tsx
 import { useState } from "react";
-import { BarList, Card, DateRangePicker, Heatmap, LineChart, PageHeader, type DateRange } from "@ddaoellena/cadence-ui";
+import { BarList, Card, CardGrid, DateRangePicker, Heatmap, LineChart, PageHeader, type DateRange } from "@ddaoellena/cadence-ui";
 
 export const AnalysisDashboard = () => {
   const [period, setPeriod] = useState<DateRange>(last7Days());
@@ -1553,16 +1541,17 @@ export const AnalysisDashboard = () => {
         actions={<DateRangePicker variant="button" aria-label="Période" value={period} onChange={setPeriod} maxDays={92} />}
       />
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 16 }}>
+      <CardGrid>
         <Card headingLevel={2} title="Retard moyen" value={stats.kpis.delay} unit="min" goodDirection="down"
           delta={{ value: stats.kpis.delayDelta, label: "vs période précédente" }} trend={stats.kpis.delayTrend} loading={state === "loading"} />
         <Card headingLevel={2} title="Ponctualité" value={stats.kpis.punctuality} unit="%"
           delta={{ value: stats.kpis.punctualityDelta, unit: "pt" }} loading={state === "loading"} />
         <Card headingLevel={2} title="Perturbations" value={stats.kpis.disruptions} goodDirection="down"
-          onClick={() => navigate("/perturbations")} loading={state === "loading"} />
-      </div>
+          actionLabel="Voir les perturbations" onClick={() => navigate("/perturbations")} loading={state === "loading"} />
+      </CardGrid>
 
       <LineChart
+        framed
         headingLevel={2}
         title="Retard moyen par heure"
         description="Toutes lignes, sur la période"
@@ -1575,8 +1564,9 @@ export const AnalysisDashboard = () => {
         annotations={stats.strike ? [{ at: [stats.strike.start, stats.strike.end], label: stats.strike.label }] : []}
       />
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: 24 }}>
+      <CardGrid min={360} fit>
         <Heatmap
+          framed
           headingLevel={2}
           title="Perturbations par jour et par heure"
           state={state}
@@ -1587,6 +1577,7 @@ export const AnalysisDashboard = () => {
           onCellClick={(c) => navigate(`/perturbations?jour=${c.y}&heure=${c.x}`)}
         />
         <BarList
+          framed
           headingLevel={2}
           title="Lignes les plus impactées"
           state={state}
@@ -1597,7 +1588,7 @@ export const AnalysisDashboard = () => {
           onShowAll={() => navigate("/lignes")}
           onItemClick={(item) => navigate(`/lignes/${item.id}`)}
         />
-      </div>
+      </CardGrid>
     </div>
   );
 };
@@ -1605,7 +1596,7 @@ export const AnalysisDashboard = () => {
 
 - ✅ Un seul `h1` (le `PageHeader`) ; les cartes et les graphiques en `headingLevel={2}`.
 - ✅ La même période pilote tous les blocs ; l'état de la requête (`loading`, `error` + `onRetry`) est passé à chaque graphique.
-- ✅ Grilles fluides (`auto-fill` / `auto-fit`), jamais de largeur fixe : les graphiques suivent leur conteneur.
+- ✅ Grilles fluides (`CardGrid`, `fit` pour étirer la dernière rangée), jamais de largeur fixe ; graphiques voisins encadrés (`framed`).
 
 ---
 
@@ -1625,7 +1616,7 @@ Pattern **Planification / temps** (gabarit vérifié : `src/patterns/Planificati
 
 ## Référence API des composants
 
-**Source de vérité des props.** Si une prop n'est pas listée ici, elle n'existe pas — ne pas en inventer. Convention : les props sans défaut indiqué sont `undefined` ; ⚠️ signale les pièges courants.
+**Source de vérité des props.** Si une prop n'est pas listée ici, elle n'existe pas — ne pas en inventer. Convention : les props sans défaut indiqué sont `undefined` ; ⚠️ signale les pièges courants. `className` (classe additionnelle sur la racine) est accepté par tous les composants, même quand la fiche ne le liste pas : il sert au layout, jamais à recolorer.
 
 ### Card
 
@@ -2597,6 +2588,7 @@ API identique pour les deux ; seul le rendu change (`PrimaryButton` plein ou con
 |---|---|---|---|
 | `state` | `"default" \| "hover" \| "selected" \| "disabled"` | `"default"` | ⚠️ Pas de prop `checked` |
 | `onChange` | `() => void` | — | — |
+| `aria-label` | `string` | — | Nom accessible quand aucun texte n'est associé au bouton radio |
 
 ### RichCheckbox
 
@@ -2783,6 +2775,7 @@ Conteneur `role="tablist"` d'une rangée de `Tab` ou de `SecondaryTab`. *Roving 
 | `onChange` | `ChangeEventHandler<HTMLTextAreaElement>` | — | — |
 | `helperText` | `string` | — | Message sous le champ |
 | `rows` | `number` | `4` | Hauteur initiale (redimensionnable verticalement) |
+| `aria-label` | `string` | libellé de `label` | Nom accessible sans `label` visible |
 | `disabled` | `boolean` | `false` | — |
 
 ### TextInput
@@ -2795,6 +2788,7 @@ Conteneur `role="tablist"` d'une rangée de `Tab` ou de `SecondaryTab`. *Roving 
 | `value` | `string` | — | Contrôlé |
 | `onChange` | `ChangeEventHandler<HTMLInputElement>` | — | — |
 | `helperText` | `string` | — | ⚠️ Pas de prop `helper` |
+| `aria-label` | `string` | libellé de `label` | Nom accessible sans `label` visible |
 | `type` | type HTML natif | `"text"` | ⚠️ Pas de `type="number"` — utiliser `CounterInput` |
 | `disabled` | `boolean` | `false` | — |
 
@@ -2804,6 +2798,7 @@ Conteneur `role="tablist"` d'une rangée de `Tab` ou de `SecondaryTab`. *Roving 
 |---|---|---|---|
 | `state` | `"default" \| "hover" \| "active" \| "disabled"` | `"default"` | ⚠️ Pas de prop `checked` ni `label` — accoler un `<span>` pour le texte |
 | `onChange` | `(nextActive: boolean) => void` | — | — |
+| `aria-label` | `string` | — | Nom accessible du `role="switch"`. ⚠️ Obligatoire en pratique : le `<span>` voisin n'est pas relié au contrôle |
 
 ### Popover
 
@@ -3202,7 +3197,7 @@ Clavier : un seul arrêt de tabulation ; ←/→ d'un véhicule au suivant dans 
 
 - ⚠️ Ligne **linéaire** en v1 : pas de fourches ni de boucles, une ligne à la fois.
 - ⚠️ `vehicles` change à chaque rafraîchissement : garder des `id` stables pour que les véhicules glissent au lieu de réapparaître.
-- ❌ Pas une carte : pour la géographie, l'application garde sa carte ; pour l'espace-temps, `TimeSpaceDiagram` (prévu 0.9.5).
+- ❌ Pas une carte : pour la géographie, l'application garde sa carte ; pour l'espace-temps, `TimeSpaceDiagram`.
 
 ```tsx
 <LineDiagram
