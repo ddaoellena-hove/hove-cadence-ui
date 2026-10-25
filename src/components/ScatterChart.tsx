@@ -7,7 +7,8 @@ import { ChartMarker } from "./ChartMarker";
 import { ChartTooltip } from "./ChartTooltip";
 import { formatKpiValue, formatValueWithUnit } from "./chart-format";
 import { seriesColor, seriesMarker } from "./chart-palette";
-import { buildAxisScale, nearestPoint, traversalOrder, type ScatterPointInput } from "./scatter-chart-utils";
+import { buildAxisScale, nearestPoint, traversalOrder } from "./scatter-chart-utils";
+import type { ScatterPointInput } from "./chart-types";
 import { useChartWidth } from "./use-chart-size";
 import "./scatter-chart.css";
 
