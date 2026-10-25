@@ -10,7 +10,7 @@
  */
 import { useEffect, type CSSProperties } from "react";
 import { AA_RATIO, contrastRatio, normalizeLineColor, pickTextColor } from "./line-badge-utils";
-import { warnOnce } from "./button-compat";
+import { warnOnce } from "./dev-warnings";
 import "./line-badge.css";
 
 export type LineMode = "metro" | "rer" | "train" | "tram" | "bus" | "car" | "bateau" | "navette";
@@ -62,7 +62,6 @@ export const LineBadge = ({ code, mode, color: colorProp, textColor: textColorPr
       "LineBadge",
       `contrast:${color}/${textColor}`,
       `route_text_color ${textColor} sur ${color} (ligne « ${code} ») : ${ratio.toFixed(2).replace(".", ",")}:1, sous le seuil AA de 4,5:1. Corrigez la donnée, ou omettez textColor pour qu'une couleur lisible soit calculée.`,
-      false,
     );
   }, [color, textColor, code]);
 

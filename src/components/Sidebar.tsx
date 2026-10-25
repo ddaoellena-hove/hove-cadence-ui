@@ -44,8 +44,6 @@ export interface SidebarScope {
 export interface SidebarUser {
   /** Nom affiché ; les initiales de l'avatar en sont tirées. */
   name: string;
-  /** @deprecated Ignoré : le pied de Sidebar n'affiche plus que le nom. */
-  email?: string;
   /** Photo de l'avatar (sinon initiales). */
   avatarSrc?: string;
 }

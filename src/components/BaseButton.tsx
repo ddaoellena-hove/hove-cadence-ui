@@ -1,7 +1,7 @@
 import { forwardRef, type MouseEvent } from "react";
 import { Icons, type IconName } from "./Icons";
 import type { ActionButtonBaseProps, ActionButtonSize } from "./action-button-types";
-import { checkButtonContent } from "./button-compat";
+import { checkButtonContent } from "./dev-warnings";
 import { Tooltip } from "./Tooltip";
 import "./base-button.css";
 

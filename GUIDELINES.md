@@ -33,7 +33,7 @@ Règles impératives pour générer du code avec ce design system :
 5. **`Checkbox`, `Toggle`, `RadioButton`, `RichCheckbox` et `RichRadioButton` se pilotent par la prop `state`**, pas par une prop `checked` — elle n'existe pas. Exemple : `<Checkbox state={isChecked ? "checked" : "unchecked"} onChange={setIsChecked} />`.
 6. **Le CSS custom est limité au layout.** `display: flex`, `gap`, `padding`, `margin`, largeurs : OK en style inline. Couleurs, polices, bordures, ombres custom : interdit — les composants et tokens couvrent ces besoins.
 7. **Choisir d'abord un pattern** dans le tableau [Intention → pattern](#intention--pattern) pour toute page nouvelle, partir de son gabarit, puis composer. **Une page qui ne correspond à aucun pattern est signalée, pas inventée.** (Les recettes restent valides le temps de leur migration.)
-8. **Un seul `PrimaryButton` plein par vue.** Plusieurs `GhostButton` sont autorisés. 3e action d'un groupe : `Link hideArrow`. `SecondaryButton` est déprécié.
+8. **Un seul `PrimaryButton` plein par vue.** Plusieurs `GhostButton` sont autorisés. 3e action d'un groupe : `Link hideArrow`.
 9. **Toujours passer `label`** sur les champs de formulaire (`TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker`, `CounterInput`, `TimePicker`). Exception, qui prend `aria-label` à la place : la variante bouton (`variant="button"` de `DatePicker`, `DateRangePicker`, `Dropdown`, `TimePicker`), notamment pour les filtres rapides d'une `FilterBar`.
 10. **Imports** : composants depuis `@ddaoellena/cadence-ui`, styles via un unique `import "@ddaoellena/cadence-ui/style.css"`, polices via les `<link>` de la section [Installation](#installation--setup).
 11. **Libellés en français correct, accents UTF-8 obligatoires.** Tout texte visible (labels, titres, boutons, placeholders, messages) s'écrit avec ses accents — jamais de français « aplati » en ASCII. Les fichiers source sont en UTF-8 : `é è ê à ç û É À` s'écrivent tels quels, sans entité HTML ni échappement unicode.
@@ -143,7 +143,7 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-color-scrollbar-thumb` | `rgba(0, 40, 48, 0.2)` | Curseur des barres de défilement (`cadence-scrollbar`) ; `-hover` : `rgba(0, 40, 48, 0.36)` |
 | `--cadence-color-divider` | `#f0f0f0` | Séparateurs internes |
 | `--cadence-color-skeleton` | `var(--cadence-color-surface-alt)` | Fond des squelettes de chargement (`Skeleton`, `DataTable`, `Card`) |
-| `--cadence-dataviz-series-1..8` | violet, bleu, teal, ambre `#b36b00`, magenta, corail, violet foncé, ardoise | Séries des graphiques, dans cet ordre ; toutes ≥ 3:1 sur blanc. Anciens noms `--CAI-dv-series-*` en alias |
+| `--cadence-dataviz-series-1..8` | violet, bleu, teal, ambre `#b36b00`, magenta, corail, violet foncé, ardoise | Séries des graphiques, dans cet ordre ; toutes ≥ 3:1 sur blanc |
 | `--cadence-dataviz-seq-1..7` | `#eaf4f5` → `#004650` | Rampe séquentielle (`Heatmap`), teinte pétrole à clarté croissante |
 | `--cadence-dataviz-threshold` / `-threshold-breach` | `#1a3e45` / `#b91c1c` | Ligne de seuil / côté défavorable d'un seuil |
 | `--cadence-dataviz-annotation` / `-annotation-band` | `#55606e` / `rgba(85, 96, 110, 0.08)` | Trait ou bord d'annotation / remplissage d'une bande annotée |
@@ -252,7 +252,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Positions temps réel des véhicules sur une ligne (supervision) | `LineDiagram` | `RouteStopList` (une course, horaires) ; une carte (géographie) |
 | Examiner les erreurs d’un import | Recette `Offre et qualité / Rapport qualité` | `ErrorSummary` (erreurs des champs d’un formulaire) |
 | Action principale de la vue (une seule) | `PrimaryButton` | `GhostButton` (secondaire) |
-| Action secondaire, action inline de formulaire | `GhostButton` | `SecondaryButton` (déprécié) ; `Link` (3e action) |
+| Action secondaire, action inline de formulaire | `GhostButton` | `Link` (3e action) |
 | 3e action d'un groupe, action dans une phrase | `Link hideArrow` | `GhostButton` (action secondaire) |
 | Navigation inline, action tertiaire discrète | `Link` | — |
 | Petite action par ligne de liste (icône) | `GhostButton size="sm"` icône seule (`icon` + `aria-label`, infobulle intégrée) | `PrimaryButton` (trop appuyé dans une ligne) |
@@ -313,7 +313,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Chemin des volumes entre étapes (origine → destination, correspondances) | `SankeyChart` | `Heatmap showTotals` (valeurs croisées) ; `Treemap` (hiérarchie, pas des flux) |
 | Une valeur par jour sur une année (ponctualité quotidienne, jours de grève, jours de circulation) | `CalendarHeatmap` | `ServiceCalendar` (saisie des jours de circulation) ; `LineChart` (tendance, pas le motif hebdomadaire) |
 | Classement (lignes les plus impactées) | `BarList` | `BarChart orientation="horizontal"` (plusieurs séries) |
-| Comparaison de catégories (barres empilées / groupées) | `BarChart` | `BarList` (classement à une valeur) ; `DataVisualization` est déprécié |
+| Comparaison de catégories (barres empilées / groupées) | `BarChart` | `BarList` (classement à une valeur) |
 | Plages sur un axe temps (perturbations, amplitudes, travaux) | `Timeline` | `LineChart` (séries continues) ; `ActivityFeed` (événements ponctuels) ; `ServiceCalendar` (jours) ; `JourneyTimeline` (trajets) |
 | Comparer des itinéraires sur une fenêtre de départ (marche, transport, correspondances) | `JourneyTimeline` | `Timeline` (plages par entité) ; `RouteStopList` (arrêts d'une seule ligne) |
 | Mini-courbe dans une carte d'indicateur | `Card trend` (ou `LineChart compact`) | — |
@@ -490,7 +490,7 @@ Le multi-colonnes est un outil de **densité locale**, pas un outil de **découp
 - ❌ Ne pas utiliser `PrimaryButton` pour de la navigation : `Link href`.
 - ❌ Ne pas désactiver un bouton sans `TooltipTrigger` explicatif.
 - ❌ `PrimaryButton outline` n'est pas une action principale : la vue garde un seul `PrimaryButton` plein.
-- ❌ `SecondaryButton` est déprécié (suppression en 1.0.0) : le bleu plein n'est plus utilisé pour les actions, `--cadence-color-accent` est réservé aux états (sélection, élément actif).
+- ❌ Pas de bouton bleu plein : `--cadence-color-accent` est réservé aux états (sélection, élément actif), jamais à une action.
 
 ### Taille selon le contexte
 
@@ -659,25 +659,9 @@ Un bouton ne change jamais de position selon l'état de l'application : il peut 
 </div>
 ```
 
-### Migration depuis la 0.2
+### Migration vers la 1.0
 
-Les anciennes props restent acceptées en 0.3.0 (avertissement en développement, une fois par prop) ; suppression en 1.0.0. Le codemod fait l'essentiel :
-
-```bash
-node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry src
-```
-
-| 0.2 | 0.3 |
-|---|---|
-| `PrimaryButton outline` | inchangé (variante contour, réservée aux dashboards) — ou `GhostButton` hors dashboard |
-| `SecondaryButton outline` | `PrimaryButton outline size="sm"` (ou `GhostButton size="sm"` hors dashboard) |
-| `SecondaryButton` plein | `PrimaryButton size="sm"` **ou** `GhostButton size="sm"` selon le rôle (le codemod laisse un `TODO buttons-v2`) |
-| `destructive` | `tone="danger"` |
-| `size="medium"` / `"large"` | `"md"` (défaut, plus de grande taille) |
-| `withIcon="left"` / `"right"` + `icon` | `iconStart` / `iconEnd` |
-| `withIcon="only"` + `icon` | `icon` + `aria-label` |
-| `state` | supprimé (`"disabled"` → `disabled`) |
-| `Link variant="secondary"` | `Link` (identique à `"primary"`) |
+Les anciennes API de boutons (0.2) et les composants dépréciés sont **supprimés en 1.0.0**. La correspondance complète et le codemod des boutons sont dans le **guide de migration 0.x → 1.0** du `CHANGELOG.md`.
 
 ---
 
@@ -2049,18 +2033,6 @@ Tableau dense pour les gros volumes. Vrai `<table>` (rôles ARIA explicites), en
 - ⚠️ La case d'en-tête sélectionne les lignes **affichées** (la page). « Sélectionner les N résultats » se fait dans la barre de sélection de l'app.
 - ⚠️ Le masquage et l'ordre des colonnes passent par `ColumnManager` (branché sur `hiddenColumnIds` et `columnOrder`). Il n'y a toujours ni filtre par colonne ni redimensionnement.
 
-### DataVisualization (déprécié)
-
-⚠️ **Déprécié depuis la 0.5.0, supprimé en 1.0.0** : utiliser `BarChart`. C'est désormais une enveloppe de `BarChart` (avertissement en développement) ; l'API reste valide :
-
-| Ancien `type` | Équivalent `BarChart` |
-|---|---|
-| `"stacked-vertical"` | `layout="stacked"` (défaut) |
-| `"grouped-vertical"` | `layout="grouped"` |
-| `"horizontal"` | `layout="grouped" orientation="horizontal"` |
-
-Autres props : `series` `{ label, data, color? }[]` → `{ id, label, data, color? }[]` (un `id` par série) ; `height`, `showLegend`, `showValues` inchangés ; `showGridLines` → `showGrid` ; `showTooltip` est ignoré (tooltip toujours actif, au survol et au clavier). ⚠️ `BarChart` exige un `title` : l'enveloppe utilise « Graphique », masqué visuellement.
-
 ### DatePicker
 
 **Variante champ** (défaut) : la date se **saisit au clavier** dans des cases **JJ / MM / AAAA** (+ **HH : mm** avec `withTime`) séparées de « / » fixes, à l'allure d'un `TextInput`, comme `TimePicker`. Le curseur passe seul à la case suivante quand une case est remplie (taper « / » aussi) ; Retour arrière sur une case vide revient à la précédente ; coller « 12/06/2026 » remplit tout. Cliquer le champ place le curseur — **il n'ouvre pas le calendrier** ; seule l'**icône calendrier** à droite (`GhostButton` sans infobulle) ouvre le panneau, positionné sur la date saisie. Entrée ou quitter le champ valide la saisie ; Échap l'annule. Une date inexistante (31/02) ou hors bornes affiche un message d'erreur sous le champ, sans appeler `onChange`. Largeur 220px (260px avec `withTime`). **Variante bouton** : inchangée, le déclencheur entier ouvre le calendrier.
@@ -2456,7 +2428,7 @@ Clavier : le tracé est focusable ; ←/→ passent d'une abscisse à l'autre, D
 |---|---|---|---|
 | `children` | `ReactNode` | **requis** | Texte du lien |
 | `href` | `string` | — | Rend un `<a>` ; sans `href` + avec `onClick` → `<button>` |
-| `variant` | `"primary" \| "destructive" \| "inverse"` | `"primary"` | `--cadence-color-link`, `--cadence-color-danger-text`, blanc. ⚠️ `"destructive"`, pas `"danger"`. `"secondary"` est déprécié (identique à `"primary"`) |
+| `variant` | `"primary" \| "destructive" \| "inverse"` | `"primary"` | `--cadence-color-link`, `--cadence-color-danger-text`, blanc. ⚠️ `"destructive"`, pas `"danger"` |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | 11 / 12 / 13px |
 | `icon` | `ReactNode` | — | Icône avant le texte |
 | `hideArrow` | `boolean` | `false` | Masque la flèche (usage bouton texte) |
@@ -2614,13 +2586,9 @@ API identique pour les deux ; seul le rendu change (`PrimaryButton` plein ou con
 | `className` | `string` | — | — |
 | `ref` | `Ref<HTMLButtonElement>` | — | `forwardRef` vers le `<button>` |
 
-- Contenu : le typage impose `label`, ou `icon` + `aria-label`, pour l'API v2 des deux composants. Il ne peut pas l'imposer aux appels qui utilisent encore les anciennes props de `PrimaryButton` (`withIcon`…) : l'API 0.2 rendait `label` et `icon` facultatifs (libellé « Label » et icône par défaut), les rendre obligatoires casserait la compilation de code existant. Ces appels sont couverts à l'exécution par la même erreur de développement.
+- Contenu : le typage impose `label`, ou `icon` + `aria-label`. Hors TypeScript, un bouton sans l'un ni l'autre reste vide et une erreur est émise en développement.
 - Survol, appui et focus sont gérés en CSS (`:hover`, `:active`, `:focus-visible` avec `--cadence-focus-ring`). Au survol, la couleur fonce d'un cran (plein : `--cadence-color-primary-hover` ; `outline` : voile d'encre sur le blanc ; danger : `--cadence-color-danger-hover`). Le bouton plein (default et danger) se soulève aussi d'une ombre portée douce, teintée de rouge en danger ; l'`outline` n'en a pas. ⚠️ Pas de prop `state`.
-- Anciennes props de `PrimaryButton` (`withIcon`, `destructive`, `size="medium" | "large"`, `state`) : acceptées en 0.3.0 avec un avertissement en développement, supprimées en 1.0.0 (voir [Migration depuis la 0.2](#migration-depuis-la-02)). `outline` n'est **pas** déprécié. `GhostButton` n'accepte que l'API ci-dessus (ni `outline`, ni les anciennes props).
-
-### SecondaryButton (déprécié)
-
-⚠️ **Obsolète** — suppression en 1.0.0. En 0.3.0, c'est une enveloppe : `outline` → `PrimaryButton outline size="sm"`, plein → `PrimaryButton size="sm"`, `size="large"` → `"md"`. Ne plus l'utiliser dans du nouveau code.
+- Les anciennes props de la 0.2 (`withIcon`, `destructive`, `size` `"medium"` / `"large"`, `state`) sont supprimées en 1.0.0 : voir [Migration vers la 1.0](#migration-vers-la-10). `outline` est une variante à part entière de `PrimaryButton` ; `GhostButton` ne l'accepte pas.
 
 ### RadioButton
 
@@ -2723,7 +2691,7 @@ Composant unique : apparence de l’ancien Alt, pour les formulaires et les basc
 | `onCollapse` | `() => void` | — | Clic sur le bouton replier / déplier. ⚠️ N'indique pas l'état (replié ou non) ; dans `AppLayout`, rien à faire : le conteneur suit la largeur |
 | `onLogout` | `() => void` | — | Bouton déconnexion |
 | `scope` | `SidebarScope` | — | Sélecteur de périmètre en pied : `{ options, value?, onChange?, placeholder? }` (options au format `Dropdown`, ⚠️ clé `id`). Masqué quand la Sidebar est repliée ; le menu s'ouvre vers le haut |
-| `user` | `SidebarUser` | — | Utilisateur connecté en pied : `{ name, avatarSrc? }` — avatar et nom seuls. ⚠️ `email` est déprécié et ignoré (plus affiché). Avatar seul quand la Sidebar est repliée |
+| `user` | `SidebarUser` | — | Utilisateur connecté en pied : `{ name, avatarSrc? }` — avatar et nom seuls. Avatar seul quand la Sidebar est repliée |
 | `className` | `string` | — | — |
 
 **Repli** — géré en interne : le bouton « » fait passer la Sidebar de **220 px** (dépliée) à **80 px** (repliée), avec une transition de 250 ms. Il n'y a pas de prop pour piloter ou lire cet état. Dans `AppLayout`, le conteneur de la page suit cette largeur tout seul.

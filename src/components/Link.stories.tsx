@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, spyOn, within } from "storybook/test";
 import { Link } from "./Link";
-import { resetWarningsForTests } from "./button-compat";
 
 const meta: Meta<typeof Link> = {
   title: "Composants/Actions/Link",
@@ -105,33 +103,5 @@ export const WithIcon: Story = {
     href: "#",
     size: "md",
     icon: <ArrowLeft />,
-  },
-};
-
-/**
- * ⚠️ **Dépréciée** depuis la 0.3.0, suppression en 1.0.0 : la variante
- * `secondary` a toujours eu le même rendu que `primary`. Elle est rendue en
- * `primary`, avec un avertissement en console (développement, une seule fois)
- * qui invite à utiliser `primary`.
- * Ne pas l'utiliser : écrire `<Link hideArrow onClick={…}>`.
- */
-export const DeprecieeSecondary: Story = {
-  name: "Dépréciée — secondary",
-  beforeEach: () => {
-    // Avertissement « une seule fois » : on repart d'une mémoire vierge pour l'asserter
-    resetWarningsForTests();
-    const warn = spyOn(console, "warn").mockImplementation(() => {});
-    return () => warn.mockRestore();
-  },
-  args: {
-    children: "Enregistrer comme brouillon",
-    variant: "secondary",
-    hideArrow: true,
-    onClick: () => {},
-  },
-  play: async ({ canvasElement }) => {
-    // Alias de primary : même classe, même rendu
-    await expect(within(canvasElement).getByRole("button")).toHaveClass("link--primary");
-    await expect(console.warn).toHaveBeenCalledWith(expect.stringMatching(/Link : `variant=.secondary.` est déprécié/));
   },
 };

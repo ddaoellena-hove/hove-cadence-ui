@@ -38,8 +38,14 @@ export const TypeTests = () => (
     {/* ✅ Variante contour de PrimaryButton (API v2, non dépréciée) */}
     <PrimaryButton label="Exporter" outline size="sm" iconStart="download-02" />
 
-    {/* ✅ Compatibilité 0.3.0 : anciennes props encore acceptées par PrimaryButton */}
-    <PrimaryButton withIcon="only" icon="plus" />
-    <PrimaryButton withIcon="left" icon="plus" label="Ajouter" destructive size="large" />
+    {/* ❌ Anciennes props de la 0.2, supprimées en 1.0.0 */}
+    {/* @ts-expect-error withIcon n'existe plus : iconStart / iconEnd / icon */}
+    <PrimaryButton withIcon="left" iconStart="plus" label="Ajouter" />
+    {/* @ts-expect-error destructive n'existe plus : tone="danger" */}
+    <PrimaryButton label="Supprimer" destructive />
+    {/* @ts-expect-error size="large" n'existe plus : "md" */}
+    <PrimaryButton label="Créer" size="large" />
+    {/* @ts-expect-error state n'existe plus : disabled */}
+    <PrimaryButton label="Créer" state="disabled" />
   </>
 );

@@ -113,7 +113,7 @@
   --cadence-color-danger-active-overlay: rgba(218, 30, 40, 0.12); /* Appui d'un GhostButton danger */
 
   /* ── Couleurs — accent interactif (sélection) ──────────────────────────── */
-  --cadence-color-accent: #1b6cff;         /* Élément actif / sélectionné : Sidebar, options de menu, SecondaryButton rempli ; remplissage de ProgressBar */
+  --cadence-color-accent: #1b6cff;         /* Élément actif / sélectionné : Sidebar, options de menu ; remplissage de ProgressBar */
   --cadence-color-accent-subtle: #f0f6ff;  /* Fond de survol d'un élément actif (Sidebar) */
   --cadence-color-accent-on-dark: #3b8eff; /* Pastille de notification sur fond sombre (Sidebar) */
   --cadence-color-selected-surface: #c8d6e4; /* Fond d'une carte sélectionnée (TableCard) */

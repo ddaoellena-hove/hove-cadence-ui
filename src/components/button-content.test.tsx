@@ -2,8 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { GhostButton } from "./GhostButton";
 import { PrimaryButton } from "./PrimaryButton";
-import { SecondaryButton } from "./SecondaryButton";
-import { resetWarningsForTests } from "./button-compat";
+import { resetWarningsForTests } from "./dev-warnings";
 
 // Contenu des boutons : même comportement pour PrimaryButton et GhostButton.
 // Plus de libellé de repli « Label » : un bouton sans contenu est une erreur
@@ -41,17 +40,6 @@ describe("bouton sans libellé ni icône", () => {
     expect(error).toHaveBeenCalledTimes(2);
   });
 
-  it("les anciennes props sans libellé n'affichent plus « Label » non plus", () => {
-    const html = renderToStaticMarkup(
-      <>
-        <PrimaryButton withIcon="left" icon="plus" />
-        <SecondaryButton withIcon="no" />
-      </>,
-    );
-    expect(html).not.toContain("Label");
-    expect(error).toHaveBeenCalledTimes(1); // une fois pour PrimaryButton (SecondaryButton rend un PrimaryButton)
-  });
-
   it("se tait en production", () => {
     const previous = process.env.NODE_ENV;
     process.env.NODE_ENV = "production";
@@ -73,9 +61,11 @@ describe("icône seule sans aria-label", () => {
   it("déduit le nom accessible de l'icône, pour les deux composants, avec un avertissement unique", () => {
     const html = renderToStaticMarkup(
       <>
-        <PrimaryButton withIcon="only" icon="trash" />
-        <PrimaryButton withIcon="only" icon="trash" />
         {/* @ts-expect-error aria-label requis (le repli reste un garde-fou d'exécution) */}
+        <PrimaryButton icon="trash" />
+        {/* @ts-expect-error aria-label requis */}
+        <PrimaryButton icon="trash" />
+        {/* @ts-expect-error aria-label requis */}
         <GhostButton icon="copy-01" />
       </>,
     );
