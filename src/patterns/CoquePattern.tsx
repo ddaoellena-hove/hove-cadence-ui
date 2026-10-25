@@ -48,7 +48,7 @@ export const CoquePattern = ({ children }: { children?: ReactNode } = {}) => {
         subtitle="Planifiez et suivez les perturbations du réseau."
         actions={<PrimaryButton label="Créer un scénario" onClick={() => {}} />}
       />
-      {children ?? <p style={{ color: "var(--cadence-color-text-secondary, #64757a)" }}>Le contenu de la page s'insère ici (liste, formulaire, tableau de bord…).</p>}
+      {children ?? <p style={{ color: "var(--cadence-color-text-secondary, #607075)" }}>Le contenu de la page s'insère ici (liste, formulaire, tableau de bord…).</p>}
 
       {/* Une seule pile de notifications pour toute l'app ; useToast() ailleurs. */}
       <Toaster />

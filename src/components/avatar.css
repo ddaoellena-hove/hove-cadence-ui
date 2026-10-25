@@ -93,6 +93,6 @@
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   font-weight: 400;
   font-size: 11px;
-  color: var(--cadence-color-text-secondary, #64757a);
+  color: var(--cadence-color-text-secondary, #607075);
   line-height: 1.3;
 }

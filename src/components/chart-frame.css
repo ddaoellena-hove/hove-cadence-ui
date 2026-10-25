@@ -60,7 +60,7 @@
 }
 
 .chart__description {
-  color: var(--cadence-color-icon-muted, #69797d);
+  color: var(--cadence-color-text-secondary, #607075);
   font-size: 12px;
   line-height: 1.4;
   margin: 0;
@@ -124,7 +124,7 @@
 }
 
 .chart__axis-label {
-  fill: var(--cadence-color-icon-muted, #69797d);
+  fill: var(--cadence-color-text-secondary, #607075);
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
   font-size: 11px;
 }
@@ -172,7 +172,7 @@
 
 /* Série masquée : libellé barré, marqueur estompé */
 .chart-legend__item[aria-pressed="false"] {
-  color: var(--cadence-color-icon-muted, #69797d);
+  color: var(--cadence-color-text-secondary, #607075);
   text-decoration: line-through;
 }
 

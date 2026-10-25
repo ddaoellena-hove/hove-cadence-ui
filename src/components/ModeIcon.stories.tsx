@@ -55,7 +55,7 @@ export const Galerie: Story = {
         <div key={mode} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: 12, border: "1px solid var(--cadence-color-divider, #f0f0f0)", borderRadius: 8 }}>
           <ModeIcon mode={mode} size={32} />
           <span style={{ fontSize: 13, fontFamily: "var(--cadence-font-sans, 'ABC Diatype', Helvetica, sans-serif)" }}>{LABELS[mode]}</span>
-          <code style={{ fontSize: 11, color: "var(--cadence-color-text-secondary, #64757a)" }}>{mode}</code>
+          <code style={{ fontSize: 11, color: "var(--cadence-color-text-secondary, #607075)" }}>{mode}</code>
         </div>
       ))}
     </div>

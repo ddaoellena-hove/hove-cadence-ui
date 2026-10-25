@@ -144,7 +144,7 @@
 }
 
 .card__delta--neutral {
-  color: var(--cadence-color-icon-muted, #69797d);
+  color: var(--cadence-color-text-secondary, #607075);
 }
 
 .card__delta-icon {
@@ -152,7 +152,7 @@
 }
 
 .card__delta-label {
-  color: var(--cadence-color-icon-muted, #69797d);
+  color: var(--cadence-color-text-secondary, #607075);
   font-weight: 400;
 }
 
@@ -163,7 +163,7 @@
 
 /* ── Description ─────────────────────────────────────────────────────────── */
 .card__description {
-  color: var(--cadence-color-icon-muted, #69797d);
+  color: var(--cadence-color-text-secondary, #607075);
   font-size: 13px;
   line-height: 1.5;
   margin: 0;

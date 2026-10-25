@@ -126,7 +126,7 @@
   position: sticky;
   top: 0;
   z-index: 1;
-  background: var(--cadence-color-text-secondary, #64757a);
+  background: var(--cadence-color-text-secondary, #607075);
   color: var(--cadence-color-white, #ffffff);
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   font-size: 11px;
@@ -220,7 +220,7 @@
 .autocomplete__option-description {
   font-size: 13px;
   font-weight: 400;
-  color: var(--cadence-color-text-secondary, #64757a);
+  color: var(--cadence-color-text-secondary, #607075);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -248,6 +248,6 @@
 .autocomplete__empty {
   padding: 10px 12px;
   font-size: 13px;
-  color: var(--cadence-color-text-secondary, #64757a);
+  color: var(--cadence-color-text-secondary, #607075);
   text-align: center;
 }

@@ -1,8 +1,7 @@
 # Audit contraste AA — `icon-muted` utilisé comme couleur de texte (0.8.5)
 
-Checklist pour la passe composant-par-composant de la 0.8.5. **Rien n'est
-appliqué** : ce document liste les sélecteurs, les mesures et la décision
-attendue pour chacun.
+Checklist pour la passe composant-par-composant de la 0.8.5. **Appliquée en
+1.0.0** (voir « Résolution » en fin de document).
 
 ## Constat
 
@@ -41,19 +40,19 @@ Ratios mesurés (formule WCAG, sRGB) :
 Remplacer `--cadence-color-icon-muted` par `--cadence-color-text-secondary` (en
 gardant le fallback dans `var(…)`). Fond : contexte habituel du sélecteur.
 
-- [ ] `page-header.css` — `.page-header__subtitle` (fond blanc)
-- [ ] `card.css` — `.card__description` (blanc)
-- [ ] `card.css` — `.card__delta-label` (blanc)
-- [ ] `card.css` — `.card__delta--neutral` (blanc) — *ajouté par l'audit : delta « stable », c'est une information*
-- [ ] `bar-list.css` — `.bar-list__delta--neutral` (blanc, `hover-overlay` au survol de ligne ❌ avec `#64757a`) — *ajouté par l'audit*
-- [ ] `chart-frame.css` — `.chart__description` (blanc)
-- [ ] `chart-frame.css` — `.chart__axis-label` (SVG : propriété **`fill`**, pas `color`, 11 px)
-- [ ] `chart-tooltip.css` — `.chart-tooltip__note` (blanc)
-- [ ] `breadcrumbs.css` — `.breadcrumbs__link` (transparent, sur l'en-tête blanc)
-- [ ] `heatmap.css` — `.heatmap__row-label` et libellés de colonnes (règle partagée, 11 px / 500)
-- [ ] `date-range-picker.css` — `.date-range-picker__hint` (blanc)
-- [ ] `data-table.css` — `.data-table__header` (libellé 11 px / 600, blanc)
-- [ ] `table-header.css` — `.table-header__cell` (même style) — *ajouté par
+- [x] `page-header.css` — `.page-header__subtitle` (fond blanc)
+- [x] `card.css` — `.card__description` (blanc)
+- [x] `card.css` — `.card__delta-label` (blanc)
+- [x] `card.css` — `.card__delta--neutral` (blanc) — *ajouté par l'audit : delta « stable », c'est une information*
+- [x] `bar-list.css` — `.bar-list__delta--neutral` (blanc, `hover-overlay` au survol de ligne ❌ avec `#64757a`) — *ajouté par l'audit*
+- [x] `chart-frame.css` — `.chart__description` (blanc)
+- [x] `chart-frame.css` — `.chart__axis-label` (SVG : propriété **`fill`**, pas `color`, 11 px)
+- [x] `chart-tooltip.css` — `.chart-tooltip__note` (blanc)
+- [x] `breadcrumbs.css` — `.breadcrumbs__link` (transparent, sur l'en-tête blanc)
+- [x] `heatmap.css` — `.heatmap__row-label` et libellés de colonnes (règle partagée, 11 px / 500)
+- [x] `date-range-picker.css` — `.date-range-picker__hint` (blanc)
+- [x] `data-table.css` — `.data-table__header` (libellé 11 px / 600, blanc)
+- [x] `table-header.css` — `.table-header__cell` (même style) — *ajouté par
   l'audit, à traiter avec `DataTable` pour garder les deux en-têtes identiques*
 
   > Note : le plan signalait une incohérence de poids (`font-weight: normal`
@@ -68,11 +67,11 @@ Pour un **onglet inactif** ou un **jour hors plage**, l'estompage porte du sens,
 mais le libellé reste lisible et cliquable : WCAG ne l'exempte pas (seuls les
 composants *désactivés* le sont). À décider en 0.8.5 :
 
-- [ ] `tab.css` — `.tab` (onglet inactif, fond transparent)
-- [ ] `secondary-tab.css` — `.secondary-tab` (inactif ; `hover-overlay` au survol : 4,04:1)
-- [ ] `calendar-month.css` — `.date-picker__day--in-range.date-picker__day--outside` (sur `surface-alt` : **4,00:1**)
-- [ ] `chart-frame.css` — `.chart-legend__item[aria-pressed="false"]` (série masquée : l'état est aussi porté par `aria-pressed`)
-- [ ] `pagination.css` — `.pagination__ellipsis` (« … » décoratif ; défendable en `aria-hidden` plutôt qu'en contraste)
+- [x] `tab.css` — `.tab` (onglet inactif, fond transparent)
+- [x] `secondary-tab.css` — `.secondary-tab` (inactif ; `hover-overlay` au survol : 4,04:1)
+- [x] `calendar-month.css` — `.date-picker__day--in-range.date-picker__day--outside` (sur `surface-alt` : **4,00:1**)
+- [x] `chart-frame.css` — `.chart-legend__item[aria-pressed="false"]` (série masquée : l'état est aussi porté par `aria-pressed`)
+- [x] `pagination.css` — `.pagination__ellipsis` (« … » décoratif ; défendable en `aria-hidden` plutôt qu'en contraste)
 
 ## Hors périmètre (usages légitimes d'`icon-muted`)
 
@@ -106,3 +105,20 @@ Recensement : tous les `color:`/`fill:` sur `--cadence-color-icon-muted` dans
 lus dans les CSS des composants (`background`) et dans `tokens.css`. Ratios
 calculés avec la formule de luminance relative WCAG 2.x (même calcul que
 `contrastRatio` de `line-badge-utils.ts`).
+
+## Résolution (1.0.0)
+
+- **Décision** : `text-secondary` est assombri à `#607075` (5,16:1 sur blanc,
+  4,55:1 sur `surface-alt`, 4,59:1 sur survol, 4,75:1 sur `accent-subtle`).
+  Tous ses usages en profitent ; les replis `var(…, #64757a)` sont alignés.
+- **Texte informatif** : tous les sélecteurs listés passent à `text-secondary`,
+  y compris `.chart__axis-label` (`fill`), les en-têtes de `DataTable` /
+  `TableHeader` et les jours de semaine de `CalendarHeatmap` (apparu en 0.9.2).
+- **États estompés** : traités comme du texte — onglets inactifs (`Tab`,
+  `SecondaryTab`), jour hors mois dans une période, série masquée de la
+  légende, ellipse de `Pagination` (déjà `aria-hidden`) passent à
+  `text-secondary`. L'estompage reste lisible (≥ 4,5:1).
+- **Placeholder de `SearchInput`** : aligné sur `--cadence-color-placeholder`.
+- **Garde-fou** : `src/components/icon-muted-text-usage.test.ts` refuse
+  `color` / `fill` en `icon-muted` hors des sélecteurs d'icônes (icon,
+  chevron, handle, dismiss, twisty, move, glyph, drag, svg).

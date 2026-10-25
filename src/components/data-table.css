@@ -121,7 +121,7 @@
 
 /* ── En-têtes de colonnes (style de TableHeader) ─────────────────────────── */
 .data-table__header {
-  color: var(--cadence-color-icon-muted, #69797d);
+  color: var(--cadence-color-text-secondary, #607075);
   font-weight: normal;
 }
 

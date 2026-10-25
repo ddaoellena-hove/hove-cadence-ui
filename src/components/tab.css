@@ -13,7 +13,7 @@
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--cadence-color-icon-muted, #69797d);
+  color: var(--cadence-color-text-secondary, #607075);
   transition: color 0.2s ease;
   white-space: nowrap;
   outline: none;

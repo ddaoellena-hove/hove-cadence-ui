@@ -17,6 +17,11 @@ Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0 (
 - Les shims de compatibilité sont retirés (`button-compat`, avertissements de dépréciation). Les avertissements de développement restants (contenu des boutons, contraste de `LineBadge`, carte cliquable sans `actionLabel`) passent par un module interne `dev-warnings`.
 - Garde-fou : `removed-api-usage.test.ts` refuse désormais aussi les API retirées en 1.0.0 dans GUIDELINES, les guides et les stories (il remplace `deprecated-api-usage.test.ts` et `link-secondary-usage.test.ts`).
 
+### Accessibilité
+
+- **Contraste AA du texte secondaire** (checklist `docs/audits/0.8.5/contraste-aa.md`) : `--cadence-color-text-secondary` passe de `#64757a` à **`#607075`**, AA sur tous les fonds clairs, `surface-alt` compris (4,24 → 4,55:1). Les textes qui utilisaient `--cadence-color-icon-muted` (4,0 à 4,5:1 selon le fond) passent à `text-secondary` : sous-titre de `PageHeader`, description et variations neutres de `Card` et `BarList`, description, libellés d'axes et série masquée des graphiques, note des infobulles, liens de `Breadcrumbs`, libellés de `Heatmap` et `CalendarHeatmap`, aide du `DateRangePicker`, en-têtes de `DataTable` et `TableHeader`, onglets inactifs (`Tab`, `SecondaryTab`), jour hors mois d'une période, ellipse de `Pagination`. Placeholder de `SearchInput` sur `--cadence-color-placeholder`. ⚠️ Ces textes foncent légèrement.
+- Garde-fou `icon-muted-text-usage.test.ts` : `--cadence-color-icon-muted` reste réservé aux icônes, chevrons et poignées.
+
 ### Storybook
 
 - **Stories `Recettes/*` retirées** (*Liste de perturbations*, *Parcours transport*, *Offre et qualité*, *Planification de service*) : leurs parcours sont couverts par les Page patterns. La page *Recettes / Vers les Page patterns* reste pour rediriger les anciens liens. Les recettes de code de GUIDELINES restent, renvoyant aux gabarits vérifiés.

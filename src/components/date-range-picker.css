@@ -164,7 +164,7 @@
 }
 
 .date-range-picker__hint {
-  color: var(--cadence-color-icon-muted, #69797d);
+  color: var(--cadence-color-text-secondary, #607075);
 }
 
 .date-range-picker__actions {

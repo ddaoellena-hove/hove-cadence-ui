@@ -92,7 +92,7 @@
   flex: 0 0 auto;
   margin-inline-start: auto;
   padding-inline-start: 8px;
-  color: var(--cadence-color-text-secondary, #64757a);
+  color: var(--cadence-color-text-secondary, #607075);
   font-size: 12px;
 }
 
@@ -124,7 +124,7 @@
 .tree-view__empty {
   margin: 0;
   padding: 12px 8px;
-  color: var(--cadence-color-text-secondary, #64757a);
+  color: var(--cadence-color-text-secondary, #607075);
   font-size: 14px;
 }
 

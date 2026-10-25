@@ -65,7 +65,7 @@
 
 .chart-tooltip__note {
   border-top: 1px solid var(--cadence-color-divider, #f0f0f0);
-  color: var(--cadence-color-icon-muted, #69797d);
+  color: var(--cadence-color-text-secondary, #607075);
   font-size: 11px;
   margin: 6px 0 0;
   padding-top: 6px;

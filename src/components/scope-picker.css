@@ -63,7 +63,7 @@
 }
 
 .scope-picker__placeholder {
-  color: var(--cadence-color-text-secondary, #64757a);
+  color: var(--cadence-color-text-secondary, #607075);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -95,7 +95,7 @@
 
 .scope-picker__count {
   font-size: 13px;
-  color: var(--cadence-color-text-secondary, #64757a);
+  color: var(--cadence-color-text-secondary, #607075);
 }
 
 /* Chips du périmètre retenu, sous le champ. */
@@ -108,7 +108,7 @@
 .scope-picker__helper {
   margin: 0;
   font-size: 13px;
-  color: var(--cadence-color-text-secondary, #64757a);
+  color: var(--cadence-color-text-secondary, #607075);
 }
 
 .scope-picker--error .scope-picker__helper {
