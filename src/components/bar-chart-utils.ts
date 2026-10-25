@@ -4,6 +4,7 @@
 import { max } from "d3-array";
 import { scaleBand, scaleLinear } from "d3-scale";
 import { stack } from "d3-shape";
+import type { BarLayout } from "./chart-types";
 
 export interface BarSeriesInput {
   id: string;
@@ -12,7 +13,7 @@ export interface BarSeriesInput {
   data: (number | null)[];
 }
 
-export type BarLayout = "stacked" | "grouped";
+export type { BarLayout } from "./chart-types";
 
 /** Bande de chaque catégorie le long de l'axe des catégories. */
 export const buildCategoryScale = (categories: string[], length: number, layout: BarLayout) =>

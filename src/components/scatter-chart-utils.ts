@@ -4,12 +4,7 @@ import { scaleLinear } from "d3-scale";
 // Calculs du ScatterChart (purs, testés) : échelles, ordre de parcours au
 // clavier, point le plus proche du pointeur.
 
-export interface ScatterPointInput {
-  id: string;
-  x: number;
-  y: number;
-  label?: string;
-}
+export type { ScatterPointInput } from "./chart-types";
 
 /** Échelle d'un axe : `domain` imposé, sinon min(0, valeurs, seuils) → max, arrondi. */
 export const buildAxisScale = (values: number[], range: [number, number], domain?: [number, number], includeZero = true) => {

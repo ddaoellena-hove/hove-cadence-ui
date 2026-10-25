@@ -15,8 +15,8 @@ import {
   categoryTotal,
   includeReferences,
   stackBars,
-  type BarLayout,
 } from "./bar-chart-utils";
+import type { BarLayout } from "./chart-types";
 import { useChartSync } from "./chart-sync";
 import { useChartWidth } from "./use-chart-size";
 import "./bar-chart.css";
