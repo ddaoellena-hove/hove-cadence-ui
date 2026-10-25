@@ -40,3 +40,6 @@ storybook-package/story-ui.config.js
 storybook-package/node_modules
 .vercel
 .env*
+
+# Réglages locaux de Claude Code (propres à chaque poste)
+.claude/settings.local.json
