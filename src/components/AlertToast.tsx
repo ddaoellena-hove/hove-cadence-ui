@@ -4,7 +4,7 @@
  * A notification toast supporting information, success, warning, and error
  * types with an optional progress bar, close button, and action buttons.
  */
-import React from "react";
+import { useContext, type CSSProperties, type FC, type MouseEventHandler, type SVGProps } from "react";
 import { InfoCircle } from "@untitledui/icons/InfoCircle";
 import { CheckCircle } from "@untitledui/icons/CheckCircle";
 import { AlertTriangle } from "@untitledui/icons/AlertTriangle";
@@ -24,7 +24,7 @@ export interface AlertToastAction {
   /** Button label text. */
   label: string;
   /** Click handler. */
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   /** Action secondaire : rendue en GhostButton. Défaut : true pour la 1re action, false pour la 2e (PrimaryButton). */
   outline?: boolean;
 }
@@ -65,13 +65,13 @@ export interface AlertToastProps {
   className?: string;
 
   /** Inline style escape hatch. */
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 }
 
 /** Icône d'état par type — SVG inline (couleur pilotée par le CSS, via currentColor). */
 const STATE_ICON: Record<
   AlertToastType,
-  React.FC<React.SVGProps<SVGSVGElement> & { size?: number }>
+  FC<SVGProps<SVGSVGElement> & { size?: number }>
 > = {
   information: InfoCircle,
   success: CheckCircle,
@@ -119,7 +119,7 @@ export const AlertToast = ({
   // information : role="status" (annonce polie). Pas d'aria-live en plus : le
   // rôle l'implique déjà, et deux politiques contradictoires se court-circuitent.
   // Dans le Toaster, ses régions permanentes annoncent : pas de rôle ici.
-  const announcedByToaster = React.useContext(ToastAnnouncedContext);
+  const announcedByToaster = useContext(ToastAnnouncedContext);
   const role = announcedByToaster ? undefined : type === "error" || type === "warning" ? "alert" : "status";
 
   return (

@@ -8,7 +8,7 @@
 
 ## État au 25 octobre 2026 — 1.0.0 prête, non publiée
 
-- **`main` contient tout** : la 0.9.x (0.9.0 à 0.9.8) puis la préparation de la 1.0 (PR #49 à #55). Manifeste en **`1.0.0`** (`npm version 1.0.0 --no-git-tag-version`), **non publié** : la dernière version sur npm est la **0.1.6**. La publication se fait uniquement sur demande explicite de l'utilisateur.
+- **`main` contient tout** : la 0.9.x (0.9.0 à 0.9.8) puis la préparation de la 1.0 (PR #49 à #56). Manifeste en **`1.0.0`** (`npm version 1.0.0 --no-git-tag-version`), **non publié** : la dernière version sur npm est la **0.1.6**. La publication se fait uniquement sur demande explicite de l'utilisateur.
 - Fichiers locaux jamais commités : `.claude/settings.local.json` (désormais ignoré par Git), `.claude/launch.json`, `.mcp.json`, `story-ui-*`, `public/fonts/ABCDiatype-*`.
 - Branches : une par sujet, partie de `main`, fusionnée par PR (merge commit) une fois la CI verte ; les branches locales fusionnées sont supprimées.
 
@@ -23,25 +23,27 @@
 | Contraste AA | #53 | `text-secondary` → `#607075` ; textes en `icon-muted` → `text-secondary` ; garde-fou `icon-muted-text-usage.test.ts` ; checklist `docs/audits/0.8.5/contraste-aa.md` close |
 | Types publics sans d3 | #54 | `BarLayout` et `ScatterPointInput` dans `chart-types.ts` : les déclarations publiées n'exposent plus de types `d3-scale` |
 | Préparation 1.0 | #55 | GUIDELINES relu (sommaire, recettes 3/6/7 à jour de l'API, `aria-label` documentés, largeur de Sidebar), feuille de route, ce relais, version 1.0.0 |
+| Types regroupés | #56 | `dist/index.d.ts` + `index.d.cts` générés par `dts-bundle-generator` ; `exports` typés par condition ; contrôle `check:types` en CI |
 
 ### Décisions à préserver
 
 - `--cadence-color-icon-muted` est réservé aux icônes, chevrons et poignées ; tout texte secondaire (états estompés compris : onglets inactifs, série masquée, jour hors mois) prend `--cadence-color-text-secondary`.
 - `warnOnce` / `errorOnce` / `checkButtonContent` vivent dans `src/components/dev-warnings.ts` (interne). Plus aucun avertissement de dépréciation.
+- Déclarations publiées : un seul fichier par condition (`build:types`, `dts-bundle-generator`). Dans `src/components`, pas d'`import React from "react"` par défaut et pas de type React importé sous le nom d'un type DOM global (`MouseEvent`, `DragEvent`…) s'il apparaît dans une API publique : aliaser (`ReactMouseEvent`). `npm run check:types` détecte ces régressions.
 - Le codemod `scripts/codemods/buttons-v2.mjs` reste livré dans le paquet : il sert au guide de migration.
 - Les recettes de code de GUIDELINES restent, en complément des Page patterns (qui priment).
 - `Icons iconMap` (prop ignorée, marquée `@deprecated`) n'a pas été retirée : elle ne figurait pas dans la liste de la 1.0. À trancher pour une 1.x ou une 2.0.
 
 ### Validation
 
-- Avant chaque PR : `npx tsc -b --noEmit`, `npm run lint` (0 erreur, 8 avertissements historiques), `npm test`, `npm run test:react18`, `npm run build:lib`, `npm run smoke:dist` ; CI GitHub (React 18 et 19) verte avant fusion.
-- Suite au 25 octobre 2026 : **899 tests** dans 157 fichiers (contre 1022 avant la 1.0 : les matrices du shim `button-compat` et les stories retirées ne comptent plus ; +3 pour le garde-fou `icon-muted`). `dist/` de la 1.0.0 contrôlé : `hove-cadence-ui.js` (464 Ko), `.cjs` (360 Ko), `index.d.ts`, `style.css` (178 Ko), 95 exports identiques en ESM et CJS.
+- Avant chaque PR : `npx tsc -b --noEmit`, `npm run lint` (0 erreur, 8 avertissements historiques), `npm test`, `npm run test:react18`, `npm run build:lib`, `npm run smoke:dist`, `npm run check:types` ; CI GitHub (React 18 et 19) verte avant fusion.
+- Suite au 25 octobre 2026 : **899 tests** dans 157 fichiers (contre 1022 avant la 1.0 : les matrices du shim `button-compat` et les stories retirées ne comptent plus ; +3 pour le garde-fou `icon-muted`). `dist/` de la 1.0.0 contrôlé : `hove-cadence-ui.js` (464 Ko), `.cjs` (360 Ko), `index.d.ts` et `index.d.cts` regroupés, `style.css` (178 Ko), 95 exports identiques en ESM et CJS.
 - **Applications consommatrices** (hors dépôt, paquet issu de `npm pack`) : React 18.3 et React 19.3, TypeScript 5.9 en `strict` et `skipLibCheck: false`.
   - ✅ Types en `moduleResolution: "bundler"` (Vite, Next, webpack) : imports nommés, types publics, `@ts-expect-error` sur une prop supprimée.
   - ✅ Rendu serveur depuis le bundle ESM (esbuild) et depuis `require()` (CJS) ; exports retirés absents à l'exécution.
   - ✅ `style.css` importé par le bundler (210 Ko) et résolu par `require.resolve`. Les `url(/fonts/…)` du `@font-face` sont laissées à l'application : un bundler qui résout les URL absolues (esbuild) doit les déclarer externes (`--external:/fonts/*`).
   - Corrigé en cours de route (#54) : les déclarations exposaient des types `d3-scale` (dépendance de développement) → échec en `skipLibCheck: false`.
-  - ⚠️ **Limite connue** : en `moduleResolution: "node16"` / `"nodenext"`, les types ne se chargent pas (imports relatifs sans extension dans les `.d.ts`, pas de `.d.cts` pour `require`). Sans effet pour les applications construites avec un bundler ; à corriger si une application Node ESM ou CJS « pure » doit consommer la lib (déclarations groupées en un fichier, `.d.ts` + `.d.cts`).
+  - Corrigé ensuite (#56) : types non chargés en `moduleResolution` `node16` / `nodenext` (imports relatifs sans extension, pas de `.d.cts`) et sous TypeScript 6 (`import "./x.css"` dans les déclarations). Les déclarations sont désormais regroupées en `dist/index.d.ts` + `dist/index.d.cts` ; `npm run check:types` (node16, nodenext, bundler) tourne en CI.
   - ℹ️ Sous React 18, le rendu serveur émet l'avertissement « useLayoutEffect does nothing on the server » (positionnement des popovers et graphiques) ; React 19 ne l'émet plus.
 - **Externes** : `dist/hove-cadence-ui.js` et `.cjs` importent `react`, `react-dom`, `@untitledui/icons`, `@tanstack/*` et les quatre `d3-*` sans les embarquer.
 
@@ -55,7 +57,7 @@
    - **Données** : `DataTable` (tri annoncé, sélection et plage, navigation par lignes), `ActionMenu`, `ColumnManager` (réordonnancement annoncé), `FilterBar` (nombre de résultats).
    - **Formulaires et retours** : `ErrorSummary` (focus et liens vers les champs), `InlineAlert`, `FileUpload` (états écrits), `Stepper`, `Accordion`, `CopyableText` (« Copié »).
    - **Graphiques** : `LineChart` et `BarChart` (parcours au clavier, valeur annoncée, « Voir les données »), `Heatmap` (grille), `DonutChart`, `LineDiagram` (annonces regroupées des incidents), `TimeSpaceDiagram` (le long d'une course).
-2. **Publication npm** : sur demande uniquement. `dist/` est à reconstruire juste avant (`npm run build:lib`, car `npm run build` l'écrase) puis à vérifier (`hove-cadence-ui.js`, `.cjs`, `index.d.ts`).
+2. **Publication npm** : sur demande uniquement. `dist/` est à reconstruire juste avant (`npm run build:lib`, car `npm run build` l'écrase) puis à vérifier (`hove-cadence-ui.js`, `.cjs`, `index.d.ts`, `index.d.cts`, `npm run check:types`).
 
 # Historique des lots (avant la 1.0)
 

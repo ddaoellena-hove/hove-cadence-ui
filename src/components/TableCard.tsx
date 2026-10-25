@@ -1,4 +1,4 @@
-import React from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { Checkbox } from "./Checkbox";
 import { Icons, type IconsProps } from "./Icons";
 import "./table-card.css";
@@ -9,7 +9,7 @@ export interface TableCardColumn {
   /** Unique key for the column. */
   key: string;
   /** Column content. */
-  content: React.ReactNode;
+  content: ReactNode;
   /** Fixed width in px. Mutually exclusive with flex. */
   width?: number;
   /**
@@ -28,7 +28,7 @@ export interface TableCardProps {
    * Custom icon element (SVG, img, etc.) — takes precedence over `icon`.
    * Render at 16×16 for best alignment with the title.
    */
-  iconElement?: React.ReactNode;
+  iconElement?: ReactNode;
   /** Icon to the left of the title (Icons component name). */
   icon?: IconsProps["icon"];
   /** Checkbox state for multi-select. */
@@ -41,7 +41,7 @@ export interface TableCardProps {
    * Actions slot — rendered on the right side of the header.
    * Utiliser des GhostButton icône seule : size="sm", icon + aria-label (infobulle intégrée), tone="danger" pour supprimer.
    */
-  actions?: React.ReactNode;
+  actions?: ReactNode;
   /** Body columns. */
   columns?: TableCardColumn[];
   /** Visual state of the card. */
@@ -120,7 +120,7 @@ export const TableCard = ({
               .filter(Boolean)
               .join(" ");
 
-            const style: React.CSSProperties = col.width
+            const style: CSSProperties = col.width
               ? { width: col.width, minWidth: col.width }
               : col.flex
                 ? { flexGrow: col.flex }

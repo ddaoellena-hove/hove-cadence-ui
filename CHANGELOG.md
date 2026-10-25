@@ -19,6 +19,7 @@ Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, 
 
 ### Corrigé
 
+- **Types publiés regroupés** : `dist/index.d.ts` (import) et `dist/index.d.cts` (require) sont désormais deux fichiers autonomes générés par `dts-bundle-generator` (script `build:types`), au lieu d'une déclaration par module. Le paquet se type en `moduleResolution` `node16` et `nodenext`, en ESM comme en CommonJS (imports relatifs sans extension et absence de `.d.cts` le cassaient), et sous TypeScript 6 (les déclarations gardaient des `import "./x.css"`, refusés par défaut). Les `exports` donnent des types distincts par condition. Contrôle `npm run check:types` (node16, nodenext, bundler ; `strict`, `skipLibCheck: false`), lancé par la CI pour React 18 et 19. Pour un regroupement correct, les composants n'importent plus `React` par défaut (imports nommés) et les types React homonymes d'un type DOM sont aliasés (`ReactMouseEvent`, `ReactDragEvent`).
 - **Types publics sans d3** : `BarChart`, `ComboChart` et `ScatterChart` n'exposent plus de types `d3-scale` dans leurs déclarations (`BarLayout` et `ScatterPointInput` déplacés dans un module sans d3). Une application en `skipLibCheck: false` compilait en erreur faute de `@types/d3-scale`.
 
 ### Accessibilité

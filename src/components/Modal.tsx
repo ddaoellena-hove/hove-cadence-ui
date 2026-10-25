@@ -1,4 +1,4 @@
-import React, { useId, useLayoutEffect, useRef, useState } from "react";
+import { useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { CloseButton } from "./CloseButton";
 import { PrimaryButton } from "./PrimaryButton";
 import { OverlayPortal, useOverlay } from "./overlay-primitives";
@@ -24,7 +24,7 @@ export interface ModalProps {
   /** Nom accessible lorsque le titre visuel est absent. */
   "aria-label"?: string;
   /** Body content. */
-  children: React.ReactNode;
+  children: ReactNode;
   /**
    * Primary action (right button in footer).
    * Bouton principal du pied (PrimaryButton md ; `destructive` → tone="danger").

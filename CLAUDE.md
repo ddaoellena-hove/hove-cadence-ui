@@ -33,7 +33,7 @@ React 19 · TypeScript ~6 (strict) · Vite 8 · Storybook 10 (`@storybook/react-
 
 ## Git & publication
 - Toujours une branche dédiée (`feat/…`), jamais `main` directement sans accord.
-- Ne jamais publier sur npm sans demande explicite. Avant un publish : `npm version …`, puis `npm run build:lib` (car `dist/` peut avoir été écrasé par le build app), vérifier `dist/hove-cadence-ui.js/.cjs` + `index.d.ts`.
+- Ne jamais publier sur npm sans demande explicite. Avant un publish : `npm version …`, puis `npm run build:lib` (car `dist/` peut avoir été écrasé par le build app), vérifier `dist/hove-cadence-ui.js/.cjs` + `index.d.ts` / `index.d.cts` (déclarations regroupées par `build:types`), puis `npm run check:types`.
 
 ## Pièges connus
 - `npm install` exige `--legacy-peer-deps` (conflit préexistant sur `@storybook/addon-a11y`).
