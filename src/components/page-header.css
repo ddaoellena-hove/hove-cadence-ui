@@ -60,7 +60,7 @@
 }
 
 .page-header__subtitle {
-  color: var(--cadence-color-icon-muted, #69797d);
+  color: var(--cadence-color-text-secondary, #607075);
   font-size: 13px;
   line-height: 1.4;
   margin: 0;

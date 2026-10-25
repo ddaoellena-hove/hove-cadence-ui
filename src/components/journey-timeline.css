@@ -20,7 +20,7 @@
 
 /* Libellé « [1] » collé au départ du trajet. */
 .journey-timeline__label {
-  color: var(--cadence-color-text-secondary, #64757a);
+  color: var(--cadence-color-text-secondary, #607075);
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
   font-size: 13px;
   position: absolute;
@@ -91,7 +91,7 @@
 
 /* ── Résumé ──────────────────────────────────────────────────────────────── */
 .journey-timeline__summary {
-  color: var(--cadence-color-text-secondary, #64757a);
+  color: var(--cadence-color-text-secondary, #607075);
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
   font-size: 12px;
   position: absolute;

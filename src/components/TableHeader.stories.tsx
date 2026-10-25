@@ -20,7 +20,7 @@ const DateCell = ({ date, time }: { date: string; time: string }) => (
     <span style={{ fontFamily: "var(--cadence-font-sans, \"Inter\", Helvetica, sans-serif)", fontSize: 13, fontWeight: 500, color: "#002830" }}>
       {date}
     </span>
-    <span style={{ fontFamily: "var(--cadence-font-sans, \"Inter\", Helvetica, sans-serif)", fontSize: 12, color: "var(--cadence-color-text-secondary, #64757a)" }}>
+    <span style={{ fontFamily: "var(--cadence-font-sans, \"Inter\", Helvetica, sans-serif)", fontSize: 12, color: "var(--cadence-color-text-secondary, #607075)" }}>
       {time}
     </span>
   </div>

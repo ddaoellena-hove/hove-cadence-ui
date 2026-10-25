@@ -81,7 +81,7 @@
 }
 
 .pagination__ellipsis {
-  color: var(--cadence-color-icon-muted, #69797d);
+  color: var(--cadence-color-text-secondary, #607075);
   font-size: 13px;
   min-width: 24px;
   text-align: center;

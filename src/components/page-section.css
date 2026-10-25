@@ -40,7 +40,7 @@
   margin: 4px 0 0;
   font-size: 14px;
   line-height: 1.4;
-  color: var(--cadence-color-text-secondary, #64757a);
+  color: var(--cadence-color-text-secondary, #607075);
 }
 
 .page-section__actions {

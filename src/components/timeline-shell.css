@@ -34,7 +34,7 @@
 }
 
 .timeline-shell__eyebrow {
-  color: var(--cadence-color-text-secondary, #64757a);
+  color: var(--cadence-color-text-secondary, #607075);
   font-size: var(--cadence-font-size-caption, 11px);
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -48,7 +48,7 @@
 }
 
 .timeline-shell__meta {
-  color: var(--cadence-color-text-secondary, #64757a);
+  color: var(--cadence-color-text-secondary, #607075);
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
   font-size: 12px;
 }
@@ -144,7 +144,7 @@
 
 /* ── Axe ─────────────────────────────────────────────────────────────────── */
 .timeline-shell__tick {
-  color: var(--cadence-color-text-secondary, #64757a);
+  color: var(--cadence-color-text-secondary, #607075);
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
   font-size: 12px;
   padding-left: 4px;
@@ -163,7 +163,7 @@
 .timeline-shell__hint {
   background-color: var(--cadence-color-surface-subtle, #fafafa);
   border-top: 1px solid var(--cadence-color-border, #e5e5e5);
-  color: var(--cadence-color-text-secondary, #64757a);
+  color: var(--cadence-color-text-secondary, #607075);
   font-size: 12px;
   margin: 0;
   padding: 10px 16px;

@@ -13,7 +13,7 @@
 .activity-feed__status { flex-shrink: 0; }
 
 /* ── 2. Auteur et date : secondaires ── */
-.activity-feed__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin-top: 6px; color: var(--cadence-color-text-secondary, #64757a); font-size: 12px; line-height: 1.5; }
+.activity-feed__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin-top: 6px; color: var(--cadence-color-text-secondary, #607075); font-size: 12px; line-height: 1.5; }
 /* Séparateur « · » entre auteur et date */
 .activity-feed__author + time::before, .activity-feed__author + span::before { content: "·"; margin-right: 6px; }
 .activity-feed__author { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }

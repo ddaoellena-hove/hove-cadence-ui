@@ -11,7 +11,7 @@
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   font-size: 13px;
   font-weight: 500;
-  color: var(--cadence-color-icon-muted, #69797d);
+  color: var(--cadence-color-text-secondary, #607075);
   transition: background-color 0.15s ease, color 0.15s ease;
   white-space: nowrap;
   outline: none;

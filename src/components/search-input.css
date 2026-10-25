@@ -60,7 +60,7 @@
 
 /* Placeholder dans le gris de la loupe (#69797d, AA 4,6:1 sur blanc) */
 .search-input__input::placeholder {
-  color: var(--cadence-color-icon-muted, #69797d);
+  color: var(--cadence-color-placeholder, #737373);
   font-weight: 400;
   opacity: 1;
 }

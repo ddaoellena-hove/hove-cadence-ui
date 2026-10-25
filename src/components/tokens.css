@@ -83,12 +83,12 @@
   --cadence-color-label: #1a3e45;          /* Labels de formulaire, badges ; fond de PrimaryButton au repos */
   --cadence-color-primary-hover: #10353d;  /* Survol d'un PrimaryButton : un cran plus foncé que le repos (13,1:1 avec texte blanc) */
   --cadence-color-text-muted: #809397;     /* Texte secondaire NON AA (3,2:1) — réservé aux icônes et au grand texte/gras */
-  --cadence-color-text-secondary: #64757a; /* Texte secondaire AA (4,8:1 sur blanc) — descriptions, aides, petits libellés */
+  --cadence-color-text-secondary: #607075; /* Texte secondaire AA sur tous les fonds clairs (5,2:1 sur blanc, 4,55:1 sur surface-alt) — descriptions, aides, petits libellés */
   --cadence-color-text-disabled: #808080;  /* Texte des états désactivés */
   --cadence-color-placeholder: #737373;    /* Placeholders des champs */
 
   /* ── Couleurs — icônes ─────────────────────────────────────────────────── */
-  --cadence-color-icon-muted: #69797d;     /* Icônes d'action discrètes (TableHeader) */
+  --cadence-color-icon-muted: #69797d;     /* Icônes, chevrons et poignées discrets — jamais du texte (4,5:1 de justesse sur blanc) */
   --cadence-color-icon-neutral: #737373;   /* Icônes neutres (pictos métier) */
   --cadence-color-icon-disabled: #c5cfd3;  /* Pictos inactifs : flèches de tri non actives (TableHeader, DataTable) */
 

@@ -9,7 +9,7 @@ const Row = ({ title, description, control }: { title: string; description: stri
   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
     <div style={{ minWidth: 0 }}>
       <div style={{ fontSize: 14, fontWeight: 500, color: "var(--cadence-color-label, #1a3e45)" }}>{title}</div>
-      <div style={{ fontSize: 13, color: "var(--cadence-color-text-secondary, #64757a)" }}>{description}</div>
+      <div style={{ fontSize: 13, color: "var(--cadence-color-text-secondary, #607075)" }}>{description}</div>
     </div>
     {control}
   </div>

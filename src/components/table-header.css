@@ -7,7 +7,7 @@
 /* ── Cell ────────────────────────────────────────────────────────────────── */
 .table-header__cell {
   align-items: center;
-  color: var(--cadence-color-icon-muted, #69797d);
+  color: var(--cadence-color-text-secondary, #607075);
   display: flex;
   flex-shrink: 0;
   gap: 5px;

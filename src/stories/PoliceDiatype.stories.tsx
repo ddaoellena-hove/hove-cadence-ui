@@ -45,7 +45,7 @@ const Column = ({ title, font, children }: { title: string; font: string; childr
         fontWeight: 600,
         letterSpacing: "0.04em",
         textTransform: "uppercase",
-        color: "var(--cadence-color-text-secondary, #64757a)",
+        color: "var(--cadence-color-text-secondary, #607075)",
       }}
     >
       {title}
@@ -86,7 +86,7 @@ const Specimen = ({ font }: { font: string }) => (
       <div style={{ fontWeight: 700 }}>700 — Bold · Portez ce vieux whisky au juge.</div>
       <div style={{ fontWeight: 400, fontStyle: "italic" }}>Italique · Portez ce vieux whisky au juge.</div>
     </div>
-    <div style={{ fontFamily: font, fontSize: 15, color: "var(--cadence-color-text-secondary, #64757a)" }}>
+    <div style={{ fontFamily: font, fontSize: 15, color: "var(--cadence-color-text-secondary, #607075)" }}>
       ABCDEFGHIJKLMNOPQRSTUVWXYZ
       <br />
       abcdefghijklmnopqrstuvwxyz
@@ -137,7 +137,7 @@ const StatsTable = () => (
     }}
   >
     <thead>
-      <tr style={{ textAlign: "left", color: "var(--cadence-color-text-secondary, #64757a)" }}>
+      <tr style={{ textAlign: "left", color: "var(--cadence-color-text-secondary, #607075)" }}>
         <th style={{ padding: "6px 8px", fontWeight: 600 }}>Ligne</th>
         <th style={{ padding: "6px 8px", fontWeight: 600, textAlign: "right" }}>Retard moy.</th>
         <th style={{ padding: "6px 8px", fontWeight: 600, textAlign: "right" }}>Ponctualité</th>

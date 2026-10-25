@@ -211,7 +211,7 @@
 /* ── Message + action ── */
 .color-field__message {
   margin: 0;
-  color: var(--cadence-color-text-secondary, #64757a);
+  color: var(--cadence-color-text-secondary, #607075);
   font-size: 12px;
   line-height: 1.5;
 }
