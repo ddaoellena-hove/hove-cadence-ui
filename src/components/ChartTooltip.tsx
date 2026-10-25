@@ -52,7 +52,7 @@ export const ChartTooltip = ({ x, y, title, rows, note }: ChartTooltipProps) => 
     if (left + width > viewportWidth - MARGIN) left = Math.max(MARGIN, x - OFFSET - width);
     if (top + height > viewportHeight - MARGIN) top = Math.max(MARGIN, y - OFFSET - height);
     setPosition({ left, top });
-  }, [x, y, title, rows.length]);
+  }, [x, y, title, rows, note]);
 
   return createPortal(
     <div ref={ref} className="chart-tooltip" style={position} aria-hidden="true">
