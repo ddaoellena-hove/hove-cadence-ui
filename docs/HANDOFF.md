@@ -1,10 +1,65 @@
-# Relais de développement — 22 octobre 2026
+# Relais de développement — 25 octobre 2026
 
 ## Démarrage pour un nouvel agent
 
 1. Lire `CLAUDE.md`, puis `GUIDELINES.md` à la racine : conventions, API et règles visuelles.
 2. Lire ce document et vérifier `git status --short` et `git branch --show-current` : l’état ci-dessous est une photographie datée.
 3. Consulter les rapports liés avant de refaire un audit ou d’ajouter un composant. Le code et les stories actuels précisent le comportement réel ; les propositions historiques ne remplacent pas les guidelines.
+
+## État au 25 octobre 2026 — 1.0.0 prête, non publiée
+
+- **`main` contient tout** : la 0.9.x (0.9.0 à 0.9.8) puis la préparation de la 1.0 (PR #49 à #55). Manifeste en **`1.0.0`** (`npm version 1.0.0 --no-git-tag-version`), **non publié** : la dernière version sur npm est la **0.1.6**. La publication se fait uniquement sur demande explicite de l'utilisateur.
+- Fichiers locaux jamais commités : `.claude/settings.local.json` (désormais ignoré par Git), `.claude/launch.json`, `.mcp.json`, `story-ui-*`, `public/fonts/ABCDiatype-*`.
+- Branches : une par sujet, partie de `main`, fusionnée par PR (merge commit) une fois la CI verte ; les branches locales fusionnées sont supprimées.
+
+### Ce que contient la 1.0.0
+
+| Sujet | PR | Détail |
+|---|---|---|
+| Infobulles des graphiques | #49 | Valeur longue sous son libellé, sans débordement |
+| Ménage du dépôt | #50 | `.claude/settings.local.json` hors suivi + `.gitignore` |
+| Retrait des API dépréciées | #51 | `SecondaryButton`, `DataVisualization` (+ alias `--CAI-dv-series-*`), anciennes props de `PrimaryButton`, `Link variant="secondary"`, `Sidebar user.email`, shim `button-compat` → module interne `dev-warnings` ; garde-fou `removed-api-usage.test.ts` ; guide de migration 0.x → 1.0 dans le CHANGELOG |
+| Nettoyage des stories | #52 | `DashboardMultimodal` et `Recettes/*` retirées ; page de redirection conservée |
+| Contraste AA | #53 | `text-secondary` → `#607075` ; textes en `icon-muted` → `text-secondary` ; garde-fou `icon-muted-text-usage.test.ts` ; checklist `docs/audits/0.8.5/contraste-aa.md` close |
+| Types publics sans d3 | #54 | `BarLayout` et `ScatterPointInput` dans `chart-types.ts` : les déclarations publiées n'exposent plus de types `d3-scale` |
+| Préparation 1.0 | #55 | GUIDELINES relu (sommaire, recettes 3/6/7 à jour de l'API, `aria-label` documentés, largeur de Sidebar), feuille de route, ce relais, version 1.0.0 |
+
+### Décisions à préserver
+
+- `--cadence-color-icon-muted` est réservé aux icônes, chevrons et poignées ; tout texte secondaire (états estompés compris : onglets inactifs, série masquée, jour hors mois) prend `--cadence-color-text-secondary`.
+- `warnOnce` / `errorOnce` / `checkButtonContent` vivent dans `src/components/dev-warnings.ts` (interne). Plus aucun avertissement de dépréciation.
+- Le codemod `scripts/codemods/buttons-v2.mjs` reste livré dans le paquet : il sert au guide de migration.
+- Les recettes de code de GUIDELINES restent, en complément des Page patterns (qui priment).
+- `Icons iconMap` (prop ignorée, marquée `@deprecated`) n'a pas été retirée : elle ne figurait pas dans la liste de la 1.0. À trancher pour une 1.x ou une 2.0.
+
+### Validation
+
+- Avant chaque PR : `npx tsc -b --noEmit`, `npm run lint` (0 erreur, 8 avertissements historiques), `npm test`, `npm run test:react18`, `npm run build:lib`, `npm run smoke:dist` ; CI GitHub (React 18 et 19) verte avant fusion.
+- Suite au 25 octobre 2026 : **899 tests** dans 157 fichiers (contre 1022 avant la 1.0 : les matrices du shim `button-compat` et les stories retirées ne comptent plus ; +3 pour le garde-fou `icon-muted`). `dist/` de la 1.0.0 contrôlé : `hove-cadence-ui.js` (464 Ko), `.cjs` (360 Ko), `index.d.ts`, `style.css` (178 Ko), 95 exports identiques en ESM et CJS.
+- **Applications consommatrices** (hors dépôt, paquet issu de `npm pack`) : React 18.3 et React 19.3, TypeScript 5.9 en `strict` et `skipLibCheck: false`.
+  - ✅ Types en `moduleResolution: "bundler"` (Vite, Next, webpack) : imports nommés, types publics, `@ts-expect-error` sur une prop supprimée.
+  - ✅ Rendu serveur depuis le bundle ESM (esbuild) et depuis `require()` (CJS) ; exports retirés absents à l'exécution.
+  - ✅ `style.css` importé par le bundler (210 Ko) et résolu par `require.resolve`. Les `url(/fonts/…)` du `@font-face` sont laissées à l'application : un bundler qui résout les URL absolues (esbuild) doit les déclarer externes (`--external:/fonts/*`).
+  - Corrigé en cours de route (#54) : les déclarations exposaient des types `d3-scale` (dépendance de développement) → échec en `skipLibCheck: false`.
+  - ⚠️ **Limite connue** : en `moduleResolution: "node16"` / `"nodenext"`, les types ne se chargent pas (imports relatifs sans extension dans les `.d.ts`, pas de `.d.cts` pour `require`). Sans effet pour les applications construites avec un bundler ; à corriger si une application Node ESM ou CJS « pure » doit consommer la lib (déclarations groupées en un fichier, `.d.ts` + `.d.cts`).
+  - ℹ️ Sous React 18, le rendu serveur émet l'avertissement « useLayoutEffect does nothing on the server » (positionnement des popovers et graphiques) ; React 19 ne l'émet plus.
+- **Externes** : `dist/hove-cadence-ui.js` et `.cjs` importent `react`, `react-dom`, `@untitledui/icons`, `@tanstack/*` et les quatre `d3-*` sans les embarquer.
+
+### Reste à faire
+
+1. **Test au lecteur d'écran** (manuel, par l'utilisateur) — VoiceOver + Safari (macOS) et NVDA + Firefox ou Chrome (Windows). Composants clés, par ordre de risque :
+   - **Surcouches** : `Modal` (piège à focus, retour du focus, Échap, superposition avec un `Drawer`), `Drawer`, `Popover` (sortie au clavier), `Toaster` (annonce unique de chaque toast, `error` immédiat, `success` poli).
+   - **Champs composites** : `DatePicker` (cases JJ / MM / AAAA, calendrier, jours annoncés en toutes lettres), `DateRangePicker`, `TimePicker` (`spinbutton` Heures / Minutes), `Autocomplete` (simple et `multiple` : options, groupes, retrait des chips), `Dropdown` (groupes nommés), `CounterInput`, `ColorField`.
+   - **Sélection hiérarchique** : `TreeView` (niveaux, position, `aria-checked` mixte, chargement à la demande), `DisruptionScopePicker` (résumé de la sélection).
+   - **Navigation** : `Sidebar` (repli, périmètre), `TabList` / `Tab` / `SecondaryTab`, `SegmentedControl` (`radiogroup`), `Breadcrumbs` avec sélecteur, `Pagination`.
+   - **Données** : `DataTable` (tri annoncé, sélection et plage, navigation par lignes), `ActionMenu`, `ColumnManager` (réordonnancement annoncé), `FilterBar` (nombre de résultats).
+   - **Formulaires et retours** : `ErrorSummary` (focus et liens vers les champs), `InlineAlert`, `FileUpload` (états écrits), `Stepper`, `Accordion`, `CopyableText` (« Copié »).
+   - **Graphiques** : `LineChart` et `BarChart` (parcours au clavier, valeur annoncée, « Voir les données »), `Heatmap` (grille), `DonutChart`, `LineDiagram` (annonces regroupées des incidents), `TimeSpaceDiagram` (le long d'une course).
+2. **Publication npm** : sur demande uniquement. `dist/` est à reconstruire juste avant (`npm run build:lib`, car `npm run build` l'écrase) puis à vérifier (`hove-cadence-ui.js`, `.cjs`, `index.d.ts`).
+
+# Historique des lots (avant la 1.0)
+
+> Photographies datées, conservées pour mémoire : branches, versions et comptes de tests y sont ceux de l'époque. L'état courant est dans « État au 25 octobre 2026 » ci-dessus.
 
 ## Objectif et état de livraison
 

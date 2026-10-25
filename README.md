@@ -59,7 +59,7 @@ Lire [GUIDELINES.md](GUIDELINES.md), source de vérité pour les API et les règ
 
 Réutiliser les tokens et les composants existants. Les couleurs GTFS de `LineBadge` sont une exception métier documentée. `Autocomplete` couvre déjà la recherche avec sélection multiple et groupes.
 
-La configuration Vercel construit Storybook. La version courante du manifeste est `0.5.0` ; les changements locaux supplémentaires ne constituent pas une version publiée. La publication npm reste une action explicite, précédée d'une décision de version et d'un build de la bibliothèque.
+La configuration Vercel construit Storybook. La version courante du manifeste est `1.0.0`, non publiée (dernière version sur npm : 0.1.6) ; le guide de migration 0.x → 1.0 est en tête du [changelog](CHANGELOG.md). La publication npm reste une action explicite, précédée d'une décision de version et d'un build de la bibliothèque.
 
 
 ## Compléments avant 1.0
