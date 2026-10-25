@@ -32,7 +32,7 @@ Règles impératives pour générer du code avec ce design system :
 4. **Les règles ❌ sont bloquantes.** Ce ne sont pas des suggestions : un code qui viole un ❌ est incorrect.
 5. **`Checkbox`, `Toggle`, `RadioButton`, `RichCheckbox` et `RichRadioButton` se pilotent par la prop `state`**, pas par une prop `checked` — elle n'existe pas. Exemple : `<Checkbox state={isChecked ? "checked" : "unchecked"} onChange={setIsChecked} />`.
 6. **Le CSS custom est limité au layout.** `display: flex`, `gap`, `padding`, `margin`, largeurs : OK en style inline. Couleurs, polices, bordures, ombres custom : interdit — les composants et tokens couvrent ces besoins.
-7. **Choisir d'abord un pattern** dans le tableau [Intention → pattern](#intention--pattern) pour toute page nouvelle, partir de son gabarit, puis composer. **Une page qui ne correspond à aucun pattern est signalée, pas inventée.** (Les recettes restent valides le temps de leur migration.)
+7. **Choisir d'abord un pattern** dans le tableau [Intention → pattern](#intention--pattern) pour toute page nouvelle, partir de son gabarit, puis composer. **Une page qui ne correspond à aucun pattern est signalée, pas inventée.** Les recettes de code servent d'exemples complémentaires.
 8. **Un seul `PrimaryButton` plein par vue.** Plusieurs `GhostButton` sont autorisés. 3e action d'un groupe : `Link hideArrow`.
 9. **Toujours passer `label`** sur les champs de formulaire (`TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker`, `CounterInput`, `TimePicker`). Exception, qui prend `aria-label` à la place : la variante bouton (`variant="button"` de `DatePicker`, `DateRangePicker`, `Dropdown`, `TimePicker`), notamment pour les filtres rapides d'une `FilterBar`.
 10. **Imports** : composants depuis `@ddaoellena/cadence-ui`, styles via un unique `import "@ddaoellena/cadence-ui/style.css"`, polices via les `<link>` de la section [Installation](#installation--setup).
@@ -250,7 +250,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Succession des arrêts et horaires d’une course | `RouteStopList` | `Stepper` (étapes d’un processus) |
 | Horaires et exploitation d'une ligne sur une journée (fréquence, croisements, théorique / réalisé) | `TimeSpaceDiagram` | `Timeline` (plages par entité) ; `RouteStopList` (une seule course) |
 | Positions temps réel des véhicules sur une ligne (supervision) | `LineDiagram` | `RouteStopList` (une course, horaires) ; une carte (géographie) |
-| Examiner les erreurs d’un import | Recette `Offre et qualité / Rapport qualité` | `ErrorSummary` (erreurs des champs d’un formulaire) |
+| Examiner les erreurs d’un import (rapport qualité) | Pattern **Liste + détail latéral** (`InlineAlert` de bilan, `FilterBar`, `DataTable`, détail en `Drawer`) | `ErrorSummary` (erreurs des champs d’un formulaire) |
 | Action principale de la vue (une seule) | `PrimaryButton` | `GhostButton` (secondaire) |
 | Action secondaire, action inline de formulaire | `GhostButton` | `Link` (3e action) |
 | 3e action d'un groupe, action dans une phrase | `Link hideArrow` | `GhostButton` (action secondaire) |
@@ -711,7 +711,7 @@ Les anciennes API de boutons (0.2) et les composants dépréciés sont **supprim
 
 ### Imports et formulaires à étapes
 
-Combiner `Stepper`, `FileUpload`, `ProgressBar` et `InlineAlert` : l'app gère lecture, validation et transfert. Une étape terminée peut être revisitée via `onStepClick`. Une erreur de soumission est résumée en haut par `ErrorSummary`, qui donne accès aux champs par id ou ref. Conserver aussi le message d’erreur propre à chaque champ. La recette **Recettes/Parcours transport → Import réseau et reprise après erreur** couvre ce parcours.
+Combiner `Stepper`, `FileUpload`, `ProgressBar` et `InlineAlert` : l'app gère lecture, validation et transfert. Une étape terminée peut être revisitée via `onStepClick`. Une erreur de soumission est résumée en haut par `ErrorSummary`, qui donne accès aux champs par id ou ref. Conserver aussi le message d’erreur propre à chaque champ. Le pattern **Assistant / import** couvre ce parcours.
 
 Pour une sélection multiple avec recherche et groupes, utiliser **`Autocomplete multiple`** (déjà disponible), sans créer un deuxième sélecteur. La sélection globale peut être une action de composition si le produit l'exige.
 
@@ -827,7 +827,7 @@ Le code complet est dans la [recette 2](#recette-2--page-liste-avec-sélection-m
 
 ### Colonnes et export
 
-`ColumnManager` pilote `hiddenColumnIds` et `columnOrder` de `DataTable`. `ExportMenu` expose sélection/page/résultat et CSV/Excel : ne proposer que les formats réellement implémentés. La recette **Liste de perturbations** télécharge un CSV local qui respecte les colonnes visibles et le tri de la page.
+`ColumnManager` pilote `hiddenColumnIds` et `columnOrder` de `DataTable`. `ExportMenu` expose sélection/page/résultat et CSV/Excel : ne proposer que les formats réellement implémentés. L'export d'une page respecte les colonnes visibles et le tri appliqués (pattern **Liste / index**).
 
 ## Statuts & étiquettes
 
@@ -1031,7 +1031,7 @@ Catalogue de gabarits de page nommés. **Choisir d'abord un pattern dans le tabl
 
 R1 → Coque d'application · R2 → Liste / index · R3 → Formulaire · R4 → États de page · R5 → Liste / index · R6 → Supervision · R7 → Analyse · R8 → Liste + détail latéral · R9 → Assistant · R10 → Planification / temps.
 
-> Les 11 fiches sont ci-dessous. La migration des stories `Recettes/*` vers les patterns reste à finaliser ; les recettes ci-dessous restent valides en attendant.
+> Les 11 fiches sont ci-dessous. Les stories `Recettes/*` ont été retirées en 1.0.0 : leurs parcours sont couverts par les patterns (correspondance ci-dessus). Les recettes de code plus bas restent des exemples à adapter.
 
 ### Pattern — Formulaire
 
@@ -1106,7 +1106,7 @@ FormActions  →  Link · GhostButton · PrimaryButton
 
 ## Recettes de pages complètes
 
-Blocs prêts à copier. **Partir d'une recette puis adapter** — ne pas réinventer la structure. *(En cours de migration vers les Page patterns ci-dessus.)*
+Exemples de code à adapter, en complément des [Page patterns](#page-patterns) : **partir d'abord du pattern** et de son gabarit vérifié, puis s'aider de la recette correspondante.
 
 ### Recette 1 — Layout d'application
 
@@ -1387,7 +1387,7 @@ pour une vue entière, `size="inline"` dans un `DataTable`, une `Card` ou un gra
 
 ### Recette 5 — Page de supervision
 
-Liste de gros volume paginée par l'API : `FilterBar` au-dessus, `DataTable` (tri et pagination côté serveur, sélection), barre de sélection, `Pagination` en dessous. Story complète : *Recettes / Liste de perturbations* (variante en mémoire).
+Liste de gros volume paginée par l'API : `FilterBar` au-dessus, `DataTable` (tri et pagination côté serveur, sélection), barre de sélection, `Pagination` en dessous. Gabarit vérifié : pattern **Liste / index**.
 
 ```tsx
 import { useEffect, useState } from "react";
@@ -1610,17 +1610,17 @@ export const AnalysisDashboard = () => {
 
 ### Recette 8 — Détail d'une perturbation
 
-Story **Recettes/Parcours transport → Détail d’une perturbation** : `AppLayout` + `Sidebar` + `PageHeader`, liste `DataTable`, ouverture d'un `Drawer`, `InlineAlert`, `Accordion`, `LineBadge` et `StopLabel`. Les métadonnées utilisent `DescriptionList` et l’historique local utilise `ActivityFeed`. Pour situer les perturbations sur un axe temps (durées, chevauchements), ajouter un `Timeline` dont chaque plage ouvre le `Drawer` via `onItemClick`. Pour restreindre la liste à une branche du réseau (mode → ligne → parcours), un `TreeView` sert de volet de navigation à gauche, les enfants d'une ligne pouvant être chargés à la demande (`loadChildren`). La prise en compte est un état local de démonstration. Aucun backend ni historique réel n'est fourni.
+Pattern **Liste + détail latéral** (gabarit vérifié : `src/patterns/ListeDetailPattern.tsx`) : `AppLayout` + `Sidebar` + `PageHeader`, liste `DataTable`, ouverture d'un `Drawer`, `InlineAlert`, `Accordion`, `LineBadge` et `StopLabel`. Les métadonnées utilisent `DescriptionList` et l’historique local utilise `ActivityFeed`. Pour situer les perturbations sur un axe temps (durées, chevauchements), ajouter un `Timeline` dont chaque plage ouvre le `Drawer` via `onItemClick`. Pour restreindre la liste à une branche du réseau (mode → ligne → parcours), un `TreeView` sert de volet de navigation à gauche, les enfants d'une ligne pouvant être chargés à la demande (`loadChildren`).
 
 ### Recette 9 — Import réseau et correction des erreurs
 
-Story **Recettes/Parcours transport → Import réseau et reprise après erreur** : `Stepper`, `TextInput`, `FileUpload`, résumé d'erreurs (`ErrorSummary` + refs), `Autocomplete multiple`, vérification et `ProgressBar`. Pour corriger les couleurs de lignes importées (GTFS `route_color`), utiliser `ColorField` (hex validé, aperçu `LineBadge`, contrôle de contraste).
+Pattern **Assistant / import** (gabarit vérifié : `src/patterns/AssistantPattern.tsx`) : `Stepper`, `TextInput`, `FileUpload`, résumé d'erreurs (`ErrorSummary` + refs), `Autocomplete multiple`, vérification et `ProgressBar`. Pour corriger les couleurs de lignes importées (GTFS `route_color`), utiliser `ColorField` (hex validé, aperçu `LineBadge`, contrôle de contraste).
 
-La démonstration lit un CSV UTF-8 et contrôle uniquement les en-têtes `stop_id`/`stop_name` (virgule ou point-virgule). Elle simule ensuite le traitement local. Elle ne remplace ni un parseur CSV complet ni un validateur GTFS. Les timers sont nettoyés au démontage ; l'app de production doit gérer ses propres requêtes, annulations et reprises.
+L'application assure la lecture du fichier, la validation métier (schéma GTFS), le transfert, l'annulation et la reprise : les composants n'en font aucun.
 
 ### Recette 10 — Planification d'un service de nuit
 
-Story **Recettes/Planification de service → Service de nuit et validation** : deux `TimePicker allowOvernight`, validation native et comparaison début/fin par l'app, `ErrorSummary` pour revenir au champ fautif, puis `DescriptionList` et `ActivityFeed` après enregistrement local. `25:30` est conservé comme heure de service, sans conversion de date. Le formulaire utilise `noValidate` et appelle donc explicitement `checkValidity()` avant d'enregistrer.
+Pattern **Planification / temps** (gabarit vérifié : `src/patterns/PlanificationPattern.tsx`) : deux `TimePicker allowOvernight`, validation native et comparaison début/fin par l'app, `ErrorSummary` pour revenir au champ fautif, puis `DescriptionList` et `ActivityFeed` après enregistrement local. `25:30` est conservé comme heure de service, sans conversion de date. Le formulaire utilise `noValidate` et appelle donc explicitement `checkValidity()` avant d'enregistrer.
 
 ## Référence API des composants
 
@@ -3004,7 +3004,7 @@ Message persistant dans le flux. Erreur : `role="alert"` ; autres types : `role=
 | `onDismiss` | `() => void` | — | L'app retire l'alerte au clic |
 | `className` | `string` | — | Classe additionnelle |
 
-Pour un résumé d’erreurs de soumission, utiliser `ErrorSummary`, qui réutilise `InlineAlert` et `Link` et prend en charge le focus. Voir la recette d’import.
+Pour un résumé d’erreurs de soumission, utiliser `ErrorSummary`, qui réutilise `InlineAlert` et `Link` et prend en charge le focus. Voir le pattern **Assistant / import**.
 
 ### LineBadge
 
@@ -3497,8 +3497,8 @@ Migration : les props existantes restent utilisables ; le DOM passe d’un champ
 
 - `ServiceCalendar` pour éditer une règle de circulation : période inclusive, semaine type, exceptions explicites. Aucune déduction des jours fériés ou vacances scolaires.
 - `RouteStopList` pour lire la succession de passages d’une course. Réutilise `StopLabel` et accepte un `LineBadge` en en-tête.
-- Recette **Offre et qualité** : premier niveau `SegmentedControl` (« Offre / Qualité »), second niveau `SecondaryTab` dans `TabList level="secondary"`. L’onglet Offre montre le calendrier puis les courses ; Qualité compose le rapport décrit ci-dessous.
-- **DataQualityReport est une recette interne, pas un export de la bibliothèque.** Elle compose `InlineAlert`, `FilterBar`, `DataTable`, `Drawer`, `DescriptionList` et `EmptyState`. L’application fournit les constats et décide quels niveaux bloquent l’import. Le résumé global reste indépendant du filtre ; aucun résultat de recherche ne signifie pas absence d’erreurs.
+- Offre et qualité d'un réseau : premier niveau `SegmentedControl` (« Offre / Qualité »), second niveau `SecondaryTab` dans `TabList level="secondary"`. L’onglet Offre montre le calendrier puis les courses ; Qualité compose le rapport décrit ci-dessous.
+- **Rapport qualité d'un import : une composition, pas un composant de la bibliothèque.** Elle compose `InlineAlert`, `FilterBar`, `DataTable`, `Drawer`, `DescriptionList` et `EmptyState`. L’application fournit les constats et décide quels niveaux bloquent l’import. Le résumé global reste indépendant du filtre ; aucun résultat de recherche ne signifie pas absence d’erreurs.
 - `DisruptionScopePicker` pour choisir le périmètre réseau d’une perturbation. Compose un champ, un `Popover`, une recherche (`SearchInput`) et un `TreeView` en sélection multiple ; le périmètre retenu s’affiche en chips (`Badge dismissible`).
 
 ### DisruptionScopePicker
