@@ -51,13 +51,7 @@ Storybook est servi sur le port 6006. Il constitue la vitrine principale ; `npm 
 
 ## Parcours de référence
 
-Dans Storybook, rubrique **Recettes** :
-
-- **Offre et qualité** : calendrier de circulation, course nocturne et rapport de qualité avec recherche, filtres et correction attendue.
-- **Liste de perturbations** : recherche, filtres, sélection, pagination, colonnes et téléchargement CSV local.
-- **Parcours transport / Détail d’une perturbation** : consultation dans un Drawer, informations de ligne et d'arrêt, prise en compte locale.
-- **Planification de service / Service de nuit et validation** : heures après minuit, validation début/fin, résumé d’erreurs, synthèse et historique local.
-- **Parcours transport / Import réseau et reprise après erreur** : dépôt CSV, résumé d'erreurs avec accès aux champs, sélection multiple de lignes, vérification et progression simulée. Aucun transfert réseau ni validation GTFS complète.
+Dans Storybook, rubrique **Page patterns** : onze gabarits de page vérifiés (coque d'application, liste, liste + détail latéral, détail, formulaire, assistant d'import, supervision, analyse, planification, paramètres, états de page), avec leur documentation. Les anciennes stories `Recettes/*` ont été retirées en 1.0.0 ; la page *Recettes / Vers les Page patterns* donne la correspondance.
 
 ## Contribuer et livrer
 

@@ -17,6 +17,11 @@ Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0 (
 - Les shims de compatibilité sont retirés (`button-compat`, avertissements de dépréciation). Les avertissements de développement restants (contenu des boutons, contraste de `LineBadge`, carte cliquable sans `actionLabel`) passent par un module interne `dev-warnings`.
 - Garde-fou : `removed-api-usage.test.ts` refuse désormais aussi les API retirées en 1.0.0 dans GUIDELINES, les guides et les stories (il remplace `deprecated-api-usage.test.ts` et `link-secondary-usage.test.ts`).
 
+### Storybook
+
+- **Stories `Recettes/*` retirées** (*Liste de perturbations*, *Parcours transport*, *Offre et qualité*, *Planification de service*) : leurs parcours sont couverts par les Page patterns. La page *Recettes / Vers les Page patterns* reste pour rediriger les anciens liens. Les recettes de code de GUIDELINES restent, renvoyant aux gabarits vérifiés.
+- Story jetable *Démo / Dashboard multimodal* supprimée.
+
 ### Guide de migration 0.x → 1.0
 
 La dernière version publiée sur npm est la **0.1.6** ; les 0.2 à 0.9 ne l'ont pas été. Les étapes ci-dessous, dans l'ordre, couvrent tout l'écart. TypeScript signale la plupart des points : compiler après chaque étape.
