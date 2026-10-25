@@ -1,5 +1,93 @@
 # Changelog — @ddaoellena/cadence-ui
 
+## 1.0.0 (non publiée)
+
+Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0 (feuille de route § 5). Le guide de migration ci-dessous couvre le passage de n'importe quelle 0.x à la 1.0.
+
+### ⚠️ Supprimé
+
+- **`SecondaryButton` est supprimé.** `outline` → `PrimaryButton outline size="sm"` (dashboard) ou `GhostButton size="sm"` ; plein → `PrimaryButton size="sm"` ou `GhostButton size="sm"` selon le rôle. Le type `SecondaryButtonProps` disparaît.
+- **`DataVisualization` est supprimé**, remplacé par `BarChart` : `type="stacked-vertical"` → `layout="stacked"` ; `"grouped-vertical"` → `layout="grouped"` ; `"horizontal"` → `layout="grouped" orientation="horizontal"`. Chaque série prend un `id` ; `showGridLines` → `showGrid` ; `showTooltip` disparaît (tooltip toujours actif) ; `title` est requis. Les types `DataVisualizationProps` / `DataVisualizationSeries` et les alias de couleurs `--CAI-dv-series-1..8` disparaissent avec lui : utiliser `--cadence-dataviz-series-1..8`.
+- **Anciennes props de `PrimaryButton`** (API 0.2) : `withIcon` → `iconStart` / `iconEnd`, ou `icon` + `aria-label` ; `destructive` → `tone="danger"` ; `size="medium" | "large"` → `"sm"` / `"md"` ; `state` → `disabled` (survol et appui sont en CSS) ; `iconMap` (ignoré) disparaît. Ces props sont désormais des erreurs de typage, et un `PrimaryButton` exige `label`, ou `icon` + `aria-label`, comme `GhostButton`.
+- **`Link variant="secondary"`** : la variante n'a jamais différé de `"primary"`, utiliser `variant="primary"` (défaut).
+- **`Sidebar` : `user.email`**, ignoré depuis la 0.8.1. `user` vaut `{ name, avatarSrc? }`.
+
+### Modifié
+
+- Les shims de compatibilité sont retirés (`button-compat`, avertissements de dépréciation). Les avertissements de développement restants (contenu des boutons, contraste de `LineBadge`, carte cliquable sans `actionLabel`) passent par un module interne `dev-warnings`.
+- Garde-fou : `removed-api-usage.test.ts` refuse désormais aussi les API retirées en 1.0.0 dans GUIDELINES, les guides et les stories (il remplace `deprecated-api-usage.test.ts` et `link-secondary-usage.test.ts`).
+
+### Guide de migration 0.x → 1.0
+
+La dernière version publiée sur npm est la **0.1.6** ; les 0.2 à 0.9 ne l'ont pas été. Les étapes ci-dessous, dans l'ordre, couvrent tout l'écart. TypeScript signale la plupart des points : compiler après chaque étape.
+
+**1. Installer et charger les styles**
+
+```bash
+npm install @ddaoellena/cadence-ui@^1.0.0
+```
+
+- Un seul import de styles à la racine : `import "@ddaoellena/cadence-ui/style.css";`.
+- Dépendances tirées par le paquet (externes au bundle, installées avec lui) : `@untitledui/icons`, `@tanstack/react-table`, `@tanstack/react-virtual`, `d3-array`, `d3-hierarchy`, `d3-scale`, `d3-shape`. React 18 ou 19.
+- Polices : les liens Google Fonts d'Inter, Space Grotesk et Spline Sans Mono (GUIDELINES § Installation). ABC Diatype et Uxum Grotesque sont commerciales : héberger leurs `woff2` sous `/fonts/`, sinon les replis s'appliquent.
+
+**2. Boutons** — le codemod livré avec le paquet réécrit les anciens appels (syntaxe seule, il ne dépend pas de la version installée) :
+
+```bash
+# Simulation : fichiers touchés et « TODO buttons-v2 » à relire
+node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs --dry src
+# Application (nécessite typescript dans le projet)
+node node_modules/@ddaoellena/cadence-ui/scripts/codemods/buttons-v2.mjs src
+```
+
+| 0.x | 1.0 |
+|---|---|
+| `<SecondaryButton outline … />` | `<PrimaryButton outline size="sm" … />` (dashboard) ou `<GhostButton size="sm" … />` |
+| `<SecondaryButton … />` plein | `<PrimaryButton size="sm" … />` ou `<GhostButton size="sm" … />` selon le rôle (le codemod laisse un `TODO buttons-v2`) |
+| `destructive` | `tone="danger"` |
+| `size="medium"` / `size="large"` | `size="sm"` / `size="md"` (défaut ; plus de grande taille) |
+| `withIcon="left"` / `"right"` + `icon` | `iconStart` / `iconEnd` |
+| `withIcon="only"` + `icon` | `icon` + `aria-label` (obligatoire) |
+| `state="disabled"` | `disabled` ; les autres valeurs de `state` disparaissent |
+| `Link variant="secondary"` | `Link` (`variant="primary"`, défaut) |
+| `TableCardAction` (supprimé en 0.4.0) | `GhostButton size="sm" icon="…" aria-label="…"` (`tone="danger"` pour supprimer) |
+
+Un bouton sans `label` n'affiche plus « Label » : fournir `label`, ou `icon` + `aria-label`.
+
+**3. Squelette d'application**
+
+- Remplacer la `Sidebar` en `position: fixed` + `marginLeft` + `useElementWidth` + `HEADER_HEIGHT` par `<AppLayout sidebar={<Sidebar … />}>{page}</AppLayout>`.
+- `Header` (supprimé en 0.4.0) → props `scope` et `user` de `Sidebar`. `user` : `{ name, avatarSrc? }`, sans `email`.
+- `NavigationDropdown` (supprimé en 0.4.0) → `Dropdown variant="button"` (`groupLabel` pour les sections).
+- Le titre de page devient un `PageHeader` (premier élément du contenu).
+
+**4. Composants renommés ou fusionnés**
+
+| 0.x | 1.0 |
+|---|---|
+| `KpiCard` (`label`) | `Card` (`title`) ; type `KpiCardDelta` → `CardDelta` |
+| `ActionCard` | `Card` (`actionLabel` + `onAction`) |
+| `Card onClick` sans libellé | `Card onClick` + `actionLabel` (bouton visible obligatoire, 0.8.1) |
+| `SegmentedControlAlt` | `SegmentedControl` (mêmes props) |
+| `DataVisualization` | `BarChart` (voir *Supprimé*) |
+| `var(--CAI-dv-series-N)` | `var(--cadence-dataviz-series-N)` |
+
+**5. Comportements à revérifier dans les tests de l'application**
+
+- `DatePicker` (variante champ) : la date se tape dans des cases JJ / MM / AAAA ; cliquer le champ n'ouvre plus le calendrier, seule l'icône le fait.
+- `TimePicker` : deux cases Heures / Minutes, ref et `id` sur la case des heures.
+- `FileUpload` : libellés d'état (« Fichier en attente », « Fichier importé »…).
+- `Gauge`, `Meter`, `BulletChart` : statuts « Favorable / Intermédiaire / Défavorable ».
+- `TextInput`, `Dropdown`, `DatePicker`, `Autocomplete` : 40px de haut (2px de moins qu'en 0.5).
+- `Tab` et `SecondaryTab` : toujours dans un `TabList` nommé (avertissement en développement sinon).
+
+**6. Contrôle final**
+
+```bash
+npx tsc --noEmit
+grep -rnE "SecondaryButton|DataVisualization|withIcon|CAI-dv-series|KpiCard|ActionCard|SegmentedControlAlt|NavigationDropdown|TableCardAction" src
+```
+
 ## 0.9.8 (non publiée)
 
 Version mineure, sans rupture d’API. Thème : **graphique espace-temps** (lot 0.9.5 de la feuille de route, livré après la 0.9.7 ; proposition `docs/proposals/time-space-diagram.md`).

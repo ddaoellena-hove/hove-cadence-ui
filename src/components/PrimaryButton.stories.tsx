@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, fn, spyOn, userEvent, within } from "storybook/test";
+import { expect, fn, userEvent, within } from "storybook/test";
 import { PrimaryButton } from "./PrimaryButton";
-import { resetWarningsForTests } from "./button-compat";
 import { GhostButton } from "./GhostButton";
 
 const meta: Meta<typeof PrimaryButton> = {
@@ -17,11 +16,6 @@ const meta: Meta<typeof PrimaryButton> = {
     tone: { control: "inline-radio", options: ["default", "danger"] },
     size: { control: "inline-radio", options: ["sm", "md"] },
     outline: { control: "boolean" },
-    // Anciennes props (0.2), encore acceptées en 0.3.0 : masquées des contrôles
-    withIcon: { table: { disable: true } },
-    destructive: { table: { disable: true } },
-    state: { table: { disable: true } },
-    iconMap: { table: { disable: true } },
   },
 };
 
@@ -113,37 +107,4 @@ export const Groupe: Story = {
       <PrimaryButton label="Enregistrer" />
     </div>
   ),
-};
-
-/**
- * Compatibilité 0.3.0 : les anciennes props sont traduites (avertissement en
- * développement, une fois). `outline` reste une variante à part entière.
- */
-export const AnciennesProps: Story = {
-  name: "Anciennes props (dépréciées)",
-  beforeEach: () => {
-    // Avertissement « une seule fois » : on repart d'une mémoire vierge pour l'asserter
-    resetWarningsForTests();
-    const warn = spyOn(console, "warn").mockImplementation(() => {});
-    return () => warn.mockRestore();
-  },
-  render: () => (
-    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-      <PrimaryButton outline label="outline (variante contour)" />
-      <PrimaryButton destructive label="destructive → danger" />
-      <PrimaryButton withIcon="left" icon="plus" size="large" label="withIcon + large" />
-      <PrimaryButton withIcon="only" icon="trash" label="Supprimer" />
-    </div>
-  ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await expect(canvas.getByRole("button", { name: "outline (variante contour)" })).toHaveClass("primary-button--outline");
-    await expect(canvas.getByRole("button", { name: "destructive → danger" })).toHaveClass("primary-button--danger");
-    await expect(canvas.getByRole("button", { name: "withIcon + large" })).toHaveClass("base-button--md", "base-button--icon-start");
-    await expect(canvas.getByRole("button", { name: "Supprimer" })).toHaveClass("base-button--icon-only");
-    // Chaque ancienne prop est signalée
-    for (const prop of ["destructive", "withIcon", "size"]) {
-      await expect(console.warn).toHaveBeenCalledWith(expect.stringMatching(new RegExp(`PrimaryButton : .*${prop}`)));
-    }
-  },
 };

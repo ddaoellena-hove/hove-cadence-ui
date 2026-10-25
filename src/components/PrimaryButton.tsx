@@ -2,14 +2,13 @@
  * PrimaryButton — action principale, plein (un seul par vue), ou variante
  * `outline` : action secondaire visible, réservée aux dashboards.
  *
- * API v2 commune avec GhostButton (tone, size, iconStart / iconEnd, icon +
- * aria-label, loading, fullWidth, type). Les anciennes props (withIcon,
- * destructive, size medium / large, state) restent acceptées en 0.3.0,
- * traduites par button-compat.ts ; suppression prévue en 1.0.0.
+ * API commune avec GhostButton (tone, size, iconStart / iconEnd, icon +
+ * aria-label, loading, fullWidth, type). Les anciennes props de la 0.2
+ * (withIcon, destructive, size medium / large, state) sont supprimées en 1.0.0.
  */
 import { forwardRef } from "react";
 import { BaseButton } from "./BaseButton";
-import { resolveButtonProps, warnDeprecated, type CompatButtonProps } from "./button-compat";
+import type { ActionButtonProps } from "./action-button-types";
 import "./primary-button.css";
 
 export type {
@@ -20,13 +19,16 @@ export type {
   ActionButtonTone,
 } from "./action-button-types";
 
-/** Nouvelle API (+ `outline`), plus les anciennes props tolérées (dépréciées) jusqu'à la 1.0.0. */
-export type PrimaryButtonProps = CompatButtonProps;
+/** Variante de PrimaryButton (pas de GhostButton). */
+export interface PrimaryVariantProps {
+  /** Variante contour : action secondaire visible, ex. dans un dashboard. Défaut false (plein). */
+  outline?: boolean;
+}
 
-export const PrimaryButton = forwardRef<HTMLButtonElement, PrimaryButtonProps>((props, ref) => {
-  const { variant, props: resolved, deprecated } = resolveButtonProps(props, "PrimaryButton");
-  warnDeprecated("PrimaryButton", deprecated);
-  return <BaseButton ref={ref} variant={variant} {...resolved} />;
-});
+export type PrimaryButtonProps = ActionButtonProps & PrimaryVariantProps;
+
+export const PrimaryButton = forwardRef<HTMLButtonElement, PrimaryButtonProps>(({ outline = false, ...props }, ref) => (
+  <BaseButton ref={ref} variant={outline ? "outline" : "primary"} {...props} />
+));
 
 PrimaryButton.displayName = "PrimaryButton";

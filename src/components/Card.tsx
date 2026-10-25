@@ -4,7 +4,7 @@ import { Indicator, type IndicatorVariant } from "./Indicator";
 import { PrimaryButton } from "./PrimaryButton";
 import { Skeleton } from "./Skeleton";
 import { Sparkline } from "./Sparkline";
-import { errorOnce } from "./button-compat";
+import { errorOnce } from "./dev-warnings";
 import {
   describeDelta,
   formatDelta,
