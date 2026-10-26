@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, spyOn, within } from "storybook/test";
 import { LineBadge } from "./LineBadge";
-import { resetWarningsForTests } from "./dev-warnings";
 import { LINES } from "../stories/data/network";
 
 const meta: Meta<typeof LineBadge> = {
@@ -59,9 +58,6 @@ export const TexteFournitPeuContraste: Story = {
   // Démontre une donnée non conforme : le contrôle de contraste est attendu en échec.
   parameters: { a11y: { config: { rules: [{ id: "color-contrast", enabled: false }] } } },
   beforeEach: () => {
-    // warnOnce mémorise l'avertissement : sans remise à zéro, un second rendu
-    // (page Docs, relance du test) n'avertit plus et le play échoue.
-    resetWarningsForTests();
     const warn = spyOn(console, "warn").mockImplementation(() => {});
     return () => warn.mockRestore();
   },
