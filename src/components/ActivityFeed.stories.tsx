@@ -33,4 +33,14 @@ export const Chargement: Story = {
     await expect(within(canvasElement).getByRole("region", { name: "Historique de la perturbation" })).toHaveAttribute("aria-busy", "true");
   },
 };
-export const DateManquante: Story = { name: "Date invalide", args: { items: [{ id: "old", title: "Événement importé", date: new Date("invalid") }] } };
+export const DateManquante: Story = {
+  name: "Date invalide",
+  args: { items: [{ id: "old", title: "Événement importé", date: new Date("invalid") }] },
+  // Code source fixe : le générateur JSX de Storybook appelle toISOString() sur la date invalide et plante.
+  parameters: { docs: { source: { code: `<ActivityFeed aria-label="Historique de la perturbation" items={[{ id: "old", title: "Événement importé", date: new Date("invalid") }]} />` } } },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("Date indisponible")).toBeInTheDocument();
+    await expect(canvasElement.querySelector("time")).toBeNull();
+  },
+};
