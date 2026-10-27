@@ -304,6 +304,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Recherche seule (en-tête de dashboard, barre d'outils) | `SearchInput` | `TextInput` (champ de formulaire, 40px) |
 | Dialogue bloquant (confirmation, formulaire court) | `Modal` | `AlertToast` (non bloquant) ; `Drawer` (non bloquant, détail) |
 | Détail d'un élément sans quitter la liste | `Drawer` | `Modal` (dialogue bloquant) |
+| Formulaire long (création, édition) sans quitter la liste | `Drawer width="lg"` + `onSubmit` | `Modal` (formulaire court, bloquant) |
 | Regrouper plus de 4 actions d'une ligne | `ActionMenu` | `GhostButton` icône seule (≤ 4 actions inline) |
 | Chargement : réserver la place du contenu | `Skeleton` | spinner plein écran |
 | Liste vide, sans résultat, ou erreur de chargement | `EmptyState` | état vide bricolé à la main |
@@ -3196,9 +3197,25 @@ Panneau latéral droit pour consulter le détail d'un élément **sans quitter l
 | `title` | `string` | **requis** | Titre |
 | `subtitle` | `string` | — | Sous-titre |
 | `children` | `ReactNode` | **requis** | Corps défilant (`cadence-scrollbar`) |
-| `primaryAction` | `{ label; onClick; destructive? }` | — | Pied → `PrimaryButton` (`destructive` → `tone="danger"`) |
-| `secondaryAction` | `{ label; onClick }` | — | Pied → `GhostButton` |
-| `width` | `"md" \| "lg"` | `"md"` | 480px / 720px |
+| `primaryAction` | `{ label; onClick?; destructive?; loading? }` | — | Pied → `PrimaryButton` (`destructive` → `tone="danger"`, `loading` → spinner, clics ignorés). Avec `onSubmit` : `type="submit"`, `onClick` facultatif |
+| `secondaryAction` | `{ label; onClick? }` | — | Pied → `GhostButton` (toujours `type="button"`, ne soumet jamais) |
+| `width` | `"md" \| "lg"` | `"md"` | 480px / 720px (`lg` : formulaire, contenu dense) |
+| `onSubmit` | `(event: FormEvent<HTMLFormElement>) => void` | — | Panneau formulaire : corps + pied dans un `<form>`, l'action principale soumet (Entrée dans un champ aussi) |
+| `className` | `string` | — | Classe additionnelle sur le panneau |
+
+**Drawer formulaire** (`width="lg"` + `onSubmit`) : en-tête et pied restent fixes, seul le corps défile. Champs côte à côte avec `FieldRow`. Story : *Surcouches / Drawer / Large avec formulaire*.
+
+```tsx
+<Drawer isOpen={open} onClose={close} title="Nouvelle perturbation" width="lg"
+  onSubmit={(e) => { e.preventDefault(); if (valid) save(); }}
+  primaryAction={{ label: "Créer", loading: saving }}
+  secondaryAction={{ label: "Annuler", onClick: close }}>
+  <TextInput label="Titre *" … />
+  <FieldRow><TextInput label="Début" … /><TextInput label="Fin" … /></FieldRow>
+</Drawer>
+```
+
+⚠️ `onSubmit` reçoit l'événement natif : appeler `event.preventDefault()`, sinon la page est rechargée. La validation reste à l'app (état `error` + `helperText` des champs, `ErrorSummary` si plusieurs erreurs). Ne pas mettre de bouton de soumission dans `children` : c'est l'action principale du pied.
 
 Le panneau partage avec `Modal` la gestion des surcouches superposées : seule celle au premier plan possède le clavier ; le fond reste verrouillé jusqu’à la fermeture de la dernière.
 
