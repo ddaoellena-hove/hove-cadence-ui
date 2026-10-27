@@ -304,7 +304,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Chargement : réserver la place du contenu | `Skeleton` | spinner plein écran |
 | Liste vide, sans résultat, ou erreur de chargement | `EmptyState` | état vide bricolé à la main |
 | Notification temporaire non bloquante | `useToast()` + `Toaster` | `Modal` (bloquant) ; `AlertToast` seul (carte brute, hors pile) |
-| Info contextuelle au survol | `Tooltip` / `TooltipTrigger` | `Modal` ; `Popover` (contenu interactif) |
+| Info contextuelle au survol ou au focus | `Tooltip` / `TooltipTrigger` | `Modal` ; `Popover` (contenu interactif) |
 | Aide riche, mini-formulaire ou détail ancré à un bouton | `Popover` | `Tooltip` (lecture seule, sans focus) ; `Modal` (bloquant) ; `Drawer` (détail long) |
 | Squelette d'application (navigation + contenu de page) | `AppLayout` | — |
 | Navigation principale (sections de l'app) | `Sidebar` | — |
@@ -1019,6 +1019,21 @@ toast({ type: "error", title: "Échec de l'envoi" }); // persistant
 ```
 
 ---
+
+### Dates, heures et fuseaux
+
+Les composants n'ont pas tous le même fuseau par défaut. Dans une composition, **passer `timeZone` (fuseau IANA du produit, ex. `"Europe/Paris"`) et `now` explicitement**, et transmettre des dates ISO avec décalage (`2026-06-12T08:15:00+02:00`) : le rendu ne dépend plus de la machine de l'utilisateur ni de celle des tests.
+
+| Composant | Fuseau par défaut | Réglage |
+|---|---|---|
+| `DataFreshness`, `freshness` des graphiques | fuseau du navigateur | `timeZone`, `now` |
+| `ActivityFeed` | `"UTC"` | `timeZone` |
+| `DataTable` (rendu par défaut des `Date`) | fuseau du navigateur | formater dans `cell` si un fuseau métier s'impose |
+| Axes et infobulles des graphiques temporels | fuseau du navigateur | dates déjà ramenées au fuseau voulu |
+| `TimePicker`, `RouteStopList`, `ServiceCalendar` | heures et dates de service, sans fuseau | — |
+
+- ✅ Une page = un fuseau et une horloge (`now`) partagés par tous ses composants.
+- ❌ Ne pas mélanger une date sans décalage (`2026-06-12T08:15:00`, lue en heure locale) et une date en UTC (`…Z`) dans une même vue.
 
 ## Page patterns
 
@@ -1756,7 +1771,7 @@ Clavier : le tracé est focusable ; ←/→ (vertical) ou ↑/↓ (horizontal) d
 
 ### BarList
 
-Classement horizontal : libellé, barre proportionnelle (`--cadence-dataviz-series-1`), valeur en mono alignée à droite, variation facultative. Hauteur : 32px par ligne. Props communes des graphiques : `title` (**requis**), `description`, `headingLevel` (3), `state` (`"ready" | "loading" | "empty" | "error"`), `emptyMessage`, `errorMessage`, `onRetry`, `framed` (false : cadre de carte — bordure, arrondi, marge — pour délimiter des graphiques voisins), `exportable` (false ; `true` ou un nom de fichier : bouton « Exporter (CSV) » dans l'en-tête, qui télécharge l'alternative tabulaire en CSV `;` + BOM UTF-8, nombres sans espaces de groupement), `onExport` (reprend l'export : `{ columns, rows, numeric, csv, fileName }`), `freshness` (`{ updatedAt, now?, freshWithin?, staleWithin?, label? }` : `DataFreshness` sous la description), `className`. Export et fraîcheur valent pour tous les graphiques qui ont « Voir les données » (pas `Heatmap`, qui est elle-même une grille).
+Classement horizontal : libellé, barre proportionnelle (`--cadence-dataviz-series-1`), valeur en mono alignée à droite, variation facultative. Hauteur : 32px par ligne. Props communes des graphiques : `title` (**requis**), `description`, `headingLevel` (3), `state` (`"ready" | "loading" | "empty" | "error"`), `emptyMessage`, `errorMessage`, `onRetry`, `framed` (false : cadre de carte — bordure, arrondi, marge — pour délimiter des graphiques voisins), `exportable` (false ; `true` ou un nom de fichier : bouton « Exporter (CSV) » dans l'en-tête, qui télécharge l'alternative tabulaire en CSV `;` + BOM UTF-8, nombres sans espaces de groupement), `onExport` (reprend l'export : `{ columns, rows, numeric, csv, fileName }`), `freshness` (`{ updatedAt, now?, freshWithin?, staleWithin?, label?, timeZone? }` : `DataFreshness` sous la description), `className`. Export et fraîcheur valent pour tous les graphiques qui ont « Voir les données » (pas `Heatmap`, qui est elle-même une grille).
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
@@ -2392,12 +2407,12 @@ Filtre par mode de transport : une rangée de **chips togglables** (picto `ModeI
 
 ### DataFreshness
 
-Fraîcheur d'une donnée : un point coloré (ton de statut) et un libellé relatif compact (« Mis à jour il y a 3 min », « il y a 2 h »), la date absolue restant en `title` et pour les lecteurs d'écran (`<time dateTime>`). Le ton suit l'âge : **frais** (`nominal`, vert) sous `freshWithin`, **vieillissant** (`warning`, orange) sous `staleWithin`, **périmé** (`critical`, rouge) au-delà. Au-delà de 7 jours (ou pour une date future), la date absolue remplace le libellé relatif. Une date invalide donne un repli discret « Date indisponible ».
+Fraîcheur d'une donnée : un point coloré (ton de statut) et un libellé relatif compact (« Mis à jour il y a 3 min », « il y a 2 h »), la date absolue restant en `title` et pour les lecteurs d'écran (`<time dateTime>`). Le ton suit l'âge : **frais** (`nominal`, vert) sous `freshWithin`, **vieillissant** (`warning`, orange) sous `staleWithin`, **périmé** (`critical`, rouge) au-delà. Au-delà de 7 jours, la date absolue remplace le libellé relatif. **Date future** : jusqu'à une minute d'avance (horloges décalées), « à l'instant » ; au-delà, jamais présentée comme fraîche — point gris neutre, date absolue suivie de « (date future) ». Une date invalide donne un repli discret « Date indisponible ».
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
 | `updatedAt` | `Date \| string \| number` | **requis** | Dernière mise à jour (Date, ISO ou timestamp) |
-| `now` | `Date \| string \| number` | maintenant | Instant de référence (à fixer pour les tests) |
+| `now` | `Date \| string \| number` | maintenant, recalculé toutes les 30 s | Instant de référence. Fourni : l'application pilote l'horloge (une horloge partagée par la page, tests) ; absent : le libellé se recalcule seul toutes les 30 s |
 | `freshWithin` | `number` | `300` | Seuil « frais », en secondes (5 min) |
 | `staleWithin` | `number` | `3600` | Seuil « vieillissant », en secondes (1 h) |
 | `label` | `string` | `"Mis à jour"` | Préfixe du libellé |
@@ -2407,6 +2422,7 @@ Fraîcheur d'une donnée : un point coloré (ton de statut) et un libellé relat
 
 - ✅ En-tête de tableau de bord ou de carte pour dater une donnée live (ponctualité, affluence).
 - ✅ Régler `freshWithin` / `staleWithin` selon la cadence réelle de la source.
+- ✅ Plusieurs fraîcheurs sur une page : leur passer le même `now` (une horloge de page mise à jour par l'app), pour qu'elles avancent ensemble.
 - ❌ Pas pour un statut métier (en cours, ralenti…) : `Indicator`. Pas pour un journal d'événements : `ActivityFeed`.
 
 ### LineChart
@@ -2883,6 +2899,8 @@ Composant purement visuel — pas de logique de positionnement ni de déclenchem
 
 ### TooltipTrigger
 
+Icône ⓘ (bouton `type="button"`) qui affiche une bulle d'aide **au survol et au focus clavier** ; Échap la ferme sans déplacer le focus, la sortie du focus aussi. Le texte est le nom accessible du bouton (la bulle est `aria-hidden` pour ne pas être lue deux fois).
+
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
 | `label` | `string` | `"Label"` | Texte du tooltip |
@@ -3209,7 +3227,7 @@ Rendu des étapes :
 
 ### LineDiagram
 
-Thermomètre de ligne temps réel : arrêts sur une voie horizontale à la couleur GTFS de la ligne, véhicules de l'aller **au-dessus**, du retour **au-dessous**, chacun en pastille `ModeIcon` + numéro + écart (« +4 », « −1 ») ou picto d'incident. Statut par teinte **et** texte : incident > retard > avance > à l'heure (tokens `--cadence-status-*`). Arrêt fermé : pastille barrée et libellé rayé ; arrêt perturbé : tronçon suivant tireté. Véhicules proches empilés sur trois niveaux, au-delà estompés (toujours au clavier et dans le tableau). Espacement régulier, ou à l'échelle si tous les arrêts ont une `distance` ; au moins 64 px par interarrêt, défilement horizontal au-delà. Composant **contrôlé** : l'application fournit les positions à chaque rafraîchissement (aucune requête). Déplacements animés (600 ms), sans animation sous `prefers-reduced-motion`. Props communes : voir `BarList` (dont `freshness` pour dater la donnée et `exportable`).
+Thermomètre de ligne temps réel : arrêts sur une voie horizontale à la couleur GTFS de la ligne, véhicules de l'aller **au-dessus**, du retour **au-dessous**, chacun en pastille `ModeIcon` + numéro + écart (« +4 », « −1 ») ou picto d'incident. Statut par teinte **et** texte : incident > retard > avance > à l'heure (tokens `--cadence-status-*`). Sans `delay` : **écart inconnu**, pastille tiretée « ? », lue « écart inconnu » et comptée « n sans écart connu » — jamais « à l'heure ». Arrêt fermé : pastille barrée et libellé rayé ; arrêt perturbé : tronçon suivant tireté. Véhicules proches empilés sur trois niveaux, au-delà estompés (toujours au clavier et dans le tableau). Espacement régulier, ou à l'échelle si tous les arrêts ont une `distance` ; au moins 64 px par interarrêt, défilement horizontal au-delà. Composant **contrôlé** : l'application fournit les positions à chaque rafraîchissement (aucune requête). Déplacements animés (600 ms), sans animation sous `prefers-reduced-motion`. Props communes : voir `BarList` (dont `freshness` pour dater la donnée et `exportable`).
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|

@@ -17,7 +17,7 @@ export const SupervisionPattern = ({ loading = false }: { loading?: boolean } = 
         actions={<DateRangePicker variant="button" aria-label="Période" value={period} onChange={setPeriod} maxDate={new Date()} maxDays={92} />} />
 
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <DataFreshness updatedAt="2026-06-12T08:12:00" now="2026-06-12T08:15:00" />
+        <DataFreshness updatedAt="2026-06-12T08:12:00+02:00" now="2026-06-12T08:15:00+02:00" timeZone="Europe/Paris" />
         <span />
       </div>
 
@@ -43,7 +43,7 @@ export const SupervisionPattern = ({ loading = false }: { loading?: boolean } = 
         ]} />
 
       <LineDiagram framed headingLevel={2} title="Ligne 1 — positions" state={loading ? "loading" : "ready"}
-        freshness={{ updatedAt: "2026-06-12T08:14:50", now: "2026-06-12T08:15:00" }}
+        freshness={{ updatedAt: "2026-06-12T08:14:50+02:00", now: "2026-06-12T08:15:00+02:00", timeZone: "Europe/Paris" }}
         line={{ code: "1", mode: "metro", color: "#ffcd00", textColor: "#002830" }}
         stops={[
           { id: "def", name: "La Défense" }, { id: "eto", name: "Charles de Gaulle – Étoile" }, { id: "con", name: "Concorde" },

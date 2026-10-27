@@ -5,15 +5,24 @@
  * barre d'outils, carte d'indicateur.
  *
  * Le ton suit l'âge : frais (`nominal`) < `freshWithin` ≤ vieillissant
- * (`warning`) < `staleWithin` ≤ périmé (`critical`).
+ * (`warning`) < `staleWithin` ≤ périmé (`critical`). Une date future (au-delà
+ * d'une minute de décalage d'horloge) n'est jamais présentée comme fraîche :
+ * point neutre, date absolue et mention « date future ».
+ *
+ * Sans `now`, le libellé se recalcule toutes les 30 s ; avec `now`,
+ * l'application pilote l'horloge.
  */
+import { useEffect, useState } from "react";
 import { freshnessLevel, freshnessTone, formatRelative, toDate } from "./data-freshness-utils";
 import "./data-freshness.css";
 
 export interface DataFreshnessProps {
   /** Date de dernière mise à jour (Date, ISO ou timestamp). */
   updatedAt: Date | string | number;
-  /** Instant de référence. Défaut : maintenant (fixer pour les tests). */
+  /**
+   * Instant de référence, piloté par l'application (horloge partagée, tests).
+   * Défaut : maintenant, recalculé toutes les 30 s.
+   */
   now?: Date | string | number;
   /** Seuil « frais », en secondes. Défaut 300 (5 min). */
   freshWithin?: number;
@@ -38,6 +47,14 @@ export const DataFreshness = ({
   timeZone,
   className,
 }: DataFreshnessProps) => {
+  // Horloge interne seulement sans `now` : le libellé relatif ne reste pas figé.
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    if (now !== undefined) return;
+    const timer = setInterval(() => setTick((t) => t + 1), 30_000);
+    return () => clearInterval(timer);
+  }, [now]);
+
   const date = toDate(updatedAt);
   const reference = now !== undefined ? toDate(now) : new Date();
 
@@ -46,7 +63,8 @@ export const DataFreshness = ({
   }
 
   const ageSeconds = (reference.getTime() - date.getTime()) / 1000;
-  const tone = freshnessTone(freshnessLevel(ageSeconds, freshWithin, staleWithin));
+  const level = freshnessLevel(ageSeconds, freshWithin, staleWithin);
+  const tone = freshnessTone(level);
   const absolute = new Intl.DateTimeFormat("fr-FR", { dateStyle: "short", timeStyle: "short", timeZone }).format(date);
   const relative = formatRelative(ageSeconds);
   const value = relative ?? `le ${absolute}`;
@@ -58,6 +76,7 @@ export const DataFreshness = ({
       {!hideDot && <span className={`data-freshness__dot data-freshness__dot--${tone}`} aria-hidden="true" />}
       <span className="data-freshness__text">
         {label} {value}
+        {level === "future" && " (date future)"}
       </span>
       {/* Date absolue pour les lecteurs d'écran (le title n'est pas annoncé partout). */}
       {relative && <span className="data-freshness__sr"> — le {absolute}</span>}

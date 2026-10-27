@@ -32,6 +32,15 @@ describe("data-freshness-utils", () => {
 
   it("formatRelative : null au-delà de 7 jours ou dans le futur", () => {
     expect(formatRelative(10 * 86400)).toBeNull();
-    expect(formatRelative(-30)).toBeNull();
+    expect(formatRelative(-120)).toBeNull();
+  });
+
+  it("date future : décalage d'horloge toléré, puis niveau neutre", () => {
+    // Jusqu'à une minute dans le futur : horloges décalées, « à l'instant ».
+    expect(formatRelative(-30)).toBe("à l'instant");
+    expect(freshnessLevel(-60, 300, 3600)).toBe("fresh");
+    // Au-delà : jamais présentée comme fraîche.
+    expect(freshnessLevel(-61, 300, 3600)).toBe("future");
+    expect(freshnessTone("future")).toBe("neutral");
   });
 });

@@ -209,7 +209,7 @@ export const LineDiagram = ({
     for (const v of vehicles) {
       const status = vehicleStatus(v, delayThresholds);
       if (status === "incident") current.set(`v:${v.id}`, `Incident ${v.label} : ${v.incident}, ${positionText(v.position, names)}`);
-      else if (announce === "all" && status !== "ontime") current.set(`v:${v.id}`, `${v.label} : ${delayText(v.delay)}`);
+      else if (announce === "all" && (status === "late" || status === "early")) current.set(`v:${v.id}`, `${v.label} : ${delayText(v.delay)}`);
     }
     for (const s of stops) if (s.status === "closed") current.set(`s:${s.id}`, `Arrêt ${s.name} fermé${s.note ? ` : ${s.note}` : ""}`);
     const before = previous.current;
@@ -261,7 +261,7 @@ export const LineDiagram = ({
     );
   };
 
-  const statusLabel: Record<VehicleStatus, string> = { incident: "Incident", late: "En retard", early: "En avance", ontime: "À l'heure" };
+  const statusLabel: Record<VehicleStatus, string> = { incident: "Incident", late: "En retard", early: "En avance", ontime: "À l'heure", unknown: "Écart inconnu" };
   const hovered = hover ? itemAt(hover.lane, hover.index) : null;
   const tooltipRows = (): ChartTooltipRow[] => {
     if (hovered?.vehicle) {
