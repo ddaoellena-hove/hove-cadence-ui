@@ -2362,12 +2362,12 @@ Filtre par mode de transport : une rangée de **chips togglables** (picto `ModeI
 
 ### DataFreshness
 
-Fraîcheur d'une donnée : un point coloré (ton de statut) et un libellé relatif compact (« Mis à jour il y a 3 min », « il y a 2 h »), la date absolue restant en `title` et pour les lecteurs d'écran (`<time dateTime>`). Le ton suit l'âge : **frais** (`nominal`, vert) sous `freshWithin`, **vieillissant** (`warning`, orange) sous `staleWithin`, **périmé** (`critical`, rouge) au-delà. Au-delà de 7 jours (ou pour une date future), la date absolue remplace le libellé relatif. Une date invalide donne un repli discret « Date indisponible ».
+Fraîcheur d'une donnée : un point coloré (ton de statut) et un libellé relatif compact (« Mis à jour il y a 3 min », « il y a 2 h »), la date absolue restant en `title` et pour les lecteurs d'écran (`<time dateTime>`). Le ton suit l'âge : **frais** (`nominal`, vert) sous `freshWithin`, **vieillissant** (`warning`, orange) sous `staleWithin`, **périmé** (`critical`, rouge) au-delà. Au-delà de 7 jours, la date absolue remplace le libellé relatif. **Date future** : jusqu'à une minute d'avance (horloges décalées), « à l'instant » ; au-delà, jamais présentée comme fraîche — point gris neutre, date absolue suivie de « (date future) ». Une date invalide donne un repli discret « Date indisponible ».
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
 | `updatedAt` | `Date \| string \| number` | **requis** | Dernière mise à jour (Date, ISO ou timestamp) |
-| `now` | `Date \| string \| number` | maintenant | Instant de référence (à fixer pour les tests) |
+| `now` | `Date \| string \| number` | maintenant, recalculé toutes les 30 s | Instant de référence. Fourni : l'application pilote l'horloge (une horloge partagée par la page, tests) ; absent : le libellé se recalcule seul toutes les 30 s |
 | `freshWithin` | `number` | `300` | Seuil « frais », en secondes (5 min) |
 | `staleWithin` | `number` | `3600` | Seuil « vieillissant », en secondes (1 h) |
 | `label` | `string` | `"Mis à jour"` | Préfixe du libellé |
@@ -2377,6 +2377,7 @@ Fraîcheur d'une donnée : un point coloré (ton de statut) et un libellé relat
 
 - ✅ En-tête de tableau de bord ou de carte pour dater une donnée live (ponctualité, affluence).
 - ✅ Régler `freshWithin` / `staleWithin` selon la cadence réelle de la source.
+- ✅ Plusieurs fraîcheurs sur une page : leur passer le même `now` (une horloge de page mise à jour par l'app), pour qu'elles avancent ensemble.
 - ❌ Pas pour un statut métier (en cours, ralenti…) : `Indicator`. Pas pour un journal d'événements : `ActivityFeed`.
 
 ### LineChart
