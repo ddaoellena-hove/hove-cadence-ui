@@ -126,7 +126,7 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-color-success` | `#24a148` | Confirmations, états valides |
 | `--cadence-color-info` | `#0f62fe` | Accent « information » d'`AlertToast` |
 | `--cadence-color-warning` | `#f1c21b` | Accent « avertissement » d'`AlertToast`. ⚠️ 1,7:1 sur blanc : jamais en couleur de texte |
-| `--cadence-color-accent` | `#1b6cff` | Élément actif / sélectionné (Sidebar, options de menu), remplissage d'une `ProgressBar` en cours. ⚠️ Réservé aux états : jamais pour une action |
+| `--cadence-color-accent` | `#1b6cff` | Élément actif / sélectionné (Sidebar, options de menu, compteur de `BulkActionBar`), remplissage d'une `ProgressBar` en cours. ⚠️ Réservé aux états : jamais pour une action |
 | `--cadence-color-accent-subtle` | `#f0f6ff` | Survol d'un élément actif (Sidebar), ligne sélectionnée (`DataTable`) |
 | `--cadence-color-white` | `#ffffff` | Surfaces de premier plan |
 | `--cadence-color-segmented-track` / `-disabled` | `#e6f0fa` / `#dde8f0` | Piste du SegmentedControl unique |
@@ -2026,7 +2026,7 @@ Tableau dense pour les gros volumes. Vrai `<table>` (rôles ARIA explicites), en
 
 ### BulkActionBar
 
-Barre d'actions groupées flottante pour une sélection multiple (`DataTable selectable`, liste de `TableCard`). Placée juste après la liste, dans le même conteneur : collante en bas de la zone visible (`position: sticky`, 16px du bas), centrée, au-dessus des lignes tant que la liste défile. Surface blanche surélevée : compteur, séparateur, puis les actions. Masquée quand `count` vaut 0. Sous 480px de large, le compteur passe au-dessus des actions. Story : *Données et tableaux / BulkActionBar*.
+Barre d'actions groupées flottante pour une sélection multiple (`DataTable selectable`, liste de `TableCard`). Placée juste après la liste, dans le même conteneur : collante en bas de la zone visible (`position: sticky`, 16px du bas), centrée, au-dessus des lignes tant que la liste défile. Surface blanche surélevée : compteur (Diatype 13px medium, `--cadence-color-accent` : c'est un état de sélection), séparateur, puis les actions. Masquée quand `count` vaut 0. Sous 480px de large, le compteur passe au-dessus des actions. Story : *Données et tableaux / BulkActionBar*.
 
 ```tsx
 <div>

@@ -43,12 +43,15 @@
   animation: cadence-bulk-bar-in 160ms ease-out;
 }
 
+/* Compteur : état de sélection, donc en accent (4,5:1 sur blanc). Pas de
+   tabular-nums : dans Diatype, il élargit aussi les espaces. */
 .bulk-action-bar__count {
+  color: var(--cadence-color-accent, #1b6cff);
+  font-family: var(--cadence-font-sans, "ABC Diatype", "Inter", Helvetica, sans-serif);
   font-size: 13px;
   font-weight: 500;
   line-height: 1.4;
   white-space: nowrap;
-  font-variant-numeric: tabular-nums;
 }
 
 .bulk-action-bar__divider {
