@@ -19,6 +19,7 @@ export * from './Link';
 export * from './Modal';
 export * from './Checkbox';
 export * from './DataTable';
+export * from './BulkActionBar';
 export * from './DatasetHealth';
 export * from './ValidationIssueInspector';
 export type { ValidationVerdict, ValidationSeverity, ValidationIssueLocation, ValidationIssue } from './validation-types';

@@ -12,14 +12,16 @@ const meta: Meta<typeof ListePattern> = {
 export default meta;
 type Story = StoryObj<typeof ListePattern>;
 
-/** Filtrer → sélectionner → barre d'actions de masse. */
+/** Filtrer → sélectionner → barre d'actions groupées (`BulkActionBar`). */
 export const Defaut: Story = {
   name: "Défaut",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("heading", { level: 1, name: "Perturbations" })).toBeInTheDocument();
     await userEvent.click(canvas.getByRole("checkbox", { name: "Tout sélectionner" }));
-    await expect(canvas.getByRole("button", { name: "Supprimer" })).toBeInTheDocument();
+    const bar = canvas.getByRole("region", { name: "Actions groupées" });
+    await expect(within(bar).getByRole("button", { name: "Supprimer" })).toBeInTheDocument();
+    await expect(canvas.getByRole("status")).toHaveTextContent("4 perturbations sélectionnées");
   },
 };
 

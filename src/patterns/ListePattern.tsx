@@ -1,12 +1,12 @@
 import { useState } from "react";
 import {
   PageHeader, FilterBar, DataTable, Pagination, Dropdown, EmptyState, Indicator,
-  Checkbox, GhostButton, PrimaryButton, type DataTableColumn,
+  BulkActionBar, GhostButton, PrimaryButton, type DataTableColumn,
 } from "@ddaoellena/cadence-ui";
 
 // Pattern — Liste / index (P2).
 // FilterBar (recherche + filtres rapides + chips actives) · DataTable (tri,
-// sélection, états) · barre d'actions de masse · Pagination.
+// sélection, états) · BulkActionBar (actions groupées) · Pagination.
 interface Disruption { id: string; title: string; line: string; severity: "critical" | "warning" | "info" }
 
 const SAMPLE: Disruption[] = [
@@ -45,24 +45,19 @@ export const ListePattern = ({ rows = SAMPLE, loading = false }: { rows?: Disrup
         onRemoveFilter={() => setLine("all")} onClearAll={() => { setLine("all"); setQuery(""); }}
         resultCount={filtered.length} />
 
-      {selected.length > 0 && (
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <Checkbox aria-label="Tout désélectionner" state="checked" onChange={() => setSelected([])} />
-            <span style={{ fontSize: 13, color: "var(--cadence-color-label, #1a3e45)" }}>{selected.length} sélectionnée(s)</span>
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" onClick={() => {}} />
-            <PrimaryButton size="sm" tone="danger" iconStart="trash" label="Supprimer" onClick={() => {}} />
-          </div>
-        </div>
-      )}
-
-      <DataTable aria-label="Perturbations" columns={COLUMNS} data={filtered} getRowId={(r) => r.id} loading={loading}
-        selectable selectedIds={selected} onSelectionChange={setSelected}
-        emptyState={<EmptyState size="inline" variant={filtering ? "no-results" : "empty"}
-          title={filtering ? "Aucune perturbation pour ces filtres" : "Aucune perturbation"}
-          action={filtering ? { label: "Effacer les filtres", onClick: () => { setLine("all"); setQuery(""); } } : { label: "Créer la première", onClick: () => {} }} />} />
+      {/* Tableau et barre d'actions groupées dans le même conteneur (sticky) */}
+      <div>
+        <DataTable aria-label="Perturbations" columns={COLUMNS} data={filtered} getRowId={(r) => r.id} loading={loading}
+          selectable selectedIds={selected} onSelectionChange={setSelected}
+          emptyState={<EmptyState size="inline" variant={filtering ? "no-results" : "empty"}
+            title={filtering ? "Aucune perturbation pour ces filtres" : "Aucune perturbation"}
+            action={filtering ? { label: "Effacer les filtres", onClick: () => { setLine("all"); setQuery(""); } } : { label: "Créer la première", onClick: () => {} }} />} />
+        <BulkActionBar count={selected.length}
+          countLabel={(n) => (n > 1 ? `${n} perturbations sélectionnées` : `${n} perturbation sélectionnée`)}>
+          <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" onClick={() => {}} />
+          <PrimaryButton size="sm" tone="danger" iconStart="trash" label="Supprimer" onClick={() => {}} />
+        </BulkActionBar>
+      </div>
 
       <Pagination page={page} pageSize={50} totalItems={filtered.length} onPageChange={setPage} />
     </div>

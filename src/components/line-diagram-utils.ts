@@ -22,7 +22,7 @@ export interface LineDiagramVehicleInput {
   load?: number;
 }
 
-export type VehicleStatus = "incident" | "late" | "early" | "ontime";
+export type VehicleStatus = "incident" | "late" | "early" | "ontime" | "unknown";
 
 export interface DelayThresholds {
   late: number;
@@ -61,21 +61,23 @@ export const vehicleFraction = (position: VehiclePosition, stopIndex: Map<string
   return fractions[a] + (fractions[b] - fractions[a]) * progress;
 };
 
-/** Statut d'un véhicule : incident, puis retard, puis avance, sinon à l'heure. */
+/**
+ * Statut d'un véhicule : incident, puis retard, puis avance, sinon à l'heure.
+ * Sans écart connu (`delay` absent ou non fini) : `unknown`, jamais « à l'heure ».
+ */
 export const vehicleStatus = (vehicle: { delay?: number; incident?: string }, thresholds = DEFAULT_DELAY_THRESHOLDS): VehicleStatus => {
   if (vehicle.incident) return "incident";
-  if (typeof vehicle.delay === "number" && Number.isFinite(vehicle.delay)) {
-    if (vehicle.delay >= thresholds.late) return "late";
-    if (vehicle.delay <= thresholds.early) return "early";
-  }
+  if (typeof vehicle.delay !== "number" || !Number.isFinite(vehicle.delay)) return "unknown";
+  if (vehicle.delay >= thresholds.late) return "late";
+  if (vehicle.delay <= thresholds.early) return "early";
   return "ontime";
 };
 
 const MINUS = "−";
 
-/** Écart court affiché sur la pastille : « +4 », « −1 », chaîne vide à l'heure ou sans donnée. */
+/** Écart court affiché sur la pastille : « +4 », « −1 », « ? » sans donnée, chaîne vide à l'heure. */
 export const delayBadge = (delay?: number) => {
-  if (typeof delay !== "number" || !Number.isFinite(delay)) return "";
+  if (typeof delay !== "number" || !Number.isFinite(delay)) return "?";
   const minutes = Math.round(delay);
   if (minutes === 0) return "";
   return minutes > 0 ? `+${minutes}` : `${MINUS}${Math.abs(minutes)}`;
@@ -131,11 +133,13 @@ export const describeLine = (
   const statuses = vehicles.map((v) => vehicleStatus(v, thresholds));
   const incidents = statuses.filter((s) => s === "incident").length;
   const late = statuses.filter((s) => s === "late").length;
+  const unknown = statuses.filter((s) => s === "unknown").length;
   return [
     `${count(outbound, "véhicule")} ${inSentence(directions.outbound)}`,
     `${inbound} ${inSentence(directions.inbound)}`,
     count(incidents, "incident"),
     `${late} en retard`,
+    ...(unknown ? [`${unknown} sans écart connu`] : []),
     ...(closedStops ? [count(closedStops, "arrêt fermé", "arrêts fermés")] : []),
   ].join(", ");
 };

@@ -64,3 +64,24 @@ export const SansPoint: Story = { name: "Sans point", args: { updatedAt: minus(2
 
 /** Date invalide : repli discret. */
 export const Inconnu: Story = { name: "Date indisponible", args: { updatedAt: "n/a" } };
+
+/** Date future (horloge de la source en avance, donnée erronée) : point neutre, date absolue, mention explicite. */
+export const DateFuture: Story = {
+  name: "Date future",
+  args: { updatedAt: minus(-90) },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText(/Mis à jour le 12\/06\/2026 .* \(date future\)/)).toBeInTheDocument();
+    await expect(canvasElement.querySelector(".data-freshness__dot--neutral")).not.toBeNull();
+    await expect(canvasElement.querySelector(".data-freshness__dot--nominal")).toBeNull();
+  },
+};
+
+/** Décalage d'horloge de moins d'une minute : « à l'instant ». */
+export const DecalageHorloge: Story = {
+  name: "Décalage d'horloge (< 1 min)",
+  args: { updatedAt: new Date(new Date(NOW).getTime() + 30_000).toISOString() },
+  play: async ({ canvasElement }) => {
+    await expect(within(canvasElement).getByText(/Mis à jour à l'instant/)).toBeInTheDocument();
+  },
+};

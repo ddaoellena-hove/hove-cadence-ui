@@ -1,0 +1,96 @@
+/* ── BulkActionBar ───────────────────────────────────────────────────────────
+   Barre d'actions groupées : collante en bas de la zone visible, centrée.
+   Le conteneur laisse passer les clics (lignes sous les côtés de la barre) ;
+   seule la surface les reçoit. */
+.bulk-action-bar {
+  position: sticky;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: var(--cadence-z-sticky, 100);
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  container-type: inline-size;
+}
+
+.bulk-action-bar__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.bulk-action-bar__surface {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  max-width: 100%;
+  margin-top: 12px;
+  padding: 8px 8px 8px 16px;
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-xl, 12px);
+  box-shadow: var(--cadence-shadow-raised, 0 16px 32px -8px rgba(0, 0, 0, 0.16), 0 4px 10px rgba(0, 0, 0, 0.05));
+  color: var(--cadence-color-label, #1a3e45);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  pointer-events: auto;
+  animation: cadence-bulk-bar-in 160ms ease-out;
+}
+
+/* Compteur : état de sélection, donc en accent (4,5:1 sur blanc). Pas de
+   tabular-nums : dans Diatype, il élargit aussi les espaces. */
+.bulk-action-bar__count {
+  color: var(--cadence-color-accent, #1b6cff);
+  font-family: var(--cadence-font-sans, "ABC Diatype", "Inter", Helvetica, sans-serif);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.bulk-action-bar__divider {
+  align-self: stretch;
+  width: 1px;
+  margin: 4px 0;
+  background: var(--cadence-color-border, #e5e5e5);
+}
+
+.bulk-action-bar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Zone étroite : compteur au-dessus des actions, sans séparateur orphelin */
+@container (max-width: 479px) {
+  .bulk-action-bar__surface {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding: 12px;
+  }
+
+  .bulk-action-bar__divider {
+    display: none;
+  }
+}
+
+@keyframes cadence-bulk-bar-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bulk-action-bar__surface {
+    animation: none;
+  }
+}
