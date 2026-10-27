@@ -1,0 +1,48 @@
+/* ── DataSourceStatus ────────────────────────────────────────────────────────
+   État d'une source : carte blanche à bordure fine, titre + disponibilité,
+   dates et fraîcheur en DescriptionList compacte, bouton du détail. */
+.data-source-status {
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-lg, 10px);
+  box-sizing: border-box;
+  color: var(--cadence-color-primary, #002830);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  gap: 12px;
+  min-width: 0;
+  padding: 16px 20px;
+}
+
+.data-source-status__header {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  justify-content: space-between;
+  min-height: 24px;
+}
+
+.data-source-status__title {
+  color: var(--cadence-color-primary, #002830);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Message d'erreur : texte critique, replié s'il est long (le libellé
+   « Dernière erreur » porte le sens, pas la couleur seule) */
+.data-source-status__error {
+  color: var(--cadence-status-critical-fg, #b91c1c);
+  overflow-wrap: anywhere;
+}
+
+.data-source-status__actions {
+  display: flex;
+  /* Le bouton ghost s'aligne sur le texte : compense son retrait intérieur */
+  margin-left: -8px;
+}

@@ -285,6 +285,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Étiquette d'information neutre (catégorie, tag, code) | `Badge` | `Indicator` (qui porte un état) |
 | Chip amovible (filtre actif « Ligne 38 × », « Tout effacer ») | `Badge dismissible` ; sous une liste, `FilterBar` (`activeFilters` + `onRemoveFilter`) | un composant `Tag` dédié (doublon inutile) |
 | État ou statut avec picto + couleur sémantique | `Indicator` | `Badge` (purement informatif) |
+| État d'une source de données (disponibilité, dernière observation, dernière réussite, erreur, fraîcheur) | `DataSourceStatus` | `Indicator` seul (disponibilité sans dates) ; `DataFreshness` seul (âge d'une donnée) |
 | Fraîcheur d'une donnée (dernière mise à jour, péremption) | `DataFreshness` | `Indicator` (statut métier, pas temporel) ; `ActivityFeed` (journal d'événements horodatés) |
 | En-tête de page (titre, sous-titre, actions), collé en haut au défilement | `PageHeader` | `<h1>` à la main |
 | Section de page (titre `h2`, description, actions) | `PageSection` | un `<section>` + `<h2>` en style inline |
@@ -2472,6 +2473,47 @@ Détail d'un constat de validation : sévérité (`Indicator`), message, localis
 - ✅ Messages et identifiants longs se replient sans élargir le conteneur.
 - ⚠️ Dans un `Drawer`, garder le constat sélectionné pendant la fermeture (état `open` séparé), sinon l'état vide apparaît pendant l'animation.
 - ❌ Pas d'`onOpenSource` sans destination réelle.
+
+### DataSourceStatus
+
+État d'une source de données (flux GTFS-RT, API SIRI, dépôt de fichiers) : titre, disponibilité (`Indicator`), dernière observation, dernière réussite, fraîcheur des données et dernière erreur, bouton facultatif vers le détail. Carte blanche à bordure fine, région nommée par son titre. Trois dimensions **indépendantes**, jamais déduites l'une de l'autre : la disponibilité (la source répond-elle ?), les dates d'interrogation (observation, réussite) et la fraîcheur des données servies. Story : *Retours et statuts / DataSourceStatus*.
+
+```tsx
+<DataSourceStatus
+  label="GTFS-RT — positions des véhicules"
+  availability="unavailable"
+  lastObservedAt={source.lastPollAt}
+  lastSuccessAt={source.lastSuccessAt}
+  dataUpdatedAt={source.feedTimestamp}
+  error="HTTP 503 — Service Unavailable"
+  now={pageClock}
+  timeZone="Europe/Paris"
+  onViewDetails={() => openSource(source.id)}
+/>
+```
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `label` | `string` | **requis** | Nom de la source (titre) |
+| `availability` | `DataSourceAvailability` | **requis** | `"available" \| "degraded" \| "unavailable" \| "unknown"` → « Disponible », « Dégradée », « Indisponible », « État inconnu » |
+| `lastObservedAt` | `Date \| string \| number` | — | Dernière interrogation, réussie ou non → « Observée il y a 1 min ». Absente : « Jamais observée » |
+| `lastSuccessAt` | `Date \| string \| number` | — | Dernière récupération réussie, **conservée après une erreur** → « Réussie il y a 2 h ». Absente : « Aucune connue » |
+| `dataUpdatedAt` | `Date \| string \| number` | — | Horodatage des données servies (pas de la récupération) → `DataFreshness` avec son point de ton. Absent : « Inconnue » |
+| `freshWithin` / `staleWithin` | `number` | `300` / `3600` | Seuils de fraîcheur des données (s), à régler sur la cadence de la source |
+| `error` | `string` | — | Dernière erreur, affichée en texte critique dans la carte (pas d'alerte annoncée) |
+| `now` | `Date \| string \| number` | maintenant | Instant de référence ; une même horloge pour toutes les sources d'une page |
+| `timeZone` | `string` | fuseau du navigateur | Fuseau des dates absolues |
+| `loading` | `boolean` | `false` | Squelettes et `aria-busy` ; ni disponibilité ni bouton |
+| `onViewDetails` | `() => void` | — | Bouton `GhostButton size="sm"` ; sans callback, pas de bouton |
+| `detailsLabel` | `string` | `"Voir la source"` | Libellé du bouton |
+| `headingLevel` | `2 \| 3 \| 4` | `3` | Niveau du titre |
+| `className` | `string` | — | — |
+
+- ✅ Une source joignable peut servir des données périmées : « Disponible » et un point rouge de fraîcheur peuvent coexister.
+- ✅ Plusieurs sources : une grille (`CardGrid`), un même `now` et un même `timeZone`.
+- ⚠️ Seule la fraîcheur des données porte un point coloré ; les dates d'observation et de réussite n'en ont pas (leur âge n'est pas un verdict).
+- ❌ Pas de polling ni de secret de connexion dans le composant : l'application interroge la source et transmet l'état.
+- ❌ Ne pas déduire `availability` de la fraîcheur, ni l'inverse.
 
 ### DataFreshness
 

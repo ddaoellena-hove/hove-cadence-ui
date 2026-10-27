@@ -12,6 +12,7 @@ Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, 
   - **`ValidationIssueInspector`** (*Retours et statuts*) : détail d'un constat — sévérité, message, localisation, règle et identifiants copiables, correction attendue, accès facultatif à la source. Sans Drawer embarqué.
   - Types publics `ValidationIssue`, `ValidationIssueLocation`, `ValidationSeverity`, `ValidationVerdict`.
   - Page pattern **Rapport qualité** (`src/patterns/RapportQualitePattern.tsx`), qui remplace le rapport qualité de l'ancienne recette *Offre et qualité*.
+- **`DataSourceStatus`** (*Retours et statuts*) : état d'une source de données — disponibilité fournie (`available`, `degraded`, `unavailable`, `unknown`), dernière observation, dernière réussite (conservée après une erreur), fraîcheur des données servies, dernière erreur, accès au détail. Disponibilité et fraîcheur restent indépendantes. Type `DataSourceAvailability` exporté. Lot L3 de l'audit *Mobility Data Design System*.
 
 ### ⚠️ Supprimé
 
