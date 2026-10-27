@@ -4,6 +4,10 @@
 
 Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, nettoyage du Storybook, contrastes AA et vérification du paquet (feuille de route § 5). Le guide de migration ci-dessous couvre le passage de n'importe quelle 0.x à la 1.0.
 
+### Ajouté
+
+- **`DataSourceStatus`** (*Retours et statuts*) : état d'une source de données — disponibilité fournie (`available`, `degraded`, `unavailable`, `unknown`), dernière observation, dernière réussite (conservée après une erreur), fraîcheur des données servies, dernière erreur, accès au détail. Disponibilité et fraîcheur restent indépendantes. Type `DataSourceAvailability` exporté. Lot L3 de l'audit *Mobility Data Design System*.
+
 ### ⚠️ Supprimé
 
 - **`SecondaryButton` est supprimé.** `outline` → `PrimaryButton outline size="sm"` (dashboard) ou `GhostButton size="sm"` ; plein → `PrimaryButton size="sm"` ou `GhostButton size="sm"` selon le rôle. Le type `SecondaryButtonProps` disparaît.
