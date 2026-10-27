@@ -1,28 +1,50 @@
 import { useState } from "react";
 import { ModeIcon } from "./ModeIcon";
+import { LineBadge, type LineBadgeProps } from "./LineBadge";
 import { MODE_LABELS, type ModeName } from "./mode-icons";
 import "./mode-filter.css";
 
-export interface ModeFilterProps {
-  /** Modes proposés (dans l'ordre d'affichage). */
-  modes: ModeName[];
+interface ModeFilterCommonProps {
   /** Nom accessible du groupe (ex. « Filtrer par mode »). */
   "aria-label": string;
-  /** Modes sélectionnés (contrôlé). */
-  value?: ModeName[];
-  /** Sélection au montage (non contrôlé). */
-  defaultValue?: ModeName[];
-  /** Changement de la sélection. */
-  onChange?: (modes: ModeName[]) => void;
   /** `"multiple"` (défaut) ou `"single"` (un seul mode à la fois). */
   selection?: "multiple" | "single";
-  /** Libellés personnalisés (sinon libellés FR par défaut). */
-  labels?: Partial<Record<ModeName, string>>;
+  /** Bouton facultatif pour vider la sélection (ex. « Toutes »). */
+  allLabel?: string;
   /** Taille du picto, en px. Défaut 18. */
   iconSize?: number;
   id?: string;
   className?: string;
 }
+
+export interface ModeFilterItem {
+  /** Identifiant unique et stable de la ligne. */
+  id: string;
+  label: string;
+  /** Identité de ligne ; omise pour un groupe comme « Autres lignes ». */
+  badge?: Omit<LineBadgeProps, "size" | "className">;
+}
+
+interface ModeFilterModesProps extends ModeFilterCommonProps {
+  modes: ModeName[];
+  items?: never;
+  value?: ModeName[];
+  defaultValue?: ModeName[];
+  onChange?: (modes: ModeName[]) => void;
+  labels?: Partial<Record<ModeName, string>>;
+}
+
+interface ModeFilterLinesProps extends ModeFilterCommonProps {
+  items: ModeFilterItem[];
+  modes?: never;
+  value?: string[];
+  defaultValue?: string[];
+  onChange?: (ids: string[]) => void;
+  labels?: never;
+}
+
+/** Fournir soit `modes`, soit `items` ; les deux API sont exclusives. */
+export type ModeFilterProps = ModeFilterModesProps | ModeFilterLinesProps;
 
 /**
  * ModeFilter — filtre par mode de transport : une rangée de « chips »
@@ -32,47 +54,59 @@ export interface ModeFilterProps {
  * Chaque chip est un bouton bascule (`aria-pressed`) ; le groupe est nommé par
  * `aria-label`. Une sélection vide = aucun filtre (tout est affiché côté app).
  */
-export const ModeFilter = ({
-  modes,
-  "aria-label": ariaLabel,
-  value,
-  defaultValue,
-  onChange,
-  selection = "multiple",
-  labels,
-  iconSize = 18,
-  id,
-  className,
-}: ModeFilterProps) => {
+export const ModeFilter = (props: ModeFilterProps) => {
+  const {
+    "aria-label": ariaLabel,
+    value,
+    defaultValue,
+    selection = "multiple",
+    allLabel,
+    iconSize = 18,
+    id,
+    className,
+  } = props;
   const controlled = value !== undefined;
-  const [inner, setInner] = useState<ModeName[]>(defaultValue ?? []);
+  const [inner, setInner] = useState<string[]>(defaultValue ?? []);
   const selected = controlled ? value : inner;
 
-  const commit = (next: ModeName[]) => {
+  const commit = (next: string[]) => {
     if (!controlled) setInner(next);
-    onChange?.(next);
+    if (props.items !== undefined) props.onChange?.(next);
+    else props.onChange?.(next as ModeName[]);
   };
 
-  const toggle = (mode: ModeName) => {
+  const toggle = (mode: string) => {
     const isOn = selected.includes(mode);
     if (selection === "single") commit(isOn ? [] : [mode]);
     else commit(isOn ? selected.filter((m) => m !== mode) : [...selected, mode]);
   };
 
+  const items = props.items !== undefined
+    ? props.items.map(item => ({ id: item.id, label: item.label,
+      icon: item.badge ? <LineBadge {...item.badge} size="sm" /> : null }))
+    : props.modes.map(mode => ({ id: mode, label: props.labels?.[mode] ?? MODE_LABELS[mode],
+      icon: <ModeIcon mode={mode} size={iconSize} /> }));
+
   return (
     <div id={id} role="group" aria-label={ariaLabel} className={["mode-filter", className].filter(Boolean).join(" ")}>
-      {modes.map((mode) => {
-        const on = selected.includes(mode);
+      {allLabel && (
+        <button type="button" className="mode-filter__chip" aria-pressed={selected.length === 0} onClick={() => commit([])}>
+          <span className="mode-filter__label">{allLabel}</span>
+        </button>
+      )}
+      {items.map((item) => {
+        const on = selected.includes(item.id);
         return (
           <button
-            key={mode}
+            key={item.id}
             type="button"
             className="mode-filter__chip"
             aria-pressed={on}
-            onClick={() => toggle(mode)}
+            aria-label={item.label}
+            onClick={() => toggle(item.id)}
           >
-            <ModeIcon mode={mode} size={iconSize} />
-            <span className="mode-filter__label">{labels?.[mode] ?? MODE_LABELS[mode]}</span>
+            {item.icon && <span aria-hidden="true" className="mode-filter__icon">{item.icon}</span>}
+            <span className="mode-filter__label">{item.label}</span>
           </button>
         );
       })}

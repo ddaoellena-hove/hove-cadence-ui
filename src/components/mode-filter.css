@@ -49,6 +49,12 @@
   white-space: nowrap;
 }
 
+.mode-filter__icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mode-filter__chip {
     transition: none;

@@ -1,5 +1,16 @@
 # Relais de développement — 25 octobre 2026
 
+## Mise à jour — 27 octobre 2026 : ModeFilter par ligne
+
+- Demande explicite de l'utilisateur depuis Datapilot : faire évoluer ModeFilter pour filtrer par ligne avec ses badges, puis l'utiliser dans le Différentiel.
+- Branche locale `feat/mode-filter-lines`, depuis main. Changements préexistants package.json/package-lock.json et fichiers non suivis préservés. Aucun commit, push ou publication.
+- Fichiers touchés : `src/components/ModeFilter.tsx`, `mode-filter.css`, `ModeFilter.stories.tsx`, `GUIDELINES.md`, ce relais. API `items: ModeFilterItem[]` (`id`, `label`, `badge?`) exclusive avec `modes`, valeurs string[] pour les lignes. `allLabel` facultatif remet la sélection à []. Badges LineBadge sm décoratifs, libellés accessibles sans duplication. Ancienne API modes et callbacks ModeName[] préservés.
+- Intégration locale dans `../datapilot-idfm`, branche `codex/mode-filter-lines` : six groupes de lignes des courses, sélection unique et Toutes ; recherche, pagination et groupes agrégés préservés.
+- Réussis : `npx tsc -b --noEmit`, `npx eslint src/components/ModeFilter.tsx src/components/ModeFilter.stories.tsx`, `npm run build:lib`, `npm run check:types`, cinq stories ModeFilter, build et smoke Datapilot (16/16), contrôles ciblés des lignes/recherche/clavier et captures à 1600/1100 px.
+- Stories : navigateur Chromium 1217 absent et téléchargement bloqué par certificat local. Relance réussie avec une configuration temporaire ignorée dans node_modules/.cache et `playwright({ launchOptions: { executablePath: … } })` vers Chromium 1248 déjà installé. Configuration versionnée inchangée. Pas de suite globale ni de publication exécutées.
+- Des changements concurrents de Drawer.tsx, drawer.css et Drawer.stories.tsx sont apparus pendant le chantier ; préservés sans intervention, hors périmètre ModeFilter.
+- Prochaine action : poursuivre les retours UX/UI et livrer les changements des deux dépôts lorsque demandé. Le reste du document est l'état historique du 25 octobre.
+
 ## Démarrage pour un nouvel agent
 
 1. Lire `CLAUDE.md`, puis `GUIDELINES.md` à la racine : conventions, API et règles visuelles.
