@@ -4,6 +4,14 @@
 
 Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, nettoyage du Storybook, contrastes AA et vérification du paquet (feuille de route § 5). Le guide de migration ci-dessous couvre le passage de n'importe quelle 0.x à la 1.0.
 
+### Ajouté
+
+- **Qualité des données** (premier lot de l'audit *Mobility Data Design System*) :
+  - **`DatasetHealth`** (*Retours et statuts*) : bilan de validation d'un jeu de données — verdict fourni (`not-run`, `unknown`, `passed`, `warning`, `failed`), erreurs et avertissements (inconnu distinct de 0), date de la dernière validation, accès au rapport, chargement.
+  - **`ValidationIssueInspector`** (*Retours et statuts*) : détail d'un constat — sévérité, message, localisation, règle et identifiants copiables, correction attendue, accès facultatif à la source. Sans Drawer embarqué.
+  - Types publics `ValidationIssue`, `ValidationIssueLocation`, `ValidationSeverity`, `ValidationVerdict`.
+  - Page pattern **Rapport qualité** (`src/patterns/RapportQualitePattern.tsx`), qui remplace le rapport qualité de l'ancienne recette *Offre et qualité*.
+
 ### ⚠️ Supprimé
 
 - **`SecondaryButton` est supprimé.** `outline` → `PrimaryButton outline size="sm"` (dashboard) ou `GhostButton size="sm"` ; plein → `PrimaryButton size="sm"` ou `GhostButton size="sm"` selon le rôle. Le type `SecondaryButtonProps` disparaît.
