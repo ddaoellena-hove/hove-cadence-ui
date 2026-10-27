@@ -1,0 +1,143 @@
+/* CategoryFilter — grille de tuiles de catégorie, choix exclusif. Tokens uniquement. */
+
+.category-filter {
+  display: grid;
+  /* Colonnes fluides : autant de tuiles que la largeur le permet, une seule
+     colonne pleine largeur sous la largeur minimale (aucun débordement). */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 128px), 1fr));
+  gap: 8px;
+  font-family: var(--cadence-font-sans, "ABC Diatype", "Inter", Helvetica, sans-serif);
+}
+
+.category-filter__tile {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 10px 12px 12px;
+  box-sizing: border-box;
+  border: 1px solid var(--cadence-color-border-strong, #bfc9cb);
+  border-radius: var(--cadence-radius-lg, 10px);
+  background: var(--cadence-color-white, #ffffff);
+  color: var(--cadence-color-label, #1a3e45);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.category-filter__tile:hover:not(:disabled) {
+  border-color: var(--cadence-color-control-border-active, #405e64);
+  background: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
+}
+
+/* Sélectionnée : bordure accent doublée (repère non chromatique : épaisseur)
+   et fond accent léger. */
+.category-filter__tile--selected,
+.category-filter__tile--selected:hover:not(:disabled) {
+  border-color: var(--cadence-color-accent, #1b6cff);
+  background: var(--cadence-color-accent-subtle, #f0f6ff);
+  box-shadow: inset 0 0 0 1px var(--cadence-color-accent, #1b6cff);
+  color: var(--cadence-color-primary, #002830);
+}
+
+/* Après les états : l'anneau de focus s'ajoute au liseré de la sélection. */
+.category-filter__tile:focus-visible {
+  outline: none;
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+}
+
+.category-filter__tile--selected:focus-visible {
+  box-shadow:
+    inset 0 0 0 1px var(--cadence-color-accent, #1b6cff),
+    var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+}
+
+.category-filter__tile:disabled {
+  border-color: var(--cadence-color-border, #e5e5e5);
+  background: var(--cadence-color-surface-alt, #eef1f4);
+  color: var(--cadence-color-text-disabled, #808080);
+  cursor: not-allowed;
+}
+
+.category-filter__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.category-filter__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  color: var(--cadence-color-icon-neutral, #737373);
+}
+
+.category-filter__icon > svg {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.category-filter__tile--selected .category-filter__icon {
+  color: var(--cadence-color-accent, #1b6cff);
+}
+
+.category-filter__tile:disabled .category-filter__icon {
+  color: var(--cadence-color-icon-disabled, #c5cfd3);
+}
+
+/* Libellé : deux lignes réservées pour aligner les tuiles ; un libellé plus
+   long continue à la ligne, jamais tronqué. */
+.category-filter__label {
+  flex: 1;
+  min-width: 0;
+  min-height: calc(2 * 1.3em);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+.category-filter__count {
+  font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+/* Effectif nul : affiché, en texte secondaire — la tuile reste sélectionnable. */
+.category-filter__tile--empty .category-filter__count {
+  color: var(--cadence-color-text-secondary, #607075);
+}
+
+.category-filter__tile:disabled .category-filter__count {
+  color: var(--cadence-color-text-disabled, #808080);
+}
+
+.category-filter__sr-only {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .category-filter__tile {
+    transition: none;
+  }
+}

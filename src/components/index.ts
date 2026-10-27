@@ -30,6 +30,7 @@ export * from './Heatmap';
 export * from './Icons';
 export * from './ModeIcon';
 export * from './ModeFilter';
+export * from './CategoryFilter';
 export * from './Indicator';
 export * from './PageHeader';
 export * from './PageSection';
