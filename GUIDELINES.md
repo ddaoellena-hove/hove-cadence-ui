@@ -299,6 +299,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Ligne d'en-têtes de colonnes avec tri (au-dessus de `TableCard`) | `TableHeader` | en-têtes de `DataTable` (intégrés) |
 | Actions groupées sur une sélection multiple (`DataTable selectable`, liste de `TableCard`) | `BulkActionBar` | une `<div>` de boutons au-dessus de la liste, assemblée à la main |
 | Navigation dans un résultat paginé | `Pagination` | — |
+| Choisir la catégorie affichée par une liste ou un tableau (tuiles picto + libellé + effectif, une seule active) | `CategoryFilter` | `Card` (KPI ou action, trop lourde) ; `SegmentedControl` (2-4 options sans effectif) ; `ModeFilter` (modes de transport, multi-sélection) ; `TabList` (navigation entre vues) |
 | Recherche + filtres rapides + filtres actifs au-dessus d'une liste | `FilterBar` | un `TextInput` + `Badge` assemblés à la main |
 | Recherche seule (en-tête de dashboard, barre d'outils) | `SearchInput` | `TextInput` (champ de formulaire, 40px) |
 | Dialogue bloquant (confirmation, formulaire court) | `Modal` | `AlertToast` (non bloquant) ; `Drawer` (non bloquant, détail) |
@@ -783,6 +784,15 @@ Le code complet du layout est dans la [recette 1](#recette-1--layout-dapplicatio
 - ✅ Au-dessus d'une liste filtrable → `FilterBar` ; en dessous d'une liste paginée → `Pagination`.
 - ❌ Ne pas utiliser `TableCard` pour des milliers de lignes (pas de virtualisation, une carte par ligne).
 - ❌ Ne pas recréer un `<table>` HTML custom — `DataTable` couvre le besoin.
+
+### Filtrer par catégorie : `CategoryFilter`
+
+Au-dessus d'une liste dont chaque catégorie a son propre tableau (catalogue d'un référentiel : réseaux, lignes, arrêts…), `CategoryFilter` présente les catégories en **tuiles compactes** : picto, libellé, effectif dessous. Une seule catégorie est active ; la sélectionner change le tableau situé dessous.
+
+- ✅ Placer le filtre juste au-dessus du tableau qu'il pilote, puis `FilterBar` (recherche dans la catégorie) et `DataTable`.
+- ✅ L'effectif est celui de la catégorie entière, fourni par l'application. Un effectif à 0 s'affiche et reste sélectionnable ; `disabled` sert seulement quand la catégorie est indisponible.
+- ❌ Pas de `Card` par catégorie : sa structure et son bouton d'action alourdissent un filtre.
+- ❌ Pas de bouton, lien ou case à l'intérieur d'une tuile : la tuile entière est la cible.
 
 ### Pagination ou virtualisation
 
@@ -2401,6 +2411,52 @@ Filtre par mode de transport : une rangée de **chips togglables** (picto `ModeI
 
 - ✅ Sélection vide = aucun filtre ; l'app décide (tout afficher). Contrôlé pour piloter le filtre ↔ URL.
 - ❌ Pour un choix exclusif court (2-4) sans picto : `SegmentedControl`. Pour 1 valeur dans un menu : `Dropdown`.
+
+### CategoryFilter
+
+Filtre **exclusif** par catégorie : une grille de tuiles compactes (picto + libellé sur deux lignes, effectif en dessous), chacune entièrement cliquable. Groupe radio nommé (`radiogroup`, chaque tuile est un `radio` avec `aria-checked`). Une seule tuile dans l'ordre de tabulation : flèches, Home et End déplacent le focus **et** sélectionnent, en sautant les tuiles désactivées. Les colonnes s'adaptent à la largeur (128px minimum, une colonne pleine largeur en dessous). Story : *Données et tableaux / CategoryFilter*.
+
+```tsx
+const [category, setCategory] = useState("lignes");
+
+<CategoryFilter
+  aria-label="Catégories du catalogue"
+  items={[
+    { id: "reseaux", label: "Réseaux", count: 42, icon: <ModeIcon mode="network" size={20} /> },
+    { id: "lignes", label: "Lignes", count: 1984, icon: <Icons icon="route" size={20} /> },
+    { id: "points-arret", label: "Points d’arrêt", count: 61207, icon: <Icons icon="marker-pin-01" size={20} /> },
+  ]}
+  value={category}
+  onChange={setCategory}
+/>
+```
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `items` | `CategoryFilterItem[]` | **requis** | Catégories, dans l'ordre d'affichage (voir ci-dessous) |
+| `value` | `string` | **requis** | `id` de la catégorie sélectionnée (contrôlé uniquement) |
+| `onChange` | `(id: string) => void` | **requis** | Sélection d'une autre catégorie ; pas appelé quand on reclique l'active |
+| `aria-label` | `string` | **requis** | Nom accessible du groupe |
+| `className` | `string` | — | Classe CSS additionnelle sur la grille |
+
+`CategoryFilterItem` :
+
+| Champ | Type | Description |
+|---|---|---|
+| `id` | `string` | Identifiant unique, renvoyé par `onChange` |
+| `label` | `string` | Libellé visible ; deux lignes réservées, retour à la ligne au-delà, jamais tronqué |
+| `count` | `number` | Effectif, formaté en français (`61 207`, espace fine insécable) en police mono |
+| `icon` | `ReactNode` | Picto décoratif (`aria-hidden`) : `Icons`, `ModeIcon` ou pictogramme métier hors registre, de 20px |
+| `disabled` | `boolean` | Catégorie indisponible : grisée, ni cliquable ni atteignable au clavier |
+
+- ✅ Nom accessible de chaque tuile : « Lignes, 1 984 » (libellé puis effectif).
+- ✅ Les effectifs peuvent changer après une sélection (rechargement) : la tuile reste en place et garde le focus.
+- ⚠️ **Sélection obligatoire** : il n'y a pas d'état « aucune catégorie ». Recliquer la catégorie active ne la désélectionne pas et n'appelle pas `onChange`. Pour un filtre qu'on peut vider, `ModeFilter` (modes) ou `FilterBar`.
+- ⚠️ **Pas de mode non contrôlé** (`defaultValue` n'existe pas) : l'application tient `value`, qui pilote aussi le tableau. Si `value` ne correspond à aucune catégorie disponible, aucune tuile n'est cochée et la première disponible reçoit le focus au clavier.
+- ⚠️ **0 n'est pas désactivé** : un effectif nul s'affiche en texte secondaire mais reste sélectionnable. Ne passer `disabled` que si la catégorie est réellement indisponible.
+- ⚠️ `icon` est décoratif : ne pas y mettre de texte porteur de sens, ni d'élément interactif.
+- ❌ Pas de prop `checked` ni de `state` par tuile : la sélection passe par `value`.
+- ❌ Pas pour 2-4 options sans effectif (`SegmentedControl`), ni pour une multi-sélection (`ModeFilter`, `RichCheckbox`).
 
 ### Indicator
 

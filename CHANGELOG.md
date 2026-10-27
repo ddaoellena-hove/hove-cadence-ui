@@ -13,6 +13,7 @@ Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, 
   - Types publics `ValidationIssue`, `ValidationIssueLocation`, `ValidationSeverity`, `ValidationVerdict`.
   - Page pattern **Rapport qualité** (`src/patterns/RapportQualitePattern.tsx`), qui remplace le rapport qualité de l'ancienne recette *Offre et qualité*.
 - **`DataSourceStatus`** (*Retours et statuts*) : état d'une source de données — disponibilité fournie (`available`, `degraded`, `unavailable`, `unknown`), dernière observation, dernière réussite (conservée après une erreur), fraîcheur des données servies, dernière erreur, accès au détail. Disponibilité et fraîcheur restent indépendantes. Type `DataSourceAvailability` exporté. Lot L3 de l'audit *Mobility Data Design System*.
+- **`CategoryFilter`** (*Données et tableaux*) : filtre exclusif par catégorie en tuiles compactes entièrement cliquables — picto (`ReactNode`, pictogrammes métier compris), libellé sur deux lignes sans troncature, effectif formaté en français dessous. Sélection obligatoire (recliquer l'active la conserve), effectif nul affiché et distinct de `disabled`, grille adaptée à la largeur. Groupe radio nommé, une seule tuile tabulable, flèches et Home/End en sautant les tuiles désactivées. Type `CategoryFilterItem` exporté.
 
 ### ⚠️ Supprimé
 
