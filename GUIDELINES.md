@@ -1014,6 +1014,21 @@ toast({ type: "error", title: "Échec de l'envoi" }); // persistant
 
 ---
 
+### Dates, heures et fuseaux
+
+Les composants n'ont pas tous le même fuseau par défaut. Dans une composition, **passer `timeZone` (fuseau IANA du produit, ex. `"Europe/Paris"`) et `now` explicitement**, et transmettre des dates ISO avec décalage (`2026-06-12T08:15:00+02:00`) : le rendu ne dépend plus de la machine de l'utilisateur ni de celle des tests.
+
+| Composant | Fuseau par défaut | Réglage |
+|---|---|---|
+| `DataFreshness`, `freshness` des graphiques | fuseau du navigateur | `timeZone`, `now` |
+| `ActivityFeed` | `"UTC"` | `timeZone` |
+| `DataTable` (rendu par défaut des `Date`) | fuseau du navigateur | formater dans `cell` si un fuseau métier s'impose |
+| Axes et infobulles des graphiques temporels | fuseau du navigateur | dates déjà ramenées au fuseau voulu |
+| `TimePicker`, `RouteStopList`, `ServiceCalendar` | heures et dates de service, sans fuseau | — |
+
+- ✅ Une page = un fuseau et une horloge (`now`) partagés par tous ses composants.
+- ❌ Ne pas mélanger une date sans décalage (`2026-06-12T08:15:00`, lue en heure locale) et une date en UTC (`…Z`) dans une même vue.
+
 ## Page patterns
 
 Catalogue de gabarits de page nommés. **Choisir d'abord un pattern dans le tableau *Intention → pattern*, partir de son gabarit, puis composer.** Une page qui ne correspond à aucun pattern est **signalée, pas inventée**.
@@ -1757,7 +1772,7 @@ Clavier : le tracé est focusable ; ←/→ (vertical) ou ↑/↓ (horizontal) d
 
 ### BarList
 
-Classement horizontal : libellé, barre proportionnelle (`--cadence-dataviz-series-1`), valeur en mono alignée à droite, variation facultative. Hauteur : 32px par ligne. Props communes des graphiques : `title` (**requis**), `description`, `headingLevel` (3), `state` (`"ready" | "loading" | "empty" | "error"`), `emptyMessage`, `errorMessage`, `onRetry`, `framed` (false : cadre de carte — bordure, arrondi, marge — pour délimiter des graphiques voisins), `exportable` (false ; `true` ou un nom de fichier : bouton « Exporter (CSV) » dans l'en-tête, qui télécharge l'alternative tabulaire en CSV `;` + BOM UTF-8, nombres sans espaces de groupement), `onExport` (reprend l'export : `{ columns, rows, numeric, csv, fileName }`), `freshness` (`{ updatedAt, now?, freshWithin?, staleWithin?, label? }` : `DataFreshness` sous la description), `className`. Export et fraîcheur valent pour tous les graphiques qui ont « Voir les données » (pas `Heatmap`, qui est elle-même une grille).
+Classement horizontal : libellé, barre proportionnelle (`--cadence-dataviz-series-1`), valeur en mono alignée à droite, variation facultative. Hauteur : 32px par ligne. Props communes des graphiques : `title` (**requis**), `description`, `headingLevel` (3), `state` (`"ready" | "loading" | "empty" | "error"`), `emptyMessage`, `errorMessage`, `onRetry`, `framed` (false : cadre de carte — bordure, arrondi, marge — pour délimiter des graphiques voisins), `exportable` (false ; `true` ou un nom de fichier : bouton « Exporter (CSV) » dans l'en-tête, qui télécharge l'alternative tabulaire en CSV `;` + BOM UTF-8, nombres sans espaces de groupement), `onExport` (reprend l'export : `{ columns, rows, numeric, csv, fileName }`), `freshness` (`{ updatedAt, now?, freshWithin?, staleWithin?, label?, timeZone? }` : `DataFreshness` sous la description), `className`. Export et fraîcheur valent pour tous les graphiques qui ont « Voir les données » (pas `Heatmap`, qui est elle-même une grille).
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
