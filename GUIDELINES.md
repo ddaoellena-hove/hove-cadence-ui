@@ -2414,7 +2414,7 @@ Filtre par mode de transport : une rangée de **chips togglables** (picto `ModeI
 
 ### CategoryFilter
 
-Filtre **exclusif** par catégorie : une grille de tuiles compactes (picto + libellé sur deux lignes, effectif en dessous), chacune entièrement cliquable. Groupe radio nommé (`radiogroup`, chaque tuile est un `radio` avec `aria-checked`). Une seule tuile dans l'ordre de tabulation : flèches, Home et End déplacent le focus **et** sélectionnent, en sautant les tuiles désactivées. Les colonnes s'adaptent à la largeur (128px minimum, une colonne pleine largeur en dessous). Story : *Données et tableaux / CategoryFilter*.
+Filtre **exclusif** par catégorie : une grille de tuiles compactes (picto + libellé sur deux lignes, effectif en dessous), chacune entièrement cliquable. Groupe radio nommé (`radiogroup`, chaque tuile est un `radio` avec `aria-checked`). Une seule tuile dans l'ordre de tabulation : flèches, Home et End déplacent le focus **et** sélectionnent, en sautant les tuiles désactivées. Les colonnes s'adaptent à la largeur (128px minimum, une colonne pleine largeur en dessous). Apparence : au repos et au survol, celle de `Card` (bordure fine, la tuile se soulève avec `--cadence-shadow-raised`) ; sélectionnée, celle de `RichCheckbox` cochée (bordure `control-border-active` doublée, relief intérieur, sans soulèvement) ; désactivée, celle de `RichCheckbox` désactivée. Story : *Données et tableaux / CategoryFilter*.
 
 ```tsx
 const [category, setCategory] = useState("lignes");
