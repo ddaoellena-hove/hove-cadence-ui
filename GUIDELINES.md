@@ -304,6 +304,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Recherche seule (en-tête de dashboard, barre d'outils) | `SearchInput` | `TextInput` (champ de formulaire, 40px) |
 | Dialogue bloquant (confirmation, formulaire court) | `Modal` | `AlertToast` (non bloquant) ; `Drawer` (non bloquant, détail) |
 | Détail d'un élément sans quitter la liste | `Drawer` | `Modal` (dialogue bloquant) |
+| Formulaire long (création, édition) sans quitter la liste | `Drawer width="lg"` + `onSubmit` | `Modal` (formulaire court, bloquant) |
 | Regrouper plus de 4 actions d'une ligne | `ActionMenu` | `GhostButton` icône seule (≤ 4 actions inline) |
 | Chargement : réserver la place du contenu | `Skeleton` | spinner plein écran |
 | Liste vide, sans résultat, ou erreur de chargement | `EmptyState` | état vide bricolé à la main |
@@ -332,7 +333,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Identité de ligne (code et couleur GTFS) | `LineBadge` | `Badge` (étiquette générique) |
 | Nom, commune et identifiant d'arrêt | `StopLabel` | — |
 | Pictogramme d'un mode de transport (rempli : métro, vélo, marche, voiture…) | `ModeIcon` | `Icons` (icônes d'interface en trait) ; `LineBadge` (code + couleur d'une ligne) |
-| Filtrer un tableau de bord / une liste par mode de transport | `ModeFilter` | `SegmentedControl` (choix exclusif 2-4, sans picto) ; `Dropdown` (menu, 1 valeur) ; `FilterBar` (recherche + filtres génériques) |
+| Filtrer un tableau de bord / une liste par mode de transport ou par ligne avec son badge | `ModeFilter` (`modes` ou `items`) | `SegmentedControl` (choix exclusif 2-4, sans picto) ; `Dropdown` (menu, 1 valeur) ; `FilterBar` (recherche + filtres génériques) |
 | Choisir le périmètre réseau d'une perturbation (réseaux, lignes) | `DisruptionScopePicker` | `Autocomplete multiple` (liste plate, sans hiérarchie) ; `TreeView` seul (sans champ, résumé ni chips) |
 | Identifiant technique à copier (arrêt, course, véhicule) | `CopyableText` | `StopLabel` (nom d'arrêt, identifiant en simple mention) ; `TextInput readOnly` |
 | Message persistant dans la page | `InlineAlert` | `Toaster` (notification éphémère) |
@@ -2396,19 +2397,39 @@ Modes : `all-pt`, `metro`, `metro-alt`, `train`, `tram`, `funicular`, `bus`, `bu
 
 ### ModeFilter
 
-Filtre par mode de transport : une rangée de **chips togglables** (picto `ModeIcon` + libellé), **multi-sélection** par défaut. Pour un filtre de tableau de bord ou de liste, dans une `FilterBar` ou une barre d'outils. Chaque chip est un bouton bascule (`aria-pressed`) ; le groupe est nommé par `aria-label`. Une sélection **vide = aucun filtre** (l'app affiche tout). Libellés FR par défaut (`MODE_LABELS`), surchargables.
+Filtre par mode de transport ou par ligne : une rangée de **chips togglables** (picto `ModeIcon` ou `LineBadge` + libellé), **multi-sélection** par défaut. Pour un filtre de tableau de bord ou de liste, dans une `FilterBar` ou une barre d'outils. Chaque chip est un bouton bascule (`aria-pressed`) ; le groupe est nommé par `aria-label`. Une sélection **vide = aucun filtre** (l'app affiche tout). Libellés FR par défaut (`MODE_LABELS`), surchargables.
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `modes` | `ModeName[]` | **requis** | Modes proposés, dans l'ordre |
+| `modes` | `ModeName[]` | — | Modes proposés ; exclusif avec `items` |
+| `items` | `ModeFilterItem[]` | — | Lignes `{ id, label, badge? }` ; fournir `items` ou `modes` |
 | `aria-label` | `string` | **requis** | Nom accessible du groupe |
-| `value` / `defaultValue` | `ModeName[]` | — | Sélection (contrôlée / au montage) |
-| `onChange` | `(modes: ModeName[]) => void` | — | Changement de la sélection |
+| `value` / `defaultValue` | `ModeName[]` ou `string[]` | — | Modes ou identifiants des lignes (contrôlé / au montage) |
+| `onChange` | `(modes: ModeName[]) => void` ou `(ids: string[]) => void` | — | Sélection selon l’API choisie |
 | `selection` | `"multiple" \| "single"` | `"multiple"` | Multi ou un seul mode |
 | `labels` | `Partial<Record<ModeName, string>>` | `MODE_LABELS` | Libellés personnalisés |
-| `iconSize` | `number` | `18` | Taille du picto |
+| `allLabel` | `string` | — | Bouton facultatif « Toutes » qui appelle `onChange([])` |
+| `iconSize` | `number` | `18` | Taille du picto de mode ; badges de ligne en `sm` |
 | `id` / `className` | `string` | — | — |
 
+`ModeFilterItem` : `id: string` unique et stable, `label: string`, `badge?: Omit<LineBadgeProps, "size" | "className">`. Le badge est décoratif dans le bouton, dont le nom accessible reste le libellé. Omettre `badge` pour un groupe agrégé (« Autres lignes »). Les couleurs du badge viennent des données, son contraste est géré par LineBadge.
+
+```tsx
+<ModeFilter
+  aria-label="Filtrer par ligne"
+  items={[
+    { id: "rer-b", label: "RER B", badge: { code: "B", mode: "rer", color: "#5291ce" } },
+    { id: "other", label: "Autres lignes" },
+  ]}
+  value={lines}
+  onChange={setLines}
+  selection="single"
+  allLabel="Toutes"
+/>
+```
+
+- ⚠️ Fournir exactement une source : `modes` ou `items`. `labels` concerne seulement les modes. Les identifiants des lignes ne doivent pas être placés dans `modes`.
+- ⚠️ En sélection unique, recliquer la ligne active vide la sélection. Le bouton `allLabel` est actif quand la sélection est vide, en unique comme en multiple.
 - ✅ Sélection vide = aucun filtre ; l'app décide (tout afficher). Contrôlé pour piloter le filtre ↔ URL.
 - ❌ Pour un choix exclusif court (2-4) sans picto : `SegmentedControl`. Pour 1 valeur dans un menu : `Dropdown`.
 
@@ -3176,9 +3197,25 @@ Panneau latéral droit pour consulter le détail d'un élément **sans quitter l
 | `title` | `string` | **requis** | Titre |
 | `subtitle` | `string` | — | Sous-titre |
 | `children` | `ReactNode` | **requis** | Corps défilant (`cadence-scrollbar`) |
-| `primaryAction` | `{ label; onClick; destructive? }` | — | Pied → `PrimaryButton` (`destructive` → `tone="danger"`) |
-| `secondaryAction` | `{ label; onClick }` | — | Pied → `GhostButton` |
-| `width` | `"md" \| "lg"` | `"md"` | 480px / 720px |
+| `primaryAction` | `{ label; onClick?; destructive?; loading? }` | — | Pied → `PrimaryButton` (`destructive` → `tone="danger"`, `loading` → spinner, clics ignorés). Avec `onSubmit` : `type="submit"`, `onClick` facultatif |
+| `secondaryAction` | `{ label; onClick? }` | — | Pied → `GhostButton` (toujours `type="button"`, ne soumet jamais) |
+| `width` | `"md" \| "lg"` | `"md"` | 480px / 720px (`lg` : formulaire, contenu dense) |
+| `onSubmit` | `(event: FormEvent<HTMLFormElement>) => void` | — | Panneau formulaire : corps + pied dans un `<form>`, l'action principale soumet (Entrée dans un champ aussi) |
+| `className` | `string` | — | Classe additionnelle sur le panneau |
+
+**Drawer formulaire** (`width="lg"` + `onSubmit`) : en-tête et pied restent fixes, seul le corps défile. Champs côte à côte avec `FieldRow`. Story : *Surcouches / Drawer / Large avec formulaire*.
+
+```tsx
+<Drawer isOpen={open} onClose={close} title="Nouvelle perturbation" width="lg"
+  onSubmit={(e) => { e.preventDefault(); if (valid) save(); }}
+  primaryAction={{ label: "Créer", loading: saving }}
+  secondaryAction={{ label: "Annuler", onClick: close }}>
+  <TextInput label="Titre *" … />
+  <FieldRow><TextInput label="Début" … /><TextInput label="Fin" … /></FieldRow>
+</Drawer>
+```
+
+⚠️ `onSubmit` reçoit l'événement natif : appeler `event.preventDefault()`, sinon la page est rechargée. La validation reste à l'app (état `error` + `helperText` des champs, `ErrorSummary` si plusieurs erreurs). Ne pas mettre de bouton de soumission dans `children` : c'est l'action principale du pied.
 
 Le panneau partage avec `Modal` la gestion des surcouches superposées : seule celle au premier plan possède le clavier ; le fond reste verrouillé jusqu’à la fermeture de la dernière.
 

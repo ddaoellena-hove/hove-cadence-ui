@@ -5,8 +5,11 @@
  * liste (≠ Modal, dialogue bloquant). Voile, Échap, clic sur le voile, bouton
  * fermer, piège à focus et retour du focus sont fournis par les primitives de
  * surcouche partagées (voir overlay-primitives.ts).
+ *
+ * Avec `onSubmit`, corps et pied sont enveloppés dans un <form> : l'action
+ * principale devient le bouton de soumission (Entrée dans un champ soumet).
  */
-import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { CloseButton } from "./CloseButton";
 import { GhostButton } from "./GhostButton";
 import { PrimaryButton } from "./PrimaryButton";
@@ -19,10 +22,12 @@ import "./scrollbar.css";
 export interface DrawerAction {
   /** Libellé du bouton. */
   label: string;
-  /** Clic. */
-  onClick: () => void;
+  /** Clic. Facultatif pour l'action principale d'un Drawer formulaire (`onSubmit`). */
+  onClick?: () => void;
   /** Style destructif pour l'action principale. */
   destructive?: boolean;
+  /** Envoi en cours : spinner, clics ignorés, largeur conservée. */
+  loading?: boolean;
 }
 
 export interface DrawerProps {
@@ -40,8 +45,13 @@ export interface DrawerProps {
   primaryAction?: DrawerAction;
   /** Action secondaire du pied → GhostButton (« Fermer », « Annuler »). */
   secondaryAction?: DrawerAction;
-  /** Largeur : "md" 480px (défaut), "lg" 720px. */
+  /** Largeur : "md" 480px (défaut), "lg" 720px (formulaire, contenu dense). */
   width?: "md" | "lg";
+  /**
+   * Fait du panneau un formulaire : corps et pied dans un <form>, l'action
+   * principale devient type="submit". L'app appelle preventDefault et valide.
+   */
+  onSubmit?: (event: FormEvent<HTMLFormElement>) => void;
   /** Classe CSS additionnelle sur le panneau. */
   className?: string;
 }
@@ -58,6 +68,7 @@ export const Drawer = ({
   primaryAction,
   secondaryAction,
   width = "md",
+  onSubmit,
   className,
 }: DrawerProps) => {
   const panelRef = useRef<HTMLDivElement>(null);
@@ -101,6 +112,31 @@ export const Drawer = ({
     .filter(Boolean)
     .join(" ");
 
+  const content = (
+    <>
+      {/* Corps défilant */}
+      <div className="drawer__body cadence-scrollbar">{children}</div>
+
+      {/* Pied fixe */}
+      {showFooter && (
+        <div className="drawer__footer">
+          {secondaryAction && (
+            <GhostButton label={secondaryAction.label} onClick={secondaryAction.onClick} />
+          )}
+          {primaryAction && (
+            <PrimaryButton
+              label={primaryAction.label}
+              onClick={primaryAction.onClick}
+              tone={primaryAction.destructive ? "danger" : "default"}
+              loading={primaryAction.loading}
+              type={onSubmit ? "submit" : "button"}
+            />
+          )}
+        </div>
+      )}
+    </>
+  );
+
   return (
     <OverlayPortal>
       <div className={`drawer__scrim${entered ? " drawer__scrim--open" : ""}`} onClick={onClose}>
@@ -127,23 +163,12 @@ export const Drawer = ({
             <CloseButton onClick={onClose} />
           </div>
 
-          {/* Corps défilant */}
-          <div className="drawer__body cadence-scrollbar">{children}</div>
-
-          {/* Pied fixe */}
-          {showFooter && (
-            <div className="drawer__footer">
-              {secondaryAction && (
-                <GhostButton label={secondaryAction.label} onClick={secondaryAction.onClick} />
-              )}
-              {primaryAction && (
-                <PrimaryButton
-                  label={primaryAction.label}
-                  onClick={primaryAction.onClick}
-                  tone={primaryAction.destructive ? "danger" : "default"}
-                />
-              )}
-            </div>
+          {onSubmit ? (
+            <form className="drawer__form" onSubmit={onSubmit}>
+              {content}
+            </form>
+          ) : (
+            content
           )}
         </div>
       </div>

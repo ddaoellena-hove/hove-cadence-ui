@@ -6,6 +6,9 @@ import { DataTable, type DataTableColumn } from "./DataTable";
 import { Indicator } from "./Indicator";
 import { Badge } from "./Badge";
 import { PrimaryButton } from "./PrimaryButton";
+import { TextInput } from "./TextInput";
+import { TextArea } from "./TextArea";
+import { FieldRow } from "./FieldRow";
 import { SEVERITY_LABELS, generateDisruptions, type Disruption } from "../stories/data/transport";
 import { DISRUPTION_COLUMNS } from "../stories/data/columns";
 
@@ -140,5 +143,100 @@ export const Large: Story = {
     // Échap rend le focus au bouton déclencheur (dès la fermeture).
     await userEvent.keyboard("{Escape}");
     await waitFor(() => expect(opener).toHaveFocus());
+  },
+};
+
+/** Panneau large (720px) contenant un formulaire : en-tête et pied fixes, corps défilant. */
+function FormDemo() {
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [titleError, setTitleError] = useState(false);
+  const [created, setCreated] = useState<string | null>(null);
+
+  const close = () => {
+    setOpen(false);
+    setTitleError(false);
+  };
+
+  return (
+    <div style={{ padding: 24, minHeight: 320, display: "flex", flexDirection: "column", gap: 12, alignItems: "flex-start" }}>
+      <PrimaryButton label="Créer une perturbation" iconStart="plus" onClick={() => setOpen(true)} />
+      {created && <p role="status" style={{ margin: 0, fontSize: 13 }}>Perturbation « {created} » créée.</p>}
+
+      <Drawer
+        isOpen={open}
+        onClose={close}
+        title="Nouvelle perturbation"
+        subtitle="Les champs marqués d’un astérisque sont obligatoires."
+        width="lg"
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (!title.trim()) {
+            setTitleError(true);
+            return;
+          }
+          setCreated(title.trim());
+          setTitle("");
+          close();
+        }}
+        primaryAction={{ label: "Créer" }}
+        secondaryAction={{ label: "Annuler", onClick: close }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          <TextInput
+            label="Titre *"
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              if (titleError) setTitleError(false);
+            }}
+            state={titleError ? "error" : "enabled"}
+            helperText={titleError ? "Le titre est obligatoire." : undefined}
+          />
+          <FieldRow>
+            <TextInput label="Ligne" placeholder="Ex. 13" />
+            <TextInput label="Arrêts impactés" placeholder="Ex. 4" />
+          </FieldRow>
+          <FieldRow>
+            <TextInput label="Début" type="datetime-local" />
+            <TextInput label="Fin" type="datetime-local" />
+          </FieldRow>
+          <TextInput label="Cause" placeholder="Ex. Travaux" />
+          <TextArea label="Description interne" rows={6} placeholder="Contexte pour les équipes d’exploitation" />
+          <TextArea label="Message voyageurs" rows={6} placeholder="Texte affiché aux voyageurs" />
+        </div>
+      </Drawer>
+    </div>
+  );
+}
+
+/**
+ * `width="lg"` + `onSubmit` : le corps et le pied sont dans un `<form>`.
+ * « Créer » soumet (comme Entrée dans un champ) ; « Annuler » ne soumet pas.
+ * L’en-tête et le pied restent fixes, seul le corps défile.
+ */
+export const Formulaire: Story = {
+  name: "Large avec formulaire",
+  render: () => <FormDemo />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+
+    await userEvent.click(canvas.getByRole("button", { name: "Créer une perturbation" }));
+    const dialog = await body.findByRole("dialog");
+    const submit = within(dialog).getByRole("button", { name: "Créer" });
+    await expect(submit).toHaveAttribute("type", "submit");
+    await expect(within(dialog).getByRole("button", { name: "Annuler" })).toHaveAttribute("type", "button");
+
+    // Soumission vide : erreur sur le titre, le panneau reste ouvert.
+    await userEvent.click(submit);
+    const titleInput = within(dialog).getByLabelText("Titre *");
+    await expect(titleInput).toHaveAttribute("aria-invalid", "true");
+    await expect(dialog).toBeInTheDocument();
+
+    // Entrée dans un champ soumet le formulaire.
+    await userEvent.type(titleInput, "Travaux station Bastille{Enter}");
+    await waitFor(() => expect(body.queryByRole("dialog")).not.toBeInTheDocument());
+    await expect(canvas.getByRole("status")).toHaveTextContent("Travaux station Bastille");
   },
 };
