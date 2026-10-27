@@ -294,6 +294,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Liste de gros volume (> 50 lignes, colonnes de données) | `DataTable` | `TableCard` (liste de cartes riches, peu nombreuses) |
 | Élément de liste riche, peu nombreux (header + colonnes) | `TableCard` | `DataTable` (gros volumes) ; un `<table>` HTML custom |
 | Ligne d'en-têtes de colonnes avec tri (au-dessus de `TableCard`) | `TableHeader` | en-têtes de `DataTable` (intégrés) |
+| Actions groupées sur une sélection multiple (`DataTable selectable`, liste de `TableCard`) | `BulkActionBar` | une `<div>` de boutons au-dessus de la liste, assemblée à la main |
 | Navigation dans un résultat paginé | `Pagination` | — |
 | Recherche + filtres rapides + filtres actifs au-dessus d'une liste | `FilterBar` | un `TextInput` + `Badge` assemblés à la main |
 | Recherche seule (en-tête de dashboard, barre d'outils) | `SearchInput` | `TextInput` (champ de formulaire, 40px) |
@@ -567,20 +568,14 @@ Une période, une date ou un choix dans une liste se placent dans l'en-tête ave
 </div>
 ```
 
-**Liste — barre de sélection, `size="sm"`**
+**Liste — barre d'actions groupées (`BulkActionBar`), `size="sm"`**
 
 ```tsx
-// Visible uniquement quand selectedCount > 0
-<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px" }}>
-  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-    <Checkbox aria-label="Tout désélectionner" state="checked" onChange={onDeselectAll} />
-    <Link hideArrow onClick={onDeselectAll}>Tout désélectionner</Link>
-  </div>
-  <div style={{ display: "flex", gap: 8 }}>
-    <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" onClick={onDuplicate} />
-    <PrimaryButton size="sm" iconStart="trash" tone="danger" label="Supprimer" onClick={onDelete} />
-  </div>
-</div>
+// Juste après la liste ; masquée tant que rien n'est sélectionné
+<BulkActionBar count={selectedIds.length}>
+  <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" onClick={onDuplicate} />
+  <PrimaryButton size="sm" iconStart="trash" tone="danger" label="Supprimer" onClick={onDelete} />
+</BulkActionBar>
 ```
 
 **Actions par ligne** — `GhostButton size="sm"` icône seule, dans le header de chaque `TableCard`. L'`aria-label` s'affiche en infobulle au survol et au focus clavier :
@@ -644,7 +639,7 @@ Au-dessus d'une liste filtrable, utiliser `FilterBar` (recherche, filtres rapide
 | Formulaire — soumission | En bas à droite | `Link` (option) + `GhostButton` + `PrimaryButton`, en `md` |
 | Modale — validation | Pied (via `primaryAction` / `secondaryAction`) | géré par `Modal` |
 | Liste — action par ligne | À droite du header de la ligne | `GhostButton size="sm"` icône seule |
-| Liste — sélection multiple | À droite de la barre de sélection | `GhostButton` + `PrimaryButton tone="danger"`, `size="sm"` |
+| Liste — sélection multiple | Barre flottante en bas de la liste (`BulkActionBar`), après le compteur | `GhostButton` + `PrimaryButton tone="danger"`, `size="sm"` |
 | Formulaire inline | À droite du champ associé | `GhostButton` |
 
 Un bouton ne change jamais de position selon l'état de l'application : il peut être affiché, masqué, activé, désactivé ou en chargement, mais son emplacement reste fixe.
@@ -798,6 +793,17 @@ Le code complet du layout est dans la [recette 1](#recette-1--layout-dapplicatio
 - ✅ Le contenu des cellules tient sur une ligne (texte tronqué avec ellipse) : la hauteur de ligne est celle de la densité.
 - ✅ Action avec libellé dans une cellule (« Consulter ») : `PrimaryButton outline size="sm"`. Un `GhostButton` avec libellé n'a ni fond ni bordure au repos et se confond avec les valeurs de la ligne. Les actions icône seule restent en `GhostButton size="sm"`.
 - ❌ Ne pas combiner `virtualized` et `Pagination`.
+
+### Sélection multiple et actions groupées
+
+Les actions sur une sélection passent par `BulkActionBar`, placée **juste après la liste, dans le même conteneur** : elle colle au bas de la zone visible pendant le défilement, puis reprend sa place sous la liste. Elle apparaît à la première sélection et disparaît quand la sélection est vide ; le compteur (« 3 courses sélectionnées ») est annoncé aux lecteurs d'écran.
+
+- ✅ Actions en `size="sm"` : `GhostButton` (Exporter, Modifier…) puis, en dernier, `PrimaryButton tone="danger"` pour une suppression, confirmée par une `Modal size="small"`.
+- ✅ `countLabel` nomme les éléments de la liste (« 3 courses sélectionnées ») ; le défaut dit « éléments ».
+- ✅ Quand la barre disparaît avec la sélection (après une suppression), ramener le focus sur la liste (case « Tout sélectionner » du `DataTable`).
+- ✅ Liste de `TableCard` (sans case d'en-tête) : ajouter un `GhostButton size="sm" iconStart="x-close" label="Tout désélectionner"` en première action.
+- ❌ Pas de barre au-dessus du tableau ni dans `PageHeader` : les actions groupées vivent dans `BulkActionBar`.
+- ❌ Pas de `PrimaryButton` plein non destructif dans la barre : la vue garde son action principale (création) dans l'en-tête.
 
 ### Densité
 
@@ -1165,12 +1171,12 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
 
 ### Recette 2 — Page liste avec sélection multiple
 
-Liste de `TableCard` avec en-têtes triables, sélection multiple, barre d'actions groupées et confirmation de suppression. Couvre : `TableHeader`, `TableCard`, `GhostButton` (actions par ligne), `Checkbox`, `Modal`, `useToast` (avec un `<Toaster />` monté à la racine de l'app), `TabList` + `Tab`, tri et filtres.
+Liste de `TableCard` avec en-têtes triables, sélection multiple, barre d'actions groupées et confirmation de suppression. Couvre : `TableHeader`, `TableCard`, `GhostButton` (actions par ligne), `BulkActionBar`, `Modal`, `useToast` (avec un `<Toaster />` monté à la racine de l'app), `TabList` + `Tab`, tri et filtres.
 
 ```tsx
 import { useState } from "react";
 import {
-  Tab, TabList, PrimaryButton, GhostButton, Link, Checkbox, TableHeader, TableCard, Modal, Indicator, useToast,
+  Tab, TabList, PrimaryButton, GhostButton, BulkActionBar, TableHeader, TableCard, Modal, Indicator, useToast,
 } from "@ddaoellena/cadence-ui";
 
 // Largeurs partagées entre TableHeader et TableCard — NE PAS désynchroniser
@@ -1202,20 +1208,6 @@ export const ScenarioListPage = () => {
         </TabList>
         <PrimaryButton label="Créer un scénario" onClick={onCreate} />
       </div>
-
-      {/* ── Barre de sélection (visible si ≥ 1 sélection) ── */}
-      {selected.size > 0 && (
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 0" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <Checkbox aria-label="Tout désélectionner" state="checked" onChange={() => setSelected(new Set())} />
-            <Link hideArrow onClick={() => setSelected(new Set())}>Tout désélectionner</Link>
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" onClick={onDuplicate} />
-            <PrimaryButton size="sm" iconStart="trash" tone="danger" label="Supprimer" onClick={() => setConfirmOpen(true)} />
-          </div>
-        </div>
-      )}
 
       {/* ── En-têtes de colonnes ── */}
       <TableHeader
@@ -1253,6 +1245,16 @@ export const ScenarioListPage = () => {
           />
         ))}
       </div>
+
+      {/* ── Actions groupées : barre flottante, masquée sans sélection ── */}
+      <BulkActionBar
+        count={selected.size}
+        countLabel={(n) => (n > 1 ? `${n} scénarios sélectionnés` : `${n} scénario sélectionné`)}
+      >
+        <GhostButton size="sm" iconStart="x-close" label="Tout désélectionner" onClick={() => setSelected(new Set())} />
+        <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" onClick={onDuplicate} />
+        <PrimaryButton size="sm" iconStart="trash" tone="danger" label="Supprimer" onClick={() => setConfirmOpen(true)} />
+      </BulkActionBar>
 
       {/* ── Confirmation de suppression ── */}
       <Modal
@@ -1376,12 +1378,12 @@ pour une vue entière, `size="inline"` dans un `DataTable`, une `Card` ou un gra
 
 ### Recette 5 — Page de supervision
 
-Liste de gros volume paginée par l'API : `FilterBar` au-dessus, `DataTable` (tri et pagination côté serveur, sélection), barre de sélection, `Pagination` en dessous. Gabarit vérifié : pattern **Liste / index**.
+Liste de gros volume paginée par l'API : `FilterBar` au-dessus, `DataTable` (tri et pagination côté serveur, sélection), `BulkActionBar`, `Pagination` en dessous. Gabarit vérifié : pattern **Liste / index**.
 
 ```tsx
 import { useEffect, useState } from "react";
 import {
-  FilterBar, DataTable, Pagination, Dropdown, Checkbox, Link, PrimaryButton, GhostButton, Badge, Indicator,
+  FilterBar, DataTable, BulkActionBar, Pagination, Dropdown, PrimaryButton, GhostButton, Badge, Indicator,
   type DataTableColumn, type DataTableSort,
 } from "@ddaoellena/cadence-ui";
 
@@ -1428,36 +1430,33 @@ export const SupervisionPage = () => {
         actions={<GhostButton size="sm" iconStart="download-02" label="Exporter" />}
       />
 
-      {selectedIds.length > 0 && (
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <Checkbox aria-label="Tout désélectionner" state="checked" onChange={() => setSelectedIds([])} />
-            <Link hideArrow onClick={() => setSelectedIds([])}>Tout désélectionner</Link>
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" />
-            <PrimaryButton size="sm" iconStart="trash" tone="danger" label="Clôturer" onClick={onConfirm} />
-          </div>
-        </div>
-      )}
-
-      <DataTable
-        aria-label="Perturbations"
-        columns={COLUMNS}
-        data={result?.items ?? EMPTY}
-        getRowId={(d) => d.id}
-        manualSorting
-        manualPagination
-        sort={sort}
-        onSortChange={(next) => update(() => setSort(next))}
-        loading={loading}
-        selectable
-        selectedIds={selectedIds}
-        onSelectionChange={setSelectedIds}
-        onRowClick={(d) => navigate(`/perturbations/${d.id}`)}
-        maxHeight="calc(100vh - 320px)"
-        emptyState="Aucune perturbation ne correspond à ces filtres."
-      />
+      {/* Tableau et barre d'actions groupées dans le même conteneur */}
+      <div>
+        <DataTable
+          aria-label="Perturbations"
+          columns={COLUMNS}
+          data={result?.items ?? EMPTY}
+          getRowId={(d) => d.id}
+          manualSorting
+          manualPagination
+          sort={sort}
+          onSortChange={(next) => update(() => setSort(next))}
+          loading={loading}
+          selectable
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
+          onRowClick={(d) => navigate(`/perturbations/${d.id}`)}
+          maxHeight="calc(100vh - 320px)"
+          emptyState="Aucune perturbation ne correspond à ces filtres."
+        />
+        <BulkActionBar
+          count={selectedIds.length}
+          countLabel={(n) => (n > 1 ? `${n} perturbations sélectionnées` : `${n} perturbation sélectionnée`)}
+        >
+          <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" />
+          <PrimaryButton size="sm" iconStart="trash" tone="danger" label="Clôturer" onClick={onConfirm} />
+        </BulkActionBar>
+      </div>
 
       <Pagination
         page={page}
@@ -2022,8 +2021,39 @@ Tableau dense pour les gros volumes. Vrai `<table>` (rôles ARIA explicites), en
 
 - Tri en mémoire : chaînes à la française (« Ligne 2 » avant « Ligne 10 », sans casse ni accents), nombres, dates ; valeurs vides toujours en dernier.
 - Rendu par défaut : nombres `Intl.NumberFormat("fr-FR")`, dates `JJ/MM/AAAA HH:mm`, booléens « Oui » / « Non », vide « — ».
-- ⚠️ La case d'en-tête sélectionne les lignes **affichées** (la page). « Sélectionner les N résultats » se fait dans la barre de sélection de l'app.
+- ⚠️ La case d'en-tête sélectionne les lignes **affichées** (la page). « Sélectionner les N résultats » se fait par une action de la `BulkActionBar`.
 - ⚠️ Le masquage et l'ordre des colonnes passent par `ColumnManager` (branché sur `hiddenColumnIds` et `columnOrder`). Il n'y a toujours ni filtre par colonne ni redimensionnement.
+
+### BulkActionBar
+
+Barre d'actions groupées flottante pour une sélection multiple (`DataTable selectable`, liste de `TableCard`). Placée juste après la liste, dans le même conteneur : collante en bas de la zone visible (`position: sticky`, 16px du bas), centrée, au-dessus des lignes tant que la liste défile. Surface blanche surélevée : compteur, séparateur, puis les actions. Masquée quand `count` vaut 0. Sous 480px de large, le compteur passe au-dessus des actions. Story : *Données et tableaux / BulkActionBar*.
+
+```tsx
+<div>
+  <DataTable … selectable selectedIds={selectedIds} onSelectionChange={setSelectedIds} />
+  <BulkActionBar
+    count={selectedIds.length}
+    countLabel={(n) => (n > 1 ? `${n} courses sélectionnées` : `${n} course sélectionnée`)}
+  >
+    <GhostButton size="sm" iconStart="download-02" label="Exporter" onClick={onExport} />
+    <PrimaryButton size="sm" tone="danger" iconStart="trash" label="Supprimer" onClick={() => setConfirmOpen(true)} />
+  </BulkActionBar>
+</div>
+```
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `count` | `number` | **requis** | Nombre d'éléments sélectionnés. `0` : barre masquée |
+| `children` | `ReactNode` | **requis** | Actions : `GhostButton` puis `PrimaryButton tone="danger"`, en `size="sm"` |
+| `countLabel` | `(count: number) => string` | « 1 élément sélectionné », « 1 248 éléments sélectionnés », « Aucun élément sélectionné » | Libellé du compteur, affiché et annoncé. Appelé aussi avec `0` (annonce de la sélection vidée) |
+| `aria-label` | `string` | `"Actions groupées"` | Nom de la région de la barre |
+| `className` | `string` | — | — |
+
+- Accessibilité : la barre est une région nommée (`role="region"`). Le compteur est annoncé poliment à chaque changement par une région `status` toujours montée, y compris barre masquée : la première sélection et la sélection vidée sont annoncées.
+- ⚠️ Placer la barre **après** la liste et dans **le même conteneur** qu'elle : `position: sticky` ne colle qu'à l'intérieur de son parent. Dans un conteneur `flex` avec `gap`, envelopper liste + barre dans une `<div>` (sinon le `gap` reste visible barre masquée).
+- ⚠️ Quand la sélection se vide, la barre disparaît avec le bouton qui avait le focus : ramener le focus sur la liste (ex. case « Tout sélectionner »).
+- ⚠️ Pas de case « Tout désélectionner » intégrée : avec `DataTable`, la case d'en-tête vide la page ; avec `TableCard`, ajouter un `GhostButton` « Tout désélectionner » en première action.
+- ⚠️ Pas de menu de débordement : au-delà de quatre actions, regrouper les moins fréquentes dans un `ActionMenu`.
 
 ### DatePicker
 

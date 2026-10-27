@@ -4,6 +4,10 @@
 
 Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, nettoyage du Storybook, contrastes AA et vérification du paquet (feuille de route § 5). Le guide de migration ci-dessous couvre le passage de n'importe quelle 0.x à la 1.0.
 
+### Ajouté
+
+- **`BulkActionBar`** (*Données et tableaux*) : barre d'actions groupées flottante pour une sélection multiple (`DataTable selectable`, liste de `TableCard`). Placée après la liste, elle colle au bas de la zone visible pendant le défilement ; surface blanche surélevée, compteur puis actions `size="sm"`, masquée sans sélection, compteur annoncé aux lecteurs d'écran (`countLabel` pour nommer les éléments). Le pattern **Liste / index** et les recettes 2 et 5 l'utilisent à la place de la barre de sélection assemblée à la main.
+
 ### ⚠️ Supprimé
 
 - **`SecondaryButton` est supprimé.** `outline` → `PrimaryButton outline size="sm"` (dashboard) ou `GhostButton size="sm"` ; plein → `PrimaryButton size="sm"` ou `GhostButton size="sm"` selon le rôle. Le type `SecondaryButtonProps` disparaît.
