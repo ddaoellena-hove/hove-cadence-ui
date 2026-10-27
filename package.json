@@ -47,7 +47,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "story-ui": "story-ui start --port 4001",
-    "storybook-with-ui": "concurrently \"npm run storybook\" \"npm run story-ui\""
+    "storybook-with-ui": "concurrently \"npm run storybook\" \"npm run story-ui\"",
+    "chromatic": "chromatic"
   },
   "peerDependencies": {
     "react": "^18 || ^19",
@@ -82,6 +83,7 @@
     "@vitejs/plugin-react": "^6.0.1",
     "@vitest/browser-playwright": "^4.1.5",
     "@vitest/coverage-v8": "^4.1.5",
+    "chromatic": "^18.13.3",
     "concurrently": "^8.2.0",
     "dts-bundle-generator": "9.5.1",
     "esbuild": "0.27.7",
