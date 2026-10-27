@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, userEvent, within } from "storybook/test";
 import { TooltipTrigger } from "./TooltipTrigger";
 
 const meta: Meta<typeof TooltipTrigger> = {
@@ -10,9 +11,9 @@ const meta: Meta<typeof TooltipTrigger> = {
     docs: {
       description: {
         component:
-          "Wraps any child element and shows a Tooltip bubble on hover. " +
-          "The `position` prop controls which side the bubble appears on; " +
-          "the arrow automatically points back toward the trigger.",
+          "Icône ⓘ qui affiche une bulle d'aide au survol et au focus clavier ; Échap la ferme. " +
+          "Le texte est le nom accessible du bouton. `position` choisit le côté de la bulle, " +
+          "dont la flèche pointe vers l'icône. N'enveloppe pas d'autre élément.",
       },
     },
   },
@@ -122,4 +123,27 @@ export const AllDirections: Story = {
       ))}
     </div>
   ),
+};
+
+/* ── Clavier ────────────────────────────────────────────────────── */
+/** Tab ouvre la bulle, Échap la ferme sans déplacer le focus, Maj+Tab la ferme. */
+export const Clavier: Story = {
+  args: { label: "Complétez tous les champs obligatoires pour enregistrer.", position: "top" },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole("button", { name: "Complétez tous les champs obligatoires pour enregistrer." });
+    await expect(button).toHaveAttribute("type", "button");
+    await userEvent.tab();
+    await expect(button).toHaveFocus();
+    await expect(canvas.getByText("Complétez tous les champs obligatoires pour enregistrer.")).toBeVisible();
+    await userEvent.keyboard("{Escape}");
+    await expect(button).toHaveFocus();
+    await expect(canvas.queryByText("Complétez tous les champs obligatoires pour enregistrer.")).not.toBeInTheDocument();
+    await userEvent.keyboard("{Escape}");
+    await userEvent.tab({ shift: true });
+    await userEvent.tab();
+    await expect(canvas.getByText("Complétez tous les champs obligatoires pour enregistrer.")).toBeVisible();
+    await userEvent.tab({ shift: true });
+    await expect(canvas.queryByText("Complétez tous les champs obligatoires pour enregistrer.")).not.toBeInTheDocument();
+  },
 };

@@ -303,7 +303,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Chargement : réserver la place du contenu | `Skeleton` | spinner plein écran |
 | Liste vide, sans résultat, ou erreur de chargement | `EmptyState` | état vide bricolé à la main |
 | Notification temporaire non bloquante | `useToast()` + `Toaster` | `Modal` (bloquant) ; `AlertToast` seul (carte brute, hors pile) |
-| Info contextuelle au survol | `Tooltip` / `TooltipTrigger` | `Modal` ; `Popover` (contenu interactif) |
+| Info contextuelle au survol ou au focus | `Tooltip` / `TooltipTrigger` | `Modal` ; `Popover` (contenu interactif) |
 | Aide riche, mini-formulaire ou détail ancré à un bouton | `Popover` | `Tooltip` (lecture seule, sans focus) ; `Modal` (bloquant) ; `Drawer` (détail long) |
 | Squelette d'application (navigation + contenu de page) | `AppLayout` | — |
 | Navigation principale (sections de l'app) | `Sidebar` | — |
@@ -2852,6 +2852,8 @@ Clavier et focus : à l'ouverture, focus sur le premier élément focusable du c
 Composant purement visuel — pas de logique de positionnement ni de déclenchement. Préférer `TooltipTrigger` pour le pattern complet.
 
 ### TooltipTrigger
+
+Icône ⓘ (bouton `type="button"`) qui affiche une bulle d'aide **au survol et au focus clavier** ; Échap la ferme sans déplacer le focus, la sortie du focus aussi. Le texte est le nom accessible du bouton (la bulle est `aria-hidden` pour ne pas être lue deux fois).
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
