@@ -99,7 +99,8 @@ export const AvecDataTable: Story = {
     await expect(status).toHaveTextContent("1 course sélectionnée");
     await user.click(rowBoxes[1]);
     await expect(status).toHaveTextContent("2 courses sélectionnées");
-    await expect(within(bar).getByRole("button", { name: "Supprimer" })).toBeVisible();
+    // La barre entre en fondu (opacité 0 à la première image) : attendre la fin de l'animation
+    await waitFor(() => expect(within(bar).getByRole("button", { name: "Supprimer" })).toBeVisible());
 
     // Suppression confirmée : lignes retirées, barre masquée, focus sur le tableau
     await user.click(within(bar).getByRole("button", { name: "Supprimer" }));
