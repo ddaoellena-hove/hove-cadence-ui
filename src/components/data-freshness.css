@@ -30,6 +30,8 @@
   background: var(--cadence-status-critical-fg, #b91c1c);
 }
 
+/* Date future : ni fraîche ni périmée, point gris par défaut (ton neutre). */
+
 .data-freshness--unknown {
   color: var(--cadence-color-text-secondary, #607075);
   font-style: italic;

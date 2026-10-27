@@ -126,7 +126,7 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-color-success` | `#24a148` | Confirmations, états valides |
 | `--cadence-color-info` | `#0f62fe` | Accent « information » d'`AlertToast` |
 | `--cadence-color-warning` | `#f1c21b` | Accent « avertissement » d'`AlertToast`. ⚠️ 1,7:1 sur blanc : jamais en couleur de texte |
-| `--cadence-color-accent` | `#1b6cff` | Élément actif / sélectionné (Sidebar, options de menu), remplissage d'une `ProgressBar` en cours. ⚠️ Réservé aux états : jamais pour une action |
+| `--cadence-color-accent` | `#1b6cff` | Élément actif / sélectionné (Sidebar, options de menu, compteur de `BulkActionBar`), remplissage d'une `ProgressBar` en cours. ⚠️ Réservé aux états : jamais pour une action |
 | `--cadence-color-accent-subtle` | `#f0f6ff` | Survol d'un élément actif (Sidebar), ligne sélectionnée (`DataTable`) |
 | `--cadence-color-white` | `#ffffff` | Surfaces de premier plan |
 | `--cadence-color-segmented-track` / `-disabled` | `#e6f0fa` / `#dde8f0` | Piste du SegmentedControl unique |
@@ -255,7 +255,9 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Succession des arrêts et horaires d’une course | `RouteStopList` | `Stepper` (étapes d’un processus) |
 | Horaires et exploitation d'une ligne sur une journée (fréquence, croisements, théorique / réalisé) | `TimeSpaceDiagram` | `Timeline` (plages par entité) ; `RouteStopList` (une seule course) |
 | Positions temps réel des véhicules sur une ligne (supervision) | `LineDiagram` | `RouteStopList` (une course, horaires) ; une carte (géographie) |
-| Examiner les erreurs d’un import (rapport qualité) | Pattern **Liste + détail latéral** (`InlineAlert` de bilan, `FilterBar`, `DataTable`, détail en `Drawer`) | `ErrorSummary` (erreurs des champs d’un formulaire) |
+| Examiner les erreurs d’un import (rapport qualité) | Pattern **Rapport qualité** (`DatasetHealth`, `FilterBar`, `DataTable`, `ValidationIssueInspector` en `Drawer`) | `ErrorSummary` (erreurs des champs d’un formulaire) |
+| Bilan de validation d'un jeu de données (verdict, erreurs, avertissements, date) | `DatasetHealth` | `Card` (KPI chiffré) ; `InlineAlert` (message sans compteurs) ; `DataFreshness` (âge d'une donnée, pas un verdict) |
+| Détail d'un constat de validation (localisation, règle, correction) | `ValidationIssueInspector` (dans un `Drawer` ou une section) | `DescriptionList` assemblée à la main |
 | Action principale de la vue (une seule) | `PrimaryButton` | `GhostButton` (secondaire) |
 | Action secondaire, action inline de formulaire | `GhostButton` | `Link` (3e action) |
 | 3e action d'un groupe, action dans une phrase | `Link hideArrow` | `GhostButton` (action secondaire) |
@@ -295,6 +297,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Liste de gros volume (> 50 lignes, colonnes de données) | `DataTable` | `TableCard` (liste de cartes riches, peu nombreuses) |
 | Élément de liste riche, peu nombreux (header + colonnes) | `TableCard` | `DataTable` (gros volumes) ; un `<table>` HTML custom |
 | Ligne d'en-têtes de colonnes avec tri (au-dessus de `TableCard`) | `TableHeader` | en-têtes de `DataTable` (intégrés) |
+| Actions groupées sur une sélection multiple (`DataTable selectable`, liste de `TableCard`) | `BulkActionBar` | une `<div>` de boutons au-dessus de la liste, assemblée à la main |
 | Navigation dans un résultat paginé | `Pagination` | — |
 | Recherche + filtres rapides + filtres actifs au-dessus d'une liste | `FilterBar` | un `TextInput` + `Badge` assemblés à la main |
 | Recherche seule (en-tête de dashboard, barre d'outils) | `SearchInput` | `TextInput` (champ de formulaire, 40px) |
@@ -304,7 +307,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Chargement : réserver la place du contenu | `Skeleton` | spinner plein écran |
 | Liste vide, sans résultat, ou erreur de chargement | `EmptyState` | état vide bricolé à la main |
 | Notification temporaire non bloquante | `useToast()` + `Toaster` | `Modal` (bloquant) ; `AlertToast` seul (carte brute, hors pile) |
-| Info contextuelle au survol | `Tooltip` / `TooltipTrigger` | `Modal` ; `Popover` (contenu interactif) |
+| Info contextuelle au survol ou au focus | `Tooltip` / `TooltipTrigger` | `Modal` ; `Popover` (contenu interactif) |
 | Aide riche, mini-formulaire ou détail ancré à un bouton | `Popover` | `Tooltip` (lecture seule, sans focus) ; `Modal` (bloquant) ; `Drawer` (détail long) |
 | Squelette d'application (navigation + contenu de page) | `AppLayout` | — |
 | Navigation principale (sections de l'app) | `Sidebar` | — |
@@ -568,20 +571,14 @@ Une période, une date ou un choix dans une liste se placent dans l'en-tête ave
 </div>
 ```
 
-**Liste — barre de sélection, `size="sm"`**
+**Liste — barre d'actions groupées (`BulkActionBar`), `size="sm"`**
 
 ```tsx
-// Visible uniquement quand selectedCount > 0
-<div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px" }}>
-  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-    <Checkbox aria-label="Tout désélectionner" state="checked" onChange={onDeselectAll} />
-    <Link hideArrow onClick={onDeselectAll}>Tout désélectionner</Link>
-  </div>
-  <div style={{ display: "flex", gap: 8 }}>
-    <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" onClick={onDuplicate} />
-    <PrimaryButton size="sm" iconStart="trash" tone="danger" label="Supprimer" onClick={onDelete} />
-  </div>
-</div>
+// Juste après la liste ; masquée tant que rien n'est sélectionné
+<BulkActionBar count={selectedIds.length}>
+  <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" onClick={onDuplicate} />
+  <PrimaryButton size="sm" iconStart="trash" tone="danger" label="Supprimer" onClick={onDelete} />
+</BulkActionBar>
 ```
 
 **Actions par ligne** — `GhostButton size="sm"` icône seule, dans le header de chaque `TableCard`. L'`aria-label` s'affiche en infobulle au survol et au focus clavier :
@@ -645,7 +642,7 @@ Au-dessus d'une liste filtrable, utiliser `FilterBar` (recherche, filtres rapide
 | Formulaire — soumission | En bas à droite | `Link` (option) + `GhostButton` + `PrimaryButton`, en `md` |
 | Modale — validation | Pied (via `primaryAction` / `secondaryAction`) | géré par `Modal` |
 | Liste — action par ligne | À droite du header de la ligne | `GhostButton size="sm"` icône seule |
-| Liste — sélection multiple | À droite de la barre de sélection | `GhostButton` + `PrimaryButton tone="danger"`, `size="sm"` |
+| Liste — sélection multiple | Barre flottante en bas de la liste (`BulkActionBar`), après le compteur | `GhostButton` + `PrimaryButton tone="danger"`, `size="sm"` |
 | Formulaire inline | À droite du champ associé | `GhostButton` |
 
 Un bouton ne change jamais de position selon l'état de l'application : il peut être affiché, masqué, activé, désactivé ou en chargement, mais son emplacement reste fixe.
@@ -799,6 +796,17 @@ Le code complet du layout est dans la [recette 1](#recette-1--layout-dapplicatio
 - ✅ Le contenu des cellules tient sur une ligne (texte tronqué avec ellipse) : la hauteur de ligne est celle de la densité.
 - ✅ Action avec libellé dans une cellule (« Consulter ») : `PrimaryButton outline size="sm"`. Un `GhostButton` avec libellé n'a ni fond ni bordure au repos et se confond avec les valeurs de la ligne. Les actions icône seule restent en `GhostButton size="sm"`.
 - ❌ Ne pas combiner `virtualized` et `Pagination`.
+
+### Sélection multiple et actions groupées
+
+Les actions sur une sélection passent par `BulkActionBar`, placée **juste après la liste, dans le même conteneur** : elle colle au bas de la zone visible pendant le défilement, puis reprend sa place sous la liste. Elle apparaît à la première sélection et disparaît quand la sélection est vide ; le compteur (« 3 courses sélectionnées ») est annoncé aux lecteurs d'écran.
+
+- ✅ Actions en `size="sm"` : `GhostButton` (Exporter, Modifier…) puis, en dernier, `PrimaryButton tone="danger"` pour une suppression, confirmée par une `Modal size="small"`.
+- ✅ `countLabel` nomme les éléments de la liste (« 3 courses sélectionnées ») ; le défaut dit « éléments ».
+- ✅ Quand la barre disparaît avec la sélection (après une suppression), ramener le focus sur la liste (case « Tout sélectionner » du `DataTable`).
+- ✅ Liste de `TableCard` (sans case d'en-tête) : ajouter un `GhostButton size="sm" iconStart="x-close" label="Tout désélectionner"` en première action.
+- ❌ Pas de barre au-dessus du tableau ni dans `PageHeader` : les actions groupées vivent dans `BulkActionBar`.
+- ❌ Pas de `PrimaryButton` plein non destructif dans la barre : la vue garde son action principale (création) dans l'en-tête.
 
 ### Densité
 
@@ -1015,6 +1023,21 @@ toast({ type: "error", title: "Échec de l'envoi" }); // persistant
 
 ---
 
+### Dates, heures et fuseaux
+
+Les composants n'ont pas tous le même fuseau par défaut. Dans une composition, **passer `timeZone` (fuseau IANA du produit, ex. `"Europe/Paris"`) et `now` explicitement**, et transmettre des dates ISO avec décalage (`2026-06-12T08:15:00+02:00`) : le rendu ne dépend plus de la machine de l'utilisateur ni de celle des tests.
+
+| Composant | Fuseau par défaut | Réglage |
+|---|---|---|
+| `DataFreshness`, `freshness` des graphiques | fuseau du navigateur | `timeZone`, `now` |
+| `ActivityFeed` | `"UTC"` | `timeZone` |
+| `DataTable` (rendu par défaut des `Date`) | fuseau du navigateur | formater dans `cell` si un fuseau métier s'impose |
+| Axes et infobulles des graphiques temporels | fuseau du navigateur | dates déjà ramenées au fuseau voulu |
+| `TimePicker`, `RouteStopList`, `ServiceCalendar` | heures et dates de service, sans fuseau | — |
+
+- ✅ Une page = un fuseau et une horloge (`now`) partagés par tous ses composants.
+- ❌ Ne pas mélanger une date sans décalage (`2026-06-12T08:15:00`, lue en heure locale) et une date en UTC (`…Z`) dans une même vue.
+
 ## Page patterns
 
 Catalogue de gabarits de page nommés. **Choisir d'abord un pattern dans le tableau *Intention → pattern*, partir de son gabarit, puis composer.** Une page qui ne correspond à aucun pattern est **signalée, pas inventée**.
@@ -1034,12 +1057,13 @@ Catalogue de gabarits de page nommés. **Choisir d'abord un pattern dans le tabl
 | Planification / temps (axes temps, heures de service) | Planification / temps | ✅ |
 | Réglages (sections, enregistrement explicite) | Paramètres | ✅ |
 | États d'une page (chargement, erreur, accès, introuvable, vide) | États de page | ✅ |
+| Examiner la validation d'un jeu de données (bilan, constats, détail) | Rapport qualité | ✅ |
 
 ### Correspondance recette → pattern
 
 R1 → Coque d'application · R2 → Liste / index · R3 → Formulaire · R4 → États de page · R5 → Liste / index · R6 → Supervision · R7 → Analyse · R8 → Liste + détail latéral · R9 → Assistant · R10 → Planification / temps.
 
-> Les 11 fiches sont ci-dessous. Les stories `Recettes/*` ont été retirées en 1.0.0 : leurs parcours sont couverts par les patterns (correspondance ci-dessus). Les recettes de code plus bas restent des exemples à adapter.
+> Les 12 fiches sont ci-dessous. Les stories `Recettes/*` ont été retirées en 1.0.0 : leurs parcours sont couverts par les patterns (correspondance ci-dessus). Les recettes de code plus bas restent des exemples à adapter.
 
 ### Pattern — Formulaire
 
@@ -1112,6 +1136,10 @@ FormActions  →  Link · GhostButton · PrimaryButton
 
 **Quand l'utiliser** — le vocabulaire des états pleine page, réutilisé par les patterns. **Ne pas confondre avec** — un état *inline* (`EmptyState size="inline"`). **Anatomie** : chargement (`Skeleton`), erreur / accès refusé / introuvable (`EmptyState variant="error"`), vide (`EmptyState variant="empty"`). **Règles** : ✅ toujours une action de sortie (réessayer, créer, revenir) ; ❌ pas d'état vide à la main. **Gabarit** — vérifié : [`src/patterns/EtatsPattern.tsx`](src/patterns/EtatsPattern.tsx).
 
+### Pattern — Rapport qualité
+
+**Quand l'utiliser** — examiner le résultat de la validation d'un jeu de données (import GTFS, NeTEx…). **Ne pas confondre avec** — Assistant / import (étapes de l'import), `ErrorSummary` (champs d'un formulaire). **Anatomie** : `PageHeader` · `DatasetHealth` (bilan global) · `FilterBar` (recherche, `Dropdown` de niveau) · `DataTable` des constats (`onRowClick`) · `Drawer` de la page contenant `ValidationIssueInspector`. **Comportements** : le bilan porte sur tous les constats, indépendamment des filtres ; Échap referme le détail et rend le focus à la ligne. **Règles** : ✅ verdict et constats fournis par l'application ; ✅ garder le constat affiché pendant la fermeture du `Drawer` (état `open` séparé de la sélection) ; ❌ « Aucun constat pour ces filtres » n'est pas « aucune erreur » ; ❌ pas d'action « Ouvrir dans la source » sans destination réelle. **Gabarit** — vérifié : [`src/patterns/RapportQualitePattern.tsx`](src/patterns/RapportQualitePattern.tsx).
+
 ## Recettes de pages complètes
 
 Exemples de code à adapter, en complément des [Page patterns](#page-patterns) : **partir d'abord du pattern** et de son gabarit vérifié, puis s'aider de la recette correspondante.
@@ -1166,12 +1194,12 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
 
 ### Recette 2 — Page liste avec sélection multiple
 
-Liste de `TableCard` avec en-têtes triables, sélection multiple, barre d'actions groupées et confirmation de suppression. Couvre : `TableHeader`, `TableCard`, `GhostButton` (actions par ligne), `Checkbox`, `Modal`, `useToast` (avec un `<Toaster />` monté à la racine de l'app), `TabList` + `Tab`, tri et filtres.
+Liste de `TableCard` avec en-têtes triables, sélection multiple, barre d'actions groupées et confirmation de suppression. Couvre : `TableHeader`, `TableCard`, `GhostButton` (actions par ligne), `BulkActionBar`, `Modal`, `useToast` (avec un `<Toaster />` monté à la racine de l'app), `TabList` + `Tab`, tri et filtres.
 
 ```tsx
 import { useState } from "react";
 import {
-  Tab, TabList, PrimaryButton, GhostButton, Link, Checkbox, TableHeader, TableCard, Modal, Indicator, useToast,
+  Tab, TabList, PrimaryButton, GhostButton, BulkActionBar, TableHeader, TableCard, Modal, Indicator, useToast,
 } from "@ddaoellena/cadence-ui";
 
 // Largeurs partagées entre TableHeader et TableCard — NE PAS désynchroniser
@@ -1203,20 +1231,6 @@ export const ScenarioListPage = () => {
         </TabList>
         <PrimaryButton label="Créer un scénario" onClick={onCreate} />
       </div>
-
-      {/* ── Barre de sélection (visible si ≥ 1 sélection) ── */}
-      {selected.size > 0 && (
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 0" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <Checkbox aria-label="Tout désélectionner" state="checked" onChange={() => setSelected(new Set())} />
-            <Link hideArrow onClick={() => setSelected(new Set())}>Tout désélectionner</Link>
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" onClick={onDuplicate} />
-            <PrimaryButton size="sm" iconStart="trash" tone="danger" label="Supprimer" onClick={() => setConfirmOpen(true)} />
-          </div>
-        </div>
-      )}
 
       {/* ── En-têtes de colonnes ── */}
       <TableHeader
@@ -1254,6 +1268,16 @@ export const ScenarioListPage = () => {
           />
         ))}
       </div>
+
+      {/* ── Actions groupées : barre flottante, masquée sans sélection ── */}
+      <BulkActionBar
+        count={selected.size}
+        countLabel={(n) => (n > 1 ? `${n} scénarios sélectionnés` : `${n} scénario sélectionné`)}
+      >
+        <GhostButton size="sm" iconStart="x-close" label="Tout désélectionner" onClick={() => setSelected(new Set())} />
+        <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" onClick={onDuplicate} />
+        <PrimaryButton size="sm" iconStart="trash" tone="danger" label="Supprimer" onClick={() => setConfirmOpen(true)} />
+      </BulkActionBar>
 
       {/* ── Confirmation de suppression ── */}
       <Modal
@@ -1377,12 +1401,12 @@ pour une vue entière, `size="inline"` dans un `DataTable`, une `Card` ou un gra
 
 ### Recette 5 — Page de supervision
 
-Liste de gros volume paginée par l'API : `FilterBar` au-dessus, `DataTable` (tri et pagination côté serveur, sélection), barre de sélection, `Pagination` en dessous. Gabarit vérifié : pattern **Liste / index**.
+Liste de gros volume paginée par l'API : `FilterBar` au-dessus, `DataTable` (tri et pagination côté serveur, sélection), `BulkActionBar`, `Pagination` en dessous. Gabarit vérifié : pattern **Liste / index**.
 
 ```tsx
 import { useEffect, useState } from "react";
 import {
-  FilterBar, DataTable, Pagination, Dropdown, Checkbox, Link, PrimaryButton, GhostButton, Badge, Indicator,
+  FilterBar, DataTable, BulkActionBar, Pagination, Dropdown, PrimaryButton, GhostButton, Badge, Indicator,
   type DataTableColumn, type DataTableSort,
 } from "@ddaoellena/cadence-ui";
 
@@ -1429,36 +1453,33 @@ export const SupervisionPage = () => {
         actions={<GhostButton size="sm" iconStart="download-02" label="Exporter" />}
       />
 
-      {selectedIds.length > 0 && (
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <Checkbox aria-label="Tout désélectionner" state="checked" onChange={() => setSelectedIds([])} />
-            <Link hideArrow onClick={() => setSelectedIds([])}>Tout désélectionner</Link>
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" />
-            <PrimaryButton size="sm" iconStart="trash" tone="danger" label="Clôturer" onClick={onConfirm} />
-          </div>
-        </div>
-      )}
-
-      <DataTable
-        aria-label="Perturbations"
-        columns={COLUMNS}
-        data={result?.items ?? EMPTY}
-        getRowId={(d) => d.id}
-        manualSorting
-        manualPagination
-        sort={sort}
-        onSortChange={(next) => update(() => setSort(next))}
-        loading={loading}
-        selectable
-        selectedIds={selectedIds}
-        onSelectionChange={setSelectedIds}
-        onRowClick={(d) => navigate(`/perturbations/${d.id}`)}
-        maxHeight="calc(100vh - 320px)"
-        emptyState="Aucune perturbation ne correspond à ces filtres."
-      />
+      {/* Tableau et barre d'actions groupées dans le même conteneur */}
+      <div>
+        <DataTable
+          aria-label="Perturbations"
+          columns={COLUMNS}
+          data={result?.items ?? EMPTY}
+          getRowId={(d) => d.id}
+          manualSorting
+          manualPagination
+          sort={sort}
+          onSortChange={(next) => update(() => setSort(next))}
+          loading={loading}
+          selectable
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
+          onRowClick={(d) => navigate(`/perturbations/${d.id}`)}
+          maxHeight="calc(100vh - 320px)"
+          emptyState="Aucune perturbation ne correspond à ces filtres."
+        />
+        <BulkActionBar
+          count={selectedIds.length}
+          countLabel={(n) => (n > 1 ? `${n} perturbations sélectionnées` : `${n} perturbation sélectionnée`)}
+        >
+          <GhostButton size="sm" iconStart="copy-01" label="Dupliquer" />
+          <PrimaryButton size="sm" iconStart="trash" tone="danger" label="Clôturer" onClick={onConfirm} />
+        </BulkActionBar>
+      </div>
 
       <Pagination
         page={page}
@@ -1758,7 +1779,7 @@ Clavier : le tracé est focusable ; ←/→ (vertical) ou ↑/↓ (horizontal) d
 
 ### BarList
 
-Classement horizontal : libellé, barre proportionnelle (`--cadence-dataviz-series-1`), valeur en mono alignée à droite, variation facultative. Hauteur : 32px par ligne. Props communes des graphiques : `title` (**requis**), `description`, `headingLevel` (3), `state` (`"ready" | "loading" | "empty" | "error"`), `emptyMessage`, `errorMessage`, `onRetry`, `framed` (false : cadre de carte — bordure, arrondi, marge — pour délimiter des graphiques voisins), `exportable` (false ; `true` ou un nom de fichier : bouton « Exporter (CSV) » dans l'en-tête, qui télécharge l'alternative tabulaire en CSV `;` + BOM UTF-8, nombres sans espaces de groupement), `onExport` (reprend l'export : `{ columns, rows, numeric, csv, fileName }`), `freshness` (`{ updatedAt, now?, freshWithin?, staleWithin?, label? }` : `DataFreshness` sous la description), `className`. Export et fraîcheur valent pour tous les graphiques qui ont « Voir les données » (pas `Heatmap`, qui est elle-même une grille).
+Classement horizontal : libellé, barre proportionnelle (`--cadence-dataviz-series-1`), valeur en mono alignée à droite, variation facultative. Hauteur : 32px par ligne. Props communes des graphiques : `title` (**requis**), `description`, `headingLevel` (3), `state` (`"ready" | "loading" | "empty" | "error"`), `emptyMessage`, `errorMessage`, `onRetry`, `framed` (false : cadre de carte — bordure, arrondi, marge — pour délimiter des graphiques voisins), `exportable` (false ; `true` ou un nom de fichier : bouton « Exporter (CSV) » dans l'en-tête, qui télécharge l'alternative tabulaire en CSV `;` + BOM UTF-8, nombres sans espaces de groupement), `onExport` (reprend l'export : `{ columns, rows, numeric, csv, fileName }`), `freshness` (`{ updatedAt, now?, freshWithin?, staleWithin?, label?, timeZone? }` : `DataFreshness` sous la description), `className`. Export et fraîcheur valent pour tous les graphiques qui ont « Voir les données » (pas `Heatmap`, qui est elle-même une grille).
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
@@ -2023,8 +2044,39 @@ Tableau dense pour les gros volumes. Vrai `<table>` (rôles ARIA explicites), en
 
 - Tri en mémoire : chaînes à la française (« Ligne 2 » avant « Ligne 10 », sans casse ni accents), nombres, dates ; valeurs vides toujours en dernier.
 - Rendu par défaut : nombres `Intl.NumberFormat("fr-FR")`, dates `JJ/MM/AAAA HH:mm`, booléens « Oui » / « Non », vide « — ».
-- ⚠️ La case d'en-tête sélectionne les lignes **affichées** (la page). « Sélectionner les N résultats » se fait dans la barre de sélection de l'app.
+- ⚠️ La case d'en-tête sélectionne les lignes **affichées** (la page). « Sélectionner les N résultats » se fait par une action de la `BulkActionBar`.
 - ⚠️ Le masquage et l'ordre des colonnes passent par `ColumnManager` (branché sur `hiddenColumnIds` et `columnOrder`). Il n'y a toujours ni filtre par colonne ni redimensionnement.
+
+### BulkActionBar
+
+Barre d'actions groupées flottante pour une sélection multiple (`DataTable selectable`, liste de `TableCard`). Placée juste après la liste, dans le même conteneur : collante en bas de la zone visible (`position: sticky`, 16px du bas), centrée, au-dessus des lignes tant que la liste défile. Surface blanche surélevée : compteur (Diatype 13px medium, `--cadence-color-accent` : c'est un état de sélection), séparateur, puis les actions. Masquée quand `count` vaut 0. Sous 480px de large, le compteur passe au-dessus des actions. Story : *Données et tableaux / BulkActionBar*.
+
+```tsx
+<div>
+  <DataTable … selectable selectedIds={selectedIds} onSelectionChange={setSelectedIds} />
+  <BulkActionBar
+    count={selectedIds.length}
+    countLabel={(n) => (n > 1 ? `${n} courses sélectionnées` : `${n} course sélectionnée`)}
+  >
+    <GhostButton size="sm" iconStart="download-02" label="Exporter" onClick={onExport} />
+    <PrimaryButton size="sm" tone="danger" iconStart="trash" label="Supprimer" onClick={() => setConfirmOpen(true)} />
+  </BulkActionBar>
+</div>
+```
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `count` | `number` | **requis** | Nombre d'éléments sélectionnés. `0` : barre masquée |
+| `children` | `ReactNode` | **requis** | Actions : `GhostButton` puis `PrimaryButton tone="danger"`, en `size="sm"` |
+| `countLabel` | `(count: number) => string` | « 1 élément sélectionné », « 1 248 éléments sélectionnés », « Aucun élément sélectionné » | Libellé du compteur, affiché et annoncé. Appelé aussi avec `0` (annonce de la sélection vidée) |
+| `aria-label` | `string` | `"Actions groupées"` | Nom de la région de la barre |
+| `className` | `string` | — | — |
+
+- Accessibilité : la barre est une région nommée (`role="region"`). Le compteur est annoncé poliment à chaque changement par une région `status` toujours montée, y compris barre masquée : la première sélection et la sélection vidée sont annoncées.
+- ⚠️ Placer la barre **après** la liste et dans **le même conteneur** qu'elle : `position: sticky` ne colle qu'à l'intérieur de son parent. Dans un conteneur `flex` avec `gap`, envelopper liste + barre dans une `<div>` (sinon le `gap` reste visible barre masquée).
+- ⚠️ Quand la sélection se vide, la barre disparaît avec le bouton qui avait le focus : ramener le focus sur la liste (ex. case « Tout sélectionner »).
+- ⚠️ Pas de case « Tout désélectionner » intégrée : avec `DataTable`, la case d'en-tête vide la page ; avec `TableCard`, ajouter un `GhostButton` « Tout désélectionner » en première action.
+- ⚠️ Pas de menu de débordement : au-delà de quatre actions, regrouper les moins fréquentes dans un `ActionMenu`.
 
 ### DatePicker
 
@@ -2361,6 +2413,67 @@ Filtre par mode de transport : une rangée de **chips togglables** (picto `ModeI
 - ✅ Garder le picto par défaut : il double la couleur pour qui ne la distingue pas (WCAG 1.4.1).
 - ✅ `hideIcon` seulement quand un picto voisin porte déjà l'état (marqueur coloré d'`ActivityFeed`) : sinon il est redondant.
 
+### DatasetHealth
+
+Bilan de validation d'un jeu de données : titre, verdict (`Indicator`), nombre d'erreurs et d'avertissements, date de la dernière validation, bouton « Voir le rapport ». Carte blanche à bordure fine, région nommée par son titre. **Présentation seule** : le verdict et les compteurs viennent de l'application ; aucun score, aucun verdict déduit de la fraîcheur ou des compteurs, aucune décision de publication. Story : *Retours et statuts / DatasetHealth*.
+
+```tsx
+<DatasetHealth
+  label="Offre théorique — GTFS Bordeaux Métropole"
+  verdict="failed"
+  errorCount={2}
+  warningCount={1}
+  validatedAt={report.validatedAt}
+  timeZone="Europe/Paris"
+  onViewReport={() => navigate("/qualite/rapport")}
+/>
+```
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `label` | `string` | **requis** | Nom du jeu de données (titre) |
+| `verdict` | `ValidationVerdict` | **requis** | `"not-run" \| "unknown" \| "passed" \| "warning" \| "failed"` → « Non validé », « Verdict inconnu », « Valide », « Valide avec avertissements », « Invalide » |
+| `errorCount` | `number \| null` | — | Erreurs. `null` ou absent : « Inconnu », jamais 0 |
+| `warningCount` | `number \| null` | — | Avertissements. `null` ou absent : « Inconnu » |
+| `validatedAt` | `Date \| string \| number` | — | Date de la dernière **validation** (pas de la collecte) → « Validé il y a 2 h ». Absente : « Date inconnue » (« Jamais validé » si `not-run`) |
+| `now` | `Date \| string \| number` | maintenant | Instant de référence du libellé relatif (à fixer pour les tests) |
+| `timeZone` | `string` | fuseau local | Fuseau de la date absolue |
+| `loading` | `boolean` | `false` | Squelettes et `aria-busy` ; ni verdict ni bouton |
+| `onViewReport` | `() => void` | — | Bouton `GhostButton size="sm"` ; sans callback, pas de bouton |
+| `reportLabel` | `string` | `"Voir le rapport"` | Libellé du bouton |
+| `headingLevel` | `2 \| 3 \| 4` | `2` | Niveau du titre |
+| `className` | `string` | — | — |
+
+- ✅ `0` s'affiche « 0 » : c'est une valeur connue, distincte d'un compteur inconnu.
+- ✅ `verdict="not-run"` masque les compteurs : sans validation, ils n'ont pas de sens.
+- ⚠️ La date est affichée par `DataFreshness` **sans point coloré** : l'âge de la validation n'est pas un verdict.
+- ❌ Pas de `ProgressBar` ni de score en pourcentage : la bibliothèque n'invente pas de mesure de qualité.
+
+### ValidationIssueInspector
+
+Détail d'un constat de validation : sévérité (`Indicator`), message, localisation (`DescriptionList` : source, ligne, champ, objet), code de règle et identifiant copiables (`CopyableText`), correction attendue (`InlineAlert type="information"`), bouton facultatif vers la source. **Sans surface ni Drawer** : l'application le place dans un `Drawer` (pattern **Rapport qualité**) ou dans une section de page. Aucun appel réseau, aucune correction. Story : *Retours et statuts / ValidationIssueInspector*.
+
+```tsx
+<Drawer isOpen={open} onClose={() => setOpen(false)} title="Détail du constat">
+  <ValidationIssueInspector issue={selected} onOpenSource={openInEditor} />
+</Drawer>
+```
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `issue` | `ValidationIssue \| null` | **requis** | Constat. `null` : `EmptyState` « Aucun constat sélectionné » |
+| `onOpenSource` | `(issue) => void` | — | Bouton `GhostButton size="sm"` ; sans callback, pas de bouton |
+| `openSourceLabel` | `string` | `"Ouvrir dans la source"` | Libellé du bouton |
+| `emptyTitle` | `string` | `"Aucun constat sélectionné"` | Titre de l'état vide |
+| `className` | `string` | — | — |
+
+**Types** (exportés) — `ValidationIssue` : `{ id: string; severity: "error" \| "warning" \| "info"; message: string; location?: { source?; line?; field?; objectId? }; ruleCode?: string; correction?: string }`. `ValidationSeverity`, `ValidationVerdict` et `ValidationIssueLocation` sont exportés aussi.
+
+- ✅ Source, ligne et champ absents s'affichent « Non renseigné » ; objet, règle et correction absents ne s'affichent pas.
+- ✅ Messages et identifiants longs se replient sans élargir le conteneur.
+- ⚠️ Dans un `Drawer`, garder le constat sélectionné pendant la fermeture (état `open` séparé), sinon l'état vide apparaît pendant l'animation.
+- ❌ Pas d'`onOpenSource` sans destination réelle.
+
 ### DataSourceStatus
 
 État d'une source de données (flux GTFS-RT, API SIRI, dépôt de fichiers) : titre, disponibilité (`Indicator`), dernière observation, dernière réussite, fraîcheur des données et dernière erreur, bouton facultatif vers le détail. Carte blanche à bordure fine, région nommée par son titre. Trois dimensions **indépendantes**, jamais déduites l'une de l'autre : la disponibilité (la source répond-elle ?), les dates d'interrogation (observation, réussite) et la fraîcheur des données servies. Story : *Retours et statuts / DataSourceStatus*.
@@ -2404,12 +2517,12 @@ Filtre par mode de transport : une rangée de **chips togglables** (picto `ModeI
 
 ### DataFreshness
 
-Fraîcheur d'une donnée : un point coloré (ton de statut) et un libellé relatif compact (« Mis à jour il y a 3 min », « il y a 2 h »), la date absolue restant en `title` et pour les lecteurs d'écran (`<time dateTime>`). Le ton suit l'âge : **frais** (`nominal`, vert) sous `freshWithin`, **vieillissant** (`warning`, orange) sous `staleWithin`, **périmé** (`critical`, rouge) au-delà. Au-delà de 7 jours (ou pour une date future), la date absolue remplace le libellé relatif. Une date invalide donne un repli discret « Date indisponible ».
+Fraîcheur d'une donnée : un point coloré (ton de statut) et un libellé relatif compact (« Mis à jour il y a 3 min », « il y a 2 h »), la date absolue restant en `title` et pour les lecteurs d'écran (`<time dateTime>`). Le ton suit l'âge : **frais** (`nominal`, vert) sous `freshWithin`, **vieillissant** (`warning`, orange) sous `staleWithin`, **périmé** (`critical`, rouge) au-delà. Au-delà de 7 jours, la date absolue remplace le libellé relatif. **Date future** : jusqu'à une minute d'avance (horloges décalées), « à l'instant » ; au-delà, jamais présentée comme fraîche — point gris neutre, date absolue suivie de « (date future) ». Une date invalide donne un repli discret « Date indisponible ».
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
 | `updatedAt` | `Date \| string \| number` | **requis** | Dernière mise à jour (Date, ISO ou timestamp) |
-| `now` | `Date \| string \| number` | maintenant | Instant de référence (à fixer pour les tests) |
+| `now` | `Date \| string \| number` | maintenant, recalculé toutes les 30 s | Instant de référence. Fourni : l'application pilote l'horloge (une horloge partagée par la page, tests) ; absent : le libellé se recalcule seul toutes les 30 s |
 | `freshWithin` | `number` | `300` | Seuil « frais », en secondes (5 min) |
 | `staleWithin` | `number` | `3600` | Seuil « vieillissant », en secondes (1 h) |
 | `label` | `string` | `"Mis à jour"` | Préfixe du libellé |
@@ -2419,6 +2532,7 @@ Fraîcheur d'une donnée : un point coloré (ton de statut) et un libellé relat
 
 - ✅ En-tête de tableau de bord ou de carte pour dater une donnée live (ponctualité, affluence).
 - ✅ Régler `freshWithin` / `staleWithin` selon la cadence réelle de la source.
+- ✅ Plusieurs fraîcheurs sur une page : leur passer le même `now` (une horloge de page mise à jour par l'app), pour qu'elles avancent ensemble.
 - ❌ Pas pour un statut métier (en cours, ralenti…) : `Indicator`. Pas pour un journal d'événements : `ActivityFeed`.
 
 ### LineChart
@@ -2895,6 +3009,8 @@ Composant purement visuel — pas de logique de positionnement ni de déclenchem
 
 ### TooltipTrigger
 
+Icône ⓘ (bouton `type="button"`) qui affiche une bulle d'aide **au survol et au focus clavier** ; Échap la ferme sans déplacer le focus, la sortie du focus aussi. Le texte est le nom accessible du bouton (la bulle est `aria-hidden` pour ne pas être lue deux fois).
+
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
 | `label` | `string` | `"Label"` | Texte du tooltip |
@@ -3221,7 +3337,7 @@ Rendu des étapes :
 
 ### LineDiagram
 
-Thermomètre de ligne temps réel : arrêts sur une voie horizontale à la couleur GTFS de la ligne, véhicules de l'aller **au-dessus**, du retour **au-dessous**, chacun en pastille `ModeIcon` + numéro + écart (« +4 », « −1 ») ou picto d'incident. Statut par teinte **et** texte : incident > retard > avance > à l'heure (tokens `--cadence-status-*`). Arrêt fermé : pastille barrée et libellé rayé ; arrêt perturbé : tronçon suivant tireté. Véhicules proches empilés sur trois niveaux, au-delà estompés (toujours au clavier et dans le tableau). Espacement régulier, ou à l'échelle si tous les arrêts ont une `distance` ; au moins 64 px par interarrêt, défilement horizontal au-delà. Composant **contrôlé** : l'application fournit les positions à chaque rafraîchissement (aucune requête). Déplacements animés (600 ms), sans animation sous `prefers-reduced-motion`. Props communes : voir `BarList` (dont `freshness` pour dater la donnée et `exportable`).
+Thermomètre de ligne temps réel : arrêts sur une voie horizontale à la couleur GTFS de la ligne, véhicules de l'aller **au-dessus**, du retour **au-dessous**, chacun en pastille `ModeIcon` + numéro + écart (« +4 », « −1 ») ou picto d'incident. Statut par teinte **et** texte : incident > retard > avance > à l'heure (tokens `--cadence-status-*`). Sans `delay` : **écart inconnu**, pastille tiretée « ? », lue « écart inconnu » et comptée « n sans écart connu » — jamais « à l'heure ». Arrêt fermé : pastille barrée et libellé rayé ; arrêt perturbé : tronçon suivant tireté. Véhicules proches empilés sur trois niveaux, au-delà estompés (toujours au clavier et dans le tableau). Espacement régulier, ou à l'échelle si tous les arrêts ont une `distance` ; au moins 64 px par interarrêt, défilement horizontal au-delà. Composant **contrôlé** : l'application fournit les positions à chaque rafraîchissement (aucune requête). Déplacements animés (600 ms), sans animation sous `prefers-reduced-motion`. Props communes : voir `BarList` (dont `freshness` pour dater la donnée et `exportable`).
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|

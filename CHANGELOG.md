@@ -6,6 +6,12 @@ Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, 
 
 ### Ajouté
 
+- **`BulkActionBar`** (*Données et tableaux*) : barre d'actions groupées flottante pour une sélection multiple (`DataTable selectable`, liste de `TableCard`). Placée après la liste, elle colle au bas de la zone visible pendant le défilement ; surface blanche surélevée, compteur puis actions `size="sm"`, masquée sans sélection, compteur annoncé aux lecteurs d'écran (`countLabel` pour nommer les éléments). Le pattern **Liste / index** et les recettes 2 et 5 l'utilisent à la place de la barre de sélection assemblée à la main.
+- **Qualité des données** (premier lot de l'audit *Mobility Data Design System*) :
+  - **`DatasetHealth`** (*Retours et statuts*) : bilan de validation d'un jeu de données — verdict fourni (`not-run`, `unknown`, `passed`, `warning`, `failed`), erreurs et avertissements (inconnu distinct de 0), date de la dernière validation, accès au rapport, chargement.
+  - **`ValidationIssueInspector`** (*Retours et statuts*) : détail d'un constat — sévérité, message, localisation, règle et identifiants copiables, correction attendue, accès facultatif à la source. Sans Drawer embarqué.
+  - Types publics `ValidationIssue`, `ValidationIssueLocation`, `ValidationSeverity`, `ValidationVerdict`.
+  - Page pattern **Rapport qualité** (`src/patterns/RapportQualitePattern.tsx`), qui remplace le rapport qualité de l'ancienne recette *Offre et qualité*.
 - **`DataSourceStatus`** (*Retours et statuts*) : état d'une source de données — disponibilité fournie (`available`, `degraded`, `unavailable`, `unknown`), dernière observation, dernière réussite (conservée après une erreur), fraîcheur des données servies, dernière erreur, accès au détail. Disponibilité et fraîcheur restent indépendantes. Type `DataSourceAvailability` exporté. Lot L3 de l'audit *Mobility Data Design System*.
 
 ### ⚠️ Supprimé
@@ -23,6 +29,10 @@ Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, 
 
 ### Corrigé
 
+- **`TooltipTrigger`** : la bulle s'ouvre aussi au focus clavier, se ferme à la sortie du focus et sur Échap (WCAG 1.4.13). Le bouton passe en `type="button"` (il soumettait un formulaire englobant) ; la bulle est `aria-hidden`, son texte étant déjà le nom du bouton.
+- **`DataFreshness`** : une date future n'est plus présentée comme fraîche. Jusqu'à une minute d'avance (horloges décalées) : « à l'instant » ; au-delà : point neutre, date absolue et « (date future) ». Sans `now`, le libellé relatif se recalcule toutes les 30 s au lieu de rester figé.
+- **`LineDiagram`** : un véhicule sans `delay` n'est plus classé « à l'heure » mais « écart inconnu » (pastille tiretée « ? », « n sans écart connu » dans la description). Le type `VehicleStatus` gagne `"unknown"`.
+- **Fuseaux** : `freshness` des graphiques accepte `timeZone` ; GUIDELINES liste le fuseau par défaut de chaque composant et demande un `timeZone` et un `now` explicites dans les compositions.
 - **Types publiés regroupés** : `dist/index.d.ts` (import) et `dist/index.d.cts` (require) sont désormais deux fichiers autonomes générés par `dts-bundle-generator` (script `build:types`), au lieu d'une déclaration par module. Le paquet se type en `moduleResolution` `node16` et `nodenext`, en ESM comme en CommonJS (imports relatifs sans extension et absence de `.d.cts` le cassaient), et sous TypeScript 6 (les déclarations gardaient des `import "./x.css"`, refusés par défaut). Les `exports` donnent des types distincts par condition. Contrôle `npm run check:types` (node16, nodenext, bundler ; `strict`, `skipLibCheck: false`), lancé par la CI pour React 18 et 19. Pour un regroupement correct, les composants n'importent plus `React` par défaut (imports nommés) et les types React homonymes d'un type DOM sont aliasés (`ReactMouseEvent`, `ReactDragEvent`).
 - **Types publics sans d3** : `BarChart`, `ComboChart` et `ScatterChart` n'exposent plus de types `d3-scale` dans leurs déclarations (`BarLayout` et `ScatterPointInput` déplacés dans un module sans d3). Une application en `skipLibCheck: false` compilait en erreur faute de `@types/d3-scale`.
 

@@ -1,0 +1,45 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import gabarit from "../../patterns/RapportQualitePattern.tsx?raw";
+
+<Meta title="Page patterns/Rapport qualité/Documentation" />
+
+<style>{`.pp{font-family:var(--cadence-font-sans,"ABC Diatype","Inter",sans-serif);max-width:820px;color:var(--cadence-color-primary,#002830)}.pp h1{font-family:var(--cadence-font-display,"Uxum Grotesque",sans-serif);font-size:32px;font-weight:500}.pp h2{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--cadence-color-text-secondary,#607075);margin:32px 0 10px;border-bottom:1px solid var(--cadence-color-divider,#f0f0f0);padding-bottom:6px}.pp pre{background:var(--cadence-color-surface-subtle,#fafafa);border:1px solid var(--cadence-color-divider,#f0f0f0);border-radius:8px;padding:16px;overflow:auto;font-family:var(--cadence-font-mono,monospace);font-size:12px;line-height:1.6}`}</style>
+
+<div className="pp">
+
+# Pattern — Rapport qualité
+
+**Quand l'utiliser** — examiner le résultat de la validation d'un jeu de données (import GTFS, NeTEx…) : bilan, constats, détail d'un constat. **Ne pas confondre avec** — Assistant / import (étapes de l'import lui-même), `ErrorSummary` (erreurs des champs d'un formulaire).
+
+## Anatomie
+```
+PageHeader (h1)
+DatasetHealth (verdict · erreurs · avertissements · dernière validation)
+FilterBar (recherche · niveau · résultats)
+DataTable des constats (onRowClick)
+Drawer de la page : ValidationIssueInspector
+```
+
+## Variantes
+Inspecteur dans un `Drawer` (défaut) ou dans une section de page à côté de la liste, sur grand écran.
+
+## États
+Chargement (bilan et lignes squelettes), validation réussie sans constat, validation non exécutée (`verdict="not-run"`), verdict inconnu, recherche sans résultat.
+
+## Comportements
+Le bilan porte sur **tous** les constats, indépendamment des filtres. Clic (ou Entrée) sur une ligne ouvre le détail ; Échap le referme et rend le focus à la ligne.
+
+## Accessibilité
+`DatasetHealth` est une région nommée par le nom du jeu de données ; `Drawer` = `dialog` nommé, focus piégé puis rendu à la ligne.
+
+## Règles
+- ✅ Verdict et constats fournis par le moteur de validation de l'application.
+- ✅ « Aucun constat pour ces filtres » ne veut pas dire « aucune erreur » : le bilan reste visible.
+- ❌ Pas de score inventé ni de verdict déduit de la fraîcheur.
+- ❌ Pas d'action « Ouvrir dans la source » sans destination réelle (`onOpenSource` seulement si elle existe).
+
+## Gabarit
+
+<pre><code>{gabarit}</code></pre>
+
+</div>

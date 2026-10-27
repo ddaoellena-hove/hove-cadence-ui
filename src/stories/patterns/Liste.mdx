@@ -16,8 +16,8 @@ import gabarit from "../../patterns/ListePattern.tsx?raw";
 ```
 PageHeader (h1 + action « Créer »)
 FilterBar (recherche · filtres rapides · chips actives · actions)
-[ barre de sélection ]  (si ≥ 1 ligne cochée → actions de masse)
 DataTable (tri · sélection · emptyState)
+[ BulkActionBar ]  (si ≥ 1 ligne cochée : flottante en bas de la zone visible)
 Pagination
 ```
 
@@ -28,7 +28,7 @@ Pagination
 Chargement (`loading` → squelettes), Vide (aucune donnée) et Sans résultat (filtres trop restrictifs) via `emptyState` (`EmptyState variant`), Erreur de chargement.
 
 ## Comportements
-Les filtres ramènent en page 1 ; les chips actives reflètent les filtres ↔ URL côté app. La sélection ouvre une barre d'actions de masse.
+Les filtres ramènent en page 1 ; les chips actives reflètent les filtres ↔ URL côté app. La sélection fait apparaître la `BulkActionBar`, collée au bas de la zone visible tant que la liste défile.
 
 ## Responsive
 `DataTable` défile horizontalement si besoin ; `FilterBar` se replie.

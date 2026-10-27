@@ -41,7 +41,7 @@ export interface ChartCommonProps {
    */
   onExport?: (data: CsvTable & { csv: string; fileName: string }) => void;
   /** Fraîcheur de la donnée sous la description (`DataFreshness`) : « Mis à jour il y a 3 min ». */
-  freshness?: Pick<DataFreshnessProps, "updatedAt" | "now" | "freshWithin" | "staleWithin" | "label">;
+  freshness?: Pick<DataFreshnessProps, "updatedAt" | "now" | "freshWithin" | "staleWithin" | "label" | "timeZone">;
   /** Classe CSS additionnelle. */
   className?: string;
 }

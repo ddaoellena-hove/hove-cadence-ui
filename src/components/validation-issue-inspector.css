@@ -1,0 +1,32 @@
+/* ── ValidationIssueInspector ────────────────────────────────────────────────
+   Détail d'un constat, sans surface propre : se pose dans un Drawer ou une
+   section de page. Les textes longs (message, identifiants) se replient. */
+.validation-issue-inspector {
+  color: var(--cadence-color-primary, #002830);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  gap: 16px;
+  min-width: 0;
+}
+
+.validation-issue-inspector__summary {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.validation-issue-inspector__message {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.validation-issue-inspector__actions {
+  display: flex;
+  /* Le bouton ghost s'aligne sur le texte : compense son retrait intérieur */
+  margin-left: -8px;
+}

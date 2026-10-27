@@ -157,3 +157,21 @@ export const Chargement: Story = { args: { ...emptyArgs, state: "loading" } };
 export const Vide: Story = { args: { ...emptyArgs, state: "empty", emptyMessage: "Aucun véhicule en circulation." } };
 
 export const Erreur: Story = { args: { ...emptyArgs, state: "error", onRetry: fn() } };
+
+/** Écart inconnu (aucune donnée de retard) : pastille tiretée « ? », jamais présentée « à l'heure ». */
+export const EcartInconnu: Story = {
+  name: "Écart inconnu",
+  args: {
+    title: "Ligne 13 — données partielles",
+    line: LINE_13,
+    stops: STOPS,
+    vehicles: [
+      { id: "v1", label: "4521", direction: "outbound", position: { at: STOPS[2].id }, delay: 0 },
+      { id: "v2", label: "4530", direction: "outbound", position: { at: STOPS[5].id } },
+    ],
+  },
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelector(".line-diagram__vehicle--unknown")).not.toBeNull();
+    await expect(within(canvasElement).getByText(/1 sans écart connu/)).toBeInTheDocument();
+  },
+};

@@ -43,18 +43,30 @@ export const TooltipTrigger = ({
 
   const arrow = POSITION_TO_ARROW[position];
 
+  // Survol ou focus clavier ouvrent la bulle ; Échap la ferme sans déplacer
+  // le focus (WCAG 1.4.13). Le texte est déjà le nom du bouton : la bulle
+  // est masquée aux lecteurs d'écran pour ne pas le lire deux fois.
   return (
     <div
       className={`tooltip-trigger${visible ? " tooltip-trigger--hovered" : ""}`}
       onMouseEnter={() => setVisible(true)}
       onMouseLeave={() => setVisible(false)}
+      onFocus={() => setVisible(true)}
+      onBlur={() => setVisible(false)}
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && visible) {
+          event.stopPropagation();
+          setVisible(false);
+        }
+      }}
     >
-      <button className="tooltip-trigger__icon" aria-label={label} tabIndex={0}>
+      <button type="button" className="tooltip-trigger__icon" aria-label={label}>
         <InfoIcon />
       </button>
       {visible && (
         <div
           className={`tooltip-trigger__bubble tooltip-trigger__bubble--${position}`}
+          aria-hidden="true"
         >
           <Tooltip label={label} theme={theme} arrow={arrow} />
         </div>
