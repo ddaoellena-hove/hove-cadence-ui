@@ -81,6 +81,7 @@ export const CategoryFilter = ({
     >
       {items.map((item, idx) => {
         const checked = item.id === value;
+        const count = countFormat.format(item.count);
         return (
           <button
             key={item.id}
@@ -93,6 +94,9 @@ export const CategoryFilter = ({
               checked ? "category-filter__tile--selected" : "",
               item.count === 0 ? "category-filter__tile--empty" : "",
             ].filter(Boolean).join(" ")}
+            // Nom explicite « Lignes, 1 984 » : le contenu en blocs flex ferait
+            // varier la ponctuation d'un navigateur à l'autre.
+            aria-label={`${item.label}, ${count}`}
             disabled={item.disabled}
             tabIndex={idx === tabbableIdx ? 0 : -1}
             onClick={() => select(item.id)}
@@ -104,9 +108,7 @@ export const CategoryFilter = ({
               )}
               <span className="category-filter__label">{item.label}</span>
             </span>
-            {/* Séparateur lu seulement : nom accessible « Lignes, 1 284 ». */}
-            <span className="category-filter__sr-only">, </span>
-            <span className="category-filter__count">{countFormat.format(item.count)}</span>
+            <span className="category-filter__count">{count}</span>
           </button>
         );
       })}
