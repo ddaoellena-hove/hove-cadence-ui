@@ -87,6 +87,12 @@
   color: var(--cadence-status-critical-fg, #b91c1c);
 }
 
+/* Écart inconnu : contour tireté et « ? » visible, jamais l'apparence « à l'heure » */
+.line-diagram__vehicle--unknown {
+  border-style: dashed;
+  color: var(--cadence-color-text-secondary, #607075);
+}
+
 /* Au-delà de trois niveaux d'empilement : pastille estompée, détail au survol et au clavier */
 .line-diagram__vehicle--overflow {
   opacity: 0.6;

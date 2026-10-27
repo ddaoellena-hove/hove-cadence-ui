@@ -43,7 +43,11 @@ describe("LineDiagram", () => {
     expect(vehicleStatus({ delay: 3 })).toBe("late");
     expect(vehicleStatus({ delay: -1 })).toBe("early");
     expect(vehicleStatus({ delay: 1 })).toBe("ontime");
-    expect(vehicleStatus({})).toBe("ontime");
+    // Écart absent : inconnu, jamais « à l'heure »
+    expect(vehicleStatus({})).toBe("unknown");
+    expect(vehicleStatus({ delay: Number.NaN })).toBe("unknown");
+    expect(vehicleStatus({ incident: "Panne" })).toBe("incident");
+    expect(delayBadge()).toBe("?");
     expect(vehicleStatus({ delay: 2 }, { late: 2, early: -2 })).toBe("late");
     expect(delayBadge(4.2)).toBe("+4");
     expect(delayBadge(-1)).toBe("−1");
