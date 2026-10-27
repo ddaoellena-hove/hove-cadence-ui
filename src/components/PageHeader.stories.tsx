@@ -106,6 +106,11 @@ export const Defaut: Story = {
     const popover = canvas.getByRole("dialog", { name: "Choisir une période" });
     const visibleRight = () => scroller.getBoundingClientRect().left + scroller.clientLeft + scroller.clientWidth;
     await waitFor(() => expect(popover.getBoundingClientRect().right).toBeLessThanOrEqual(visibleRight()));
+    // Un popover qui s'élargit après l'ouverture (police chargée plus tard) est
+    // recalé : son bord droit reste dans la zone visible
+    popover.style.paddingRight = `${parseFloat(getComputedStyle(popover).paddingRight) + 60}px`;
+    await waitFor(() => expect(popover.getBoundingClientRect().right).toBeLessThanOrEqual(visibleRight()));
+    popover.style.paddingRight = "";
     await userEvent.keyboard("{Escape}");
 
     // Au défilement, l'en-tête reste en haut et prend son liseré

@@ -44,6 +44,19 @@ export const usePopoverFit = (ref: RefObject<HTMLElement | null>, open: boolean)
 
     fit();
     window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
+    // Le popover peut s'élargir après l'ouverture (police d'interface chargée
+    // plus tard, contenu rendu au tick suivant) : le décalage serait alors
+    // périmé. On le recalcule à chaque changement de taille et à la fin du
+    // chargement des polices. Le décalage passe par `translate`, qui ne change
+    // pas la taille observée : pas de boucle.
+    const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(fit) : null;
+    observer?.observe(el, { box: "border-box" });
+    let active = true;
+    document.fonts?.ready.then(() => { if (active) fit(); });
+    return () => {
+      active = false;
+      observer?.disconnect();
+      window.removeEventListener("resize", fit);
+    };
   }, [ref, open]);
 };
