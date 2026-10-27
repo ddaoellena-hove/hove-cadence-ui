@@ -7,6 +7,11 @@ Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, 
 ### Ajouté
 
 - **`BulkActionBar`** (*Données et tableaux*) : barre d'actions groupées flottante pour une sélection multiple (`DataTable selectable`, liste de `TableCard`). Placée après la liste, elle colle au bas de la zone visible pendant le défilement ; surface blanche surélevée, compteur puis actions `size="sm"`, masquée sans sélection, compteur annoncé aux lecteurs d'écran (`countLabel` pour nommer les éléments). Le pattern **Liste / index** et les recettes 2 et 5 l'utilisent à la place de la barre de sélection assemblée à la main.
+- **Qualité des données** (premier lot de l'audit *Mobility Data Design System*) :
+  - **`DatasetHealth`** (*Retours et statuts*) : bilan de validation d'un jeu de données — verdict fourni (`not-run`, `unknown`, `passed`, `warning`, `failed`), erreurs et avertissements (inconnu distinct de 0), date de la dernière validation, accès au rapport, chargement.
+  - **`ValidationIssueInspector`** (*Retours et statuts*) : détail d'un constat — sévérité, message, localisation, règle et identifiants copiables, correction attendue, accès facultatif à la source. Sans Drawer embarqué.
+  - Types publics `ValidationIssue`, `ValidationIssueLocation`, `ValidationSeverity`, `ValidationVerdict`.
+  - Page pattern **Rapport qualité** (`src/patterns/RapportQualitePattern.tsx`), qui remplace le rapport qualité de l'ancienne recette *Offre et qualité*.
 
 ### ⚠️ Supprimé
 

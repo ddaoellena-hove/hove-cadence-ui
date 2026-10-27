@@ -1,0 +1,45 @@
+/* ── DatasetHealth ───────────────────────────────────────────────────────────
+   Bilan de validation : carte blanche à bordure fine, titre + verdict, faits
+   en DescriptionList compacte, bouton du rapport. */
+.dataset-health {
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-lg, 10px);
+  box-sizing: border-box;
+  color: var(--cadence-color-primary, #002830);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  gap: 12px;
+  min-width: 0;
+  padding: 16px 20px;
+}
+
+.dataset-health__header {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  justify-content: space-between;
+  min-height: 24px;
+}
+
+.dataset-health__title {
+  color: var(--cadence-color-primary, #002830);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.dataset-health__facts {
+  margin: 0;
+}
+
+.dataset-health__actions {
+  display: flex;
+  /* Le bouton ghost s'aligne sur le texte : compense son retrait intérieur */
+  margin-left: -8px;
+}

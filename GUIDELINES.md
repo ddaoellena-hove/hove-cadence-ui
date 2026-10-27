@@ -255,7 +255,9 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Succession des arrêts et horaires d’une course | `RouteStopList` | `Stepper` (étapes d’un processus) |
 | Horaires et exploitation d'une ligne sur une journée (fréquence, croisements, théorique / réalisé) | `TimeSpaceDiagram` | `Timeline` (plages par entité) ; `RouteStopList` (une seule course) |
 | Positions temps réel des véhicules sur une ligne (supervision) | `LineDiagram` | `RouteStopList` (une course, horaires) ; une carte (géographie) |
-| Examiner les erreurs d’un import (rapport qualité) | Pattern **Liste + détail latéral** (`InlineAlert` de bilan, `FilterBar`, `DataTable`, détail en `Drawer`) | `ErrorSummary` (erreurs des champs d’un formulaire) |
+| Examiner les erreurs d’un import (rapport qualité) | Pattern **Rapport qualité** (`DatasetHealth`, `FilterBar`, `DataTable`, `ValidationIssueInspector` en `Drawer`) | `ErrorSummary` (erreurs des champs d’un formulaire) |
+| Bilan de validation d'un jeu de données (verdict, erreurs, avertissements, date) | `DatasetHealth` | `Card` (KPI chiffré) ; `InlineAlert` (message sans compteurs) ; `DataFreshness` (âge d'une donnée, pas un verdict) |
+| Détail d'un constat de validation (localisation, règle, correction) | `ValidationIssueInspector` (dans un `Drawer` ou une section) | `DescriptionList` assemblée à la main |
 | Action principale de la vue (une seule) | `PrimaryButton` | `GhostButton` (secondaire) |
 | Action secondaire, action inline de formulaire | `GhostButton` | `Link` (3e action) |
 | 3e action d'un groupe, action dans une phrase | `Link hideArrow` | `GhostButton` (action secondaire) |
@@ -1054,12 +1056,13 @@ Catalogue de gabarits de page nommés. **Choisir d'abord un pattern dans le tabl
 | Planification / temps (axes temps, heures de service) | Planification / temps | ✅ |
 | Réglages (sections, enregistrement explicite) | Paramètres | ✅ |
 | États d'une page (chargement, erreur, accès, introuvable, vide) | États de page | ✅ |
+| Examiner la validation d'un jeu de données (bilan, constats, détail) | Rapport qualité | ✅ |
 
 ### Correspondance recette → pattern
 
 R1 → Coque d'application · R2 → Liste / index · R3 → Formulaire · R4 → États de page · R5 → Liste / index · R6 → Supervision · R7 → Analyse · R8 → Liste + détail latéral · R9 → Assistant · R10 → Planification / temps.
 
-> Les 11 fiches sont ci-dessous. Les stories `Recettes/*` ont été retirées en 1.0.0 : leurs parcours sont couverts par les patterns (correspondance ci-dessus). Les recettes de code plus bas restent des exemples à adapter.
+> Les 12 fiches sont ci-dessous. Les stories `Recettes/*` ont été retirées en 1.0.0 : leurs parcours sont couverts par les patterns (correspondance ci-dessus). Les recettes de code plus bas restent des exemples à adapter.
 
 ### Pattern — Formulaire
 
@@ -1131,6 +1134,10 @@ FormActions  →  Link · GhostButton · PrimaryButton
 ### Pattern — États de page
 
 **Quand l'utiliser** — le vocabulaire des états pleine page, réutilisé par les patterns. **Ne pas confondre avec** — un état *inline* (`EmptyState size="inline"`). **Anatomie** : chargement (`Skeleton`), erreur / accès refusé / introuvable (`EmptyState variant="error"`), vide (`EmptyState variant="empty"`). **Règles** : ✅ toujours une action de sortie (réessayer, créer, revenir) ; ❌ pas d'état vide à la main. **Gabarit** — vérifié : [`src/patterns/EtatsPattern.tsx`](src/patterns/EtatsPattern.tsx).
+
+### Pattern — Rapport qualité
+
+**Quand l'utiliser** — examiner le résultat de la validation d'un jeu de données (import GTFS, NeTEx…). **Ne pas confondre avec** — Assistant / import (étapes de l'import), `ErrorSummary` (champs d'un formulaire). **Anatomie** : `PageHeader` · `DatasetHealth` (bilan global) · `FilterBar` (recherche, `Dropdown` de niveau) · `DataTable` des constats (`onRowClick`) · `Drawer` de la page contenant `ValidationIssueInspector`. **Comportements** : le bilan porte sur tous les constats, indépendamment des filtres ; Échap referme le détail et rend le focus à la ligne. **Règles** : ✅ verdict et constats fournis par l'application ; ✅ garder le constat affiché pendant la fermeture du `Drawer` (état `open` séparé de la sélection) ; ❌ « Aucun constat pour ces filtres » n'est pas « aucune erreur » ; ❌ pas d'action « Ouvrir dans la source » sans destination réelle. **Gabarit** — vérifié : [`src/patterns/RapportQualitePattern.tsx`](src/patterns/RapportQualitePattern.tsx).
 
 ## Recettes de pages complètes
 
@@ -2404,6 +2411,67 @@ Filtre par mode de transport : une rangée de **chips togglables** (picto `ModeI
 
 - ✅ Garder le picto par défaut : il double la couleur pour qui ne la distingue pas (WCAG 1.4.1).
 - ✅ `hideIcon` seulement quand un picto voisin porte déjà l'état (marqueur coloré d'`ActivityFeed`) : sinon il est redondant.
+
+### DatasetHealth
+
+Bilan de validation d'un jeu de données : titre, verdict (`Indicator`), nombre d'erreurs et d'avertissements, date de la dernière validation, bouton « Voir le rapport ». Carte blanche à bordure fine, région nommée par son titre. **Présentation seule** : le verdict et les compteurs viennent de l'application ; aucun score, aucun verdict déduit de la fraîcheur ou des compteurs, aucune décision de publication. Story : *Retours et statuts / DatasetHealth*.
+
+```tsx
+<DatasetHealth
+  label="Offre théorique — GTFS Bordeaux Métropole"
+  verdict="failed"
+  errorCount={2}
+  warningCount={1}
+  validatedAt={report.validatedAt}
+  timeZone="Europe/Paris"
+  onViewReport={() => navigate("/qualite/rapport")}
+/>
+```
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `label` | `string` | **requis** | Nom du jeu de données (titre) |
+| `verdict` | `ValidationVerdict` | **requis** | `"not-run" \| "unknown" \| "passed" \| "warning" \| "failed"` → « Non validé », « Verdict inconnu », « Valide », « Valide avec avertissements », « Invalide » |
+| `errorCount` | `number \| null` | — | Erreurs. `null` ou absent : « Inconnu », jamais 0 |
+| `warningCount` | `number \| null` | — | Avertissements. `null` ou absent : « Inconnu » |
+| `validatedAt` | `Date \| string \| number` | — | Date de la dernière **validation** (pas de la collecte) → « Validé il y a 2 h ». Absente : « Date inconnue » (« Jamais validé » si `not-run`) |
+| `now` | `Date \| string \| number` | maintenant | Instant de référence du libellé relatif (à fixer pour les tests) |
+| `timeZone` | `string` | fuseau local | Fuseau de la date absolue |
+| `loading` | `boolean` | `false` | Squelettes et `aria-busy` ; ni verdict ni bouton |
+| `onViewReport` | `() => void` | — | Bouton `GhostButton size="sm"` ; sans callback, pas de bouton |
+| `reportLabel` | `string` | `"Voir le rapport"` | Libellé du bouton |
+| `headingLevel` | `2 \| 3 \| 4` | `2` | Niveau du titre |
+| `className` | `string` | — | — |
+
+- ✅ `0` s'affiche « 0 » : c'est une valeur connue, distincte d'un compteur inconnu.
+- ✅ `verdict="not-run"` masque les compteurs : sans validation, ils n'ont pas de sens.
+- ⚠️ La date est affichée par `DataFreshness` **sans point coloré** : l'âge de la validation n'est pas un verdict.
+- ❌ Pas de `ProgressBar` ni de score en pourcentage : la bibliothèque n'invente pas de mesure de qualité.
+
+### ValidationIssueInspector
+
+Détail d'un constat de validation : sévérité (`Indicator`), message, localisation (`DescriptionList` : source, ligne, champ, objet), code de règle et identifiant copiables (`CopyableText`), correction attendue (`InlineAlert type="information"`), bouton facultatif vers la source. **Sans surface ni Drawer** : l'application le place dans un `Drawer` (pattern **Rapport qualité**) ou dans une section de page. Aucun appel réseau, aucune correction. Story : *Retours et statuts / ValidationIssueInspector*.
+
+```tsx
+<Drawer isOpen={open} onClose={() => setOpen(false)} title="Détail du constat">
+  <ValidationIssueInspector issue={selected} onOpenSource={openInEditor} />
+</Drawer>
+```
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `issue` | `ValidationIssue \| null` | **requis** | Constat. `null` : `EmptyState` « Aucun constat sélectionné » |
+| `onOpenSource` | `(issue) => void` | — | Bouton `GhostButton size="sm"` ; sans callback, pas de bouton |
+| `openSourceLabel` | `string` | `"Ouvrir dans la source"` | Libellé du bouton |
+| `emptyTitle` | `string` | `"Aucun constat sélectionné"` | Titre de l'état vide |
+| `className` | `string` | — | — |
+
+**Types** (exportés) — `ValidationIssue` : `{ id: string; severity: "error" \| "warning" \| "info"; message: string; location?: { source?; line?; field?; objectId? }; ruleCode?: string; correction?: string }`. `ValidationSeverity`, `ValidationVerdict` et `ValidationIssueLocation` sont exportés aussi.
+
+- ✅ Source, ligne et champ absents s'affichent « Non renseigné » ; objet, règle et correction absents ne s'affichent pas.
+- ✅ Messages et identifiants longs se replient sans élargir le conteneur.
+- ⚠️ Dans un `Drawer`, garder le constat sélectionné pendant la fermeture (état `open` séparé), sinon l'état vide apparaît pendant l'animation.
+- ❌ Pas d'`onOpenSource` sans destination réelle.
 
 ### DataFreshness
 
