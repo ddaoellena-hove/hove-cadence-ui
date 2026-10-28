@@ -96,3 +96,23 @@ export const formatAxisDate = (date: Date, granularity: DateGranularity): string
 /** Date complète (tooltip, tableau) : avec l'heure si l'axe est horaire. */
 export const formatFullDate = (date: Date, granularity: DateGranularity): string =>
   granularity === "hour" ? fullFormat.format(date) : granularity === "day" ? dateOnlyFormat.format(date) : monthFormat.format(date);
+
+/** Largeur estimée d'un libellé d'annotation (11px, graisse 600 : ~6,5px par caractère). */
+const ANNOTATION_CHAR_WIDTH = 6.5;
+
+/**
+ * Position du libellé d'une annotation : à droite du début (`start + 4`), ou
+ * ancré à la fin (`end - 4`, text-anchor end) s'il dépasserait le bord droit
+ * du tracé — cas d'un événement sur les dernières catégories (« Aucune donnée
+ * depuis 14 h »). Pour un trait seul, `end` vaut `start` : libellé à gauche du trait.
+ */
+export const annotationLabelPlacement = (
+  start: number,
+  end: number,
+  label: string,
+  plotWidth: number,
+): { x: number; textAnchor: "start" | "end" } => {
+  const width = label.length * ANNOTATION_CHAR_WIDTH;
+  if (start + 4 + width <= plotWidth) return { x: start + 4, textAnchor: "start" };
+  return { x: Math.max(width, Math.min(end, plotWidth) - 4), textAnchor: "end" };
+};

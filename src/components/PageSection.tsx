@@ -23,6 +23,12 @@ export interface PageSectionProps {
   actions?: ReactNode;
   /** Espacement vertical (échelle 4/8/12/16/20/24/32/48). Défaut 20. */
   gap?: number;
+  /**
+   * "card" : section en carte — bordure, rayon, fond blanc, en-tête rembourré
+   * séparé du corps par un filet. Le corps n'a pas de padding imposé (tableau ou
+   * liste bord à bord) ; `gap` espace ses enfants. Défaut "none" (section nue).
+   */
+  surface?: "none" | "card";
   children: ReactNode;
   id?: string;
   className?: string;
@@ -35,6 +41,7 @@ export const PageSection = ({
   description,
   actions,
   gap = 20,
+  surface = "none",
   children,
   id,
   className,
@@ -46,9 +53,10 @@ export const PageSection = ({
   return (
     <section
       id={id}
-      className={["page-section", className].filter(Boolean).join(" ")}
+      className={["page-section", surface === "card" ? "page-section--card" : "", className].filter(Boolean).join(" ")}
       aria-labelledby={headingId}
-      style={{ gap }}
+      // En carte, l'en-tête est séparé du corps par un filet, pas par un espace
+      style={{ gap: surface === "card" ? 0 : gap }}
     >
       <div className={`page-section__head${icon || iconElement ? " page-section__head--icon" : ""}`}>
         {(iconElement || icon) && <span aria-hidden="true" className={`page-section__icon page-section__icon--${iconTone}`}>{iconElement ?? <Icons icon={icon!} size={20} />}</span>}

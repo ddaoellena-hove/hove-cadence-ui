@@ -20,3 +20,26 @@ button.page-hero__kpi:disabled { opacity: .5; cursor: default; }
 .page-hero__kpi-action, .page-hero__kpi-delta { font-size: 13px; display: inline-flex; gap: 6px; align-items: center; }
 .page-hero__kpi-delta { color: var(--cadence-color-on-dark-muted, rgba(255,255,255,.6)); }
 .page-hero__kpi-action { margin-top: auto; }
+
+/* ── En-tête : tuile d'icône à gauche du titre (statique, teintée par le statut) ── */
+.page-hero__heading { display: flex; align-items: flex-start; gap: 12px; min-width: 0; }
+.page-hero__icon { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 40px; width: 40px; height: 40px; border-radius: var(--cadence-radius-lg, 10px); background: var(--cadence-color-on-dark-hover, rgba(255,255,255,.07)); color: var(--cadence-color-on-dark, rgba(255,255,255,.9)); }
+.page-hero__icon--active { color: var(--cadence-status-active-on-dark, #40c2da); }
+.page-hero__icon--upcoming { color: var(--cadence-status-upcoming-on-dark, #c4b5fd); }
+.page-hero__icon--completed { color: var(--cadence-status-completed-on-dark, #86efac); }
+.page-hero__icon--draft { color: var(--cadence-status-draft-on-dark, #cbd5e1); }
+.page-hero__icon--warning { color: var(--cadence-status-warning-on-dark, #fdba74); }
+.page-hero__icon--info { color: var(--cadence-status-info-on-dark, #93c5fd); }
+.page-hero__icon--critical { color: var(--cadence-status-critical-on-dark, #fca5a5); }
+.page-hero__icon--nominal { color: var(--cadence-status-nominal-on-dark, #86efac); }
+
+/* ── Valeur texte (valueType="text") : sans-serif, sans chiffres tabulaires ── */
+.page-hero__value--text { font-family: var(--cadence-font-sans, "Inter", sans-serif); font-size: var(--cadence-font-size-kpi, 28px); font-variant-numeric: normal; font-weight: 600; line-height: 1.2; }
+.page-hero__kpi-value--text { font-family: var(--cadence-font-sans, "Inter", sans-serif); font-size: var(--cadence-font-size-section, 16px); font-variant-numeric: normal; font-weight: 600; line-height: 1.3; }
+
+/* Légende de la valeur principale, distincte de l'unité */
+.page-hero__caption { color: var(--cadence-color-on-dark-muted, rgba(255,255,255,.6)); font-size: 14px; }
+
+/* Couleur d'alerte de la valeur, toujours accompagnée d'un statut textuel */
+.page-hero__value--warning { color: var(--cadence-status-warning-on-dark, #fdba74); }
+.page-hero__value--critical { color: var(--cadence-status-critical-on-dark, #fca5a5); }

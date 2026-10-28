@@ -1,4 +1,4 @@
-import { forwardRef, type MouseEvent } from "react";
+import { forwardRef, useRef, type MouseEvent } from "react";
 import { Icons, type IconName } from "./Icons";
 import type { ActionButtonBaseProps, ActionButtonSize } from "./action-button-types";
 import { checkButtonContent } from "./dev-warnings";
@@ -22,6 +22,42 @@ const ICON_SIZE: Record<ActionButtonSize, number> = { sm: 12, md: 16 };
 
 const Spinner = () => <span className="base-button__spinner" aria-hidden="true" />;
 
+/** Marge minimale entre l'infobulle et le bord de la zone visible. */
+const TIP_MARGIN = 8;
+
+/** Zone visible d'un élément : la fenêtre, réduite par chaque ancêtre qui défile ou rogne horizontalement. */
+const visibleBounds = (element: HTMLElement) => {
+  let left = 0;
+  let right = document.documentElement.clientWidth;
+  for (let node = element.parentElement; node && node !== document.body; node = node.parentElement) {
+    if (getComputedStyle(node).overflowX === "visible") continue;
+    const rect = node.getBoundingClientRect();
+    left = Math.max(left, rect.left);
+    right = Math.min(right, rect.right);
+  }
+  return { left, right };
+};
+
+/**
+ * Recale l'infobulle horizontalement pour qu'elle reste dans la zone visible
+ * (bord d'une Modal, d'un corps défilant, de la fenêtre). Mesurée juste avant
+ * l'affichage : masquée, elle est en display:none et ne mesure rien.
+ */
+const placeTip = (bubble: HTMLElement | null) => {
+  if (!bubble) return;
+  bubble.style.setProperty("--base-button-tip-shift", "0px");
+  bubble.style.visibility = "hidden";
+  bubble.style.display = "block";
+  const rect = bubble.getBoundingClientRect();
+  bubble.style.removeProperty("display");
+  bubble.style.removeProperty("visibility");
+  const bounds = visibleBounds(bubble);
+  let shift = 0;
+  if (rect.right > bounds.right - TIP_MARGIN) shift = bounds.right - TIP_MARGIN - rect.right;
+  if (rect.left + shift < bounds.left + TIP_MARGIN) shift = bounds.left + TIP_MARGIN - rect.left;
+  bubble.style.setProperty("--base-button-tip-shift", `${Math.round(shift)}px`);
+};
+
 export const BaseButton = forwardRef<HTMLButtonElement, BaseButtonProps>(
   (
     {
@@ -42,6 +78,7 @@ export const BaseButton = forwardRef<HTMLButtonElement, BaseButtonProps>(
     },
     ref,
   ) => {
+    const tipRef = useRef<HTMLDivElement>(null);
     const iconOnly = icon !== undefined && !label;
     const iconSize = ICON_SIZE[size];
     const root = variant === "ghost" ? "ghost-button" : "primary-button";
@@ -114,9 +151,9 @@ export const BaseButton = forwardRef<HTMLButtonElement, BaseButtonProps>(
     // aux lecteurs d'écran : ils ont déjà le nom via aria-label.
     if (!iconOnly) return button;
     return (
-      <div className="base-button-tip">
+      <div className="base-button-tip" onMouseEnter={() => placeTip(tipRef.current)} onFocus={() => placeTip(tipRef.current)}>
         {button}
-        <div className="base-button-tip__bubble" aria-hidden="true">
+        <div ref={tipRef} className="base-button-tip__bubble" aria-hidden="true">
           <Tooltip label={accessibleName} theme="light" arrow="top" />
         </div>
       </div>

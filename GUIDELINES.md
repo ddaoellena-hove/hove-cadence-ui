@@ -313,6 +313,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Fraîcheur d'une donnée (dernière mise à jour, péremption) | `DataFreshness` | `Indicator` (statut métier, pas temporel) ; `ActivityFeed` (journal d'événements horodatés) |
 | En-tête de page (titre, sous-titre, actions), collé en haut au défilement | `PageHeader` | `<h1>` à la main |
 | Section de page (titre `h2`, description, actions) | `PageSection` | un `<section>` + `<h2>` en style inline |
+| Section d'écran en carte (filet sous l'en-tête, liste ou tableau bord à bord) | `PageSection surface="card"` | un padding et un filet ajoutés à `.page-section__head` depuis l'app ; une `Card` (pas de titre `h2` ni d'actions d'en-tête) |
 | Rangée de champs à largeurs égales, alignés par le bas | `FieldRow` | `<div style="display:flex;gap:12">` + `flex:1` à la main |
 | Barre d'actions de formulaire (à droite, ordre `Link` → `Ghost` → `Primary`) | `FormActions` | un `<div>` `justify-content:flex-end` à la main |
 | Grille fluide de cartes / graphiques | `CardGrid` | un `<div style="display:grid;…auto-fill">` à la main |
@@ -993,7 +994,7 @@ Une `Card` est **interactive** de deux façons :
 ### Seuils et annotations
 
 - ✅ Un objectif ou un seuil d'alerte est un `threshold` libellé (« Objectif 95 % », « Seuil d'alerte 5 min ») : ligne tiretée `--cadence-dataviz-threshold`. Avec `goodDirection`, les points du mauvais côté passent en `--cadence-dataviz-threshold-breach` et le libellé indique « franchi ».
-- ✅ Un événement daté (grève, travaux, incident) est une `annotation` : trait vertical ou bande, toujours libellée (« Grève 14/10 »), rappelée dans le tooltip. `LineChart` (dates ou catégories), `BarChart` (catégories), `Histogram` (valeurs).
+- ✅ Un événement daté (grève, travaux, incident) est une `annotation` : trait vertical ou bande, toujours libellée (« Grève 14/10 »), rappelée dans le tooltip. `LineChart` (dates ou catégories), `BarChart` (catégories), `Histogram` (valeurs). Près du bord droit (événement en cours, « Aucune réception depuis 14 h »), le libellé s'ancre à la fin de la bande ou à gauche du trait : il n'est jamais coupé.
 - ❌ Pas de seuil sans libellé, pas d'annotation sans date.
 - ✅ Comparaison à une période précédente : une série `reference: true` (`LineChart`, `BarChart`) libellée par sa période (« 2025 », « Semaine 42 »), recalée sur les abscisses de la période courante. Elle ne prend pas de couleur de la palette : ardoise tiretée. Une seule référence par graphique pour que l'écart soit rappelé.
 - ✅ `ComboChart` : chaque axe Y porte un titre et son unité (« Validations (k) », « Ponctualité (%) ») ; les seuils (`lineThresholds`) se lisent sur l'axe droit.
@@ -2891,6 +2892,7 @@ Section de page : un titre (`h2` par défaut, `h3`/`h4` pour une sous-section), 
 | `description` | `string` | — | Texte sous le titre |
 | `actions` | `ReactNode` | — | Actions alignées à droite du titre |
 | `gap` | `number` | `20` | Espacement vertical (échelle 4/8/12/16/20/24/32/48) |
+| `surface` | `"none" \| "card"` | `"none"` | `"card"` : enveloppe de `Card` (bordure, rayon `lg`, fond blanc), en-tête rembourré (16px 20px) séparé du corps par un filet. ⚠️ Le corps n'a **pas de padding** : liste ou tableau bord à bord ; un contenu libre prend son propre padding. `gap` n'espace plus que les enfants du corps |
 | `children` | `ReactNode` | **requis** | Contenu de la section |
 | `id` / `className` | `string` | — | — |
 
@@ -2980,7 +2982,7 @@ API identique pour les deux ; seul le rendu change (`PrimaryButton` plein ou con
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
 | `label` | `string` | **requis** (sauf icône seule) | Libellé. ⚠️ Exclusif avec `icon`. Sans `label` ni `icon`, le bouton ne rend **aucun texte de repli** et une erreur est émise en développement |
-| `icon` | nom d'icône `Icons` | — | Icône seule (bouton carré). ⚠️ `aria-label` **obligatoire** (typé) ; à défaut, le nom de l'icône sert de nom accessible avec un avertissement en développement. Le nom accessible s'affiche en **infobulle** sous le bouton, au survol (après 300 ms) et au focus clavier |
+| `icon` | nom d'icône `Icons` | — | Icône seule (bouton carré). ⚠️ `aria-label` **obligatoire** (typé) ; à défaut, le nom de l'icône sert de nom accessible avec un avertissement en développement. Le nom accessible s'affiche en **infobulle** sous le bouton, au survol (après 300 ms) et au focus clavier. Masquée, elle est hors du rendu (`display: none`) : elle n'élargit pas la zone défilable d'une `Modal` ou d'un corps défilant ; affichée, elle est recalée horizontalement dans la zone visible (8px du bord), flèche toujours sous le bouton |
 | `aria-label` | `string` | — | Nom accessible. Obligatoire avec `icon` |
 | `iconStart`, `iconEnd` | nom d'icône `Icons` | — | Icône avant / après le libellé |
 | `tone` | `"default" \| "danger"` | `"default"` | `"danger"` : action destructive (fond rouge / texte rouge) |
@@ -4115,7 +4117,11 @@ Bandeau sombre de synthèse, titre et KPI. La tuile interactive montre une flèc
 | title | string | requis | Titre |
 | headingLevel | 1 ou 2 | 1 | h2 si PageHeader porte déjà le h1 |
 | description | string | — | Contexte |
-| value / unit | number ou string / string | — | Valeur principale formatée fr-FR |
+| icon | IconName | — | Tuile d'icône à gauche du titre, teintée par `status` (couleurs sur fond sombre), statique |
+| value / unit | number ou string / string | — | Valeur principale : nombre formaté fr-FR en mono, ou texte court ; unité courte en sans-serif (« courses ») |
+| valueType | "number" ou "text" | selon `value` | `"number"` : mono 44px ; `"text"` : sans-serif 28px 600. Défaut : "number" pour un nombre, "text" pour une chaîne |
+| valueCaption | string | — | Légende de la valeur, distincte de l'unité (« vs 26 août · −16 227 »), sans-serif secondaire |
+| valueTone | "default", "warning" ou "critical" | "default" | Couleur d'alerte de la valeur. ⚠️ Jamais seule : fournir `status` / `statusLabel` |
 | status / statusLabel | IndicatorVariant / string | — | Statut inverse |
 | freshness | DataFreshnessProps | — | Force inverse ; fournir now/timeZone si déterminisme requis |
 | kpis | PageHeroKpi[] | [] | Grille de tuiles responsive |
@@ -4123,7 +4129,7 @@ Bandeau sombre de synthèse, titre et KPI. La tuile interactive montre une flèc
 | loading | boolean | false | Masque les valeurs, annonce le chargement |
 | className | string | — | Classe racine |
 
-`PageHeroKpi` : `id`, `label`, `value` requis ; `unit?`, `status?`, `statusLabel?`, `delta?: { value; unit?: "%" | "pt"; label? }`, `onClick?`, `disabled?`. La variation est signée sans jugement métier implicite. ⚠️ Fournir des statuts textuels pertinents, pas uniquement une couleur. `Card` conserve son contrat d’action visible.
+`PageHeroKpi` : `id`, `label`, `value` requis ; `valueType?` (même règle : une chaîne s'affiche en texte sans-serif 16px 600, « Intégrées · à vérifier », « 27 août · 15:41 » ; un nombre en mono 28px), `unit?`, `status?`, `statusLabel?`, `delta?: { value; unit?: "%" | "pt"; label? }`, `onClick?`, `disabled?`. La variation est signée sans jugement métier implicite. ⚠️ Fournir des statuts textuels pertinents, pas uniquement une couleur. `Card` conserve son contrat d’action visible. ⚠️ Un nombre déjà formaté en chaîne (« 1 245 ») s'affiche en texte : passer le nombre, ou `valueType="number"`.
 
 ```tsx
 <PageHero title="Flux temps réel" value={courses} unit="courses" status="active" statusLabel="En direct" kpis={kpis} />
