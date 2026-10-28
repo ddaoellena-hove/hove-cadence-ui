@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, waitFor, within } from "storybook/test";
+import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import { Modal } from "./Modal";
 import { Drawer } from "./Drawer";
 import { PrimaryButton } from "./PrimaryButton";
@@ -29,6 +29,34 @@ const meta: Meta<typeof Modal> = {
 
 export default meta;
 type Story = StoryObj<typeof Modal>;
+
+export const ActionDesactivee: Story = {
+  args: { isOpen: true, onClose: fn(), title: "Confirmer la restauration", children: "Un motif est requis.",
+    primaryAction: { label: "Restaurer", disabled: true, onClick: fn() } },
+  play: async ({ args }) => {
+    const dialog = within(document.body).getByRole("dialog", { name: "Confirmer la restauration" });
+    const restore = within(dialog).getByRole("button", { name: "Restaurer" });
+    await expect(restore).toBeDisabled();
+    await userEvent.click(restore);
+    await expect(args.primaryAction?.onClick).not.toHaveBeenCalled();
+  },
+};
+
+export const PiedCompose: Story = {
+  args: { isOpen: true, onClose: fn(), title: "Import en cours",
+    children: <div style={{ height: 1400 }}>Résultat de l'analyse</div>,
+    footer: <><span>Étape 2</span><PrimaryButton label="Continuer l'import" /></> },
+  play: async () => {
+    const dialog = within(document.body).getByRole("dialog", { name: "Import en cours" });
+    const body = dialog.querySelector<HTMLElement>(".modal__body")!;
+    const footer = dialog.querySelector<HTMLElement>(".modal__footer")!;
+    const before = footer.getBoundingClientRect();
+    body.scrollTop = body.scrollHeight;
+    await expect(footer.getBoundingClientRect().bottom).toBe(before.bottom);
+    await expect(Math.abs(footer.getBoundingClientRect().width - dialog.querySelector(".modal")!.getBoundingClientRect().width)).toBeLessThanOrEqual(2);
+    await expect(within(footer).getByRole("button", { name: "Continuer l'import" })).toBeVisible();
+  },
+};
 
 const BODY_TEXT =
   "Cette action est irréversible. Veuillez vérifier les informations avant de confirmer.";

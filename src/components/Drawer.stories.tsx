@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, waitFor, within } from "storybook/test";
+import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import { Drawer } from "./Drawer";
 import { DataTable, type DataTableColumn } from "./DataTable";
 import { Indicator } from "./Indicator";
@@ -21,6 +21,35 @@ const meta: Meta<typeof Drawer> = {
 
 export default meta;
 type Story = StoryObj<typeof Drawer>;
+
+export const ActionDesactivee: Story = {
+  args: { isOpen: true, onClose: fn(), title: "Export à configurer", children: "Sélectionnez un réseau.",
+    primaryAction: { label: "Enregistrer", disabled: true, onClick: fn() } },
+  play: async ({ args }) => {
+    const dialog = within(document.body).getByRole("dialog", { name: "Export à configurer" });
+    const save = within(dialog).getByRole("button", { name: "Enregistrer" });
+    await expect(save).toBeDisabled();
+    await userEvent.click(save);
+    await expect(args.primaryAction?.onClick).not.toHaveBeenCalled();
+    await expect(dialog.querySelector(".drawer__body .drawer__footer")).toBeNull();
+  },
+};
+
+export const PiedCompose: Story = {
+  args: { isOpen: true, onClose: fn(), title: "Modifications du catalogue",
+    children: <div style={{ height: 1400 }}>Contenu long</div>,
+    footer: <><span>Deux modifications</span><PrimaryButton label="Valider les modifications" /></> },
+  play: async () => {
+    const dialog = within(document.body).getByRole("dialog", { name: "Modifications du catalogue" });
+    const body = dialog.querySelector<HTMLElement>(".drawer__body")!;
+    const footer = dialog.querySelector<HTMLElement>(".drawer__footer")!;
+    const before = footer.getBoundingClientRect();
+    body.scrollTop = body.scrollHeight;
+    await expect(footer.getBoundingClientRect().bottom).toBe(before.bottom);
+    await expect(footer.getBoundingClientRect().width).toBe(dialog.getBoundingClientRect().width);
+    await expect(within(footer).getByRole("button", { name: "Valider les modifications" })).toBeVisible();
+  },
+};
 
 const DISRUPTIONS = generateDisruptions(20);
 

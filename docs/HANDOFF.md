@@ -1,5 +1,14 @@
 # Relais de développement — 25 octobre 2026
 
+## Mise à jour — 27 octobre 2026 : pieds de surcouches
+
+- Branche `feat/overlay-footers`, depuis main (fichiers locaux non suivis préservés). Demande Datapilot : corriger le pied d'export et harmoniser les modales. Aucun commit/push/publication.
+- Drawer.tsx / Modal.tsx : slot footer ReactNode prioritaire sur les actions standard. DrawerAction.disabled ; ModalAction.disabled/loading. Pied hors du corps, flex-wrap sur petit écran. Corps Drawer tabulable pour les contenus défilants sans contrôle interactif.
+- CSS et stories de chaque composant, GUIDELINES.md mis à jour. Stories ajoutées : actions désactivées et pieds composés stables pendant le défilement. Les tests ciblés ont révélé puis corrigé l'accès clavier au corps Drawer et un sélecteur géométrique de Modal (le rôle dialog est sur le voile).
+- Validations réussies : `npx tsc -b --noEmit`, ESLint des quatre TSX touchés, build:lib, check:types et 19 stories Drawer/Modal. Même configuration temporaire Chromium 1248 que décrite ci-dessous.
+- Consommateur `../datapilot-idfm`, branche `codex/overlay-footers` : export, trois fiches Catalogue, restauration, imports et confirmations migrés vers les pieds DS. Build, typographie, smoke 16/16, actions groupées et tests Drawer étendus réussis ; pieds mesurés desktop/mobile.
+- Prochaine action : retours UX/UI, puis livraison des deux dépôts quand demandée. Les sections ci-dessous décrivent les chantiers précédents.
+
 ## Mise à jour — 27 octobre 2026 : ModeFilter par ligne
 
 - Demande explicite de l'utilisateur depuis Datapilot : faire évoluer ModeFilter pour filtrer par ligne avec ses badges, puis l'utiliser dans le Différentiel.

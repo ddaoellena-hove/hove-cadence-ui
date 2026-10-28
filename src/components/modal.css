@@ -83,6 +83,7 @@
 /* ── Pied : actions à droite, sans filet ─────────────────────────────────── */
 .modal__footer {
   display: flex;
+  flex-wrap: wrap;
   flex-shrink: 0;
   gap: 12px;
   justify-content: flex-end;

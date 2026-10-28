@@ -28,6 +28,8 @@ export interface DrawerAction {
   destructive?: boolean;
   /** Envoi en cours : spinner, clics ignorés, largeur conservée. */
   loading?: boolean;
+  /** Désactive l'action sans supprimer sa place dans le pied. */
+  disabled?: boolean;
 }
 
 export interface DrawerProps {
@@ -45,6 +47,8 @@ export interface DrawerProps {
   primaryAction?: DrawerAction;
   /** Action secondaire du pied → GhostButton (« Fermer », « Annuler »). */
   secondaryAction?: DrawerAction;
+  /** Contenu de pied composé ; remplace les actions standard. Hors du corps défilant. */
+  footer?: ReactNode;
   /** Largeur : "md" 480px (défaut), "lg" 720px (formulaire, contenu dense). */
   width?: "md" | "lg";
   /**
@@ -67,6 +71,7 @@ export const Drawer = ({
   children,
   primaryAction,
   secondaryAction,
+  footer,
   width = "md",
   onSubmit,
   className,
@@ -102,7 +107,7 @@ export const Drawer = ({
 
   if (!mounted) return null;
 
-  const showFooter = primaryAction || secondaryAction;
+  const showFooter = footer != null || primaryAction || secondaryAction;
   const panelClass = [
     "drawer__panel",
     `drawer__panel--${width}`,
@@ -115,13 +120,14 @@ export const Drawer = ({
   const content = (
     <>
       {/* Corps défilant */}
-      <div className="drawer__body cadence-scrollbar">{children}</div>
+      <div className="drawer__body cadence-scrollbar" tabIndex={0}>{children}</div>
 
       {/* Pied fixe */}
       {showFooter && (
         <div className="drawer__footer">
+          {footer != null ? footer : <>
           {secondaryAction && (
-            <GhostButton label={secondaryAction.label} onClick={secondaryAction.onClick} />
+            <GhostButton label={secondaryAction.label} onClick={secondaryAction.onClick} disabled={secondaryAction.disabled} />
           )}
           {primaryAction && (
             <PrimaryButton
@@ -129,9 +135,11 @@ export const Drawer = ({
               onClick={primaryAction.onClick}
               tone={primaryAction.destructive ? "danger" : "default"}
               loading={primaryAction.loading}
+              disabled={primaryAction.disabled}
               type={onSubmit ? "submit" : "button"}
             />
           )}
+          </>}
         </div>
       )}
     </>
