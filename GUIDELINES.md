@@ -325,6 +325,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Une valeur par jour sur une année (ponctualité quotidienne, jours de grève, jours de circulation) | `CalendarHeatmap` | `ServiceCalendar` (saisie des jours de circulation) ; `LineChart` (tendance, pas le motif hebdomadaire) |
 | Classement (lignes les plus impactées) | `BarList` | `BarChart orientation="horizontal"` (plusieurs séries) |
 | Comparaison de catégories (barres empilées / groupées) | `BarChart` | `BarList` (classement à une valeur) |
+| Histogramme de navigation : clic sur une barre pour ouvrir le détail ou filtrer une liste | `BarChart onDatumClick` (+ `selectedCategory` pour le filtre actif) | des `<button>` ou `Link` par barre faits main (pas de tooltip, pas de graphique accessible) |
 | Plages sur un axe temps (perturbations, amplitudes, travaux) | `Timeline` | `LineChart` (séries continues) ; `ActivityFeed` (événements ponctuels) ; `ServiceCalendar` (jours) ; `JourneyTimeline` (trajets) |
 | Comparer des itinéraires sur une fenêtre de départ (marche, transport, correspondances) | `JourneyTimeline` | `Timeline` (plages par entité) ; `RouteStopList` (arrêts d'une seule ligne) |
 | Mini-courbe dans une carte d'indicateur | `Card trend` (ou `LineChart compact`) | — |
@@ -971,7 +972,7 @@ Une `Card` est **interactive** de deux façons :
 
 - ✅ Chaque graphique a un `title` (nom accessible) et, de préférence, une `description` (période, périmètre).
 - ✅ Alternative tabulaire : « Voir les données » affiche un vrai tableau, présent dans le DOM même masqué (`LineChart`, `BarChart` avec le total par catégorie, `BarList`, `DonutChart` avec les parts et le total, `BulletChart` avec l'objectif et le statut, `Histogram` (classe, effectif, part), `ComboChart` (une colonne par série, avec son unité), `Timeline` et `JourneyTimeline`) ; la `Heatmap` est elle-même une grille (`role="grid"`) avec en-têtes de lignes et de colonnes.
-- ✅ Clavier : `LineChart` (←/→, Début / Fin, tooltip annoncé), `BarChart` (←/→ ou ↑/↓ d'une catégorie à l'autre), `Heatmap` (flèches, Début / Fin, Ctrl+Début / Fin, Entrée), `BarList` (lignes cliquables = boutons nommés), `DonutChart` (←/→ d'une part à l'autre, en boucle, Début / Fin), `Histogram` (←/→ d'une classe à l'autre, Début / Fin), `ComboChart` (←/→ d'une catégorie à l'autre, Début / Fin), `BoxPlot` (←/→ d'un groupe à l'autre), `ScatterChart` et `Treemap` (←/→ d'un point ou d'une tuile au suivant, Entrée), `BulletChart` (lignes nommées : valeur, objectif, statut), `Timeline` / `JourneyTimeline` (←/→ entre plages d'une ligne, ↑/↓ de ligne, Début / Fin, Entrée).
+- ✅ Clavier : `LineChart` (←/→, Début / Fin, tooltip annoncé), `BarChart` (←/→ ou ↑/↓ d'une catégorie à l'autre, Entrée / Espace avec `onDatumClick`), `Heatmap` (flèches, Début / Fin, Ctrl+Début / Fin, Entrée), `BarList` (lignes cliquables = boutons nommés), `DonutChart` (←/→ d'une part à l'autre, en boucle, Début / Fin), `Histogram` (←/→ d'une classe à l'autre, Début / Fin), `ComboChart` (←/→ d'une catégorie à l'autre, Début / Fin), `BoxPlot` (←/→ d'un groupe à l'autre), `ScatterChart` et `Treemap` (←/→ d'un point ou d'une tuile au suivant, Entrée), `BulletChart` (lignes nommées : valeur, objectif, statut), `Timeline` / `JourneyTimeline` (←/→ entre plages d'une ligne, ↑/↓ de ligne, Début / Fin, Entrée).
 - ✅ États `loading`, `empty`, `error` (avec `onRetry`) plutôt qu'un graphique vide.
 - ✅ Donnée live (supervision) : `freshness` date le graphique ; export de ce qui est affiché : `exportable`. Pas de PNG : plusieurs graphiques sont en partie en HTML (centre du `DonutChart`, `BulletChart`, `BarList`, `Timeline`), une image SVG serait incomplète.
 - ✅ Plusieurs graphiques sur une page (tableau de bord, graphiques côte à côte dans une `CardGrid`) : les encadrer avec `framed`, même surface qu'une `Card`. Sans cadre, deux graphiques voisins se confondent (titres, axes et légendes sans limite visible). Un graphique seul dans une `PageSection` peut rester sans cadre.
@@ -1770,8 +1771,16 @@ Barres empilées ou groupées, verticales ou horizontales : comparaison de caté
 | `hideTitle` | `boolean` | `false` | En-tête masqué visuellement (titre toujours lu), ex. quand une `Card` affiche déjà le titre |
 | `height` | `number` | `280` en vertical ; 36px par catégorie en horizontal | Hauteur du tracé |
 | `annotations` | `{ at: string \| [début, fin], label }[]` | `[]` | Événements (grève, travaux) : bande libellée sur une catégorie ou un intervalle de catégories, rappelée au survol |
+| `onDatumClick` | `(datum: BarChartDatum) => void` | — | Catégorie cliquable (ouvrir le détail, filtrer une liste) : clic sur sa **bande entière** (toute la hauteur du tracé, pas seulement la barre), ou Entrée / Espace sur la catégorie active. `BarChartDatum` : `{ category, index, values: { seriesId, value }[] }`, séries de référence exclues. Curseur `pointer`, rappel dans le tooltip et la description lue ; dans « Voir les données », les en-têtes de ligne deviennent des boutons |
+| `selectedCategory` | `string` | — | Catégorie mise en avant, **contrôlée** (filtre actif côté app) : contour plein en encre principale, autres barres atténuées, « sélectionné » dans l'annonce, ligne marquée `aria-current` dans le tableau |
+| `clickHint` | `string` | `"Entrée ou clic : voir le détail"` | Rappel d'interaction (tooltip, `aria-describedby`) ; à adapter (« Entrée ou clic : filtrer les réceptions ») |
 
-Clavier : le tracé est focusable ; ←/→ (vertical) ou ↑/↓ (horizontal) d'une catégorie à l'autre, Début / Fin, Échap masque le tooltip ; la catégorie est annoncée (`aria-live`).
+Clavier : le tracé est focusable ; ←/→ (vertical) ou ↑/↓ (horizontal) d'une catégorie à l'autre, Début / Fin, Échap masque le tooltip ; la catégorie est annoncée (`aria-live`). Avec `onDatumClick`, Entrée ou Espace activent la catégorie active.
+
+- ⚠️ L'unité de clic est la **catégorie** : dans un graphique empilé, toute la colonne ; le datum contient toutes les séries (masquées par la légende comprises).
+- ⚠️ Une catégorie sans valeur (`null` dans toutes les séries hors référence) n'est pas cliquable : ni appel, ni rappel, ni bouton dans le tableau.
+- ⚠️ Le graphique ne gère pas la sélection : `onDatumClick` ne change rien tout seul. Pour un filtre, mettre à jour `selectedCategory` dans le callback et proposer l'effacement côté app (`selectedCategory={undefined}`).
+- ⚠️ Sans `onDatumClick`, rendu et comportement sont strictement ceux d'avant (pas de curseur, Entrée sans effet).
 
 ```tsx
 <BarChart
@@ -1786,6 +1795,17 @@ Clavier : le tracé est focusable ; ←/→ (vertical) ou ↑/↓ (horizontal) d
 />
 
 <BarChart title="Retard cumulé par ligne" orientation="horizontal" unit="min" categories={lignes} series={parCause} showValues />
+
+{/* Navigation : la barre ouvre le détail ; filtre actif contrôlé par l'app */}
+<BarChart
+  title="Activité du flux sur 12 h"
+  unit="réceptions"
+  categories={creneaux}
+  series={[{ id: "received", label: "Réceptions", data: receptions }]}
+  selectedCategory={creneau}
+  onDatumClick={(d) => setCreneau(d.category)}
+  clickHint="Entrée ou clic : filtrer les réceptions"
+/>
 ```
 
 ### BarList
