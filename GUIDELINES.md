@@ -3422,7 +3422,7 @@ Le panneau partage avec `Modal` la gestion des surcouches superposées : seule c
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
 | `headerContent` | `ReactNode` | — | Contenu sous le titre, hors défilement ; statuts/actions. |
-| `navigation` | `{ current: number; total: number; onPrevious: () => void; onNext: () => void }` | — | Position 1-based et total positif ; boutons bornés, compteur annoncé. |
+| `navigation` | `{ current: number; total: number; onPrevious: () => void; onNext: () => void }` | — | Précédent / suivant dans l'en-tête, à droite du titre et avant la fermeture. Position 1-based et total positif ; boutons bornés, compteur annoncé ; flèches sans infobulle (nommées par `aria-label`). |
 | `width` | `"md" \| "intermediate" \| "lg"` | "md" | 480 / 576 / 720px, bornés par la fenêtre. |
 
 ```tsx

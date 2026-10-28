@@ -9,6 +9,8 @@ import { PrimaryButton } from "./PrimaryButton";
 import { TextInput } from "./TextInput";
 import { TextArea } from "./TextArea";
 import { FieldRow } from "./FieldRow";
+import { TabList } from "./TabList";
+import { Tab } from "./Tab";
 import { SEVERITY_LABELS, generateDisruptions, type Disruption } from "../stories/data/transport";
 import { DISRUPTION_COLUMNS } from "../stories/data/columns";
 
@@ -270,7 +272,88 @@ export const Formulaire: Story = {
   },
 };
 
-export const NavigationLot6: Story = {
-  render: () => { const [current, setCurrent] = useState(1); return <Drawer isOpen onClose={() => {}} title={`Objet ${current}`} width="intermediate" navigation={{ current, total: 3, onPrevious: () => setCurrent(n => n - 1), onNext: () => setCurrent(n => n + 1) }} headerContent={<Indicator variant="warning" label="Modification en attente" />}>Contenu de la fiche</Drawer>; },
-  play: async () => { const c = within(document.body); await expect(c.getByRole("button", { name: "Élément précédent" })).toBeDisabled(); await userEvent.click(c.getByRole("button", { name: "Élément suivant" })); await expect(c.getByRole("dialog", { name: "Objet 2" })).toBeVisible(); await expect(c.getByRole("status")).toHaveTextContent("2 sur 3"); },
+/** Navigation entre éléments dans l'en-tête (précédent / suivant, compteur annoncé), statut sous le titre. */
+function NavigationDemo() {
+  const [current, setCurrent] = useState(1);
+  return (
+    <Drawer
+      isOpen
+      onClose={() => {}}
+      title={`Objet ${current}`}
+      width="intermediate"
+      navigation={{ current, total: 3, onPrevious: () => setCurrent((n) => n - 1), onNext: () => setCurrent((n) => n + 1) }}
+      headerContent={<Indicator variant="warning" label="Modification en attente" />}
+    >
+      Contenu de la fiche
+    </Drawer>
+  );
+}
+
+export const Navigation: Story = {
+  name: "Navigation entre éléments",
+  render: () => <NavigationDemo />,
+  play: async () => {
+    const c = within(document.body);
+    const dialog = c.getByRole("dialog", { name: "Objet 1" });
+    const nav = within(dialog).getByRole("navigation", { name: "Navigation entre les éléments" });
+    // Dans l'en-tête, avant le bouton de fermeture ; flèches sans infobulle
+    await expect(nav.closest(".drawer__header")).not.toBeNull();
+    const bubble = nav.querySelector(".base-button-tip__bubble") as HTMLElement;
+    await expect(getComputedStyle(bubble).display).toBe("none");
+
+    await expect(c.getByRole("button", { name: "Élément précédent" })).toBeDisabled();
+    await userEvent.click(c.getByRole("button", { name: "Élément suivant" }));
+    await expect(c.getByRole("dialog", { name: "Objet 2" })).toBeVisible();
+    await expect(c.getByRole("status")).toHaveTextContent("2 sur 3");
+  },
+};
+
+/** Onglets dans le panneau : le panneau glisse depuis la droite, le soulignement est posé sans animation. */
+function TabsDemo() {
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState("detail");
+  const tabs = [
+    { id: "detail", label: "Détail" },
+    { id: "historique", label: "Historique" },
+    { id: "impacts", label: "Impacts" },
+  ];
+  return (
+    <div style={{ padding: 24, minHeight: 320 }}>
+      <PrimaryButton label="Ouvrir le détail" onClick={() => setOpen(true)} />
+      <Drawer isOpen={open} onClose={() => setOpen(false)} title="Perturbation P-1042">
+        <TabList aria-label="Sections du détail">
+          {tabs.map((tab) => (
+            <Tab key={tab.id} id={`drawer-tab-${tab.id}`} label={tab.label} variant={tab.id === active ? "active" : "default"} onClick={() => setActive(tab.id)} />
+          ))}
+        </TabList>
+        <p style={{ fontSize: 13 }}>Contenu de l’onglet « {tabs.find((t) => t.id === active)?.label} ».</p>
+      </Drawer>
+    </div>
+  );
+}
+
+export const AvecOnglets: Story = {
+  name: "Avec onglets",
+  render: () => <TabsDemo />,
+  play: async ({ canvasElement }) => {
+    const body = within(document.body);
+    await userEvent.click(within(canvasElement).getByRole("button", { name: "Ouvrir le détail" }));
+    const dialog = await body.findByRole("dialog");
+    const indicator = dialog.querySelector(".tab-list__indicator") as HTMLElement;
+    const active = within(dialog).getByRole("tab", { name: "Détail" });
+
+    // Le panneau glisse depuis la droite…
+    await waitFor(() => expect(dialog.getAnimations().some((a) => (a as CSSTransition).transitionProperty === "transform")).toBe(true));
+    // …et le soulignement est posé d'emblée à la largeur de l'onglet, sans glissement.
+    await waitFor(() => expect(indicator.style.width).toBe(`${active.offsetWidth}px`));
+    // (au plus un réajustement de 1-2px au chargement de la police, jamais depuis 0)
+    const from = indicator.getAnimations().map((a) => (a.effect as KeyframeEffect).getKeyframes()[0][(a as CSSTransition).transitionProperty]);
+    await expect(from).not.toContain("0px");
+
+    // Changer d'onglet fait toujours glisser le soulignement jusqu'au nouvel onglet.
+    const next = within(dialog).getByRole("tab", { name: "Historique" });
+    await userEvent.click(next);
+    await waitFor(() => expect(indicator).toHaveClass("tab-list__indicator--ready"));
+    await waitFor(() => expect(indicator.style.left).toBe(`${next.offsetLeft}px`));
+  },
 };

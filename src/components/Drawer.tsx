@@ -94,6 +94,10 @@ export const Drawer = ({
   // Entrée : une fois monté, passe en position ouverte à la frame suivante.
   useEffect(() => {
     if (!(mounted && isOpen)) return;
+    // Force le calcul de la position fermée (translateX(100%)) avant de passer
+    // ouvert : sinon le navigateur peut appliquer directement l'état final, sans
+    // glissement, selon ce que les enfants ont mesuré ou non pendant le montage.
+    panelRef.current?.getBoundingClientRect();
     const raf = requestAnimationFrame(() => setEntered(true));
     return () => cancelAnimationFrame(raf);
   }, [mounted, isOpen]);
@@ -171,17 +175,20 @@ export const Drawer = ({
               </h2>
               {subtitle && <p className="drawer__subtitle">{subtitle}</p>}
             </div>
+            {/* Navigation entre éléments : dans l'en-tête, juste avant la fermeture */}
+            {navigation && (
+              <nav className="drawer__navigation" aria-label="Navigation entre les éléments">
+                <GhostButton size="sm" icon="chevron-left" aria-label="Élément précédent" disabled={navigation.current <= 1} onClick={navigation.onPrevious} />
+                <span role="status" aria-atomic="true">
+                  {navigation.current} sur {navigation.total}
+                </span>
+                <GhostButton size="sm" icon="chevron-right" aria-label="Élément suivant" disabled={navigation.current >= navigation.total} onClick={navigation.onNext} />
+              </nav>
+            )}
             <CloseButton onClick={onClose} />
           </div>
 
-          {(headerContent || navigation) && <div className="drawer__header-content">
-            {navigation && <nav className="drawer__navigation" aria-label="Navigation entre les éléments">
-              <GhostButton size="sm" icon="chevron-left" aria-label="Élément précédent" disabled={navigation.current <= 1} onClick={navigation.onPrevious} />
-              <span role="status" aria-atomic="true">{navigation.current} sur {navigation.total}</span>
-              <GhostButton size="sm" icon="chevron-right" aria-label="Élément suivant" disabled={navigation.current >= navigation.total} onClick={navigation.onNext} />
-            </nav>}
-            {headerContent}
-          </div>}
+          {headerContent && <div className="drawer__header-content">{headerContent}</div>}
           {onSubmit ? (
             <form className="drawer__form" onSubmit={onSubmit}>
               {content}
