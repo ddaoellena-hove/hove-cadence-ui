@@ -41,7 +41,7 @@ export const SummaryList = ({ items, "aria-label": label, onItemClick, selectedI
           {(item.avatar || item.icon) && <span className="summary-list__icon" aria-hidden="true">{item.avatar ?? <Icons icon={item.icon!} size={20} />}</span>}
           <span className="summary-list__text"><span className="summary-list__title">{item.title}</span>{item.description && <span className="summary-list__description">{item.description}</span>}{item.meta && <span className="summary-list__meta">{item.meta}</span>}{item.unread && <span className="summary-list__unread">Non lu</span>}</span>
           {item.status && <Indicator variant={item.status} label={item.statusLabel} />}
-          {onItemClick && <Icons icon="chevron-right" size={16} />}
+          {onItemClick && <span className="summary-list__chevron" aria-hidden="true"><Icons icon="chevron-right" size={16} /></span>}
         </>;
         return <li key={item.id} className={`summary-list__item${selectedId === item.id ? " summary-list__item--selected" : ""}`}>
           {onItemClick ? <button type="button" className="summary-list__main" disabled={item.disabled} aria-current={selectedId === item.id || undefined} onClick={() => onItemClick(item)} aria-label={[item.title, item.description, item.meta, item.status ? item.statusLabel ?? indicatorLabel[item.status] : null, item.unread ? "Non lu" : null].filter(Boolean).join(", ")}>{content}</button> : <div className="summary-list__main" aria-disabled={item.disabled || undefined}>{content}</div>}

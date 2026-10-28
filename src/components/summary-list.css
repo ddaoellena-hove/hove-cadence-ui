@@ -9,8 +9,13 @@ button.summary-list__main:focus-visible { outline: 2px solid var(--cadence-focus
 .summary-list__text { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; overflow-wrap: anywhere; }
 .summary-list__title { font-size: 14px; font-weight: 600; }
 .summary-list__description, .summary-list__meta { color: var(--cadence-color-text-secondary, #607075); font-size: 12px; }
-.summary-list__unread { font-size: 12px; font-weight: 600; color: var(--cadence-color-link, #1d4ed8); }
+/* Non lu : pastille d'accent + texte, pas la couleur de lien (ce n'est pas un lien) */
+.summary-list__unread { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--cadence-color-label, #1a3e45); }
+.summary-list__unread::before { content: ""; width: 8px; height: 8px; border-radius: var(--cadence-radius-pill, 999px); background: var(--cadence-color-accent, #1b6cff); }
+.summary-list__chevron { display: flex; color: var(--cadence-color-icon-muted, #69797d); }
 .summary-list__icon { flex: 0 0 auto; display: flex; }
-.summary-list__item--selected { background: var(--cadence-color-accent-subtle, #f0f6ff); border-left: 3px solid var(--cadence-color-accent, #1b6cff); }
+/* Sélection : même fond que la ligne sélectionnée de DataTable, sans liseré qui décale le contenu */
+.summary-list__item--selected { background: var(--cadence-color-accent-subtle, #f0f6ff); }
+.summary-list__item--selected button.summary-list__main:hover { background: transparent; }
 .summary-list--compact .summary-list__main { padding-block: 8px; }
 @media (max-width: 480px) { .summary-list__main { flex-wrap: wrap; } .summary-list__text { min-width: 120px; } }

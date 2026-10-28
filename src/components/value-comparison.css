@@ -1,11 +1,13 @@
 .value-comparison { font-family: var(--cadence-font-sans, "Inter", sans-serif); color: var(--cadence-color-primary, #002830); font-size: 13px; min-width: 0; }
 .value-comparison--versions { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px; }
 .value-comparison__version { padding: 16px; border: 1px solid var(--cadence-color-border, #e5e5e5); border-radius: var(--cadence-radius-lg, 10px); min-width: 0; }
-.value-comparison__version h3 { margin: 0 0 16px; font-size: 16px; }
+.value-comparison__version h3 { margin: 0 0 16px; font-size: 14px; font-weight: 600; line-height: 1.4; }
 .value-comparison__fields { margin: 0; }
-.value-comparison__field { padding: 12px; border-bottom: 1px solid var(--cadence-color-border, #e5e5e5); }
-.value-comparison__field--changed { background: var(--cadence-color-surface-alt, #eef1f4); }
-.value-comparison__field dt { font-weight: 600; margin-bottom: 8px; }
+.value-comparison__field { padding: 12px; border-bottom: 1px solid var(--cadence-color-divider, #f0f0f0); }
+/* Modifié : fond info (le gris surface-alt se lisait comme désactivé) */
+.value-comparison__field--changed { background: var(--cadence-status-info-bg, #eff6ff); }
+.value-comparison__field dt { color: var(--cadence-color-label, #1a3e45); font-weight: 600; margin-bottom: 8px; }
 .value-comparison__field dd { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 16px; }
 .value-comparison__side { display: flex; flex-direction: column; gap: 4px; overflow-wrap: anywhere; }
-.value-comparison__label, .value-comparison__changed { color: var(--cadence-color-text-secondary, #607075); font-size: 12px; font-weight: 400; }
+.value-comparison__label { color: var(--cadence-color-text-secondary, #607075); font-size: 12px; font-weight: 400; }
+.value-comparison__changed { color: var(--cadence-status-info-fg, #1d4ed8); font-size: 12px; font-weight: 500; }
