@@ -12,6 +12,10 @@ export interface ModalAction {
   onClick: () => void;
   /** Apply destructive styling to the primary action. */
   destructive?: boolean;
+  /** Désactive l'action tout en la gardant visible. */
+  disabled?: boolean;
+  /** Envoi en cours. */
+  loading?: boolean;
 }
 
 export interface ModalProps {
@@ -35,6 +39,8 @@ export interface ModalProps {
    * Typically « Annuler » or a reversible action.
    */
   secondaryAction?: ModalAction;
+  /** Pied composé, prioritaire sur les actions standard, hors du corps défilant. */
+  footer?: ReactNode;
   /** Modal width variant. Defaults to "medium". */
   size?: "small" | "medium" | "large";
   /** Hide the × close button in the header. */
@@ -49,6 +55,7 @@ export const Modal = ({
   children,
   primaryAction,
   secondaryAction,
+  footer,
   size = "medium",
   hideCloseButton = false,
 }: ModalProps) => {
@@ -71,7 +78,7 @@ export const Modal = ({
   if (!isOpen) return null;
 
   const showHeader = title || !hideCloseButton;
-  const showFooter = primaryAction || secondaryAction;
+  const showFooter = footer != null || primaryAction || secondaryAction;
   // Message simple (texte seul) : centré, comme une confirmation.
   const isMessage = typeof children === "string";
   const bodyClass = [
@@ -118,16 +125,20 @@ export const Modal = ({
 
         {showFooter && (
           <div className="modal__footer">
+            {footer != null ? footer : <>
             {secondaryAction && (
-              <PrimaryButton outline label={secondaryAction.label} onClick={secondaryAction.onClick} />
+              <PrimaryButton outline label={secondaryAction.label} onClick={secondaryAction.onClick} disabled={secondaryAction.disabled} />
             )}
             {primaryAction && (
               <PrimaryButton
                 label={primaryAction.label}
                 onClick={primaryAction.onClick}
                 tone={primaryAction.destructive ? "danger" : "default"}
+                disabled={primaryAction.disabled}
+                loading={primaryAction.loading}
               />
             )}
+            </>}
           </div>
         )}
       </div>

@@ -2670,8 +2670,9 @@ Clavier : le tracé est focusable ; ←/→ passent d'une abscisse à l'autre, D
 | `title` | `string` | — | Titre de l'en-tête (fond `--cadence-color-surface-subtle`, filet bas), relié par un identifiant unique |
 | `aria-label` | `string` | `"Dialogue"` | Nom accessible sans titre visible ; fournir un libellé précis |
 | `children` | `ReactNode` | **requis** | Corps (scrollable si long). Texte seul (`string`) → message centré en 15px, comme une confirmation ; contenu riche (formulaire, liste) → aligné à gauche en 13px |
-| `primaryAction` | `{ label, onClick, destructive? }` | — | Bouton droit du pied : `PrimaryButton` (`destructive` → `tone="danger"`) |
-| `secondaryAction` | `{ label, onClick }` | — | Bouton gauche du pied : `PrimaryButton outline` |
+| `primaryAction` | `{ label, onClick, destructive?, disabled?, loading? }` | — | Bouton droit du pied : `PrimaryButton` (`destructive` → `tone="danger"`) |
+| `secondaryAction` | `{ label, onClick, disabled? }` | — | Bouton gauche du pied : `PrimaryButton outline` |
+| `footer` | `ReactNode` | — | Pied composé, prioritaire sur les actions standard ; reste hors du corps défilant |
 | `size` | `"small" \| "medium" \| "large"` | `"medium"` | 400 / 560 / 800 px |
 | `hideCloseButton` | `boolean` | `false` | — |
 
@@ -2697,6 +2698,8 @@ Anatomie : carte blanche (`--cadence-radius-2xl`, liseré `--cadence-color-borde
 - ❌ Pas pour consulter ou éditer le détail d'un élément, ni pour un formulaire long : `Drawer` (l'utilisateur garde la liste en vue).
 - ❌ Pas pour une aide riche ou un réglage rapide ancré à un bouton (seuil, filtre) : `Popover`.
 - ❌ Pas pour informer sans demander de décision : `useToast()` (temporaire) ou `InlineAlert` (dans la page).
+
+⚠️ Les actions de fin de parcours doivent être dans `primaryAction` / `secondaryAction`, ou `footer` pour une barre composée. Ne pas placer un pied sticky dans `children` : il serait limité par le padding et le défilement du corps. `disabled` conserve les validations métier ; `loading` signale une opération en cours.
 
 ### PageHeader
 
@@ -3160,7 +3163,7 @@ Forme animée qui réserve la place d'un contenu en cours de chargement. **Déco
 | `title` | `string` | **requis** | Titre |
 | `description` | `string` | — | Texte secondaire |
 | `action` | `{ label; onClick? }` | — | Action principale → `PrimaryButton` |
-| `secondaryAction` | `{ label; onClick? }` | — | Action secondaire → `GhostButton` |
+| `secondaryAction` | `{ label; onClick?; disabled? }` | — | Action secondaire → `GhostButton` |
 | `illustration` | `ReactNode` | — | Illustration décorative (aria-hidden) |
 
 ⚠️ `DataTable.emptyState` accepte un `ReactNode` : y passer un `<EmptyState size="inline" />`.
@@ -3197,8 +3200,9 @@ Panneau latéral droit pour consulter le détail d'un élément **sans quitter l
 | `title` | `string` | **requis** | Titre |
 | `subtitle` | `string` | — | Sous-titre |
 | `children` | `ReactNode` | **requis** | Corps défilant (`cadence-scrollbar`) |
-| `primaryAction` | `{ label; onClick?; destructive?; loading? }` | — | Pied → `PrimaryButton` (`destructive` → `tone="danger"`, `loading` → spinner, clics ignorés). Avec `onSubmit` : `type="submit"`, `onClick` facultatif |
-| `secondaryAction` | `{ label; onClick? }` | — | Pied → `GhostButton` (toujours `type="button"`, ne soumet jamais) |
+| `primaryAction` | `{ label; onClick?; destructive?; loading?; disabled? }` | — | Pied → `PrimaryButton` (`destructive` → `tone="danger"`, `loading` → spinner, clics ignorés). Avec `onSubmit` : `type="submit"`, `onClick` facultatif |
+| `secondaryAction` | `{ label; onClick?; disabled? }` | — | Pied → `GhostButton` (toujours `type="button"`, ne soumet jamais) |
+| `footer` | `ReactNode` | — | Pied composé, prioritaire sur les actions standard ; reste hors du corps défilant |
 | `width` | `"md" \| "lg"` | `"md"` | 480px / 720px (`lg` : formulaire, contenu dense) |
 | `onSubmit` | `(event: FormEvent<HTMLFormElement>) => void` | — | Panneau formulaire : corps + pied dans un `<form>`, l'action principale soumet (Entrée dans un champ aussi) |
 | `className` | `string` | — | Classe additionnelle sur le panneau |
@@ -3220,6 +3224,8 @@ Panneau latéral droit pour consulter le détail d'un élément **sans quitter l
 Le panneau partage avec `Modal` la gestion des surcouches superposées : seule celle au premier plan possède le clavier ; le fond reste verrouillé jusqu’à la fermeture de la dernière.
 
 ⚠️ Actions du pied : `GhostButton` (secondaire) + `PrimaryButton` (principale), jamais deux boutons pleins. (La `Modal` met son action secondaire en `PrimaryButton outline`.)
+
+⚠️ Les actions de fin de parcours doivent être dans `primaryAction` / `secondaryAction`, ou `footer` pour une barre composée. Ne pas placer un pied sticky dans `children` : il serait limité par le padding et le défilement du corps. `disabled` conserve les validations métier ; `loading` signale une opération en cours.
 
 ### ProgressBar
 
