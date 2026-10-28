@@ -63,6 +63,25 @@ export interface BarChartProps extends ChartCommonProps {
    * intervalle de catégories `[début, fin]`, toujours libellée, rappelée au survol.
    */
   annotations?: BarChartAnnotation[];
+  /**
+   * Catégorie cliquable : clic sur sa bande (toute la hauteur du tracé), ou
+   * Entrée / Espace sur la catégorie active au clavier. Sans effet sur une
+   * catégorie sans valeur. Les en-têtes de « Voir les données » deviennent des boutons.
+   */
+  onDatumClick?: (datum: BarChartDatum) => void;
+  /** Catégorie mise en avant (filtre actif côté app), contrôlée : contour, autres barres atténuées. */
+  selectedCategory?: string;
+  /** Rappel d'interaction (tooltip, description lue). Défaut « Entrée ou clic : voir le détail ». */
+  clickHint?: string;
+}
+
+/** Catégorie cliquée (onDatumClick) : la colonne entière, toutes séries hors références. */
+export interface BarChartDatum {
+  category: string;
+  /** Position dans `categories`. */
+  index: number;
+  /** Valeurs de la catégorie, séries de référence exclues (y compris les séries masquées par la légende). */
+  values: { seriesId: string; value: number | null }[];
 }
 
 export interface BarChartAnnotation {
@@ -92,10 +111,14 @@ export const BarChart = ({
   hideTitle = false,
   height: heightProp,
   annotations = [],
+  onDatumClick,
+  selectedCategory,
+  clickHint = "Entrée ou clic : voir le détail",
   ...frame
 }: BarChartProps) => {
   const titleId = useId();
   const descriptionId = useId();
+  const hintId = useId();
   const patternPrefix = svgId(useId());
   const plotRef = useRef<HTMLDivElement>(null);
   const width = useChartWidth(plotRef);
@@ -114,6 +137,18 @@ export const BarChart = ({
   const visible = indexed.filter((s) => !s.reference && !hidden.has(s.id));
   const references = indexed.filter((s) => s.reference && !hidden.has(s.id));
   const stacked = layout === "stacked";
+  const selected = selectedCategory === undefined ? -1 : categories.indexOf(selectedCategory);
+
+  // ── Clic sur une catégorie : la colonne entière, ignorée si aucune valeur ──
+  const datumAt = (c: number): BarChartDatum | null => {
+    const values = series.filter((s) => !s.reference).map((s) => ({ seriesId: s.id, value: s.data[c] ?? null }));
+    return values.some((v) => v.value !== null) ? { category: categories[c], index: c, values } : null;
+  };
+  const clickable = (c: number | null) => Boolean(onDatumClick) && c !== null && datumAt(c) !== null;
+  const select = (c: number | null) => {
+    const datum = c === null ? null : datumAt(c);
+    if (datum) onDatumClick?.(datum);
+  };
 
   // Marge gauche : valeurs (vertical) ou libellés de catégories (horizontal, ~6,5px par caractère)
   const longestLabel = Math.max(0, ...categories.map((c) => c.length));
@@ -197,7 +232,7 @@ export const BarChart = ({
   const activeAnnotations = active === null ? [] : resolvedAnnotations.filter((a) => active >= a.first && active <= a.last).map((a) => a.label);
   const note = [...activeAnnotations, total !== null ? `Total : ${formatValue(total)}` : null, gap].filter(Boolean).join(" · ") || undefined;
   const announcement =
-    active === null ? "" : `${categories[active]} — ${rows.map((r) => `${r.label} : ${r.value}`).join(", ")}${note ? `. ${note}` : ""}`;
+    active === null ? "" : `${categories[active]}${active === selected ? ", sélectionné" : ""} — ${rows.map((r) => `${r.label} : ${r.value}`).join(", ")}${note ? `. ${note}` : ""}`;
 
   const anchor = (() => {
     if (active === null) return null;
@@ -213,17 +248,27 @@ export const BarChart = ({
     setActive(index);
   };
 
-  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    if (categories.length === 0) return;
+  /** Catégorie sous le pointeur (bande complète, espaces compris), null hors du tracé. */
+  const indexAt = (e: MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const position = horizontal ? e.clientY - rect.top - margin.top : e.clientX - rect.left - margin.left;
     const step = band.step();
     const index = Math.floor((position - (band(categories[0]) ?? 0) + (step - band.bandwidth()) / 2) / step);
-    activate(index >= 0 && index < categories.length ? index : null, e.currentTarget);
+    return index >= 0 && index < categories.length ? index : null;
+  };
+
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    if (categories.length === 0) return;
+    activate(indexAt(e), e.currentTarget);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (categories.length === 0) return;
+    if ((e.key === "Enter" || e.key === " ") && onDatumClick) {
+      e.preventDefault();
+      select(active);
+      return;
+    }
     if (e.key === "Escape") {
       setActive(null);
       return;
@@ -287,6 +332,8 @@ export const BarChart = ({
         ...(withTotal ? [formatKpiValue(categoryTotal(visible, c), format)] : []),
         ...references.map((s) => formatKpiValue(s.data[c] ?? "—", format)),
       ])}
+      rowActions={onDatumClick ? categories.map((_, c) => (clickable(c) ? () => select(c) : undefined)) : undefined}
+      currentRow={selected >= 0 ? selected : undefined}
     />
   );
 
@@ -315,14 +362,15 @@ export const BarChart = ({
     >
       <div
         ref={plotRef}
-        className="chart__plot"
+        className={`chart__plot${clickable(shown) ? " bar-chart__plot--clickable" : ""}`}
         style={{ height }}
         tabIndex={0}
         role="group"
         aria-roledescription="graphique"
         aria-labelledby={titleId}
-        aria-describedby={frame.description ? descriptionId : undefined}
+        aria-describedby={[frame.description ? descriptionId : null, onDatumClick ? hintId : null].filter(Boolean).join(" ") || undefined}
         onMouseMove={handleMouseMove}
+        onClick={onDatumClick ? (e) => categories.length > 0 && select(indexAt(e)) : undefined}
         onMouseLeave={() => setActive(null)}
         onFocus={(e) => activate(active ?? (categories.length ? 0 : null), e.currentTarget)}
         onBlur={() => setActive(null)}
@@ -385,7 +433,7 @@ export const BarChart = ({
                 const rect = barRect(l, c);
                 if (!rect) return null;
                 return (
-                  <g key={`${s.id}-${category}`} className="bar-chart__bar">
+                  <g key={`${s.id}-${category}`} className={`bar-chart__bar${selected >= 0 && c !== selected ? " bar-chart__bar--muted" : ""}`}>
                     <rect {...rect} rx={2} fill={s.color} />
                     {s.pattern !== "solid" && <rect {...rect} rx={2} fill={`url(#${patternPrefix}-${s.index})`} />}
                   </g>
@@ -409,6 +457,17 @@ export const BarChart = ({
                   />
                 );
               }),
+            )}
+
+            {/* Catégorie sélectionnée : contour plein de la bande (pas la couleur seule) */}
+            {selected >= 0 && (
+              <rect
+                className="bar-chart__selected"
+                rx={3}
+                {...(horizontal
+                  ? { x: 1, y: (band(categories[selected]) ?? 0) - (band.step() - band.bandwidth()) / 2 + 1, width: Math.max(0, plotWidth - 2), height: Math.max(0, band.step() - 2) }
+                  : { x: (band(categories[selected]) ?? 0) - (band.step() - band.bandwidth()) / 2 + 1, y: 1, width: Math.max(0, band.step() - 2), height: Math.max(0, plotHeight - 2) })}
+              />
             )}
 
             {/* Valeurs au bout des barres (total de la pile si empilé) */}
@@ -454,7 +513,14 @@ export const BarChart = ({
           {announcement}
         </p>
       </div>
-      {anchor && active !== null && <ChartTooltip x={anchor.x} y={anchor.y} title={categories[active]} rows={rows} note={note} />}
+      {onDatumClick && (
+        <p id={hintId} className="chart__sr-only">
+          {selected >= 0 ? `${clickHint}. Sélection : ${categories[selected]}.` : `${clickHint}.`}
+        </p>
+      )}
+      {anchor && active !== null && (
+        <ChartTooltip x={anchor.x} y={anchor.y} title={categories[active]} rows={rows} note={note} hint={clickable(active) ? clickHint : undefined} />
+      )}
     </ChartFrame>
   );
 };

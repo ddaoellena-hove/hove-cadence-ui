@@ -25,6 +25,8 @@ interface ChartTooltipProps {
   rows: ChartTooltipRow[];
   /** Ligne d'information sous les valeurs (seuil, annotation). */
   note?: string;
+  /** Rappel d'interaction (« Entrée ou clic : voir le détail »), sur sa propre ligne sous la note. */
+  hint?: string;
 }
 
 const OFFSET = 12;
@@ -36,7 +38,7 @@ const MARGIN = 8;
  * lecteurs d'écran : chaque graphique annonce la même information dans une
  * zone aria-live.
  */
-export const ChartTooltip = ({ x, y, title, rows, note }: ChartTooltipProps) => {
+export const ChartTooltip = ({ x, y, title, rows, note, hint }: ChartTooltipProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ left: x + OFFSET, top: y + OFFSET });
 
@@ -52,7 +54,7 @@ export const ChartTooltip = ({ x, y, title, rows, note }: ChartTooltipProps) => 
     if (left + width > viewportWidth - MARGIN) left = Math.max(MARGIN, x - OFFSET - width);
     if (top + height > viewportHeight - MARGIN) top = Math.max(MARGIN, y - OFFSET - height);
     setPosition({ left, top });
-  }, [x, y, title, rows, note]);
+  }, [x, y, title, rows, note, hint]);
 
   return createPortal(
     <div ref={ref} className="chart-tooltip" style={position} aria-hidden="true">
@@ -67,6 +69,7 @@ export const ChartTooltip = ({ x, y, title, rows, note }: ChartTooltipProps) => 
         ))}
       </ul>
       {note && <p className="chart-tooltip__note">{note}</p>}
+      {hint && <p className="chart-tooltip__note">{hint}</p>}
     </div>,
     document.body,
   );
