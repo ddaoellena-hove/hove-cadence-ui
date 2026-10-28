@@ -84,3 +84,6 @@ export const Proportionnel: Story = {
 export const Indisponible: Story = {
   args: { label: "Ligne 13", value: Number.NaN, unit: "%" },
 };
+
+import * as lot6Test from "storybook/test";
+export const SansValeurLot6: Story = { args: { label: "Composition des courses", size: "sm", hideValue: true, segments: [{ id: "a", label: "Ajoutées", value: 80 }, { id: "b", label: "Autres", value: 20, color: "var(--cadence-dataviz-neutral)" }] }, play: async ({ canvasElement }) => { const c = lot6Test.within(canvasElement); await lot6Test.expect(c.getByRole("img")).toHaveAccessibleName(/Composition des courses.*100/); await lot6Test.expect(canvasElement.querySelector(".meter__value")).not.toBeVisible(); } };

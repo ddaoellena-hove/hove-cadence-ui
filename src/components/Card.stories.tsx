@@ -223,3 +223,6 @@ export const Grille: Story = {
     </div>
   ),
 };
+
+import * as lot6Test from "storybook/test";
+export const EtroiteLot6: Story = { args: { title: "Diagnostic du différentiel", value: 12, status: "warning", statusLabel: "À vérifier" }, decorators: [Story => <div style={{ width: 180 }}><Story /></div>], play: async ({ canvasElement }) => { const title = canvasElement.querySelector(".card__title")!.getBoundingClientRect(); const status = canvasElement.querySelector(".indicator")!.getBoundingClientRect(); await lot6Test.expect(status.top).toBeGreaterThanOrEqual(title.bottom); } };

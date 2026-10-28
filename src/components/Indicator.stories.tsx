@@ -157,3 +157,7 @@ export const InContext: Story = {
     </div>
   ),
 };
+
+import * as lot6Test from "storybook/test";
+export const PointsLot6: Story = { render: () => <div style={{ display: "flex", gap: 16 }}>{(["active", "upcoming", "completed", "draft", "warning", "info", "critical", "nominal"] as const).map(variant => <Indicator key={variant} variant={variant} appearance="dot" label={`État ${variant}`} />)}</div>, play: async ({ canvasElement }) => { await lot6Test.expect(lot6Test.within(canvasElement).getAllByRole("img")).toHaveLength(8); } };
+export const CliquableLot6: Story = { args: { variant: "warning", label: "Voir les avertissements", onClick: lot6Test.fn() }, play: async ({ canvasElement, args }) => { const button = lot6Test.within(canvasElement).getByRole("button", { name: "Voir les avertissements" }); button.focus(); await lot6Test.userEvent.keyboard("{Enter}"); await lot6Test.expect(args.onClick).toHaveBeenCalled(); } };

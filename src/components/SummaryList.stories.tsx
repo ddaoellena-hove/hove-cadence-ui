@@ -1,0 +1,13 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, fn, userEvent, within } from "storybook/test";
+import { SummaryList } from "./SummaryList";
+const meta: Meta<typeof SummaryList> = { title: "Composants/Données et tableaux/SummaryList", component: SummaryList, tags: ["autodocs"] };
+export default meta;
+type Story = StoryObj<typeof SummaryList>;
+const open = fn(); const download = fn();
+const items = [{ id: "a", title: "Export GTFS", description: "Réseau métropolitain", meta: "Aujourd’hui à 09:00", icon: "download-02" as const, status: "completed" as const, statusLabel: "Disponible", unread: true, action: { label: "Télécharger", onClick: download } }, { id: "b", title: "Flux SIRI", status: "warning" as const, disabled: true }];
+export const Defaut: Story = { args: { "aria-label": "Activité récente", items, onItemClick: open }, play: async ({ canvasElement }) => { open.mockClear(); download.mockClear(); const c = within(canvasElement); await userEvent.click(c.getByRole("button", { name: "Télécharger — Export GTFS" })); await expect(download).toHaveBeenCalledOnce(); await expect(open).not.toHaveBeenCalled(); const row = c.getByRole("button", { name: /Export GTFS, Réseau/ }); row.focus(); await userEvent.keyboard("{Enter}"); await expect(open).toHaveBeenCalledWith(items[0]); await expect(c.getByRole("button", { name: /Flux SIRI/ })).toBeDisabled(); } };
+export const CompacteSelectionnee: Story = { args: { ...Defaut.args, density: "compact", selectedId: "a" } };
+export const Vide: Story = { args: { "aria-label": "Exports", items: [] } };
+export const Chargement: Story = { args: { ...Vide.args, loading: true } };
+export const LectureSeule: Story = { args: { "aria-label": "Synthèse", items: [{ id: "a", title: "Import reçu", meta: "Il y a 2 minutes" }] } };

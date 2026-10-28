@@ -590,3 +590,9 @@ export const MiniGraphiques: Story = {
     await expect(canvas.getByRole("img", { name: "Kilomètres du jour, ligne 4" })).toHaveAccessibleDescription(/^Commerciaux : 1\s520\skm/);
   },
 };
+
+export const HauteurAutomatiqueLot6: Story = {
+  render: () => <DataTable aria-label="Journal" rowHeight="auto" data={[{ id: "a", text: "Modification de la source et des paramètres de réception. ".repeat(8) }]} getRowId={row => row.id} columns={[{ id: "text", header: "Action", accessor: row => row.text }]} />,
+  decorators: [Story => <div style={{ width: 320 }}><Story /></div>],
+  play: async ({ canvasElement }) => { const row = canvasElement.querySelector(".data-table__row--auto")!; await expect(row.getBoundingClientRect().height).toBeGreaterThan(60); },
+};

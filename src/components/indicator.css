@@ -75,3 +75,18 @@
   background-color: var(--cadence-status-nominal-bg, #f0fdf4);
   color: var(--cadence-status-nominal-fg, #166534);
 }
+
+.indicator--dot { width: 8px; height: 8px; padding: 0; border-radius: var(--cadence-radius-pill, 999px); background: currentColor; flex: 0 0 8px; }
+.indicator--interactive { border: 0; cursor: pointer; }
+.indicator--interactive:hover { text-decoration: underline; }
+.indicator--interactive:focus-visible { outline: 2px solid var(--cadence-focus-color, #1a3e45); outline-offset: 2px; }
+.indicator--interactive:disabled { opacity: .5; cursor: default; }
+.indicator--inverse.indicator--active { color: var(--cadence-status-active-on-dark, #40c2da); background: var(--cadence-color-on-dark-hover, rgba(255,255,255,.07)); }
+.indicator--inverse.indicator--upcoming { color: var(--cadence-status-upcoming-on-dark, #c4b5fd); background: var(--cadence-color-on-dark-hover, rgba(255,255,255,.07)); }
+.indicator--inverse.indicator--completed { color: var(--cadence-status-completed-on-dark, #86efac); background: var(--cadence-color-on-dark-hover, rgba(255,255,255,.07)); }
+.indicator--inverse.indicator--draft { color: var(--cadence-status-draft-on-dark, #cbd5e1); background: var(--cadence-color-on-dark-hover, rgba(255,255,255,.07)); }
+.indicator--inverse.indicator--warning { color: var(--cadence-status-warning-on-dark, #fdba74); background: var(--cadence-color-on-dark-hover, rgba(255,255,255,.07)); }
+.indicator--inverse.indicator--info { color: var(--cadence-status-info-on-dark, #93c5fd); background: var(--cadence-color-on-dark-hover, rgba(255,255,255,.07)); }
+.indicator--inverse.indicator--critical { color: var(--cadence-status-critical-on-dark, #fca5a5); background: var(--cadence-color-on-dark-hover, rgba(255,255,255,.07)); }
+.indicator--inverse.indicator--nominal { color: var(--cadence-status-nominal-on-dark, #86efac); background: var(--cadence-color-on-dark-hover, rgba(255,255,255,.07)); }
+.indicator--inverse.indicator--dot { background: currentColor; }

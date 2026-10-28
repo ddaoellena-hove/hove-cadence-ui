@@ -308,3 +308,6 @@ export const MultipleRows: Story = {
     );
   },
 };
+
+import * as lot6Test from "storybook/test";
+export const SansSelectionLot6: Story = { args: { title: "Export GTFS", selectable: false, columns: [{ key: "format", content: "Fichier ZIP — 12 Mo" }] }, play: async ({ canvasElement }) => { await lot6Test.expect(lot6Test.within(canvasElement).queryByRole("checkbox")).not.toBeInTheDocument(); } };

@@ -157,3 +157,10 @@ export const AvecFilDAriane: Story = {
     </div>
   ),
 };
+
+import { TabList } from "./TabList";
+import { Tab } from "./Tab";
+export const OngletsLot6: Story = {
+  render: () => { const [active, setActive] = useState("Objets"); return <PageHeader title="Catalogue" sticky={false} tabs={<TabList aria-label="Vues du catalogue">{["Objets", "Fusions", "Correspondances"].map(label => <Tab key={label} label={label} variant={active === label ? "active" : "default"} onClick={() => setActive(label)} />)}</TabList>} tabsActions={<PrimaryButton size="sm" label="Ajouter" />} />; },
+  play: async ({ canvasElement }) => { const c = within(canvasElement); c.getByRole("tab", { name: "Objets" }).focus(); await userEvent.keyboard("{ArrowRight}"); await expect(c.getByRole("tab", { name: "Fusions" })).toHaveAttribute("aria-selected", "true"); },
+};

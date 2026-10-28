@@ -115,10 +115,11 @@ const CONFIG: Record<
 
 // ── Component ──────────────────────────────────────────────────────────────
 
-export interface IndicatorProps {
+interface IndicatorBaseProps {
   variant: IndicatorVariant;
   /** Overrides the default label for this variant. */
-  label?: string;
+  inverse?: boolean;
+  disabled?: boolean;
   /**
    * Masque le picto : couleur et libellé seuls. Pour un contexte où l'état est
    * déjà signalé par un picto voisin (marqueur d'ActivityFeed). Défaut false.
@@ -128,7 +129,12 @@ export interface IndicatorProps {
   className?: string;
 }
 
-export const Indicator = ({ variant, label, hideIcon = false, className }: IndicatorProps) => {
+export type IndicatorProps = IndicatorBaseProps & (
+  | { appearance?: "badge"; label?: string; onClick?: () => void }
+  | { appearance: "dot"; label: string; onClick?: never }
+);
+
+export const Indicator = ({ variant, label, hideIcon = false, appearance = "badge", inverse = false, onClick, disabled, className }: IndicatorProps) => {
   const config = CONFIG[variant];
   const displayLabel = label ?? config.label;
 
@@ -136,15 +142,19 @@ export const Indicator = ({ variant, label, hideIcon = false, className }: Indic
     "indicator",
     `indicator--${variant}`,
     hideIcon ? "indicator--no-icon" : "",
+    `indicator--${appearance}`,
+    inverse ? "indicator--inverse" : "",
+    onClick ? "indicator--interactive" : "",
     className,
   ]
     .filter(Boolean)
     .join(" ");
 
+  const Tag = onClick ? "button" : "span";
   return (
-    <div className={rootClass}>
-      {!hideIcon && <span className="indicator__icon">{config.icon}</span>}
-      <span className="indicator__label">{displayLabel}</span>
-    </div>
+    <Tag className={rootClass} type={onClick ? "button" : undefined} onClick={onClick} disabled={onClick ? disabled : undefined} role={appearance === "dot" ? "img" : undefined} aria-label={appearance === "dot" ? displayLabel : undefined}>
+      {appearance !== "dot" && !hideIcon && <span className="indicator__icon" aria-hidden="true">{config.icon}</span>}
+      {appearance !== "dot" && <span className="indicator__label">{displayLabel}</span>}
+    </Tag>
   );
 };

@@ -106,3 +106,6 @@ export const Vide: Story = {
 };
 
 export const Erreur: Story = { args: { title: "Lignes les plus impactées", items: [], state: "error", onRetry: fn() } };
+
+import * as lot6Test from "storybook/test";
+export const DivergentesLot6: Story = { args: { title: "Ce qui a changé", mode: "diverging", tolerance: 3, unit: "%", items: [{ id: "a", label: "Courses", value: -12, absoluteValue: -120, absoluteUnit: "courses" }, { id: "b", label: "Arrêts", value: 8 }, { id: "c", label: "Lignes", value: 0 }], onItemClick: lot6Test.fn() }, play: async ({ canvasElement }) => { const c = lot6Test.within(canvasElement); await lot6Test.expect(c.getByRole("button", { name: /Courses : −12/ })).toBeVisible(); const bars = canvasElement.querySelectorAll<HTMLElement>(".bar-list__bar"); await lot6Test.expect(bars[0].style.left).toBe("0%"); await lot6Test.expect(bars[1].style.left).toBe("50%"); } };

@@ -8,7 +8,7 @@
 import type { ReactNode } from "react";
 import "./stepper.css";
 
-export type StepState = "upcoming" | "current" | "completed" | "error";
+export type StepState = "upcoming" | "current" | "completed" | "error" | "warning";
 
 export interface StepperStep {
   id: string;
@@ -28,7 +28,7 @@ export interface StepperProps {
 }
 
 const STATE_LABEL: Record<StepState, string> = {
-  upcoming: "À venir", current: "En cours", completed: "Terminée", error: "En erreur",
+  upcoming: "À venir", current: "En cours", completed: "Terminée", error: "En erreur", warning: "À vérifier",
 };
 
 const CheckMark = () => (
@@ -46,6 +46,7 @@ const ErrorMark = () => (
 /** Contenu du marqueur selon l'état (numéro, coche ou croix). */
 const marker = (step: StepperStep, index: number): ReactNode => {
   if (step.state === "completed") return <CheckMark />;
+  if (step.state === "warning") return <span aria-hidden="true">!</span>;
   if (step.state === "error") return <ErrorMark />;
   return <span aria-hidden="true">{index + 1}</span>;
 };

@@ -1,0 +1,11 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, within } from "storybook/test";
+import { ValueComparison } from "./ValueComparison";
+const meta: Meta<typeof ValueComparison> = { title: "Composants/Données et tableaux/ValueComparison", component: ValueComparison, tags: ["autodocs"] };
+export default meta;
+type Story = StoryObj<typeof ValueComparison>;
+const items = [{ id: "a", label: "Nom", before: "Gare", after: "Gare centrale" }, { id: "b", label: "Courses", before: 0, after: 12 }, { id: "c", label: "Activé", before: false, after: true }, { id: "d", label: "Version", before: "v1", after: "v1" }];
+export const Defaut: Story = { args: { items, "aria-label": "Modifications" }, play: async ({ canvasElement }) => { const c = within(canvasElement); await expect(c.getAllByText("Avant")).toHaveLength(4); await expect(c.getByText("Non")).toBeVisible(); await expect(c.getByText("0")).toBeVisible(); } };
+export const Versions: Story = { args: { ...Defaut.args, layout: "versions", beforeLabel: "Version active", afterLabel: "Version de repli" } };
+export const ValeursAbsentes: Story = { args: { "aria-label": "Valeurs absentes", items: [{ id: "a", label: "Nom", before: null, after: "Nouveau nom" }] } };
+export const Etroite: Story = { ...Versions, decorators: [Story => <div style={{ width: 240 }}><Story /></div>] };

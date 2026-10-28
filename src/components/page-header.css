@@ -78,3 +78,7 @@
     transition: none;
   }
 }
+
+.page-header--tabs { flex-wrap: wrap; }
+.page-header__tabs { flex: 0 0 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; min-width: 0; }
+.page-header__tab-list { min-width: 0; max-width: 100%; overflow-x: auto; }

@@ -39,6 +39,8 @@ interface MeterBaseProps {
    * de liste ; le libellé et le statut restent lus (nom accessible).
    */
   size?: "md" | "sm";
+  /** Masque seulement la valeur visuelle ; la mesure reste accessible. */
+  hideValue?: boolean;
   /** Classe CSS additionnelle. */
   className?: string;
 }
@@ -80,8 +82,8 @@ export const Meter = (props: MeterProps) => {
   const labelId = useId();
   const summaryId = useId();
   const patternPrefix = svgId(useId());
-  const { label, unit, format, size = "md", className } = props;
-  const sizeClass = size === "sm" ? "meter--sm" : "";
+  const { label, unit, format, size = "md", hideValue = false, className } = props;
+  const sizeClass = `${size === "sm" ? "meter--sm" : ""}${hideValue ? " meter--hide-value" : ""}`;
 
   // ── Mode proportionnel ──
   if (props.segments) {
@@ -102,7 +104,7 @@ export const Meter = (props: MeterProps) => {
             {max > total ? formatMeterValue(total, max, unit === "%" ? undefined : unit, format) : formatValueWithUnit(total, unit, format)}
           </span>
         </div>
-        <div className="meter__track" role="img" aria-labelledby={labelId} aria-describedby={summaryId}>
+        <div className="meter__track" role="img" aria-labelledby={hideValue ? `${labelId} ${summaryId}` : labelId} aria-describedby={hideValue ? undefined : summaryId}>
           <svg className="meter__svg" width="100%" height="100%" aria-hidden="true">
             <defs>
               {indexed.map((s) => (

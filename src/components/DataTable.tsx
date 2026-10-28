@@ -98,6 +98,8 @@ export interface DataTableProps<T> {
   maxHeight?: number | string;
   /** Virtualisation des lignes. Défaut false. */
   virtualized?: boolean;
+  /** Hauteur automatique uniquement sans virtualisation. */
+  rowHeight?: "fixed" | "auto";
   /**
    * Colle la **dernière colonne** (actions) à droite quand le tableau défile
    * horizontalement, avec une ombre de séparation. La dernière colonne doit
@@ -167,6 +169,7 @@ export function DataTable<T extends object>({
   emptyState = "Aucun résultat.",
   maxHeight,
   virtualized = false,
+  rowHeight: rowHeightMode = "fixed",
   stickyActions = false,
   className,
 }: DataTableProps<T>) {
@@ -362,8 +365,8 @@ export function DataTable<T extends object>({
       <tr
         key={rowId}
         role="row"
-        className={rowClass}
-        style={{ gridTemplateColumns, height: rowHeight, ...style }}
+        className={`${rowClass}${rowHeightMode === "auto" && !virtualized ? " data-table__row--auto" : ""}`}
+        style={{ gridTemplateColumns, height: rowHeightMode === "auto" && !virtualized ? "auto" : rowHeight, minHeight: rowHeight, ...style }}
         ref={onRowClick ? focusRowWhenMounted(index) : undefined}
         data-row-index={index}
         aria-rowindex={virtualized ? index + 2 : undefined}

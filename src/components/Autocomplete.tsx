@@ -61,6 +61,12 @@ export interface AutocompleteProps {
   /** Message affiché quand le filtre ne renvoie aucune option. */
   noResultsLabel?: string;
   /** Classe CSS additionnelle. */
+  onInputChange?: (query: string) => void;
+  /** false : résultats déjà filtrés et ordonnés par l'application. */
+  filter?: boolean;
+  minChars?: number;
+  loading?: boolean;
+  limit?: number;
   className?: string;
 }
 
@@ -98,6 +104,7 @@ export const Autocomplete = ({
   disabled = false,
   defaultOpen = false,
   noResultsLabel = "Aucun résultat",
+  onInputChange, filter = true, minChars = 0, loading = false, limit,
   className,
 }: AutocompleteProps) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
@@ -113,8 +120,16 @@ export const Autocomplete = ({
     return typeof value === "string" && value ? [value] : [];
   }, [value, multiple]);
 
+  // Garder les libellés sélectionnés quand une réponse distante remplace les options.
+  const [snapshot, setSnapshot] = useState(options);
+  const [retained, setRetained] = useState<AutocompleteOption[]>([]);
+  const knownOptions = [...options, ...retained];
+  if (snapshot !== options) {
+    setSnapshot(options);
+    setRetained([...snapshot, ...retained].filter((o, i, all) => selectedIds.includes(o.id) && all.findIndex(x => x.id === o.id) === i));
+  }
   const selectedOption = !multiple
-    ? options.find((o) => o.id === selectedIds[0])
+    ? knownOptions.find((o) => o.id === selectedIds[0])
     : undefined;
 
   // Le texte affiché dans l'input en mode simple = libellé sélectionné, sauf si l'utilisateur tape
@@ -123,26 +138,28 @@ export const Autocomplete = ({
 
   // Options filtrées
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const normalize = (text: string) => text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    const q = normalize(query.trim());
+    if (loading || query.trim().length < minChars) return [];
     return options.filter((o) => {
       // En multiple, on masque les options déjà sélectionnées (affichées en Badge)
       if (multiple && selectedIds.includes(o.id)) return false;
-      if (q === "") return true;
-      return o.label.toLowerCase().includes(q);
-    });
-  }, [options, query, multiple, selectedIds]);
+      if (!filter || q === "") return true;
+      return normalize(`${o.label} ${o.description ?? ""}`).includes(q);
+    }).slice(0, limit === undefined ? undefined : Math.max(0, Math.floor(limit)));
+  }, [options, query, multiple, selectedIds, filter, minChars, loading, limit]);
 
   // Fermeture au clic extérieur + réinitialisation de la saisie non validée (choix strict)
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setIsOpen(false);
-        setQuery("");
+        if (query !== "") { setQuery(""); onInputChange?.(""); }
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [onInputChange, query]);
 
   // Nouvelle recherche ou ouverture / fermeture : on revient à la 1re option
   const highlightKey = `${query}\u0000${isOpen}`;
@@ -152,46 +169,53 @@ export const Autocomplete = ({
     setHighlight(0);
   }
 
+  const activeIndex = filtered[highlight] && !filtered[highlight].disabled ? highlight : filtered.findIndex(o => !o.disabled);
+  useEffect(() => {
+    if (isOpen && activeIndex >= 0) document.getElementById(`${fieldId}-option-${activeIndex}`)?.scrollIntoView({ block: "nearest" });
+  }, [isOpen, activeIndex, fieldId]);
+  const updateQuery = (next: string) => { setQuery(next); onInputChange?.(next); };
   const open = () => {
     if (!disabled) setIsOpen(true);
   };
 
   const commitSelection = (option: AutocompleteOption) => {
-    if (option.disabled) return;
+    if (disabled || loading || option.disabled) return;
     if (multiple) {
       const next = selectedIds.includes(option.id)
         ? selectedIds.filter((id) => id !== option.id)
         : [...selectedIds, option.id];
       onChange?.(next);
-      setQuery("");
+      updateQuery("");
       inputRef.current?.focus();
     } else {
       onChange?.(option.id);
-      setQuery("");
+      updateQuery("");
       setIsOpen(false);
     }
   };
 
   const removeChip = (id: string) => {
+    if (disabled) return;
     onChange?.(selectedIds.filter((x) => x !== id));
     inputRef.current?.focus();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowDown") {
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
       e.preventDefault();
       open();
-      setHighlight((h) => Math.min(h + 1, filtered.length - 1));
-    } else if (e.key === "ArrowUp") {
+      const enabled = filtered.map((o, i) => o.disabled ? -1 : i).filter(i => i >= 0);
+      const position = enabled.indexOf(activeIndex);
+      const next = !isOpen ? (e.key === "ArrowDown" ? 0 : enabled.length - 1) : Math.max(0, Math.min(enabled.length - 1, position + (e.key === "ArrowDown" ? 1 : -1)));
+      setHighlight(enabled[next] ?? 0);
+    } else if (e.key === "Enter" && isOpen) {
       e.preventDefault();
-      setHighlight((h) => Math.max(h - 1, 0));
-    } else if (e.key === "Enter") {
-      e.preventDefault();
-      const option = filtered[highlight];
+      const option = filtered[activeIndex];
       if (option) commitSelection(option);
     } else if (e.key === "Escape") {
+      if (isOpen) e.stopPropagation();
       setIsOpen(false);
-      setQuery("");
+      updateQuery("");
     } else if (
       e.key === "Backspace" &&
       multiple &&
@@ -213,7 +237,9 @@ export const Autocomplete = ({
     .join(" ");
 
   return (
-    <div className={rootClass} ref={containerRef}>
+    <div className={rootClass} ref={containerRef} onBlur={(event) => {
+      if (!event.currentTarget.contains(event.relatedTarget)) { setIsOpen(false); updateQuery(""); }
+    }}>
       {label && (
         <label className="autocomplete__label" htmlFor={fieldId}>
           {label}
@@ -224,13 +250,13 @@ export const Autocomplete = ({
         {/* Chips (mode multiple) */}
         {multiple &&
           selectedIds.map((id) => {
-            const opt = options.find((o) => o.id === id);
+            const opt = knownOptions.find((o) => o.id === id);
             if (!opt) return null;
             return (
               <Badge
                 key={id}
                 label={opt.label}
-                dismissible
+                dismissible={!disabled}
                 onDismiss={() => removeChip(id)}
               />
             );
@@ -250,12 +276,14 @@ export const Autocomplete = ({
           aria-expanded={isOpen}
           aria-controls={`${fieldId}-listbox`}
           aria-autocomplete="list"
+          aria-activedescendant={isOpen && activeIndex >= 0 ? `${fieldId}-option-${activeIndex}` : undefined}
+          aria-describedby={isOpen && (loading || query.trim().length < minChars) ? `${fieldId}-status` : undefined}
           autoComplete="off"
           disabled={disabled}
           placeholder={selectedIds.length === 0 ? placeholder : ""}
           value={inputDisplay}
           onChange={(e) => {
-            setQuery(e.target.value);
+            updateQuery(e.target.value);
             open();
           }}
           onFocus={open}
@@ -265,16 +293,18 @@ export const Autocomplete = ({
         <ChevronIcon open={isOpen} />
       </div>
 
+      {isOpen && <span id={`${fieldId}-status`} className="autocomplete__status" role="status">{loading ? "Chargement des résultats…" : query.trim().length < minChars ? `Saisissez au moins ${minChars} caractères.` : `${filtered.length} résultat${filtered.length > 1 ? "s" : ""}`}</span>}
       {isOpen && (
         <ul
           className="autocomplete__menu cadence-scrollbar"
           id={`${fieldId}-listbox`}
           role="listbox"
+          aria-busy={loading || undefined}
           aria-label={label ?? "Options"}
         >
           {filtered.length === 0 ? (
             <li className="autocomplete__empty" role="presentation">
-              {noResultsLabel}
+              {loading ? "Chargement…" : query.trim().length < minChars ? `Saisissez au moins ${minChars} caractères.` : noResultsLabel}
             </li>
           ) : (
             filtered.map((option, index) => {
@@ -292,12 +322,15 @@ export const Autocomplete = ({
                   <button
                     type="button"
                     role="option"
+                    id={`${fieldId}-option-${index}`}
+                    tabIndex={-1}
+                    onMouseDown={(event) => event.preventDefault()}
                     aria-selected={isSelected}
                     aria-disabled={option.disabled}
                     disabled={option.disabled}
                     className={[
                       "autocomplete__option",
-                      index === highlight ? "autocomplete__option--highlighted" : "",
+                      index === activeIndex ? "autocomplete__option--highlighted" : "",
                       option.disabled ? "autocomplete__option--disabled" : "",
                       isSelected ? "autocomplete__option--selected" : "",
                     ]

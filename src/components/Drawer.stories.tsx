@@ -269,3 +269,8 @@ export const Formulaire: Story = {
     await expect(canvas.getByRole("status")).toHaveTextContent("Travaux station Bastille");
   },
 };
+
+export const NavigationLot6: Story = {
+  render: () => { const [current, setCurrent] = useState(1); return <Drawer isOpen onClose={() => {}} title={`Objet ${current}`} width="intermediate" navigation={{ current, total: 3, onPrevious: () => setCurrent(n => n - 1), onNext: () => setCurrent(n => n + 1) }} headerContent={<Indicator variant="warning" label="Modification en attente" />}>Contenu de la fiche</Drawer>; },
+  play: async () => { const c = within(document.body); await expect(c.getByRole("button", { name: "Élément précédent" })).toBeDisabled(); await userEvent.click(c.getByRole("button", { name: "Élément suivant" })); await expect(c.getByRole("dialog", { name: "Objet 2" })).toBeVisible(); await expect(c.getByRole("status")).toHaveTextContent("2 sur 3"); },
+};

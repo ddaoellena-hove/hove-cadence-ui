@@ -11,6 +11,8 @@ export interface PageHeaderProps {
   /** Actions à droite : sélecteurs en variante bouton, boutons `sm`. */
   actions?: ReactNode;
   /** Reste collé en haut de l'écran au défilement. Défaut `true`. */
+  tabs?: ReactNode;
+  tabsActions?: ReactNode;
   sticky?: boolean;
   /** Classe CSS additionnelle. */
   className?: string;
@@ -20,7 +22,7 @@ export interface PageHeaderProps {
  * En-tête de page : titre, sous-titre et actions sur une ligne. Collé en haut
  * du conteneur au défilement ; un liseré apparaît quand le contenu passe dessous.
  */
-export const PageHeader = ({ breadcrumbs, title, subtitle, actions, sticky = true, className }: PageHeaderProps) => {
+export const PageHeader = ({ breadcrumbs, title, subtitle, actions, tabs, tabsActions, sticky = true, className }: PageHeaderProps) => {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const [stuck, setStuck] = useState(false);
 
@@ -38,6 +40,7 @@ export const PageHeader = ({ breadcrumbs, title, subtitle, actions, sticky = tru
     "page-header",
     sticky ? "page-header--sticky" : "",
     sticky && stuck ? "page-header--stuck" : "",
+    tabs ? "page-header--tabs" : "",
     className,
   ]
     .filter(Boolean)
@@ -53,6 +56,7 @@ export const PageHeader = ({ breadcrumbs, title, subtitle, actions, sticky = tru
           {subtitle && <p className="page-header__subtitle">{subtitle}</p>}
         </div>
         {actions && <div className="page-header__actions">{actions}</div>}
+        {tabs && <div className="page-header__tabs"><div className="page-header__tab-list">{tabs}</div>{tabsActions && <div className="page-header__actions">{tabsActions}</div>}</div>}
       </header>
     </>
   );

@@ -48,3 +48,13 @@ describe("BulletChart", () => {
     expect(describeBullet("Régularité", NaN, 92, null)).toBe("Régularité : donnée indisponible");
   });
 });
+
+it("décrit la plage intermédiaire descendante au lieu de promettre une fusion directe", () => {
+  const ranges = [{ value: 50, label: "Fusion directe sous 50 m" }, { value: 300, label: "Trop éloigné au-delà de 300 m" }];
+  const status = bulletStatus(233, ranges, "down", "m").status;
+  expect(status).toContain("50"); expect(status).toContain("300");
+  expect(status).not.toContain("Fusion directe");
+  expect(bulletStatus(50, ranges, "down").tone).toBe("success");
+  expect(bulletStatus(300, ranges, "down").tone).toBe("warning");
+  expect(bulletStatus(301, ranges, "down").tone).toBe("danger");
+});

@@ -1,0 +1,13 @@
+.presence-strip { font-family: var(--cadence-font-sans, "Inter", sans-serif); color: var(--cadence-color-primary, #002830); font-size: 12px; }
+.presence-strip__items { display: flex; flex-wrap: wrap; gap: 4px; list-style: none; padding: 0; margin: 8px 0 0; }
+.presence-strip__cell { position: relative; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border: 1px solid var(--cadence-color-border-strong, #bfc9cb); border-radius: 3px; }
+.presence-strip__cell--present { background: var(--cadence-status-info-bg, #eff6ff); color: var(--cadence-status-info-fg, #1d4ed8); }
+.presence-strip__cell--unknown { border-style: dashed; }
+.presence-strip__cell[aria-current="true"] { outline: 2px solid var(--cadence-color-primary, #002830); outline-offset: 1px; }
+.presence-strip__cell:focus-visible { box-shadow: var(--cadence-focus-ring, 0 0 0 2px #fff, 0 0 0 4px #1a3e45); }
+.presence-strip__tooltip { display: none; position: absolute; bottom: calc(100% + 8px); left: 0; z-index: var(--cadence-z-popover, 100); width: max-content; max-width: 200px; padding: 8px; background: var(--cadence-color-primary, #002830); color: var(--cadence-color-white, #fff); border-radius: var(--cadence-radius-sm, 6px); }
+.presence-strip__cell:hover .presence-strip__tooltip, .presence-strip__cell:focus .presence-strip__tooltip { display: block; }
+.presence-strip--sm .presence-strip__cell { width: 16px; height: 16px; }
+.presence-strip--sm .presence-strip__summary { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+.presence-strip__cell[data-dismissed="true"] .presence-strip__tooltip { display: none; }

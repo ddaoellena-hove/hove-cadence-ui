@@ -54,6 +54,8 @@ export interface BarChartProps extends ChartCommonProps {
   showLegend?: boolean;
   /** Lignes de grille. Défaut true. */
   showGrid?: boolean;
+  /** Maximum de libellés visibles ; données et interactions inchangées. */
+  maxTicks?: number;
   /** En-tête masqué visuellement (titre toujours lu), ex. quand le titre est déjà affiché par une Card. */
   hideTitle?: boolean;
   /** Hauteur du tracé. Défaut 280 en vertical ; 36px par catégorie en horizontal. */
@@ -108,6 +110,7 @@ export const BarChart = ({
   showValues = false,
   showLegend = true,
   showGrid = true,
+  maxTicks,
   hideTitle = false,
   height: heightProp,
   annotations = [],
@@ -123,9 +126,10 @@ export const BarChart = ({
   const plotRef = useRef<HTMLDivElement>(null);
   const width = useChartWidth(plotRef);
   const [hidden, setHidden] = useState<Set<string>>(new Set());
-  const [active, setActive] = useState<number | null>(null);
+  const [activeIndex, setActive] = useState<number | null>(null);
   const [origin, setOrigin] = useState({ left: 0, top: 0 });
 
+  const active = activeIndex !== null && activeIndex >= 0 && activeIndex < categories.length ? activeIndex : null;
   const horizontal = orientation === "horizontal";
   // Les références ne consomment pas de couleur ni de motif de la palette
   const indexed = series.map((s, i) => ({
@@ -251,6 +255,9 @@ export const BarChart = ({
   /** Catégorie sous le pointeur (bande complète, espaces compris), null hors du tracé. */
   const indexAt = (e: MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
+    const px = e.clientX - rect.left - margin.left;
+    const py = e.clientY - rect.top - margin.top;
+    if (px < 0 || px > plotWidth || py < 0 || py > plotHeight) return null;
     const position = horizontal ? e.clientY - rect.top - margin.top : e.clientX - rect.left - margin.left;
     const step = band.step();
     const index = Math.floor((position - (band(categories[0]) ?? 0) + (step - band.bandwidth()) / 2) / step);
@@ -343,7 +350,9 @@ export const BarChart = ({
     position: horizontal ? value(v) : plotHeight - value(v),
     label: formatKpiValue(v, format),
   }));
-  const categoryTicks = categories.map((c) => ({
+  const tickBudget = maxTicks === undefined ? categories.length : Math.max(1, Math.min(Math.floor(Number.isFinite(maxTicks) ? maxTicks : categories.length), Math.floor(categoryLength / (horizontal ? 20 : Math.max(48, longestLabel * 7 + 16)))));
+  const tickEvery = Math.max(1, Math.ceil(categories.length / Math.max(1, tickBudget)));
+  const categoryTicks = categories.filter((_, index) => index % tickEvery === 0).map((c) => ({
     key: c,
     position: (band(c) ?? 0) + band.bandwidth() / 2,
     label: c,

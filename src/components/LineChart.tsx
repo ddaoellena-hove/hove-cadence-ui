@@ -53,6 +53,8 @@ export interface LineChartAnnotation {
   label: string;
 }
 
+export interface LineChartDatum { x: Date | string; index: number; values: { seriesId: string; value: number | null }[] }
+
 export interface LineChartProps extends ChartCommonProps {
   /** Une à huit séries. */
   series: LineChartSeries[];
@@ -92,6 +94,9 @@ export interface LineChartProps extends ChartCommonProps {
    * fin (Date, catégorie ou heure de service), par exemple pour régler le
    * `DateRangePicker` de la page. Sans elle, pas de sélection.
    */
+  onDatumClick?: (datum: LineChartDatum) => void;
+  selectedX?: Date | string;
+  clickHint?: string;
   onRangeSelect?: (range: [Date | string, Date | string]) => void;
 }
 
@@ -118,15 +123,17 @@ export const LineChart = ({
   compact = false,
   height: heightProp,
   serviceTime = false,
-  onRangeSelect,
+  onRangeSelect, onDatumClick, selectedX, clickHint = "Entrée ou clic : voir le détail",
   ...frame
 }: LineChartProps) => {
   const titleId = useId();
   const descriptionId = useId();
+  const hintId = useId();
+  const suppressClick = useRef(false);
   const plotRef = useRef<HTMLDivElement>(null);
   const width = useChartWidth(plotRef);
   const [hidden, setHidden] = useState<Set<string>>(new Set());
-  const [active, setActive] = useState<number | null>(null);
+  const [activeIndex, setActive] = useState<number | null>(null);
   // Origine du tracé dans la fenêtre, relevée dans les gestionnaires (pas de lecture de ref au rendu)
   const [origin, setOrigin] = useState({ left: 0, top: 0 });
 
@@ -154,6 +161,14 @@ export const LineChart = ({
   const curveFactory = curve === "step" ? curveStepAfter : curveMonotoneX;
 
   const xs = useMemo(() => collectXs(series, serviceTime), [series, serviceTime]);
+  const active = activeIndex !== null && activeIndex >= 0 && activeIndex < xs.length ? activeIndex : null;
+  const selectedIndex = selectedX === undefined ? -1 : xs.findIndex(x => xKey(x) === xKey(selectedX));
+  const datumAt = (index: number | null): LineChartDatum | null => {
+    if (index === null || xs[index] === undefined) return null;
+    const values = series.filter(s => !s.reference).map(s => ({ seriesId: s.id, value: valueAt(s, xs[index]) }));
+    return values.some(v => v.value !== null && Number.isFinite(v.value)) ? { x: xs[index], index, values } : null;
+  };
+  const selectDatum = (index: number | null) => { const datum = datumAt(index); if (datum) onDatumClick?.(datum); };
   const xScale = buildXScale(xs, plotWidth, serviceTime);
   const positions = xs.map(xScale.position);
   // Empilé : seules les séries principales s'empilent ; les références comptent par leurs valeurs brutes
@@ -233,7 +248,7 @@ export const LineChart = ({
   const [dragging, setDragging] = useState(false);
   const range = selection ? [Math.min(selection.from, selection.to), Math.max(selection.from, selection.to)] : null;
   const commitSelection = () => {
-    if (range && range[1] > range[0]) onRangeSelect?.([xs[range[0]], xs[range[1]]]);
+    if (range && xs[range[0]] !== undefined && xs[range[1]] !== undefined && range[1] > range[0]) onRangeSelect?.([xs[range[0]], xs[range[1]]]);
     setSelection(null);
   };
   const rows: ChartTooltipRow[] =
@@ -300,12 +315,14 @@ export const LineChart = ({
   // Glisser pour sélectionner une période (seulement avec onRangeSelect)
   const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
     if (!onRangeSelect || xs.length === 0 || e.button !== 0) return;
+    suppressClick.current = false;
     const index = indexAt(e);
     setSelection({ from: index, to: index });
     setDragging(true);
   };
   const handleMouseUp = () => {
     if (!dragging) return;
+    suppressClick.current = Boolean(selection && selection.from !== selection.to);
     setDragging(false);
     commitSelection();
   };
@@ -327,6 +344,7 @@ export const LineChart = ({
       commitSelection();
       return;
     }
+    if (onDatumClick && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); selectDatum(active); return; }
     const next =
       e.key === "ArrowRight"
         ? Math.min(last, current + 1)
@@ -376,6 +394,8 @@ export const LineChart = ({
       visible={show}
       columns={[xScale.time ? "Date" : xScale.service ? "Heure" : "Catégorie", ...visible.map((s) => (unit ? `${s.label} (${unit})` : s.label))]}
       numeric={visible.map((_, i) => i + 1)}
+      rowActions={onDatumClick ? xs.map((_, i) => datumAt(i) ? () => selectDatum(i) : undefined) : undefined}
+      currentRow={selectedIndex >= 0 ? selectedIndex : undefined}
       rows={xs.map((x) => [formatX(x), ...visible.map((s) => formatKpiValue(valueAt(s, x) ?? "—", format))])}
     />
   );
@@ -393,15 +413,20 @@ export const LineChart = ({
     >
       <div
         ref={plotRef}
-        className={`chart__plot${onRangeSelect ? " line-chart__plot--selectable" : ""}`}
+        className={`chart__plot${onRangeSelect ? " line-chart__plot--selectable" : ""}${onDatumClick ? " line-chart__plot--clickable" : ""}`}
         style={{ height }}
         tabIndex={0}
         role="group"
         aria-roledescription="graphique"
         aria-labelledby={titleId}
-        aria-describedby={frame.description ? descriptionId : undefined}
+        aria-describedby={[frame.description ? descriptionId : null, onDatumClick ? hintId : null].filter(Boolean).join(" ") || undefined}
         onMouseMove={handleMouseMove}
         onMouseDown={handleMouseDown}
+        onClick={onDatumClick ? e => {
+          if (suppressClick.current) { suppressClick.current = false; return; }
+          const rect = e.currentTarget.getBoundingClientRect();
+          if (e.clientX >= rect.left + margin.left && e.clientX <= rect.left + margin.left + plotWidth && e.clientY >= rect.top + margin.top && e.clientY <= rect.top + margin.top + plotHeight) selectDatum(indexAt(e));
+        } : undefined}
         onMouseUp={handleMouseUp}
         onMouseLeave={() => {
           setActive(null);
@@ -428,6 +453,7 @@ export const LineChart = ({
               </g>
             ))}
 
+            {selectedIndex >= 0 && <line className="line-chart__selected" x1={positions[selectedIndex]} x2={positions[selectedIndex]} y1={0} y2={plotHeight} />}
             {/* Période en cours de sélection (onRangeSelect) */}
             {range && range[1] > range[0] && (
               <rect className="line-chart__selection" x={positions[range[0]]} y={0} width={positions[range[1]] - positions[range[0]]} height={plotHeight} />
@@ -512,7 +538,8 @@ export const LineChart = ({
           {announcement}
         </p>
       </div>
-      {anchor && activeX !== null && <ChartTooltip x={anchor.x} y={anchor.y} title={formatX(activeX)} rows={rows} note={note} />}
+      {onDatumClick && <p id={hintId} className="chart__sr-only">{clickHint}{selectedIndex >= 0 ? `. Sélection : ${formatX(xs[selectedIndex])}` : ""}</p>}
+      {anchor && activeX !== null && <ChartTooltip x={anchor.x} y={anchor.y} title={formatX(activeX)} rows={rows} note={note} hint={onDatumClick && datumAt(active) ? clickHint : undefined} />}
     </ChartFrame>
   );
 };

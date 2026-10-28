@@ -1,0 +1,10 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, within } from "storybook/test";
+import { PresenceStrip } from "./PresenceStrip";
+const meta: Meta<typeof PresenceStrip> = { title: "Composants/Visualisation de données/PresenceStrip", component: PresenceStrip, tags: ["autodocs"] };
+export default meta;
+type Story = StoryObj<typeof PresenceStrip>;
+const items = Array.from({ length: 7 }, (_, i) => ({ id: String(i), label: `Exécution ${i + 1}`, present: i === 3 ? null : i !== 1, current: i === 6 }));
+export const Defaut: Story = { args: { "aria-label": "Présence du constat", items }, play: async ({ canvasElement }) => { const c = within(canvasElement); await expect(c.getByText(/Présent 5 fois sur 7/)).toBeVisible(); const current = c.getByRole("img", { name: /Exécution 7/ }); current.focus(); await expect(current).toHaveAttribute("aria-current", "true"); await expect(c.getByRole("img", { name: /Exécution 4 : Donnée inconnue/ })).toBeVisible(); } };
+export const Cellule: Story = { args: { ...Defaut.args, size: "sm" } };
+export const Vide: Story = { args: { "aria-label": "Présence", items: [] } };

@@ -1,3 +1,19 @@
+import { Database01 } from "@untitledui/icons/Database01";
+import { LayersThree01 } from "@untitledui/icons/LayersThree01";
+import { ShieldTick } from "@untitledui/icons/ShieldTick";
+import { Target04 } from "@untitledui/icons/Target04";
+import { Activity } from "@untitledui/icons/Activity";
+import { AlertCircle } from "@untitledui/icons/AlertCircle";
+import { Wifi } from "@untitledui/icons/Wifi";
+import { MobilityLignes } from "./icon-mobility";
+import { MobilityReseaux } from "./icon-mobility";
+import { MobilityCompagnies } from "./icon-mobility";
+import { MobilityParcours } from "./icon-mobility";
+import { MobilityZones } from "./icon-mobility";
+import { MobilityModesCom } from "./icon-mobility";
+import { MobilityPoints } from "./icon-mobility";
+import { MobilityModesPhy } from "./icon-mobility";
+import { InfoPlain } from "./icon-mobility";
 /**
  * Registre des icônes du design system.
  *
@@ -112,6 +128,23 @@ import { Walk } from "./icon-walk";
 export type IconComponent = FC<SVGProps<SVGSVGElement> & { size?: number; color?: string }>;
 
 export const ICONS = {
+  "database": Database01 as IconComponent,
+  "layers": LayersThree01 as IconComponent,
+  "shield-check": ShieldTick as IconComponent,
+  "target": Target04 as IconComponent,
+  "activity": Activity as IconComponent,
+  "alert-circle": AlertCircle as IconComponent,
+  "live": Wifi as IconComponent,
+  "mobility-lignes": MobilityLignes as IconComponent,
+  "mobility-reseaux": MobilityReseaux as IconComponent,
+  "mobility-compagnies": MobilityCompagnies as IconComponent,
+  "mobility-parcours": MobilityParcours as IconComponent,
+  "mobility-zones": MobilityZones as IconComponent,
+  "mobility-modes-com": MobilityModesCom as IconComponent,
+  "mobility-points": MobilityPoints as IconComponent,
+  "mobility-modes-phy": MobilityModesPhy as IconComponent,
+  "info-plain": InfoPlain as IconComponent,
+
   "alert-triangle":            AlertTriangle as IconComponent,
   "anchor":                    Anchor as IconComponent,
   "annotation-info":           AnnotationInfo as IconComponent,

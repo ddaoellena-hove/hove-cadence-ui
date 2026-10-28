@@ -164,6 +164,30 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-control-height-compact` | `29px` | Hauteur des contrôles compacts : boutons `size="sm"`, `SearchInput`, déclencheurs `variant="button"`, `SegmentedControl size="sm"` — voir [Hauteurs de contrôle](#hauteurs-de-contrôle-et-alignement-sur-une-rangée) |
 | `--cadence-control-height-field` | `40px` | Hauteur des champs d'une ligne (`TextInput`, `Dropdown`, `DatePicker`, `ColorField`…) et du `SegmentedControl` (`size="md"`) |
 
+
+**Compléments lot 6 — tailles et fond sombre** :
+
+| Token | Valeur | Rôle |
+|---|---|---|
+| `--cadence-font-size-small` | 12px | Métadonnées |
+| `--cadence-font-size-body` | 13px | Corps courant |
+| `--cadence-font-size-emphasis` | 14px | Texte mis en avant |
+| `--cadence-font-size-section` | 16px | Titre de section |
+| `--cadence-font-size-heading` | 22px | Titre de page |
+| `--cadence-font-size-kpi` | 28px | Compteur |
+| `--cadence-font-size-kpi-large` | 44px | Valeur principale |
+| `--cadence-status-active-on-dark` | #40c2da | En cours |
+| `--cadence-status-upcoming-on-dark` | #c4b5fd | À venir |
+| `--cadence-status-completed-on-dark` | #86efac | Terminé |
+| `--cadence-status-draft-on-dark` | #cbd5e1 | Neutre |
+| `--cadence-status-warning-on-dark` | #fdba74 | Avertissement |
+| `--cadence-status-info-on-dark` | #93c5fd | Information |
+| `--cadence-status-critical-on-dark` | #fca5a5 | Critique |
+| `--cadence-status-nominal-on-dark` | #86efac | Nominal |
+| `--cadence-dataviz-neutral` | #69797d | Segment « Autres » de Meter |
+
+✅ Les statuts `on-dark` s'utilisent sur `--cadence-color-primary` ; les statuts clairs conservent leurs paires `fg/bg`. Les tailles sont disponibles pour les compositions, sans surcharge des composants existants.
+
 **Statuts** — les 8 variantes d'`Indicator`, une paire texte (`-fg`) / fond (`-bg`) par variante :
 
 | Token | fg | bg | Sens |
@@ -364,6 +388,13 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Résumé d'erreurs avec accès aux champs | `ErrorSummary` | `InlineAlert` (message sans navigation de formulaire) |
 | Métadonnées label/valeur d'un détail ou d'une synthèse | `DescriptionList` | `DataTable` (plusieurs lignes d'un même type) |
 | Historique d'événements datés et attribués | `ActivityFeed` | `Timeline` (périodes sur une échelle de temps) |
+| Périmètre d'export réseau/lignes, inline ou popover, parents regroupés | `ScopePicker` | `DisruptionScopePicker` reste compatible pour les anciens écrans |
+| Synthèse de quelques éléments cliquables, notifications non lues | `SummaryList` | `ActivityFeed` pour l'historique chronologique sans interaction |
+| Bandeau sombre avec état, fraîcheur et KPI | `PageHero` | Partir du pattern Analyse ou Supervision ; `headingLevel={2}` sous un PageHeader |
+| Remplacement d'un secret existant sans le révéler | `SecretField` | Ne jamais passer le secret existant au navigateur |
+| Comparaison de valeurs ou de versions | `ValueComparison` | `DescriptionList` pour une seule version |
+| Présence binaire par exécution | `PresenceStrip` | `Sparkline` pour une mesure continue |
+| Journal technique ou extrait de fichier | `LogViewer` | `ValidationIssueInspector` pour expliquer un constat métier |
 | Icône seule | `Icons` | — |
 
 ---
@@ -1730,6 +1761,22 @@ Champ de recherche qui filtre une liste statique en interne. Choix **strict** da
 
 Clavier : ↑/↓ pour naviguer, Entrée pour sélectionner l'option surlignée, Échap pour fermer, Retour arrière (champ vide, mode multiple) pour retirer le dernier chip.
 
+**Compléments lot 6**
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `onInputChange` | `(query: string) => void` | — | Saisie et réinitialisations après sélection/Échap/sortie clavier. |
+| `filter` | `boolean` | true | false : conserve les options fournies, leur classement et leur libellé. |
+| `minChars` | `number` | 0 | Nombre de caractères avant de présenter des résultats. |
+| `loading` | `boolean` | false | Annonce le chargement et rend les anciennes options indisponibles. |
+| `limit` | `number` | — | Maximum d’options affichées ; toutes par défaut. |
+
+```tsx
+<Autocomplete label="Zone" options={results} onInputChange={search} filter={false} minChars={2} loading={loading} limit={20} />
+```
+
+✅ Recherche locale insensible aux accents sur label + description. Les libellés sélectionnés sont conservés lorsque les résultats changent. ⚠️ L’application assure le debounce, les erreurs et l’annulation des réponses périmées ; limiter les résultats avant de les transmettre. `minChars` ne déclenche aucune requête. ❌ Ne pas transmettre les 640 000 options pour une recherche distante.
+
 ### Avatar
 
 | Prop | Type | Défaut | Description |
@@ -1808,7 +1855,19 @@ Clavier : le tracé est focusable ; ←/→ (vertical) ou ↑/↓ (horizontal) d
 />
 ```
 
+**Compléments lot 6**
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `maxTicks` | `number` | — | Maximum de libellés de catégorie, réduit davantage si la largeur l’impose. Omettre conserve tous les libellés ; minimum 1. |
+
+```tsx
+<BarChart title="Activité" categories={slots} series={series} maxTicks={12} onDatumClick={openSlot} />
+```
+
 ### BarList
+
+Les éléments acceptent aussi `absoluteValue?: number` et `absoluteUnit?: string` (sans défaut) pour montrer un écart absolu signé à côté du pourcentage ; si fourni, il remplace visuellement delta et s’ajoute au nom accessible et au tableau.
 
 Classement horizontal : libellé, barre proportionnelle (`--cadence-dataviz-series-1`), valeur en mono alignée à droite, variation facultative. Hauteur : 32px par ligne. Props communes des graphiques : `title` (**requis**), `description`, `headingLevel` (3), `state` (`"ready" | "loading" | "empty" | "error"`), `emptyMessage`, `errorMessage`, `onRetry`, `framed` (false : cadre de carte — bordure, arrondi, marge — pour délimiter des graphiques voisins), `exportable` (false ; `true` ou un nom de fichier : bouton « Exporter (CSV) » dans l'en-tête, qui télécharge l'alternative tabulaire en CSV `;` + BOM UTF-8, nombres sans espaces de groupement), `onExport` (reprend l'export : `{ columns, rows, numeric, csv, fileName }`), `freshness` (`{ updatedAt, now?, freshWithin?, staleWithin?, label?, timeZone? }` : `DataFreshness` sous la description), `className`. Export et fraîcheur valent pour tous les graphiques qui ont « Voir les données » (pas `Heatmap`, qui est elle-même une grille).
 
@@ -1833,6 +1892,17 @@ Classement horizontal : libellé, barre proportionnelle (`--cadence-dataviz-seri
   onShowAll={() => navigate("/lignes")}
   onItemClick={(item) => navigate(`/lignes/${item.id}`)}
 />
+```
+
+**Compléments lot 6**
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `mode` | `"positive" \| "diverging"` | "positive" | diverging : axe central, échelle symétrique, valeurs signées, ton selon goodDirection. |
+| `tolerance` | `number` | 0 | Demi-largeur de la zone neutre autour de zéro en mode divergent, dans l’unité des valeurs. |
+
+```tsx
+<BarList title="Évolution" mode="diverging" tolerance={3} unit="%" items={changes} />
 ```
 
 ### DonutChart
@@ -2078,6 +2148,16 @@ Tableau dense pour les gros volumes. Vrai `<table>` (rôles ARIA explicites), en
 - ⚠️ La case d'en-tête sélectionne les lignes **affichées** (la page). « Sélectionner les N résultats » se fait par une action de la `BulkActionBar`.
 - ⚠️ Le masquage et l'ordre des colonnes passent par `ColumnManager` (branché sur `hiddenColumnIds` et `columnOrder`). Il n'y a toujours ni filtre par colonne ni redimensionnement.
 
+**Compléments lot 6**
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `rowHeight` | `"fixed" \| "auto"` | "fixed" | auto : texte multi-lignes, hauteur du contenu, alignement haut. Ignoré avec virtualized. |
+
+```tsx
+<DataTable aria-label="Journal" data={events} columns={columns} getRowId={row => row.id} rowHeight="auto" />
+```
+
 ### BulkActionBar
 
 Barre d'actions groupées flottante pour une sélection multiple (`DataTable selectable`, liste de `TableCard`). Placée juste après la liste, dans le même conteneur : collante en bas de la zone visible (`position: sticky`, 16px du bas), centrée, au-dessus des lignes tant que la liste défile. Surface blanche surélevée : compteur (Diatype 13px medium, `--cadence-color-accent` : c'est un état de sélection), séparateur, puis les actions. Masquée quand `count` vaut 0. Sous 480px de large, le compteur passe au-dessus des actions. Story : *Données et tableaux / BulkActionBar*.
@@ -2285,6 +2365,20 @@ Clavier : le tracé est focusable ; ←/→ d'une classe à l'autre, Début / Fi
   thresholds={[{ value: 5, label: "Retard 5 min" }]}
 />
 ```
+
+**Compléments lot 6**
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `onDatumClick` | `(datum: HistogramDatum) => void` | — | Clic/Entrée/Espace sur une classe non vide, action dans le tableau. |
+| `selectedBin` | `number` | — | Index 0-based de la classe sélectionnée, contour de bande. |
+| `clickHint` | `string` | "Entrée ou clic : voir le détail" | Instruction dans tooltip et description accessible. |
+
+```tsx
+<Histogram title="Retards" values={delays} onDatumClick={openBin} selectedBin={selected} />
+```
+
+`HistogramDatum` : `{ index: number; lower: number; upper: number; count: number; share: number; openStart: boolean; openEnd: boolean }`. `share` entre 0 et 1. Les bornes des classes extrêmes ne sont pas des limites fermées lorsque `openStart`/`openEnd` est vrai.
 
 ### TimeSpaceDiagram
 
@@ -2510,6 +2604,19 @@ const [category, setCategory] = useState("lignes");
 - ✅ Garder le picto par défaut : il double la couleur pour qui ne la distingue pas (WCAG 1.4.1).
 - ✅ `hideIcon` seulement quand un picto voisin porte déjà l'état (marqueur coloré d'`ActivityFeed`) : sinon il est redondant.
 
+**Compléments lot 6**
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `appearance` | `"badge" \| "dot"` | "badge" | dot : point de 8px, label obligatoire et non visible ; pas d’action. |
+| `onClick` | `() => void` | — | Badge rendu en bouton natif ; clavier, focus et survol. |
+| `disabled` | `boolean` | false | Désactive un badge interactif. |
+| `inverse` | `boolean` | false | Contraste pour fond primary sombre. |
+
+```tsx
+<Indicator variant="warning" appearance="dot" label="Champ modifié" />
+```
+
 ### DatasetHealth
 
 Bilan de validation d'un jeu de données : titre, verdict (`Indicator`), nombre d'erreurs et d'avertissements, date de la dernière validation, bouton « Voir le rapport ». Carte blanche à bordure fine, région nommée par son titre. **Présentation seule** : le verdict et les compteurs viennent de l'application ; aucun score, aucun verdict déduit de la fraîcheur ou des compteurs, aucune décision de publication. Story : *Retours et statuts / DatasetHealth*.
@@ -2632,6 +2739,16 @@ Fraîcheur d'une donnée : un point coloré (ton de statut) et un libellé relat
 - ✅ Plusieurs fraîcheurs sur une page : leur passer le même `now` (une horloge de page mise à jour par l'app), pour qu'elles avancent ensemble.
 - ❌ Pas pour un statut métier (en cours, ralenti…) : `Indicator`. Pas pour un journal d'événements : `ActivityFeed`.
 
+**Compléments lot 6**
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `inverse` | `boolean` | false | Texte et point lisibles sur fond primary sombre. |
+
+```tsx
+<DataFreshness updatedAt={updatedAt} inverse timeZone="Europe/Paris" />
+```
+
 ### LineChart
 
 Évolution d'une à huit séries, temporelles (`x: Date`, axe de dates fr-FR adapté à l'étendue : heures, jours ou mois) ou catégorielles. Tooltip partagé (toutes les séries à l'abscisse survolée), dans un portail. Hauteur par défaut 280px. Props communes : voir `BarList`.
@@ -2666,6 +2783,20 @@ Clavier : le tracé est focusable ; ←/→ passent d'une abscisse à l'autre, D
   annotations={[{ at: [strikeStart, strikeEnd], label: "Grève 16/10" }]}
 />
 ```
+
+**Compléments lot 6**
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `onDatumClick` | `(datum: LineChartDatum) => void` | — | Clic/Entrée/Espace sur une abscisse non vide ; action aussi dans le tableau. |
+| `selectedX` | `Date \| string` | — | Abscisse sélectionnée contrôlée, repère vertical. |
+| `clickHint` | `string` | "Entrée ou clic : voir le détail" | Instruction dans tooltip et description accessible. |
+
+```tsx
+<LineChart title="Réceptions" series={series} onDatumClick={openReception} selectedX={selected} />
+```
+
+`LineChartDatum` : `{ x: Date | string; index: number; values: { seriesId: string; value: number | null }[] }`, références exclues, séries masquées incluses. Avec `onRangeSelect`, un glissement ou Maj + flèche puis Entrée privilégie la période et ne déclenche pas le clic de point.
 
 ### Link
 
@@ -2738,6 +2869,17 @@ En-tête de page : titre (`<h1>`, display 22px), sous-titre et actions sur une l
 - ✅ Les popovers des actions (`DateRangePicker`, `DatePicker`, `Dropdown`) se décalent vers la gauche pour rester dans le conteneur quand le déclencheur est au bord droit.
 - ❌ Un seul `PageHeader` par page, et pas de `<h1>` à côté.
 
+**Compléments lot 6**
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `tabs` | `ReactNode` | — | TabList ou SegmentedControl sur une rangée dédiée, dans l’en-tête collant. |
+| `tabsActions` | `ReactNode` | — | Actions à droite des onglets ; ignorées sans tabs. |
+
+```tsx
+<PageHeader title="Catalogue" tabs={tabs} tabsActions={createAction} />
+```
+
 ### PageSection
 
 Section de page : un titre (`h2` par défaut, `h3`/`h4` pour une sous-section), une description et des actions optionnelles, au-dessus d'un contenu empilé. Remplace le `<section>` + `<h2>` en style inline recréé à la main. Nommée par son titre (`aria-labelledby`) : c'est un repère `region`. L'espacement (`gap`) s'applique entre le titre et le contenu **et** entre les éléments du contenu.
@@ -2754,6 +2896,18 @@ Section de page : un titre (`h2` par défaut, `h3`/`h4` pour une sous-section), 
 
 - ✅ Enchaîner des `PageSection` dans un conteneur en colonne pour structurer une page de formulaire ou de détail. Le multi-colonnes (`FieldRow`) vit **à l'intérieur** d'une section.
 - ❌ Ne pas sauter de niveau de titre : après le `h1` du `PageHeader`, les sections sont en `h2`.
+
+**Compléments lot 6**
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `icon` | `IconName` | — | Icône décorative de 20px dans une tuile 40px. |
+| `iconElement` | `ReactNode` | — | Prioritaire sur icon ; contenu décoratif non interactif. |
+| `iconTone` | `"label" \| "muted" \| "accent"` | "label" | Ton de la tuile ; conservée sur mobile. |
+
+```tsx
+<PageSection title="Source principale" icon="database" iconTone="label">{content}</PageSection>
+```
 
 ### FieldRow
 
@@ -2814,6 +2968,12 @@ Navigation dans un résultat paginé. Composant contrôlé.
 Affiche « 1–50 sur 12 430 » (`Intl.NumberFormat("fr-FR")`), précédent / suivant, et les pages avec ellipses (`1 … 4 5 6 … 249`, 7 positions fixes). ⚠️ Le menu de taille s'ouvre vers le bas : prévoir de l'espace sous la pagination.
 
 ### PrimaryButton / GhostButton
+
+**Compteur (GhostButton uniquement)** : `count?: number` (absent ou zéro : masqué), `countMax?: number` (9), `countLabel?: string` ("non lues"). Le nombre réel fait partie du nom accessible, même lorsque la pastille affiche « 9+ ».
+
+```tsx
+<GhostButton icon="bell-01" aria-label="Notifications" count={12} />
+```
 
 API identique pour les deux ; seul le rendu change (`PrimaryButton` plein ou contour, `GhostButton` sans fond ni bordure). Mêmes dimensions à taille égale.
 
@@ -3011,6 +3171,16 @@ Conteneur `role="tablist"` d'une rangée de `Tab` ou de `SecondaryTab`. *Roving 
 | `actions` | `ReactNode` | — | Slot — des `GhostButton size="sm"` icône seule (`icon` + `aria-label`, `tone="danger"` pour supprimer) |
 | `columns` | `TableCardColumn[]` | `[]` | `{ key, content, width? \| flex? }` — `width` px fixe **ou** `flex` (jamais les deux) |
 | `state` | `"default" \| "selected" \| "disabled"` | `"default"` | `selected` = fond bleu du wrapper |
+
+**Compléments lot 6**
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `selectable` | `boolean` | true | false retire la case ; fournir une action de téléchargement dans actions. |
+
+```tsx
+<TableCard title="Export GTFS" selectable={false} actions={downloadAction} />
+```
 
 ### TableHeader
 
@@ -3247,6 +3417,18 @@ Le panneau partage avec `Modal` la gestion des surcouches superposées : seule c
 
 ⚠️ Les actions de fin de parcours doivent être dans `primaryAction` / `secondaryAction`, ou `footer` pour une barre composée. Ne pas placer un pied sticky dans `children` : il serait limité par le padding et le défilement du corps. `disabled` conserve les validations métier ; `loading` signale une opération en cours.
 
+**Compléments lot 6**
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `headerContent` | `ReactNode` | — | Contenu sous le titre, hors défilement ; statuts/actions. |
+| `navigation` | `{ current: number; total: number; onPrevious: () => void; onNext: () => void }` | — | Position 1-based et total positif ; boutons bornés, compteur annoncé. |
+| `width` | `"md" \| "intermediate" \| "lg"` | "md" | 480 / 576 / 720px, bornés par la fenêtre. |
+
+```tsx
+<Drawer isOpen={open} onClose={close} title={name} width="intermediate" navigation={navigation}>{detail}</Drawer>
+```
+
 ### ProgressBar
 
 Progression déterminée (0–100, bornée) ou indéterminée (valeur absente/non finie). Animation désactivée sous `prefers-reduced-motion`. `role="progressbar"` sur la piste ; nom accessible par label, `aria-label`, ou « Progression ».
@@ -3348,6 +3530,16 @@ Liste ordonnée d'étapes. État explicite en texte (terminée, en cours, à ven
 | `className` | `string` | — | Classe additionnelle |
 
 `StepState` : `"upcoming" | "current" | "completed" | "error"`. L'app fournit une seule étape courante et gère validation/navigation ; le composant ne valide aucun champ.
+
+**Compléments lot 6**
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `steps[].state` | `"upcoming" \| "current" \| "completed" \| "error" \| "warning"` | requis | warning : marqueur ! et libellé « À vérifier ». Seules les étapes terminées restent cliquables. |
+
+```tsx
+<Stepper steps={[{ id: "quality", label: "Qualité", state: "warning" }]} />
+```
 
 ### FileUpload
 
@@ -3654,6 +3846,16 @@ Mesure d'une valeur par rapport à une capacité, en barre horizontale (8px). Pr
 />
 ```
 
+**Compléments lot 6**
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `hideValue` | `boolean` | false | Masque la valeur visuelle dans les deux modes ; mesure et total restent accessibles. |
+
+```tsx
+<Meter label="Composition" size="sm" segments={segments} hideValue />
+```
+
 ### ErrorSummary
 
 Pour une cible conteneur, le lien cherche un contrôle visible et utilisable ; les champs cachés, contrôles désactivés et descendants inertes sont ignorés. Une cible focalisable avec `tabIndex={-1}` reste prise en charge.
@@ -3701,6 +3903,17 @@ Liste sémantique de propriétés (`dl` / `dt` / `dd`) pour un détail, un panne
   { id: "name", label: "Réseau", value: "Bordeaux Métropole" },
   { id: "line", label: "Ligne", value: <LineBadge code="A" mode="tram" /> },
 ]} />
+```
+
+**Compléments lot 6**
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `labelWidth` | `number \| "auto"` | — | Largeur partagée en px, ou plus long libellé ; uniquement horizontal, empilé sur mobile. |
+| `appearance` | `"default" \| "tiles"` | "default" | tiles : faits courts sur fond surface-alt, grille responsive. |
+
+```tsx
+<DescriptionList items={facts} labelWidth="auto" />
 ```
 
 ### ActivityFeed
@@ -3844,3 +4057,153 @@ Liste ordonnée de passages, sans tri implicite ni conversion d’horaires. Les 
 - En l’absence d’arrivée et de départ, affiche « Horaire non renseigné ». Les horaires fournis sont affichés tels quels, sans validation, calcul de retard ou conversion en heure civile.
 - La liste vide utilise `EmptyState`. Pour une erreur de récupération, composer un `InlineAlert` ou `EmptyState variant="error"` au niveau de l’application.
 - Adapté à la consultation de courses courtes à moyennes ; pas de virtualisation ni de carte géographique.
+
+## Composants du lot 6 — synthèse et exploitation
+
+Ces composants complètent les Page patterns existants (Analyse, Supervision, Liste, Formulaire). ✅ Garder un seul titre h1 par page. Le bandeau sombre se compose avec `PageHero` ; les formulaires gardent leurs panneaux verticaux sur fond clair. ❌ Ne pas utiliser un log technique comme seul message d’erreur métier.
+
+### ScopePicker
+
+Périmètre générique réseaux/lignes, arbre fourni entièrement par l’application. `DisruptionScopePicker` conserve son API historique.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| label | string | requis | Nom du groupe et du champ |
+| nodes | ScopeNode[] | requis | Arbre chargé, identifiants globalement uniques |
+| value | string[] | requis | Sélection contrôlée |
+| onChange | (ids: string[]) => void | requis | Nouvelle sélection |
+| presentation | "inline" ou "popover" | inline | Formulaire ou champ compact |
+| selectionStrategy | "leaves" ou "parents" | leaves | Parents regroupe un sous-arbre intégralement sélectionné |
+| loading / disabled | boolean | false | Chargement annoncé / contrôles inactifs |
+| error / helperText | string | — | Erreur prioritaire sur l’aide |
+| className | string | — | Classe racine |
+
+`ScopeNode` : `id`, `label`, `children?: ScopeNode[]`, `disabled?`, `icon?`, `mode?`, `meta?` comme TreeNode, et `badge?: { code; mode?; color?; textColor? }` rendu en LineBadge sm décoratif. Pas de chargement différé interne. ✅ Un réseau coché couvre toutes ses feuilles sélectionnables ; les cases partielles sont indéterminées. La recherche ne supprime pas les sélections masquées ; cocher un parent filtré agit sur ses résultats visibles. Les identifiants de parents sont réétendus depuis les données actuelles, puis regroupés. ⚠️ Fournir des feuilles représentant les lignes pour que le compteur « lignes » soit correct. L’app valide la sélection et fournit l’erreur. ❌ Aucun contrôle interactif dans `meta`.
+
+```tsx
+<ScopePicker label="Périmètre d’export" nodes={networks} value={scope} onChange={setScope} selectionStrategy="parents" />
+```
+
+### SummaryList
+
+Liste courte de synthèse, adaptée aux notifications et exports récents, sans date obligatoire.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| items | SummaryListItem[] | requis | Éléments dans l’ordre fourni |
+| aria-label | string | requis | Nom de la section |
+| onItemClick | (item: SummaryListItem) => void | — | Action principale de ligne, bouton natif |
+| selectedId | string | — | Élément courant contrôlé |
+| density | "comfortable" ou "compact" | comfortable | Espacement |
+| loading | boolean | false | Squelette et annonce |
+| emptyTitle | string | Aucun élément | État vide |
+| onShowAll / showAllLabel | () => void / string | — / Voir tout | Action de pied |
+| className | string | — | Classe racine |
+
+`SummaryListItem` : `id`, `title` requis ; `description?`, `meta?` (strings), `icon?: IconName`, `avatar?: ReactNode` décoratif, `status?: IndicatorVariant`, `statusLabel?`, `unread?`, `disabled?`, `action?: { label; onClick; icon?; disabled? }`. ✅ L’action secondaire est un bouton frère de l’action principale. « Non lu » est écrit et annoncé. ❌ Ne pas passer de contrôle dans l’avatar. L’app groupe les notifications par jour en plusieurs listes nommées.
+
+```tsx
+<SummaryList aria-label="Exports récents" items={exports} onItemClick={openExport} />
+```
+
+### PageHero
+
+Bandeau sombre de synthèse, titre et KPI. La tuile interactive montre une flèche et « Voir le détail », avec un unique bouton couvrant la tuile. Les statuts sont textuels ; aucune animation ne porte l’information.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| title | string | requis | Titre |
+| headingLevel | 1 ou 2 | 1 | h2 si PageHeader porte déjà le h1 |
+| description | string | — | Contexte |
+| value / unit | number ou string / string | — | Valeur principale formatée fr-FR |
+| status / statusLabel | IndicatorVariant / string | — | Statut inverse |
+| freshness | DataFreshnessProps | — | Force inverse ; fournir now/timeZone si déterminisme requis |
+| kpis | PageHeroKpi[] | [] | Grille de tuiles responsive |
+| actions | ReactNode | — | Actions compatibles avec fond sombre |
+| loading | boolean | false | Masque les valeurs, annonce le chargement |
+| className | string | — | Classe racine |
+
+`PageHeroKpi` : `id`, `label`, `value` requis ; `unit?`, `status?`, `statusLabel?`, `delta?: { value; unit?: "%" | "pt"; label? }`, `onClick?`, `disabled?`. La variation est signée sans jugement métier implicite. ⚠️ Fournir des statuts textuels pertinents, pas uniquement une couleur. `Card` conserve son contrat d’action visible.
+
+```tsx
+<PageHero title="Flux temps réel" value={courses} unit="courses" status="active" statusLabel="En direct" kpis={kpis} />
+```
+
+### SecretField
+
+Le secret existant n’est jamais transmis au composant. L’affichage au repos ne connaît que son existence.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| label | string | requis | Nom du champ et des actions |
+| isSet | boolean | requis | Secret déjà défini |
+| onSave | (secret: string) => void ou Promise<void> | requis | Persistance par l’application ; rejeter en cas d’échec |
+| disabled | boolean | false | Désactivation |
+| helperText / error | string | — | Contexte / erreur prioritaire |
+| className | string | — | Classe racine |
+
+✅ Remplacer/Définir ouvre une saisie password ; Annuler efface le brouillon ; Enregistrer attend la promesse puis l’efface et rend le focus. Un rejet conserve le brouillon et affiche une erreur. L’app met à jour `isSet` après persistance. ❌ Ne pas affirmer « stocké chiffré » si le service ne le garantit pas ; ce texte reste fourni par l’app. Pas de bouton de révélation.
+
+```tsx
+<SecretField label="Jeton d’accès" isSet={hasToken} onSave={saveToken} />
+```
+
+### ValueComparison
+
+Comparaison sémantique de champs ou de deux versions, empilée sur petit conteneur. Les libellés Avant/Après restent visibles.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| items | ValueComparisonItem[] | requis | Champs comparés |
+| aria-label | string | requis | Nom de la région |
+| layout | "fields" ou "versions" | fields | Champs en lignes ou deux cartes DescriptionList |
+| beforeLabel / afterLabel | string | Avant / Après | Noms des versions |
+| className | string | — | Classe racine |
+
+`ValueComparisonItem` : `{ id; label: string; before?: ReactNode; after?: ReactNode; changed?: boolean }`. Sans changed : comparaison Object.is ; **fournir changed pour des ReactNode complexes**. Null/undefined/vide → « Non renseigné », false → « Non », zéro conservé. ✅ Un changement est écrit « Modifié » et souligné visuellement par un fond. ❌ Aucune décision de rollback implicite.
+
+```tsx
+<ValueComparison aria-label="Modifications" items={changes} layout="versions" />
+```
+
+### PresenceStrip
+
+Observations binaires ou inconnues, une forme par état et un résumé lisible.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| items | PresenceObservation[] | requis | Ordre fourni |
+| aria-label | string | requis | Nom du groupe |
+| size | "sm" ou "md" | md | Cellule 16px ou panneau 24px |
+| className | string | — | Classe racine |
+
+`PresenceObservation` : `{ id; label; present: boolean | null; current?: boolean }`. Les labels décrivent chaque exécution ; null est inconnu, jamais absent. Chaque observation est nommée, focalisable et possède une infobulle. ✅ Réservé aux séries courtes (ex. 7 exécutions) ; résumé accessible conservé en sm. ⚠️ Une seule observation courante.
+
+```tsx
+<PresenceStrip aria-label="Présence du constat" items={observations} size="sm" />
+```
+
+### LogViewer
+
+Journal technique ou extrait de fichier. Les messages sont du texte React échappé, sans interprétation HTML.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| title | string | requis | Titre h3, région nommée |
+| lines | LogLine[] | requis | Lignes dans l’ordre |
+| maxHeight | number | 320 | Hauteur maximale en px ; défilement clavier |
+| startLine | number | 1 | Premier numéro de ligne |
+| onDownload | () => void | — | Action de téléchargement déléguée à l’app |
+| loading | boolean | false | Annonce et actions désactivées |
+| emptyLabel | string | Aucune ligne | État vide |
+| className | string | — | Classe racine |
+
+`LogLine` : `{ id; message: string; timestamp?: string; level?: "debug" | "info" | "warning" | "error"; highlighted?: boolean }`. Horodatage préformaté par l’app ; niveaux écrits en français ; « Ligne signalée » pour le surlignage. La copie contient toutes les lignes affichées et signale son résultat. ⚠️ Pas de streaming ni de virtualisation : limiter les extraits côté app. Ne pas transmettre de secrets.
+
+```tsx
+<LogViewer title="Journal d’exécution" lines={logs} onDownload={downloadLogs} />
+```
+
+### Pictogrammes métier du lot 6
+
+`Icons` accepte `database`, `layers`, `shield-check`, `target`, `activity`, `alert-circle`, `info-plain` (i sans cercle), `live` (signal radio), ainsi que les géométries métier fournies par Datapilot : `mobility-lignes`, `mobility-reseaux`, `mobility-compagnies`, `mobility-parcours`, `mobility-zones`, `mobility-modes-com`, `mobility-points`, `mobility-modes-phy`. Elles suivent currentColor et s’utilisent à 16/20/24px ; les libellés voisins portent leur sens. Aucun SVG distant.

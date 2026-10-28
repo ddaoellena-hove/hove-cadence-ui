@@ -6,6 +6,7 @@
  * Nommée par son titre (`aria-labelledby`) : c'est un repère `region`.
  */
 import { useId, type ReactNode } from "react";
+import { Icons, type IconName } from "./Icons";
 import "./page-section.css";
 
 export interface PageSectionProps {
@@ -13,6 +14,9 @@ export interface PageSectionProps {
   title: string;
   /** Niveau de titre. Défaut 2. */
   headingLevel?: 2 | 3 | 4;
+  icon?: IconName;
+  iconElement?: ReactNode;
+  iconTone?: "label" | "muted" | "accent";
   /** Description sous le titre. */
   description?: string;
   /** Actions alignées à droite du titre. */
@@ -27,6 +31,7 @@ export interface PageSectionProps {
 export const PageSection = ({
   title,
   headingLevel = 2,
+  icon, iconElement, iconTone = "label",
   description,
   actions,
   gap = 20,
@@ -45,7 +50,8 @@ export const PageSection = ({
       aria-labelledby={headingId}
       style={{ gap }}
     >
-      <div className="page-section__head">
+      <div className={`page-section__head${icon || iconElement ? " page-section__head--icon" : ""}`}>
+        {(iconElement || icon) && <span aria-hidden="true" className={`page-section__icon page-section__icon--${iconTone}`}>{iconElement ?? <Icons icon={icon!} size={20} />}</span>}
         <div className="page-section__titles">
           <Heading id={headingId} className={`page-section__heading page-section__heading--${headingLevel}`}>
             {title}

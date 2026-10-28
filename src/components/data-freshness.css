@@ -49,3 +49,8 @@
   white-space: nowrap;
   border: 0;
 }
+
+.data-freshness--inverse { color: var(--cadence-color-on-dark, rgba(255,255,255,.9)); }
+.data-freshness--inverse .data-freshness__dot--nominal { background: var(--cadence-status-nominal-on-dark, #86efac); }
+.data-freshness--inverse .data-freshness__dot--warning { background: var(--cadence-status-warning-on-dark, #fdba74); }
+.data-freshness--inverse .data-freshness__dot--critical { background: var(--cadence-status-critical-on-dark, #fca5a5); }

@@ -55,3 +55,6 @@ export const Niveau3: Story = {
     await expect(within(canvasElement).getByRole("heading", { level: 3, name: "Exceptions de circulation" })).toBeInTheDocument();
   },
 };
+
+import * as lot6Test from "storybook/test";
+export const IconesLot6: Story = { render: () => <div style={{ display: "grid", gap: 24 }}>{(["label", "muted", "accent"] as const).map(tone => <PageSection key={tone} title={`Section ${tone}`} icon="database" iconTone={tone} description="Source de données"><span>Contenu</span></PageSection>)}</div>, play: async ({ canvasElement }) => { await lot6Test.expect(lot6Test.within(canvasElement).getAllByRole("heading", { level: 2 })).toHaveLength(3); } };

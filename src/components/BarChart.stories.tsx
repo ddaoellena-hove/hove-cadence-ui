@@ -355,3 +355,6 @@ export const Vide: Story = { args: { title: "Perturbations par cause", categorie
 export const Erreur: Story = {
   args: { title: "Perturbations par cause", categories: [], series: [], state: "error", onRetry: fn() },
 };
+
+import * as lot6Test from "storybook/test";
+export const Activite240Lot6: Story = { args: { title: "Activité sur 12 heures", maxTicks: 12, categories: Array.from({ length: 240 }, (_, i) => `${String(Math.floor(i * 3 / 60)).padStart(2, "0")}:${String(i * 3 % 60).padStart(2, "0")}`), series: [{ id: "a", label: "Réceptions", data: Array.from({ length: 240 }, (_, i) => i % 17) }], selectedCategory: "06:00", onDatumClick: lot6Test.fn(), annotations: [{ at: ["04:00", "04:15"], label: "Coupure" }] }, play: async ({ canvasElement, args }) => { const c = lot6Test.within(canvasElement); const plot = c.getByRole("group", { name: "Activité sur 12 heures" }); plot.focus(); await lot6Test.userEvent.keyboard("{End}{Enter}"); await lot6Test.expect(args.onDatumClick).toHaveBeenCalledWith(lot6Test.expect.objectContaining({ index: 239 })); await lot6Test.expect(canvasElement.querySelectorAll(".chart__axis-label--date").length).toBeLessThanOrEqual(12); } };

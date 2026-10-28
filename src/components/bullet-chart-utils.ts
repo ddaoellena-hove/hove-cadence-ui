@@ -45,9 +45,15 @@ export const bulletBands = (ranges: ValueThreshold[] | undefined, [low, high]: [
 };
 
 /** Statut écrit d'une ligne : « Favorable — Bonus dès 92 % », ou null sans plage. */
-export const bulletStatus = (value: number, ranges: ValueThreshold[] | undefined, dir: BulletDirection) => {
+export const bulletStatus = (value: number, ranges: ValueThreshold[] | undefined, dir: BulletDirection, unit?: string, format?: Intl.NumberFormatOptions) => {
   if (!Number.isFinite(value)) return { tone: "neutral" as const, status: null };
   const { tone, label } = evaluateThresholds(value, ranges, dir);
+  if (tone === "warning") {
+    const bounds = [...(ranges ?? [])].filter(r => Number.isFinite(r.value)).sort((a, b) => a.value - b.value);
+    const lower = [...bounds].reverse().find(r => dir === "down" ? r.value < value : r.value <= value);
+    const upper = bounds.find(r => dir === "down" ? r.value >= value : r.value > value);
+    if (lower && upper) return { tone, status: `Intermédiaire — entre ${formatValueWithUnit(lower.value, unit, format)} et ${formatValueWithUnit(upper.value, unit, format)}` };
+  }
   return { tone, status: thresholdStatus(tone, label) };
 };
 

@@ -1,5 +1,14 @@
 # Relais de développement — 25 octobre 2026
 
+## Mise à jour — 28 octobre 2026 : Datapilot lot 6
+
+- Branche locale `feat/datapilot-lot6`, depuis `feat/bar-chart-datum-click` (`6bc4fb7`). Livraison directe sur `main` demandée par l’utilisateur le 28 octobre 2026 ; base synchronisée avec `origin/main` (`1af7bae`, fusion du clic BarChart). Fichiers locaux préexistants préservés. Aucune publication npm.
+- Sept composants publics ajoutés : ScopePicker, SummaryList, PageHero, SecretField, ValueComparison, LogViewer et PresenceStrip. Évolutions A1–A8 et B du brief intégrées aux composants existants, fondations C ajoutées ; clic et sélection contrôlée étendus à LineChart/Histogram.
+- API, CSS, exports, stories, GUIDELINES et CHANGELOG mis à jour. Décisions et preuves : [rapport du lot 6](proposals/datapilot-lot6.md).
+- Validation : suite complète 1 009 tests / 171 fichiers, puis 24 tests ciblés après correction TreeView (enfants désactivés exclus de l'agrégation). TypeScript, ESLint touché (0 erreur, 4 avertissements), build:lib, check:types, build-storybook et smoke dist React 19 réussis. Chromium 1248 via configuration temporaire ignorée. Captures à 390/1 100 px sans débordement horizontal.
+- Non exécutés : matrice React 18 et session manuelle avec lecteur d'écran. Migration Datapilot et publication npm hors périmètre. Le clic BarChart a déjà été fusionné sur main via la PR #66.
+- Prochaine étape : migration des écrans Datapilot lorsque demandée. Le reste du document décrit les chantiers antérieurs.
+
 ## Mise à jour — 27 octobre 2026 : pieds de surcouches
 
 - Branche `feat/overlay-footers`, depuis main (fichiers locaux non suivis préservés). Demande Datapilot : corriger le pied d'export et harmoniser les modales. Aucun commit/push/publication.

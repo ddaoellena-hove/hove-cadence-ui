@@ -4,6 +4,15 @@
 
 Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, nettoyage du Storybook, contrastes AA et vérification du paquet (feuille de route § 5). Le guide de migration ci-dessous couvre le passage de n'importe quelle 0.x à la 1.0.
 
+### Lot 6 Datapilot — non publié
+
+- Nouveaux composants : ScopePicker (inline/popover, réseaux regroupés), SummaryList (actions distinctes et non lu), PageHero (synthèse sombre/KPI), SecretField, ValueComparison, PresenceStrip et LogViewer.
+- PageSection : tuiles icon/iconElement et trois tons ; Meter hideValue ; Autocomplete recherche distante, minimum de saisie, chargement, limite et accents ; Indicator point nommé, bouton et inverse ; DescriptionList labelWidth et tuiles ; TableCard selectable.
+- BarChart maxTicks ; LineChart/Histogram onDatumClick et sélection contrôlée ; BarList divergent et tolérance.
+- Drawer navigation, headerContent et largeur 576px ; PageHeader tabs/tabsActions ; Stepper warning ; GhostButton compteur ; DataTable hauteur automatique hors virtualisation ; DataFreshness inverse.
+- Corrections : statut Card étroit ; plage intermédiaire BulletChart correctement décrite et barre visible dans une carte de 240px.
+- Fondations : sept tailles typographiques, huit statuts sur fond sombre, gris dataviz neutre et seize pictogrammes.
+
 ### Ajouté
 
 - **`BulkActionBar`** (*Données et tableaux*) : barre d'actions groupées flottante pour une sélection multiple (`DataTable selectable`, liste de `TableCard`). Placée après la liste, elle colle au bas de la zone visible pendant le défilement ; surface blanche surélevée, compteur puis actions `size="sm"`, masquée sans sélection, compteur annoncé aux lecteurs d'écran (`countLabel` pour nommer les éléments). Le pattern **Liste / index** et les recettes 2 et 5 l'utilisent à la place de la barre de sélection assemblée à la main.

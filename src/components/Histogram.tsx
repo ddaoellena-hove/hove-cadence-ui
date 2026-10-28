@@ -16,9 +16,14 @@ export interface HistogramThreshold {
   label: string;
 }
 
+export interface HistogramDatum { index: number; lower: number; upper: number; count: number; share: number; openStart: boolean; openEnd: boolean }
+
 export interface HistogramProps extends ChartCommonProps {
   /** Observations brutes (retards en minutes, temps de parcours…). Valeurs non finies ignorées. */
   values: number[];
+  onDatumClick?: (datum: HistogramDatum) => void;
+  selectedBin?: number;
+  clickHint?: string;
   /**
    * Nombre de classes visé (bornes « rondes » couvrant toutes les valeurs) ou
    * bornes imposées `[0, 2, 5, 10, 15]` : les valeurs en dehors rejoignent la
@@ -68,7 +73,7 @@ const COUNT_FORMAT = { maximumFractionDigits: 0 };
  * libellés, tooltip et navigation au clavier, alternative tabulaire.
  */
 export const Histogram = ({
-  values,
+  values, onDatumClick, selectedBin, clickHint = "Entrée ou clic : voir le détail",
   bins: binsProp,
   unit,
   countLabel = "observations",
@@ -84,12 +89,19 @@ export const Histogram = ({
   const titleId = useId();
   const descriptionId = useId();
   const summaryId = useId();
+  const hintId = useId();
   const plotRef = useRef<HTMLDivElement>(null);
   const width = useChartWidth(plotRef);
-  const [active, setActive] = useState<number | null>(null);
+  const [activeIndex, setActive] = useState<number | null>(null);
   const [origin, setOrigin] = useState({ left: 0, top: 0 });
 
   const bins = useMemo(() => buildBins(values, binsProp, serviceTime), [values, binsProp, serviceTime]);
+  const active = activeIndex !== null && activeIndex >= 0 && activeIndex < bins.length ? activeIndex : null;
+  const select = (index: number | null) => {
+    if (index === null || !bins[index] || !bins[index].count) return;
+    const b = bins[index];
+    onDatumClick?.({ index, lower: b.x0, upper: b.x1, count: b.count, share: b.share, openStart: Boolean(b.openStart), openEnd: Boolean(b.openEnd) });
+  };
   const label = (b: (typeof bins)[number]) => binLabel(b, unit, format, serviceTime);
   const plotWidth = Math.max(0, width - MARGIN.left - MARGIN.right);
   const plotHeight = Math.max(0, height - MARGIN.top - MARGIN.bottom);
@@ -127,15 +139,20 @@ export const Histogram = ({
     setActive(index);
   };
 
+  const indexAt = (e: MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left - MARGIN.left;
+    const y = e.clientY - rect.top - MARGIN.top;
+    return x >= 0 && x < plotWidth && y >= 0 && y <= plotHeight && classWidth > 0 ? Math.floor(x / classWidth) : null;
+  };
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (bins.length === 0) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const index = Math.floor((e.clientX - rect.left - MARGIN.left) / Math.max(1, classWidth));
-    activate(index >= 0 && index < bins.length ? index : null, e.currentTarget);
+    activate(indexAt(e), e.currentTarget);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (bins.length === 0) return;
+    if (onDatumClick && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); select(active); return; }
     if (e.key === "Escape") {
       setActive(null);
       return;
@@ -174,6 +191,8 @@ export const Histogram = ({
       visible={show}
       columns={["Classe", `Effectif (${countLabel})`, "Part"]}
       numeric={[1, 2]}
+      currentRow={selectedBin}
+      rowActions={onDatumClick ? bins.map((b, i) => b.count ? () => select(i) : undefined) : undefined}
       rows={bins.map((b) => [label(b), formatKpiValue(b.count, COUNT_FORMAT), formatBinShare(b.share)])}
     />
   );
@@ -195,14 +214,15 @@ export const Histogram = ({
     >
       <div
         ref={plotRef}
-        className="chart__plot"
+        className={`chart__plot${onDatumClick ? " histogram__plot--clickable" : ""}`}
         style={{ height }}
         tabIndex={0}
         role="group"
         aria-roledescription="histogramme"
         aria-labelledby={titleId}
-        aria-describedby={`${frame.description ? `${descriptionId} ` : ""}${summaryId}`}
+        aria-describedby={`${frame.description ? `${descriptionId} ` : ""}${summaryId}${onDatumClick ? ` ${hintId}` : ""}`}
         onMouseMove={handleMouseMove}
+        onClick={onDatumClick ? e => select(indexAt(e)) : undefined}
         onMouseLeave={() => setActive(null)}
         onFocus={(e) => activate(active ?? (bins.length ? 0 : null), e.currentTarget)}
         onBlur={() => setActive(null)}
@@ -218,6 +238,7 @@ export const Histogram = ({
               const top = y(b.count);
               return (
                 <g key={`${b.x0}-${b.x1}`}>
+                  {selectedBin === i && <rect className="histogram__selected" x={x0 + 1} y={1} width={Math.max(0, classWidth - 2)} height={Math.max(0, plotHeight - 2)} />}
                   {active === i && <rect className="histogram__hover" x={x0} y={0} width={barWidth + 1} height={plotHeight} />}
                   {b.count > 0 && (
                     <rect
@@ -264,6 +285,7 @@ export const Histogram = ({
           {active !== null ? `${describeBin(active)}${notesFor(active) ? `. ${notesFor(active)}` : ""}` : ""}
         </p>
       </div>
+      {onDatumClick && <p id={hintId} className="chart__sr-only">{clickHint}{selectedBin !== undefined && bins[selectedBin] ? `. Sélection : ${label(bins[selectedBin])}` : ""}</p>}
       {anchor && activeBin && active !== null && (
         <ChartTooltip
           x={anchor.x}
@@ -274,6 +296,7 @@ export const Histogram = ({
             { id: "share", label: "Part", value: formatBinShare(activeBin.share) },
           ]}
           note={notesFor(active)}
+          hint={onDatumClick && activeBin.count ? clickHint : undefined}
         />
       )}
     </ChartFrame>

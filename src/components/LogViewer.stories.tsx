@@ -1,0 +1,12 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, fn, userEvent, within } from "storybook/test";
+import { LogViewer } from "./LogViewer";
+const meta: Meta<typeof LogViewer> = { title: "Composants/Données et tableaux/LogViewer", component: LogViewer, tags: ["autodocs"] };
+export default meta;
+type Story = StoryObj<typeof LogViewer>;
+const download = fn();
+export const Defaut: Story = { args: { title: "Journal d’exécution", onDownload: download, lines: [{ id: "1", timestamp: "09:00:00", level: "info", message: "Import démarré" }, { id: "2", timestamp: "09:00:01", level: "warning", message: "Identifiant inconnu : <script>alert(1)</script>", highlighted: true }, { id: "3", level: "error", message: "Échec de la validation" }] }, play: async ({ canvasElement }) => { const c = within(canvasElement); await expect(c.getByText("Identifiant inconnu : <script>alert(1)</script>")).toBeVisible(); await expect(canvasElement.querySelector("script")).toBeNull(); await userEvent.click(c.getByRole("button", { name: "Télécharger" })); await expect(download).toHaveBeenCalled(); } };
+export const Extrait: Story = { args: { title: "stops.txt", startLine: 42, lines: [{ id: "a", message: "stop_id,stop_name" }, { id: "b", message: "42,Gare centrale", highlighted: true }] } };
+export const Vide: Story = { args: { title: "Journal", lines: [] } };
+export const Chargement: Story = { args: { ...Vide.args, loading: true } };
+export const Long: Story = { args: { title: "Journal long", maxHeight: 160, lines: Array.from({ length: 100 }, (_, i) => ({ id: String(i), message: `Ligne ${i} : traitement de l’observation ${"longue ".repeat(20)}` })) } };

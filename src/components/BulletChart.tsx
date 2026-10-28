@@ -70,7 +70,7 @@ export const BulletChart = ({
     const itemUnit = item.unit ?? unit;
     const dir = item.goodDirection ?? goodDirection;
     const scale = bulletScale(item.min ?? min, item.max ?? max, item.value, item.target, item.ranges);
-    const { tone, status } = bulletStatus(item.value, item.ranges, dir);
+    const { tone, status } = bulletStatus(item.value, item.ranges, dir, itemUnit, format);
     const ratio = (v: number) => Math.min(1, Math.max(0, (v - scale[0]) / (scale[1] - scale[0])));
     return {
       item,

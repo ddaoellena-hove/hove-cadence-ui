@@ -214,3 +214,7 @@
     transition: width 240ms ease;
   }
 }
+
+.meter--hide-value .meter__value { display: none; }
+
+.meter--sm.meter--hide-value { grid-template-columns: minmax(0, 1fr); }

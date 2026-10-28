@@ -11,6 +11,7 @@ import "./base-button.css";
 
 export interface BaseButtonProps extends ActionButtonBaseProps {
   /** "outline" : PrimaryButton contour (classes primary-button + primary-button--outline). */
+  counter?: { value: number; max: number; label: string };
   variant: "primary" | "outline" | "ghost";
   label?: string;
   icon?: IconName;
@@ -24,7 +25,7 @@ const Spinner = () => <span className="base-button__spinner" aria-hidden="true" 
 export const BaseButton = forwardRef<HTMLButtonElement, BaseButtonProps>(
   (
     {
-      variant,
+      variant, counter,
       tone = "default",
       size = "md",
       iconStart,
@@ -85,7 +86,7 @@ export const BaseButton = forwardRef<HTMLButtonElement, BaseButtonProps>(
         className={rootClass}
         disabled={disabled}
         onClick={handleClick}
-        aria-label={accessibleName}
+        aria-label={counter ? `${accessibleName ?? label}, ${counter.value} ${counter.label}` : accessibleName}
         aria-busy={loading || undefined}
         aria-disabled={loading || undefined}
       >
@@ -104,6 +105,7 @@ export const BaseButton = forwardRef<HTMLButtonElement, BaseButtonProps>(
             )}
           </>
         )}
+        {counter && <span className="base-button__counter" aria-hidden="true">{counter.value > counter.max ? `${counter.max}+` : counter.value}</span>}
       </button>
     );
 

@@ -14,6 +14,9 @@ export interface BarListItem {
   /** Nom accessible quand `label` n'est pas du texte. */
   ariaLabel?: string;
   value: number;
+  /** Écart absolu complémentaire d’un pourcentage (mode divergent). */
+  absoluteValue?: number;
+  absoluteUnit?: string;
   /** Variation affichée à droite (« +12 % »), colorée selon goodDirection. */
   delta?: { value: number; unit?: DeltaUnit };
 }
@@ -22,6 +25,9 @@ export interface BarListProps extends ChartCommonProps {
   items: BarListItem[];
   /** "none" (défaut) garde l'ordre fourni ; "desc" trie par valeur décroissante. */
   sort?: "none" | "desc";
+  mode?: "positive" | "diverging";
+  /** Demi-largeur de la zone neutre autour de zéro, dans l'unité des valeurs. */
+  tolerance?: number;
   /** Unité de la valeur (« perturbations », « min »). */
   unit?: string;
   /** Formatage des nombres. Défaut : `{ maximumFractionDigits: 1 }`. */
@@ -48,6 +54,7 @@ const labelText = (item: BarListItem) => item.ariaLabel ?? (typeof item.label ==
 export const BarList = ({
   items,
   sort = "none",
+  mode = "positive", tolerance = 0,
   unit,
   format,
   goodDirection = "up",
@@ -59,18 +66,19 @@ export const BarList = ({
   const titleId = useId();
   const descriptionId = useId();
   const { shown, hidden } = prepareItems(items, sort, limit);
-  const maxValue = Math.max(0, ...items.map((i) => i.value));
+  const maxValue = Math.max(0, ...items.map((i) => Number.isFinite(i.value) ? (mode === "diverging" ? Math.abs(i.value) : i.value) : 0));
 
   const table = (visible: boolean) => (
     <ChartDataTable
       caption={frame.title}
       visible={visible}
-      columns={["Élément", unit ? `Valeur (${unit})` : "Valeur", "Variation"]}
-      numeric={[1, 2]}
+      columns={["Élément", unit ? `Valeur (${unit})` : "Valeur", "Variation", ...(items.some(item => item.absoluteValue !== undefined) ? ["Écart absolu"] : [])]}
+      numeric={[1, 2, 3]}
       rows={prepareItems(items, sort).shown.map((item) => [
         labelText(item),
         formatKpiValue(item.value, format),
         item.delta ? formatDelta(item.delta.value, item.delta.unit ?? "%") : "—",
+        ...(items.some(i => i.absoluteValue !== undefined) ? [item.absoluteValue === undefined ? "—" : formatValueWithUnit(item.absoluteValue, item.absoluteUnit, { signDisplay: "exceptZero" })] : []),
       ])}
     />
   );
@@ -78,7 +86,7 @@ export const BarList = ({
   return (
     <ChartFrame
       {...frame}
-      kind="bar-list"
+      kind={`bar-list${mode === "diverging" ? " bar-list--diverging" : ""}`}
       titleId={titleId}
       descriptionId={descriptionId}
       height={ROW_HEIGHT * Math.max(3, limit ?? items.length)}
@@ -90,17 +98,18 @@ export const BarList = ({
         aria-describedby={frame.description ? descriptionId : undefined}
       >
         {shown.map((item) => {
-          const tone = item.delta ? getDeltaTone(item.delta.value, goodDirection) : "neutral";
-          const accessibleName = describeItem(labelText(item), item, goodDirection, unit, format);
+          const tone = mode === "diverging" ? (Math.abs(item.value) <= tolerance ? "neutral" : getDeltaTone(item.value, goodDirection)) : item.delta ? getDeltaTone(item.delta.value, goodDirection) : "neutral";
+          const accessibleName = describeItem(labelText(item), item, goodDirection, unit, mode === "diverging" ? { ...format, signDisplay: "exceptZero" } : format) + (item.absoluteValue !== undefined ? `, ${formatValueWithUnit(item.absoluteValue, item.absoluteUnit, { maximumFractionDigits: 1, signDisplay: "exceptZero" })}` : "");
           const content = (
             <>
               <span className="bar-list__label">{item.label}</span>
               <span className="bar-list__track" aria-hidden="true">
-                <span className="bar-list__bar" style={{ width: `${barRatio(item.value, maxValue) * 100}%` }} />
+                {mode === "diverging" && <><span className="bar-list__tolerance" style={{ left: `${50 - barRatio(tolerance, maxValue) * 50}%`, width: `${barRatio(tolerance, maxValue) * 100}%` }} /><span className="bar-list__zero" /></>}
+                <span className={`bar-list__bar bar-list__bar--${tone}`} style={mode === "diverging" ? { left: `${item.value < 0 ? 50 - barRatio(Math.abs(item.value), maxValue) * 50 : 50}%`, width: `${barRatio(Math.abs(item.value), maxValue) * 50}%` } : { width: `${barRatio(item.value, maxValue) * 100}%` }} />
               </span>
-              <span className="bar-list__value">{formatValueWithUnit(item.value, undefined, format)}</span>
+              <span className="bar-list__value">{formatValueWithUnit(item.value, mode === "diverging" ? unit : undefined, mode === "diverging" ? { ...format, signDisplay: "exceptZero" } : format)}</span>
               <span className={`bar-list__delta bar-list__delta--${tone}`}>
-                {item.delta && (
+                {item.absoluteValue !== undefined ? formatValueWithUnit(item.absoluteValue, item.absoluteUnit, { maximumFractionDigits: 1, signDisplay: "exceptZero" }) : item.delta && (
                   <>
                     {item.delta.value !== 0 && (
                       <Icons icon={item.delta.value > 0 ? "arrow-up" : "arrow-down"} size={12} className="bar-list__delta-icon" />

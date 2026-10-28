@@ -85,3 +85,8 @@ export const DecalageHorloge: Story = {
     await expect(within(canvasElement).getByText(/Mis à jour à l'instant/)).toBeInTheDocument();
   },
 };
+
+export const InverseLot6: Story = {
+  args: { updatedAt: minus(40), inverse: true },
+  decorators: [Story => <div style={{ background: "var(--cadence-color-primary)", padding: 16 }}><Story /></div>],
+};

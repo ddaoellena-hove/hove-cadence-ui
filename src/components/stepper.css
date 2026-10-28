@@ -166,3 +166,6 @@
   .stepper--horizontal .stepper__item { flex-direction: row; text-align: left; }
   .stepper--horizontal .stepper__connector { display: none; }
 }
+
+.stepper__step--warning .stepper__marker { color: var(--cadence-status-warning-fg, #c2410c); background: var(--cadence-status-warning-bg, #fff7ed); border-color: var(--cadence-status-warning-fg, #c2410c); }
+.stepper__step--warning .stepper__state { color: var(--cadence-status-warning-fg, #c2410c); }

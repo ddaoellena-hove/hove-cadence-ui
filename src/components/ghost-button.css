@@ -38,3 +38,5 @@
   background-color: transparent;
   color: var(--cadence-color-text-disabled, rgb(128, 128, 128));
 }
+
+.base-button__counter { position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; padding: 0 3px; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--cadence-radius-pill, 999px); background: var(--cadence-status-critical-fg, #b91c1c); color: var(--cadence-color-white, #fff); font-size: 11px; line-height: 1; }

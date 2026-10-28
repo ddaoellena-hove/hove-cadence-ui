@@ -32,6 +32,7 @@ export interface DataFreshnessProps {
   label?: string;
   /** Masquer le point coloré. */
   hideDot?: boolean;
+  inverse?: boolean;
   /** Fuseau du format absolu. Défaut : fuseau local. */
   timeZone?: string;
   className?: string;
@@ -44,6 +45,7 @@ export const DataFreshness = ({
   staleWithin = 3600,
   label = "Mis à jour",
   hideDot = false,
+  inverse = false,
   timeZone,
   className,
 }: DataFreshnessProps) => {
@@ -59,7 +61,7 @@ export const DataFreshness = ({
   const reference = now !== undefined ? toDate(now) : new Date();
 
   if (!date || !reference) {
-    return <span className={["data-freshness", "data-freshness--unknown", className].filter(Boolean).join(" ")}>Date indisponible</span>;
+    return <span className={["data-freshness", inverse ? "data-freshness--inverse" : "", "data-freshness--unknown", className].filter(Boolean).join(" ")}>Date indisponible</span>;
   }
 
   const ageSeconds = (reference.getTime() - date.getTime()) / 1000;
@@ -69,7 +71,7 @@ export const DataFreshness = ({
   const relative = formatRelative(ageSeconds);
   const value = relative ?? `le ${absolute}`;
 
-  const rootClass = ["data-freshness", className].filter(Boolean).join(" ");
+  const rootClass = ["data-freshness", inverse ? "data-freshness--inverse" : "", className].filter(Boolean).join(" ");
 
   return (
     <time dateTime={date.toISOString()} className={rootClass} title={absolute}>

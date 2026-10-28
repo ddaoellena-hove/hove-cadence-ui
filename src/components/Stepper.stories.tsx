@@ -66,3 +66,6 @@ export const Navigable: Story = {
     await expect(canvas.getByText("Retour vers : src")).toBeInTheDocument();
   },
 };
+
+import * as lot6Test from "storybook/test";
+export const AvertissementLot6: Story = { args: { steps: [{ id: "a", label: "Import", state: "completed" }, { id: "b", label: "Qualité", state: "warning" }, { id: "c", label: "Export", state: "upcoming" }] }, play: async ({ canvasElement }) => { await lot6Test.expect(lot6Test.within(canvasElement).getByText("À vérifier")).toBeVisible(); } };

@@ -89,3 +89,6 @@ export const Chargement: Story = {
 
 /** Désactivé : texte grisé, sans fond. */
 export const Desactive: Story = { name: "Désactivé", args: { disabled: true } };
+
+import * as lot6Test from "storybook/test";
+export const CompteurLot6: Story = { render: () => <div style={{ display: "flex", gap: 24, padding: 16 }}>{[0, 3, 12].map(count => <GhostButton key={count} icon="bell-01" aria-label="Notifications" count={count} />)}</div>, play: async ({ canvasElement }) => { const c = lot6Test.within(canvasElement); await lot6Test.expect(c.getByRole("button", { name: "Notifications, 12 non lues" })).toBeVisible(); await lot6Test.expect(c.getByText("9+")).toBeVisible(); await lot6Test.expect(c.getByRole("button", { name: "Notifications" })).toBeVisible(); } };

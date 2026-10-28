@@ -55,3 +55,12 @@
   flex-direction: column;
   min-width: 0;
 }
+
+.page-section__head--icon { align-items: center; }
+.page-section__head { flex-wrap: wrap; }
+.page-section__titles { flex: 1; }
+.page-section__icon { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; flex: 0 0 40px; border-radius: var(--cadence-radius-lg, 10px); color: var(--cadence-color-white, #fff); }
+.page-section__icon--label { background: var(--cadence-color-label, #1a3e45); }
+.page-section__icon--muted { background: var(--cadence-color-icon-muted, #69797d); }
+.page-section__icon--accent { background: var(--cadence-color-accent, #1b6cff); }
+.page-section__actions { flex-wrap: wrap; max-width: 100%; }

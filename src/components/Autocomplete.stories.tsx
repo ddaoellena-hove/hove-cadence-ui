@@ -188,3 +188,28 @@ export const WithCategories: Story = {
     );
   },
 };
+
+import * as lot6Test from "storybook/test";
+import { useEffect as useRemoteEffect } from "react";
+const remoteIndex = Array.from({ length: 100_000 }, (_, i) => ({ id: `stop-${i}`, label: `Zone d’arrêt ${i}`, description: `Identifiant ${i}` }));
+function RemoteExample() {
+  const [query, setQuery] = useState("");
+  const [options, setOptions] = useState<AutocompleteOption[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [value, setValue] = useState<string | string[] | null>(null);
+  useRemoteEffect(() => {
+    if (query.length < 2) return;
+    const timer = setTimeout(() => { setOptions(remoteIndex.filter(o => o.id.includes(query)).slice(0, 30)); setLoading(false); }, 150);
+    return () => clearTimeout(timer);
+  }, [query]);
+  return <Autocomplete label="Zone d’arrêt distante" options={options} value={value ?? undefined} onChange={setValue} filter={false} minChars={2} limit={10} loading={loading} onInputChange={q => { setQuery(q); setLoading(q.length >= 2); if (q.length < 2) setOptions([]); }} />;
+}
+export const RechercheDistanteLot6: Story = { render: () => <RemoteExample />, play: async ({ canvasElement }) => {
+  const c = lot6Test.within(canvasElement); const input = c.getByRole("combobox");
+  await lot6Test.userEvent.click(input); await lot6Test.expect(c.queryAllByRole("option")).toHaveLength(0);
+  await lot6Test.userEvent.type(input, "42");
+  await lot6Test.waitFor(() => lot6Test.expect(c.getAllByRole("option")).toHaveLength(10));
+  await lot6Test.userEvent.keyboard("{Enter}"); await lot6Test.expect(input).toHaveValue("Zone d’arrêt 42");
+  await lot6Test.userEvent.tab(); await lot6Test.expect(input).toHaveValue("Zone d’arrêt 42");
+} };
+export const AccentsLot6: Story = { args: { label: "Arrêt", options: [{ id: "a", label: "École", description: "Référence ABC" }] }, play: async ({ canvasElement }) => { const c = lot6Test.within(canvasElement); await lot6Test.userEvent.type(c.getByRole("combobox"), "ecole"); await lot6Test.expect(c.getByRole("option", { name: /École/ })).toBeVisible(); } };

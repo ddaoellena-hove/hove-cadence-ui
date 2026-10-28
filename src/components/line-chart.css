@@ -73,3 +73,6 @@
   cursor: crosshair;
   user-select: none;
 }
+
+.line-chart__plot--clickable { cursor: pointer; }
+.line-chart__selected { stroke: var(--cadence-color-primary, #002830); stroke-width: 2px; }

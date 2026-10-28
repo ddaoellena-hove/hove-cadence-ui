@@ -40,7 +40,7 @@ export const ChartDataTable = ({ caption, columns, rows, numeric = [], visible, 
               j === 0 ? (
                 <th key={j} scope="row">
                   {rowActions?.[i] ? (
-                    <button type="button" className="chart-table__row-button" aria-current={currentRow === i ? "true" : undefined} onClick={rowActions[i]}>
+                    <button type="button" className="chart-table__row-button" tabIndex={visible ? 0 : -1} aria-current={currentRow === i ? "true" : undefined} onClick={rowActions[i]}>
                       {cell}
                     </button>
                   ) : (

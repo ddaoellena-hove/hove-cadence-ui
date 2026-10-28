@@ -132,3 +132,6 @@ export const Chargement: Story = { args: { title: "Indicateurs du contrat", item
 export const Vide: Story = { args: { title: "Indicateurs du contrat", items: [], state: "empty" } };
 
 export const Erreur: Story = { args: { title: "Indicateurs du contrat", items: [], state: "error", onRetry: fn() } };
+
+import * as lot6Test from "storybook/test";
+export const DistanceEtroiteLot6: Story = { args: { title: "Distance de fusion", goodDirection: "down", max: 500, unit: "m", items: [{ id: "a", label: "Distance", value: 233, ranges: [{ value: 50, label: "Fusion directe sous 50 m" }, { value: 300, label: "Au-delà de 300 m" }] }] }, decorators: [Story => <div style={{ width: 240 }}><Story /></div>], play: async ({ canvasElement }) => { const c = lot6Test.within(canvasElement); await lot6Test.expect(c.getByRole("group", { name: /Intermédiaire — entre 50/ })).toBeVisible(); await lot6Test.expect(canvasElement.querySelector(".bullet-chart__plot")!.getBoundingClientRect().width).toBeGreaterThan(100); } };

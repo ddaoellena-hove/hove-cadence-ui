@@ -9,3 +9,9 @@
 .description-list--compact .description-list__item:last-child { padding-bottom: 0; }
 .description-list--stacked .description-list__item { grid-template-columns: minmax(0, 1fr); gap: 4px; }
 @media (max-width: 480px) { .description-list__item { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
+
+.description-list--shared { display: grid; grid-template-columns: minmax(0, var(--description-label-width)) minmax(0, 1fr); column-gap: 24px; }
+.description-list--shared .description-list__item { grid-column: 1 / -1; grid-template-columns: subgrid; }
+.description-list--tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr)); gap: 12px; }
+.description-list--tiles .description-list__item { grid-column: auto; display: flex; flex-direction: column; gap: 4px; padding: 12px; border: 0; border-radius: var(--cadence-radius-md, 8px); background: var(--cadence-color-surface-alt, #eef1f4); }
+@media (max-width: 480px) { .description-list--shared { grid-template-columns: minmax(0, 1fr); } .description-list--shared .description-list__item { grid-template-columns: minmax(0, 1fr); } }

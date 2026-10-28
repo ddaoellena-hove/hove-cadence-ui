@@ -134,13 +134,14 @@ export const getCheckState = (node: TreeNode, selected: Set<string>, loaded: Loa
   let checked = 0;
   let unchecked = 0;
   for (const child of children) {
+    if (child.disabled) continue;
     const state = getCheckState(child, selected, loaded);
     if (state === "mixed") return "mixed";
     if (state === "checked") checked += 1;
     else unchecked += 1;
     if (checked > 0 && unchecked > 0) return "mixed";
   }
-  return unchecked === 0 ? "checked" : "unchecked";
+  return checked > 0 && unchecked === 0 ? "checked" : "unchecked";
 };
 
 /**

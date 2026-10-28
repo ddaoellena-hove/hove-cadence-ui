@@ -80,3 +80,11 @@ describe("tree-view-utils", () => {
     expect(findByTypeahead(rows, "zz", 0)).toBe(-1);
   });
 });
+
+// Une feuille verrouillée ne rend pas le réseau indéterminé à tort.
+it("ignore les enfants désactivés dans le statut agrégé du parent", () => {
+  const node = { id: "network", label: "Réseau", children: [{ id: "a", label: "A" }, { id: "b", label: "B", disabled: true }] };
+  expect(getCheckState(node, new Set(["a"]), {})).toBe("checked");
+  expect(getCheckState(node, new Set(), {})).toBe("unchecked");
+  expect(getCheckState({ ...node, children: [{ id: "b", label: "B", disabled: true }] }, new Set(), {})).toBe("unchecked");
+});

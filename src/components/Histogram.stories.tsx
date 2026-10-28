@@ -127,3 +127,11 @@ export const Chargement: Story = { args: { title: "Distribution des retards", va
 export const Vide: Story = { args: { title: "Distribution des retards", values: [], state: "empty" } };
 
 export const Erreur: Story = { args: { title: "Distribution des retards", values: [], state: "error", onRetry: fn() } };
+
+import * as lot6Test from "storybook/test";
+export const ClicLot6: Story = { args: { title: "Distribution cliquable", values: [1, 2, 8, 9], bins: [0, 5, 10], onDatumClick: lot6Test.fn(), selectedBin: 1 }, play: async ({ canvasElement, args }) => { const plot = lot6Test.within(canvasElement).getByRole("group", { name: "Distribution cliquable" }); plot.focus(); await lot6Test.userEvent.keyboard("{End}{Enter}"); await lot6Test.expect(args.onDatumClick).toHaveBeenCalledWith(lot6Test.expect.objectContaining({ index: 1, count: 2 })); } };
+
+export const ClasseVideLot6: Story = {
+  args: { title: "Classes vides", values: [1, 9], bins: [0, 3, 6, 10], onDatumClick: lot6Test.fn() },
+  play: async ({ canvasElement, args }) => { const plot = lot6Test.within(canvasElement).getByRole("group", { name: "Classes vides" }); plot.focus(); await lot6Test.userEvent.keyboard("{Home}{ArrowRight}{Enter}"); await lot6Test.expect(args.onDatumClick).not.toHaveBeenCalled(); },
+};

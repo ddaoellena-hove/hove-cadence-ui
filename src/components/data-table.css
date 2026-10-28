@@ -236,3 +236,7 @@
 .data-table--sticky-actions .data-table__row > *:last-child .base-button-tip__bubble {
   display: none;
 }
+
+.data-table__row--auto { align-items: start; }
+.data-table__row--auto .data-table__cell { white-space: normal; overflow-wrap: anywhere; align-items: flex-start; padding-top: 12px; padding-bottom: 12px; }
+.data-table__row--auto .data-table__text { white-space: normal; overflow: visible; }

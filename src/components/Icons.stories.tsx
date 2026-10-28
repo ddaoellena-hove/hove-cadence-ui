@@ -106,3 +106,5 @@ export const AllIcons: Story = {
     </div>
   ),
 };
+
+export const MetierLot6: Story = { render: () => <div style={{ display: "flex", flexWrap: "wrap", gap: 24, fontFamily: "var(--cadence-font-sans)", fontSize: 13 }}>{(["database", "layers", "shield-check", "target", "activity", "alert-circle", "info-plain", "live", "mobility-lignes", "mobility-reseaux", "mobility-compagnies", "mobility-parcours", "mobility-zones", "mobility-modes-com", "mobility-points", "mobility-modes-phy"] as const).map(icon => <div key={icon} style={{ display: "flex", alignItems: "center", gap: 8 }}><Icons icon={icon} size={20} /><span>{icon}</span></div>)}</div> };

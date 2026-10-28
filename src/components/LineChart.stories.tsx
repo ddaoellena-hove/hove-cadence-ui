@@ -359,3 +359,20 @@ export const Erreur: Story = {
     await expect(onRetry).toHaveBeenCalledTimes(1);
   },
 };
+
+import * as lot6Test from "storybook/test";
+export const ClicLot6: Story = { args: { title: "Réceptions par heure", series: [{ id: "a", label: "Courses", data: [{ x: "08:00", y: 12 }, { x: "09:00", y: null }, { x: "10:00", y: 20 }] }], onDatumClick: lot6Test.fn(), selectedX: "10:00" }, play: async ({ canvasElement, args }) => { const c = lot6Test.within(canvasElement); const plot = c.getByRole("group", { name: "Réceptions par heure" }); plot.focus(); await lot6Test.userEvent.keyboard("{Home}{Enter}"); await lot6Test.expect(args.onDatumClick).toHaveBeenCalledWith({ x: "08:00", index: 0, values: [{ seriesId: "a", value: 12 }] }); const calls = (args.onDatumClick as ReturnType<typeof lot6Test.fn>).mock.calls.length; await lot6Test.userEvent.keyboard("{ArrowRight}{Enter}"); await lot6Test.expect(args.onDatumClick).toHaveBeenCalledTimes(calls); } };
+
+export const ClicEtPlageLot6: Story = {
+  args: { ...ClicLot6.args, onRangeSelect: lot6Test.fn(), onDatumClick: lot6Test.fn() },
+  play: async ({ canvasElement, args }) => {
+    const plot = lot6Test.within(canvasElement).getByRole("group", { name: "Réceptions par heure" });
+    plot.focus();
+    await lot6Test.userEvent.keyboard("{Home}{Shift>}{ArrowRight}{ArrowRight}{/Shift}{Enter}");
+    await lot6Test.expect(args.onRangeSelect).toHaveBeenCalledWith(["08:00", "10:00"]);
+    await lot6Test.expect(args.onDatumClick).not.toHaveBeenCalled();
+    await lot6Test.userEvent.keyboard("{Enter}");
+    await lot6Test.expect(args.onDatumClick).toHaveBeenCalledWith(lot6Test.expect.objectContaining({ x: "10:00" }));
+    for (const button of canvasElement.querySelectorAll(".chart-table__row-button")) await lot6Test.expect(button).toHaveAttribute("tabindex", "-1");
+  },
+};

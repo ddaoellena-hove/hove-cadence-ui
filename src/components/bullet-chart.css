@@ -131,3 +131,12 @@
     transition: width 200ms ease;
   }
 }
+
+.bullet-chart__items { container-type: inline-size; }
+@container (max-width: 360px) {
+  .bullet-chart__row { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+  .bullet-chart__heading { grid-column: 1; }
+  .bullet-chart__value { grid-column: 2; grid-row: 1; }
+  .bullet-chart__plot { grid-column: 1 / -1; grid-row: 2; width: 100%; }
+  .bullet-chart__label { white-space: normal; }
+}

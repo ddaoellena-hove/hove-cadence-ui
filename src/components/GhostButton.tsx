@@ -7,10 +7,10 @@ import { BaseButton } from "./BaseButton";
 import type { ActionButtonProps } from "./action-button-types";
 import "./ghost-button.css";
 
-export type GhostButtonProps = ActionButtonProps;
+export type GhostButtonProps = ActionButtonProps & { count?: number; countMax?: number; countLabel?: string };
 
-export const GhostButton = forwardRef<HTMLButtonElement, GhostButtonProps>((props, ref) => (
-  <BaseButton ref={ref} variant="ghost" {...props} />
+export const GhostButton = forwardRef<HTMLButtonElement, GhostButtonProps>(({ count, countMax = 9, countLabel = "non lues", ...props }, ref) => (
+  <BaseButton ref={ref} variant="ghost" {...props} counter={count !== undefined && count > 0 ? { value: count, max: countMax, label: countLabel } : undefined} />
 ));
 
 GhostButton.displayName = "GhostButton";

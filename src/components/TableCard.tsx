@@ -32,6 +32,7 @@ export interface TableCardProps {
   /** Icon to the left of the title (Icons component name). */
   icon?: IconsProps["icon"];
   /** Checkbox state for multi-select. */
+  selectable?: boolean;
   checkboxState?: "unchecked" | "checked" | "indeterminate";
   /** Nom accessible de la case. Défaut : « Sélectionner {title} », sinon « Sélectionner la ligne ». */
   checkboxLabel?: string;
@@ -54,6 +55,7 @@ export const TableCard = ({
   title,
   iconElement,
   icon,
+  selectable = true,
   checkboxState = "unchecked",
   checkboxLabel,
   onCheckboxChange,
@@ -80,7 +82,7 @@ export const TableCard = ({
       {hasHeader && (
         <div className="table-card__header">
           <div className="table-card__header-left">
-            <div className="table-card__checkbox">
+            {selectable && <div className="table-card__checkbox">
               <Checkbox
                 state={
                   state === "disabled"
@@ -94,7 +96,7 @@ export const TableCard = ({
                 onChange={onCheckboxChange}
                 aria-label={checkboxLabel ?? (title ? `Sélectionner ${title}` : "Sélectionner la ligne")}
               />
-            </div>
+            </div>}
             {(iconElement || icon) && (
               <span className="table-card__icon">
                 {iconElement ?? <Icons icon={icon!} className="" iconMap="" />}

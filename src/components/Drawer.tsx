@@ -50,7 +50,9 @@ export interface DrawerProps {
   /** Contenu de pied composé ; remplace les actions standard. Hors du corps défilant. */
   footer?: ReactNode;
   /** Largeur : "md" 480px (défaut), "lg" 720px (formulaire, contenu dense). */
-  width?: "md" | "lg";
+  width?: "md" | "intermediate" | "lg";
+  headerContent?: ReactNode;
+  navigation?: { current: number; total: number; onPrevious: () => void; onNext: () => void };
   /**
    * Fait du panneau un formulaire : corps et pied dans un <form>, l'action
    * principale devient type="submit". L'app appelle preventDefault et valide.
@@ -73,6 +75,7 @@ export const Drawer = ({
   secondaryAction,
   footer,
   width = "md",
+  headerContent, navigation,
   onSubmit,
   className,
 }: DrawerProps) => {
@@ -171,6 +174,14 @@ export const Drawer = ({
             <CloseButton onClick={onClose} />
           </div>
 
+          {(headerContent || navigation) && <div className="drawer__header-content">
+            {navigation && <nav className="drawer__navigation" aria-label="Navigation entre les éléments">
+              <GhostButton size="sm" icon="chevron-left" aria-label="Élément précédent" disabled={navigation.current <= 1} onClick={navigation.onPrevious} />
+              <span role="status" aria-atomic="true">{navigation.current} sur {navigation.total}</span>
+              <GhostButton size="sm" icon="chevron-right" aria-label="Élément suivant" disabled={navigation.current >= navigation.total} onClick={navigation.onNext} />
+            </nav>}
+            {headerContent}
+          </div>}
           {onSubmit ? (
             <form className="drawer__form" onSubmit={onSubmit}>
               {content}

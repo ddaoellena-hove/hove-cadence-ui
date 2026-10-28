@@ -1,0 +1,11 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, fn, userEvent, within } from "storybook/test";
+import { PageHero } from "./PageHero";
+const meta: Meta<typeof PageHero> = { title: "Composants/Structure et mise en page/PageHero", component: PageHero, tags: ["autodocs"] };
+export default meta;
+type Story = StoryObj<typeof PageHero>;
+const open = fn();
+export const Defaut: Story = { args: { title: "Flux temps réel", description: "Réception et qualité du réseau", value: 12456, unit: "courses", status: "active", statusLabel: "En direct", freshness: { updatedAt: "2026-10-28T08:00:00Z", now: "2026-10-28T08:02:00Z", timeZone: "Europe/Paris" }, kpis: [{ id: "a", label: "Réceptions", value: 240, status: "nominal", statusLabel: "À jour", onClick: open }, { id: "b", label: "À vérifier", value: 12, status: "warning", statusLabel: "Avertissement" }, { id: "c", label: "Erreurs", value: 3, status: "critical", statusLabel: "Critique" }] }, play: async ({ canvasElement }) => { open.mockClear(); const c = within(canvasElement); const tile = c.getByRole("button", { name: /Réceptions, 240/ }); tile.focus(); await userEvent.keyboard("{Enter}"); await expect(open).toHaveBeenCalledOnce(); } };
+export const Etroit: Story = { ...Defaut, play: undefined, decorators: [Story => <div style={{ width: 280 }}><Story /></div>] };
+export const Chargement: Story = { args: { ...Defaut.args, loading: true } };
+export const SansKpi: Story = { args: { title: "Catalogue", description: "Données de référence", headingLevel: 2 } };

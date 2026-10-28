@@ -1,0 +1,11 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, fn, userEvent, within, waitFor } from "storybook/test";
+import { SecretField } from "./SecretField";
+const meta: Meta<typeof SecretField> = { title: "Composants/Formulaires/SecretField", component: SecretField, tags: ["autodocs"] };
+export default meta;
+type Story = StoryObj<typeof SecretField>;
+const save = fn();
+export const Defaut: Story = { args: { label: "Jeton d’accès", isSet: true, helperText: "Stocké chiffré par le service.", onSave: save }, play: async ({ canvasElement }) => { save.mockClear(); const c = within(canvasElement); await userEvent.click(c.getByRole("button", { name: /Remplacer/ })); const input = c.getByLabelText("Jeton d’accès", { selector: "input" }); await expect(input).toHaveAttribute("type", "password"); await userEvent.type(input, "nouveau-secret"); await userEvent.click(c.getByRole("button", { name: "Annuler" })); await expect(save).not.toHaveBeenCalled(); await userEvent.click(c.getByRole("button", { name: /Remplacer/ })); await expect(c.getByLabelText("Jeton d’accès", { selector: "input" })).toHaveValue(""); await userEvent.type(c.getByLabelText("Jeton d’accès", { selector: "input" }), "second-secret"); await userEvent.click(c.getByRole("button", { name: "Enregistrer" })); await expect(save).toHaveBeenCalledWith("second-secret"); await waitFor(() => expect(c.getByRole("button", { name: /Remplacer/ })).toHaveFocus()); } };
+export const NonDefini: Story = { args: { ...Defaut.args, isSet: false } };
+export const Desactive: Story = { args: { ...Defaut.args, disabled: true } };
+export const Echec: Story = { args: { ...Defaut.args, onSave: async () => { throw new Error("offline"); } }, play: async ({ canvasElement }) => { const c = within(canvasElement); await userEvent.click(c.getByRole("button", { name: /Remplacer/ })); await userEvent.type(c.getByLabelText("Jeton d’accès", { selector: "input" }), "essai"); await userEvent.click(c.getByRole("button", { name: "Enregistrer" })); await waitFor(() => expect(c.getByLabelText("Jeton d’accès", { selector: "input" })).toHaveAttribute("aria-invalid", "true")); } };

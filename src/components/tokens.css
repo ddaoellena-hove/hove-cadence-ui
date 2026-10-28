@@ -78,6 +78,24 @@
 }
 
 :root {
+  /* Lot 6 : typographie et statuts sur fond sombre. */
+  --cadence-font-size-small: 12px;
+  --cadence-font-size-body: 13px;
+  --cadence-font-size-emphasis: 14px;
+  --cadence-font-size-section: 16px;
+  --cadence-font-size-heading: 22px;
+  --cadence-font-size-kpi: 28px;
+  --cadence-font-size-kpi-large: 44px;
+  --cadence-status-active-on-dark: #40c2da;
+  --cadence-status-upcoming-on-dark: #c4b5fd;
+  --cadence-status-completed-on-dark: #86efac;
+  --cadence-status-draft-on-dark: #cbd5e1;
+  --cadence-status-warning-on-dark: #fdba74;
+  --cadence-status-info-on-dark: #93c5fd;
+  --cadence-status-critical-on-dark: #fca5a5;
+  --cadence-status-nominal-on-dark: #86efac;
+  --cadence-dataviz-neutral: #69797d;
+
   /* ── Couleurs — encre & texte ──────────────────────────────────────────── */
   --cadence-color-primary: #002830;        /* Encre principale — texte fort, titres, boutons */
   --cadence-color-label: #1a3e45;          /* Labels de formulaire, badges ; fond de PrimaryButton au repos */

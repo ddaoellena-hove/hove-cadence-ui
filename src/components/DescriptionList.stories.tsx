@@ -32,3 +32,7 @@ export const Horizontale: Story = {
 export const Empilee: Story = { name: "Empilée", args: { layout: "stacked" } };
 export const Compacte: Story = { args: { density: "compact" } };
 export const TexteLong: Story = { name: "Valeurs longues", args: { items: [{ id: "id", label: "Identifiant", value: `stop_area:DEMO:${"identifiant-sans-espace-".repeat(10)}` }] } };
+
+import * as lot6Test from "storybook/test";
+export const LibellesAlignesLot6: Story = { args: { labelWidth: "auto", items: [{ id: "a", label: "Correspondances", value: 12 }, { id: "b", label: "Nom", value: "Gare centrale" }] }, play: async ({ canvasElement }) => { const labels = canvasElement.querySelectorAll("dt"); await lot6Test.expect(labels[0].getBoundingClientRect().width).toBe(labels[1].getBoundingClientRect().width); } };
+export const TuilesLot6: Story = { args: { ...LibellesAlignesLot6.args, appearance: "tiles" } };

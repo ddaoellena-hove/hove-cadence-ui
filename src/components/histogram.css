@@ -54,3 +54,6 @@
   stroke-linejoin: round;
   stroke-width: 4px;
 }
+
+.histogram__plot--clickable { cursor: pointer; }
+.histogram__selected { fill: none; stroke: var(--cadence-color-primary, #002830); stroke-width: 2px; }
