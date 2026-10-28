@@ -55,11 +55,37 @@ export const IconeSeule: Story = {
     const bubble = button.parentElement?.querySelector(".base-button-tip__bubble") as HTMLElement;
     await expect(bubble).toHaveAttribute("aria-hidden", "true");
     await expect(bubble).toHaveTextContent("Modifier");
-    await expect(getComputedStyle(bubble).visibility).toBe("hidden");
+    // Masquée hors du rendu (display: none) : n'élargit aucune zone défilable
+    await expect(getComputedStyle(bubble).display).toBe("none");
     // Focus clavier : affichée sans délai
     await userEvent.tab();
     await expect(button).toHaveFocus();
-    await waitFor(() => expect(getComputedStyle(bubble).visibility).toBe("visible"));
+    await waitFor(() => expect(getComputedStyle(bubble).display).toBe("block"));
+  },
+};
+
+/** Près du bord droit d'un conteneur défilant : pas de défilement horizontal, infobulle recalée dans la zone visible. */
+export const IconeSeuleAuBord: Story = {
+  name: "Icône seule au bord d'un conteneur",
+  render: () => (
+    <div data-testid="scroller" style={{ width: 240, overflow: "auto", border: "1px dashed #bfc9cb", padding: 8, boxSizing: "border-box" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <GhostButton icon="download-02" aria-label="Télécharger le rapport" />
+      </div>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const scroller = within(canvasElement).getByTestId("scroller");
+    // Masquée : aucun défilement horizontal ajouté
+    await expect(scroller.scrollWidth).toBe(scroller.clientWidth);
+    // Affichée : contenue dans le conteneur (marge de 8px), flèche toujours sous le bouton
+    const button = within(canvasElement).getByRole("button", { name: "Télécharger le rapport" });
+    await userEvent.tab();
+    await expect(button).toHaveFocus();
+    const bubble = button.parentElement?.querySelector(".base-button-tip__bubble") as HTMLElement;
+    await waitFor(() => expect(getComputedStyle(bubble).display).toBe("block"));
+    await waitFor(() => expect(bubble.getBoundingClientRect().right).toBeLessThanOrEqual(scroller.getBoundingClientRect().right - 7));
+    await expect(scroller.scrollWidth).toBe(scroller.clientWidth);
   },
 };
 

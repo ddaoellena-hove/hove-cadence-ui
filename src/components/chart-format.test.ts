@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  annotationLabelPlacement,
   formatGap,
   describeDelta,
   formatAxisDate,
@@ -46,5 +47,21 @@ describe("dates d'axe adaptées à l'étendue", () => {
     expect(formatGap(-0.8, "%")).toBe("\u22120,8\u202fpt");
     expect(formatGap(12)).toBe("+12");
     expect(formatGap(0, "%")).toBe("0\u202fpt");
+  });
+});
+
+describe("annotationLabelPlacement", () => {
+  it("place le libellé à droite du début quand il tient", () => {
+    expect(annotationLabelPlacement(100, 140, "Grève", 600)).toEqual({ x: 104, textAnchor: "start" });
+  });
+  it("ancre le libellé à la fin quand il dépasserait le bord droit", () => {
+    // 22 caractères ≈ 143px : 520 + 4 + 143 > 600
+    expect(annotationLabelPlacement(520, 600, "Aucune donnée depuis 1", 600)).toEqual({ x: 596, textAnchor: "end" });
+  });
+  it("trait seul près du bord : libellé à gauche du trait", () => {
+    expect(annotationLabelPlacement(590, 590, "Coupure", 600)).toEqual({ x: 586, textAnchor: "end" });
+  });
+  it("ne déborde jamais à gauche du tracé", () => {
+    expect(annotationLabelPlacement(10, 10, "Libellé très long pour un petit tracé", 120).x).toBeGreaterThanOrEqual(0);
   });
 });

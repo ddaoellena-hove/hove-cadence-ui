@@ -348,6 +348,24 @@ export const SansClic: Story = {
   },
 };
 
+/** Annotation sur les derniers créneaux (flux interrompu « maintenant ») : libellé ancré à droite, jamais coupé. */
+export const AnnotationEnFin: Story = {
+  name: "Annotation en fin de période",
+  args: {
+    title: "Réceptions par créneau",
+    unit: "réceptions",
+    categories: ["08 h", "09 h", "10 h", "11 h", "12 h", "13 h", "14 h", "15 h"],
+    series: [{ id: "received", label: "Réceptions", data: [58, 60, 59, 61, 60, 12, 0, 0] }],
+    annotations: [{ at: ["14 h", "15 h"], label: "Aucune réception depuis 14 h" }],
+  },
+  play: async ({ canvasElement }) => {
+    const label = within(canvasElement).getByText("Aucune réception depuis 14 h");
+    await expect(label).toHaveAttribute("text-anchor", "end");
+    const svg = canvasElement.querySelector(".chart__svg") as SVGSVGElement;
+    await waitFor(() => expect(label.getBoundingClientRect().right).toBeLessThanOrEqual(svg.getBoundingClientRect().right));
+  },
+};
+
 export const Chargement: Story = { args: { title: "Perturbations par cause", categories: [], series: [], state: "loading" } };
 
 export const Vide: Story = { args: { title: "Perturbations par cause", categories: [], series: [], state: "empty" } };

@@ -5,7 +5,7 @@ import { ChartFrame, type ChartCommonProps } from "./ChartFrame";
 import { ChartLegend } from "./ChartLegend";
 import { ChartPatternDef, ChartPatternSwatch } from "./ChartPattern";
 import { ChartTooltip, type ChartTooltipRow } from "./ChartTooltip";
-import { formatGap, formatKpiValue, formatValueWithUnit } from "./chart-format";
+import { annotationLabelPlacement, formatGap, formatKpiValue, formatValueWithUnit } from "./chart-format";
 import { paletteIndex, REFERENCE_COLOR, seriesColor, seriesMarker, seriesPattern, svgId } from "./chart-palette";
 import { ReferenceSwatch } from "./ChartMarker";
 import {
@@ -419,7 +419,7 @@ export const BarChart = ({
                     className="bar-chart__annotation-band"
                     {...(horizontal ? { x: 0, y: start, width: plotWidth, height: end - start } : { x: start, y: 0, width: end - start, height: plotHeight })}
                   />
-                  <text className="bar-chart__annotation-label" {...(horizontal ? { x: plotWidth - 4, y: start + 12, textAnchor: "end" } : { x: start + 4, y: -6 })}>
+                  <text className="bar-chart__annotation-label" {...(horizontal ? { x: plotWidth - 4, y: start + 12, textAnchor: "end" } : { ...annotationLabelPlacement(start, end, a.label, plotWidth), y: -6 })}>
                     {a.label}
                   </text>
                 </g>

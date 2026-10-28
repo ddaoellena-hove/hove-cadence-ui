@@ -6,7 +6,7 @@ import { ChartFrame, type ChartCommonProps } from "./ChartFrame";
 import { ChartLegend } from "./ChartLegend";
 import { ChartMarker, ReferenceSwatch } from "./ChartMarker";
 import { ChartTooltip, type ChartTooltipRow } from "./ChartTooltip";
-import { formatFullDate, formatGap, formatKpiValue, formatValueWithUnit, type GoodDirection } from "./chart-format";
+import { annotationLabelPlacement, formatFullDate, formatGap, formatKpiValue, formatValueWithUnit, type GoodDirection } from "./chart-format";
 import { paletteIndex, REFERENCE_COLOR, seriesColor, seriesMarker } from "./chart-palette";
 import {
   breachesThreshold,
@@ -446,7 +446,7 @@ export const LineChart = ({
                 {a.band && <rect className="line-chart__annotation-band" x={a.x0} y={0} width={a.x1 - a.x0} height={plotHeight} />}
                 <line className="line-chart__annotation-line" x1={a.x0} x2={a.x0} y1={0} y2={plotHeight} />
                 {!compact && (
-                  <text className="line-chart__annotation-label" x={a.x0 + 4} y={-6}>
+                  <text className="line-chart__annotation-label" {...annotationLabelPlacement(a.x0, a.band ? a.x1 : a.x0, a.label, plotWidth)} y={-6}>
                     {a.label}
                   </text>
                 )}

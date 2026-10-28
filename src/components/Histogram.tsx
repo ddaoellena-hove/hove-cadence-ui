@@ -4,7 +4,7 @@ import { ChartAxisBottom, ChartAxisLeft } from "./ChartAxis";
 import { ChartDataTable } from "./ChartDataTable";
 import { ChartFrame, type ChartCommonProps } from "./ChartFrame";
 import { ChartTooltip } from "./ChartTooltip";
-import { formatKpiValue } from "./chart-format";
+import { annotationLabelPlacement, formatKpiValue } from "./chart-format";
 import { binLabel, buildBins, describeHistogram, edgePosition, formatBinShare } from "./histogram-utils";
 import { formatClock } from "./timeline-utils";
 import { useChartWidth } from "./use-chart-size";
@@ -259,7 +259,7 @@ export const Histogram = ({
               <g key={`${a.label}-${a.from}`} className="histogram__annotation">
                 {a.band && <rect className="histogram__annotation-band" x={x(a.from)} y={0} width={Math.max(1, x(a.to) - x(a.from))} height={plotHeight} />}
                 <line className="histogram__annotation-line" x1={x(a.from)} x2={x(a.from)} y1={0} y2={plotHeight} />
-                <text className="histogram__annotation-label" x={x(a.from) + 4} y={14}>
+                <text className="histogram__annotation-label" {...annotationLabelPlacement(x(a.from), a.band ? x(a.to) : x(a.from), a.label, plotWidth)} y={14}>
                   {a.label}
                 </text>
               </g>

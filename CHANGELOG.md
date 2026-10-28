@@ -12,6 +12,8 @@ Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, 
 - Drawer navigation, headerContent et largeur 576px ; PageHeader tabs/tabsActions ; Stepper warning ; GhostButton compteur ; DataTable hauteur automatique hors virtualisation ; DataFreshness inverse.
 - Corrections : statut Card étroit ; plage intermédiaire BulletChart correctement décrite et barre visible dans une carte de 240px.
 - Fondations : sept tailles typographiques, huit statuts sur fond sombre, gris dataviz neutre et seize pictogrammes.
+- Retours Datapilot : `PageSection surface="card"` ; infobulle des boutons icône seule hors du rendu quand masquée (plus de défilement horizontal parasite) et recalée dans la zone visible ; libellés d'annotation de `BarChart`, `LineChart` et `Histogram` ancrés à droite près du bord.
+- `PageHero` : valeurs texte (`valueType`, déduit du type de `value`) en sans-serif pour la valeur principale et les KPI ; `valueCaption` distinct de l'unité ; `valueTone` (alerte) ; tuile `icon` teintée par le statut.
 
 ### Ajouté
 

@@ -64,3 +64,19 @@
 .page-section__icon--muted { background: var(--cadence-color-icon-muted, #69797d); }
 .page-section__icon--accent { background: var(--cadence-color-accent, #1b6cff); }
 .page-section__actions { flex-wrap: wrap; max-width: 100%; }
+
+/* ── Surface carte (surface="card") ──
+   Même enveloppe que Card ; en-tête rembourré séparé par un filet, corps sans
+   padding imposé (tableau, liste bord à bord). */
+.page-section--card {
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-lg, 10px);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.page-section--card > .page-section__head {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--cadence-color-divider, #f0f0f0);
+}

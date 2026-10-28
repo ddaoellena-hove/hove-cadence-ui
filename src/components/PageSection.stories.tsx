@@ -57,4 +57,34 @@ export const Niveau3: Story = {
 };
 
 import * as lot6Test from "storybook/test";
+/** En carte : enveloppe de Card, filet sous l'en-tête, corps bord à bord (ici une liste, puis un contenu rembourré par l'app). */
+export const Carte: Story = {
+  name: "En carte",
+  render: () => (
+    <div style={{ display: "grid", gap: 24, maxWidth: 640 }}>
+      <PageSection surface="card" title="Livrables" description="Exports de la dernière exécution" actions={<GhostButton size="sm" label="Tout télécharger" />}>
+        <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+          {["gtfs.zip", "netex.zip", "rapport-qualite.pdf"].map((file) => (
+            <li key={file} style={{ padding: "12px 20px", borderBottom: "1px solid var(--cadence-color-divider, #f0f0f0)", fontSize: 13 }}>
+              {file}
+            </li>
+          ))}
+        </ul>
+      </PageSection>
+      <PageSection surface="card" title="Paramètres" icon="settings-01" gap={12}>
+        <p style={{ margin: 0, padding: "16px 20px", fontSize: 13 }}>Le corps n’impose pas de padding : l’app choisit le sien.</p>
+      </PageSection>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const section = within(canvasElement).getByRole("region", { name: "Livrables" });
+    await expect(section).toHaveClass("page-section--card");
+    const head = section.querySelector(".page-section__head") as HTMLElement;
+    await expect(getComputedStyle(head).borderBottomStyle).toBe("solid");
+    // Corps bord à bord : la liste touche les bords de la carte
+    const body = section.querySelector(".page-section__body") as HTMLElement;
+    await expect(getComputedStyle(body).paddingLeft).toBe("0px");
+  },
+};
+
 export const IconesLot6: Story = { render: () => <div style={{ display: "grid", gap: 24 }}>{(["label", "muted", "accent"] as const).map(tone => <PageSection key={tone} title={`Section ${tone}`} icon="database" iconTone={tone} description="Source de données"><span>Contenu</span></PageSection>)}</div>, play: async ({ canvasElement }) => { await lot6Test.expect(lot6Test.within(canvasElement).getAllByRole("heading", { level: 2 })).toHaveLength(3); } };
