@@ -50,6 +50,10 @@ export const TabList = ({
         indicator.style.opacity = "0";
         return;
       }
+      // Pas encore dans le document (portail d'un Drawer ou d'une Modal, attaché
+      // après les effets des enfants) ou masqué : aucune mesure fiable. Le
+      // ResizeObserver replacera l'indicateur, sans glissement, dès qu'il aura une taille.
+      if (!list.isConnected || active.offsetWidth === 0) return;
       indicator.style.opacity = "1";
       indicator.style.left = `${active.offsetLeft}px`;
       indicator.style.top = `${active.offsetTop + active.offsetHeight}px`;
