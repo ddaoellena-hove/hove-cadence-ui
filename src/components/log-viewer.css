@@ -1,6 +1,6 @@
 .log-viewer { min-width: 0; font-family: var(--cadence-font-sans, "Inter", sans-serif); font-size: 12px; color: var(--cadence-color-primary, #002830); border: 1px solid var(--cadence-color-border, #e5e5e5); border-radius: var(--cadence-radius-lg, 10px); overflow: hidden; }
 .log-viewer__header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 12px; }
-.log-viewer__header h3 { margin: 0; font-size: 14px; }
+.log-viewer__header h3 { margin: 0; font-size: 14px; font-weight: 600; line-height: 1.4; }
 .log-viewer__actions { display: flex; gap: 8px; }
 .log-viewer__body { overflow: auto; background: var(--cadence-color-surface-subtle, #fafafa); }
 .log-viewer__body:focus-visible { outline: 2px solid var(--cadence-focus-color, #1a3e45); outline-offset: -2px; }
@@ -9,5 +9,9 @@
 .log-viewer__line code { font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace); white-space: pre-wrap; overflow-wrap: anywhere; flex: 1 1 160px; min-width: 0; }
 .log-viewer__number, .log-viewer__timestamp { font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace); color: var(--cadence-color-text-secondary, #607075); }
 .log-viewer__number { min-width: 24px; }
-.log-viewer__line--highlighted { background: var(--cadence-status-warning-bg, #fff7ed); border-left: 3px solid var(--cadence-status-warning-fg, #c2410c); }
+/* Colonnes alignées d'une ligne à l'autre, même sans horodatage ou niveau */
+.log-viewer__timestamp { min-width: 8ch; }
+.log-viewer__level { display: inline-flex; min-width: 104px; }
+/* Liseré en ombre interne : il ne décale pas les numéros de ligne */
+.log-viewer__line--highlighted { background: var(--cadence-status-warning-bg, #fff7ed); box-shadow: inset 3px 0 0 var(--cadence-status-warning-fg, #c2410c); }
 .log-viewer__highlight-label { color: var(--cadence-status-warning-fg, #c2410c); }
