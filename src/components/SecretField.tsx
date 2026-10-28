@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { TextInput } from "./TextInput";
 import { GhostButton } from "./GhostButton";
 import { PrimaryButton } from "./PrimaryButton";
@@ -23,7 +23,15 @@ export const SecretField = ({ label, isSet, onSave, disabled = false, helperText
   const [failure, setFailure] = useState("");
   const trigger = useRef<HTMLButtonElement>(null);
   const input = useRef<HTMLInputElement>(null);
-  const close = () => { setEditing(false); setDraft(""); setFailure(""); requestAnimationFrame(() => trigger.current?.focus()); };
+  const close = () => { setEditing(false); setDraft(""); setFailure(""); };
+  // Focus déplacé après le rendu du nouvel état (champ ou bouton), jamais à la
+  // frame suivante : un requestAnimationFrame pouvait passer avant le rendu et perdre le focus.
+  const wasEditing = useRef(false);
+  useEffect(() => {
+    if (editing) input.current?.focus();
+    else if (wasEditing.current) trigger.current?.focus();
+    wasEditing.current = editing;
+  }, [editing]);
   const save = async () => {
     if (!draft || disabled || saving) return;
     setSaving(true); setFailure("");
@@ -41,7 +49,7 @@ export const SecretField = ({ label, isSet, onSave, disabled = false, helperText
       <div className="secret-field__actions"><GhostButton label="Annuler" disabled={saving} onClick={close} /><PrimaryButton label="Enregistrer" disabled={disabled || !draft} loading={saving} onClick={() => void save()} /></div>
     </> : <>
       <span id={id} className="secret-field__label">{label}</span>
-      <div className="secret-field__display"><span aria-labelledby={id} className="secret-field__value">{isSet ? "Secret défini ••••••" : "Non défini"}</span><GhostButton ref={trigger} label={isSet ? "Remplacer" : "Définir"} aria-label={`${isSet ? "Remplacer" : "Définir"} — ${label}`} disabled={disabled} onClick={() => { setEditing(true); requestAnimationFrame(() => input.current?.focus()); }} /></div>
+      <div className="secret-field__display"><span aria-labelledby={id} className="secret-field__value">{isSet ? "Secret défini ••••••" : "Non défini"}</span><GhostButton ref={trigger} label={isSet ? "Remplacer" : "Définir"} aria-label={`${isSet ? "Remplacer" : "Définir"} — ${label}`} disabled={disabled} onClick={() => setEditing(true)} /></div>
       {(error || helperText) && <p className="secret-field__help">{error || helperText}</p>}
     </>}
     <span role="status" className="secret-field__status">{saving ? "Enregistrement…" : failure}</span>
