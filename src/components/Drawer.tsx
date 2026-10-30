@@ -85,8 +85,10 @@ export const Drawer = ({
   // `mounted` garde le panneau dans le DOM pendant la sortie ; `entered`
   // pilote le glissement (transform). Les ouvertures/fermetures s'ajustent
   // pendant le rendu (pattern React), jamais par un setState synchrone en effet.
+  // `entered` part toujours de false : un panneau monté déjà ouvert (chargement
+  // différé, changement de clé) glisse lui aussi depuis sa position fermée.
   const [mounted, setMounted] = useState(isOpen);
-  const [entered, setEntered] = useState(isOpen);
+  const [entered, setEntered] = useState(false);
 
   if (isOpen && !mounted) setMounted(true);
   if (!isOpen && entered) setEntered(false);

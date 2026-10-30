@@ -7,6 +7,14 @@ import { Icons } from "./Icons";
 import { PrimaryButton } from "./PrimaryButton";
 import { Card } from "./Card";
 import { PageHeader } from "./PageHeader";
+import { PageSection } from "./PageSection";
+import { TextInput } from "./TextInput";
+import { GhostButton } from "./GhostButton";
+import { FormActions } from "./FormActions";
+import { ProgressBar } from "./ProgressBar";
+import { Stepper } from "./Stepper";
+import { Toaster } from "./Toaster";
+import { useToast } from "./useToast";
 
 const meta: Meta<typeof AppLayout> = {
   title: "Composants/Structure et mise en page/AppLayout",
@@ -154,5 +162,76 @@ export const ContenuLarge: Story = {
     const inner = scroller.getBoundingClientRect();
     await expect(inner.right).toBeLessThanOrEqual(frame.right);
     await expect(inner.bottom).toBeLessThanOrEqual(frame.bottom);
+  },
+};
+
+/** Formulaire long : corps défilant, actions persistantes hors du scroll, toasts au-dessus du pied. */
+export const PiedPersistant: Story = {
+  name: "Pied persistant",
+  render: function Render() {
+    const { toast } = useToast();
+    return (
+      <>
+        <AppLayout
+          sidebar={<AppSidebar product="traffic-report" />}
+          footerPadding="none"
+          footer={
+            <>
+              <ProgressBar aria-label="Position dans le parcours" value={50} />
+              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "12px var(--cadence-page-padding-inline, 32px)" }}>
+                <Stepper
+                  density="compact"
+                  context="Impact n° 1"
+                  steps={[
+                    { id: "general", label: "Informations générales", icon: "info-circle", state: "completed" },
+                    { id: "severity", label: "Sévérité", icon: "alert-triangle", state: "current" },
+                    { id: "messages", label: "Messages", icon: "edit-02", state: "upcoming" },
+                  ]}
+                />
+                <FormActions>
+                  <GhostButton size="sm" label="Enregistrer le brouillon" onClick={() => toast({ type: "success", title: "Brouillon enregistré" })} />
+                  <PrimaryButton size="sm" label="Créer la perturbation" disabled />
+                </FormActions>
+              </div>
+            </>
+          }
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--cadence-section-gap, 32px)" }}>
+            <PageHeader title="Nouvelle perturbation" />
+            {Array.from({ length: 6 }, (_, index) => (
+              <PageSection key={index} title={`Section ${index + 1}`} surface="elevated">
+                <div style={{ padding: "20px 16px" }}><TextInput label={`Champ ${index + 1}`} /></div>
+              </PageSection>
+            ))}
+          </div>
+        </AppLayout>
+        <Toaster />
+      </>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const footer = canvasElement.querySelector<HTMLElement>(".app-layout__footer")!;
+    const scroll = canvasElement.querySelector<HTMLElement>(".app-layout__scroll")!;
+
+    // Le pied suit le conteneur et n'appartient pas à la zone qui défile
+    await expect(scroll.contains(footer)).toBe(false);
+    await expect(scroll.scrollHeight).toBeGreaterThan(scroll.clientHeight);
+    const top = footer.getBoundingClientRect().top;
+    scroll.scrollTop = scroll.scrollHeight;
+    await expect(footer.getBoundingClientRect().top).toBe(top);
+
+    // Dernier champ atteignable, non recouvert par le pied
+    const last = canvas.getByLabelText("Champ 6");
+    await expect(last.getBoundingClientRect().bottom).toBeLessThanOrEqual(top);
+
+    // Le toast reste au-dessus des actions
+    await userEvent.click(canvas.getByRole("button", { name: "Enregistrer le brouillon" }));
+    const toaster = await waitFor(() => {
+      const el = document.querySelector<HTMLElement>(".toaster");
+      if (!el) throw new Error("Toaster absent");
+      return el;
+    });
+    await waitFor(() => expect(toaster.getBoundingClientRect().bottom).toBeLessThanOrEqual(top));
   },
 };

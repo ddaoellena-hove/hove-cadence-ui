@@ -53,13 +53,17 @@ Storybook est servi sur le port 6006. Il constitue la vitrine principale ; `npm 
 
 Dans Storybook, rubrique **Page patterns** : onze gabarits de page vérifiés (coque d'application, liste, liste + détail latéral, détail, formulaire, assistant d'import, supervision, analyse, planification, paramètres, états de page), avec leur documentation. Les anciennes stories `Recettes/*` ont été retirées en 1.0.0 ; la page *Recettes / Vers les Page patterns* donne la correspondance.
 
+## Migrer une maquette
+
+Pour passer d'une maquette, d'une capture ou d'un prototype HTML à Cadence, suivre le [guide de migration](docs/MIGRATION-TO-CADENCE.md). Il renvoie à une [étude de cas](docs/case-studies/traffic-report-migration.md) et à une [grille d'audit](docs/templates/migration-audit.md).
+
 ## Contribuer et livrer
 
 Lire [GUIDELINES.md](GUIDELINES.md), source de vérité pour les API et les règles visuelles. Un composant comporte son `.tsx`, son CSS, ses stories et un export ; mettre à jour les guidelines et le [changelog](CHANGELOG.md) à chaque évolution.
 
 Réutiliser les tokens et les composants existants. Les couleurs GTFS de `LineBadge` sont une exception métier documentée. `Autocomplete` couvre déjà la recherche avec sélection multiple et groupes.
 
-La configuration Vercel construit Storybook. La version courante du manifeste est `1.0.0`, non publiée (dernière version sur npm : 0.1.6) ; le guide de migration 0.x → 1.0 est en tête du [changelog](CHANGELOG.md). La publication npm reste une action explicite, précédée d'une décision de version et d'un build de la bibliothèque.
+La configuration Vercel construit Storybook. La version publiée sur npm est la `1.0.0` ; les changements postérieurs sont dans la section « Non publié » du [changelog](CHANGELOG.md). Le guide de migration 0.x → 1.0 y figure aussi. La publication npm reste une action explicite, précédée d'une décision de version et d'un build de la bibliothèque.
 
 
 ## Compléments avant 1.0

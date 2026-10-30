@@ -4,7 +4,8 @@
 .toaster {
   position: fixed;
   right: 24px;
-  bottom: 24px;
+  /* Au-dessus du pied persistant d'AppLayout, mesuré par celui-ci. */
+  bottom: calc(24px + var(--cadence-app-footer-offset, 0px));
   width: 360px;
   z-index: var(--cadence-z-toast, 1100);
 }

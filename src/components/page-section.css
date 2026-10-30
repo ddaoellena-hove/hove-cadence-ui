@@ -80,3 +80,37 @@
   padding: 16px 20px;
   border-bottom: 1px solid var(--cadence-color-divider, #f0f0f0);
 }
+
+/* ── Surface surélevée (surface="elevated") ──
+   Titre et actions restent hors de la boîte ; seul le corps porte la surface.
+   Pas d'overflow: hidden : les menus des champs doivent pouvoir déborder. */
+.page-section--elevated {
+  gap: var(--cadence-section-heading-gap, 12px);
+  margin-inline: var(--cadence-section-inset-inline, 8px);
+  min-width: 0;
+}
+
+.page-section--elevated > .page-section__head {
+  padding-inline: var(--cadence-section-padding-inline, 8px);
+}
+
+.page-section--elevated > .page-section__body {
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-xl, 12px);
+  box-shadow: var(--cadence-shadow-section, 0 0 2px 0 rgba(0, 0, 0, 0.10), 0 2px 10px 0 rgba(0, 0, 0, 0.05));
+  padding-inline: var(--cadence-section-padding-inline, 8px);
+}
+
+.page-section--elevated > .page-section__body--flush {
+  padding-inline: 0;
+}
+
+/* Accordéon en contenu : ses filets extrêmes doubleraient la bordure du corps. */
+.page-section--elevated > .page-section__body > .accordion:first-child {
+  border-top: 0;
+}
+
+.page-section--elevated > .page-section__body > .accordion:last-child > .accordion__item:last-child {
+  border-bottom: 0;
+}

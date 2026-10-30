@@ -70,6 +70,7 @@
 }
 
 .accordion__content {
+  min-width: 0;
   overflow: hidden;
   color: var(--cadence-color-primary, #002830);
   font-size: 13px;
@@ -79,6 +80,15 @@
 /* Rembourrage sous le contenu seulement quand ouvert (évite un saut à 0fr). */
 .accordion__item--open .accordion__content {
   padding-bottom: 14px;
+  /* Une fois ouvert, le contenu ne coupe plus les menus de ses champs. Fermé, il
+     reste masqué : grid-template-rows: 0fr a besoin de overflow: hidden. */
+  animation: accordion-content-reveal 220ms step-end;
+  overflow: visible;
+}
+
+@keyframes accordion-content-reveal {
+  from { overflow: hidden; }
+  to { overflow: hidden; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -87,5 +97,8 @@
   }
   .accordion__chevron {
     transition: none;
+  }
+  .accordion__item--open .accordion__content {
+    animation: none;
   }
 }
