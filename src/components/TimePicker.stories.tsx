@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, fn, userEvent, within } from "storybook/test";
 import { TimePicker, type TimePickerProps } from "./TimePicker";
@@ -137,4 +137,25 @@ export const VarianteBouton: Story = {
     await expect(canvas.getByRole("button", { name: "Départ : 10:30" })).toHaveFocus();
     await expect(args.onChange).toHaveBeenLastCalledWith("10:30");
   }),
+};
+
+const ClipBox = ({ children, height }: { children: ReactNode; height: number }) => (
+  <div data-testid="clip" style={{ height, width: 360, overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: 16, boxSizing: "border-box" }}>
+    {children}
+  </div>
+);
+
+/** Dans un pied d'actions ou en bas de page : le panneau passe au-dessus du champ. */
+export const RetourneAuDessus: Story = {
+  name: "Retourné au-dessus",
+  render: () => <ClipBox height={320}><TimePicker label="Heure" value="08:30" onChange={() => {}} /></ClipBox>,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const buttons = canvas.getAllByRole("button");
+    await userEvent.click(buttons[buttons.length - 1]);
+    const panel = canvasElement.querySelector<HTMLElement>(".time-picker__popover")!;
+    await expect(panel).toHaveAttribute("data-placement", "top");
+    await expect(panel.getBoundingClientRect().bottom).toBeLessThanOrEqual(canvas.getByTestId("clip").getBoundingClientRect().bottom);
+    await expect(panel.getBoundingClientRect().top).toBeGreaterThanOrEqual(canvas.getByTestId("clip").getBoundingClientRect().top);
+  },
 };

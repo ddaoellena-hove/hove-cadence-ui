@@ -118,3 +118,21 @@ export const Desactive: Story = { name: "Désactivé", args: { disabled: true } 
 
 import * as lot6Test from "storybook/test";
 export const CompteurLot6: Story = { render: () => <div style={{ display: "flex", gap: 24, padding: 16 }}>{[0, 3, 12].map(count => <GhostButton key={count} icon="bell-01" aria-label="Notifications" count={count} />)}</div>, play: async ({ canvasElement }) => { const c = lot6Test.within(canvasElement); await lot6Test.expect(c.getByRole("button", { name: "Notifications, 12 non lues" })).toBeVisible(); await lot6Test.expect(c.getByText("9+")).toBeVisible(); await lot6Test.expect(c.getByRole("button", { name: "Notifications" })).toBeVisible(); } };
+
+/** Bouton icône en bas d'un conteneur qui coupe (pied d'actions) : l'infobulle passe au-dessus. */
+export const InfobulleAuDessus: Story = {
+  name: "Infobulle au-dessus",
+  render: () => (
+    <div data-testid="clip" style={{ height: 120, width: 240, overflow: "hidden", display: "flex", alignItems: "flex-end", padding: 8, boxSizing: "border-box" }}>
+      <GhostButton size="sm" icon="edit-02" aria-label="Modifier" />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.hover(canvas.getByRole("button", { name: "Modifier" }));
+    const bubble = canvasElement.querySelector<HTMLElement>(".base-button-tip__bubble")!;
+    await waitFor(() => expect(bubble).toHaveClass("base-button-tip__bubble--up"));
+    await expect(bubble.querySelector(".tooltip--arrow-bottom")).not.toBeNull();
+    await expect(bubble.getBoundingClientRect().bottom).toBeLessThanOrEqual(canvas.getByRole("button", { name: "Modifier" }).getBoundingClientRect().top);
+  },
+};

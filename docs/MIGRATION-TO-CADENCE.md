@@ -24,7 +24,7 @@ Quatre statuts ne doivent jamais se confondre dans un document de migration :
 | Règle officielle | [GUIDELINES.md](../GUIDELINES.md) | Un seul `PrimaryButton` plein par vue |
 | Composition applicative | Code du produit | `FormActions` plus un statut d'enregistrement dans `AppLayout footer` |
 | Exception projet | Audit du projet | Boutons `sm` dans un formulaire, sur décision produit |
-| Proposition d'évolution | [Backlog](proposals/traffic-report-backlog.md) | Portail pour les menus de `Dropdown` |
+| Proposition d'évolution | [Backlog](proposals/traffic-report-backlog.md) | Éditeur de texte riche |
 
 ## 2. Rassembler les entrées
 
@@ -67,7 +67,7 @@ La ressemblance ne prouve pas l'équivalence. Avant de substituer un composant, 
 | Section titrée | [`PageSection`](../GUIDELINES.md#pagesection) | Surface `none`, `card` ou `elevated`, niveau de titre |
 | Sous-section repliable | `Accordion` | État initial, focus, contenu masqué |
 | Texte libre | `TextInput`, `TextArea` | `label`, `state`, `helperText` |
-| Liste courte fixe | [`Dropdown`](../GUIDELINES.md#dropdown) | `divider`, `groupLabel`, clavier. ⚠️ Pas de prop d'erreur |
+| Liste courte fixe | [`Dropdown`](../GUIDELINES.md#dropdown) | `divider`, `groupLabel`, clavier, `error` |
 | Liste longue | [`Autocomplete`](../GUIDELINES.md#autocomplete) | `multiple`, recherche distante, chargement |
 | 2 à 4 choix exclusifs | [`SegmentedControl`](../GUIDELINES.md#segmentedcontrol) | Longueur des libellés |
 | Champs courts côte à côte | [`FieldRow`](../GUIDELINES.md#fieldrow) | Parts égales uniquement, repli à 1024 px |
@@ -106,7 +106,7 @@ Isoler sur une branche les essais à valider visuellement. Un essai rejeté rest
 
 ## 6. Exemples de composition
 
-Ces exemples utilisent les API actuelles de la branche de travail. Vérifier la version consommée : `surface="elevated"`, `density="compact"` et `footer` ne sont pas présents dans une version antérieure.
+Ces exemples utilisent les API actuelles de la branche de travail. Vérifier la version consommée : `surface="elevated"`, `density="compact"`, `footer`, `FormField` et les props `error` des champs ne sont pas dans la 1.0.0 publiée.
 
 ### Section à titre extérieur
 
@@ -208,8 +208,9 @@ Cadence autorise le layout inline et produit lui-même des styles calculés. Un 
 
 La validation appartient au modèle applicatif, l'affichage aux composants.
 
-- `TextInput` et `TextArea` : `state="error"` + `helperText`. `TimePicker` : `error`.
-- `Dropdown`, `Autocomplete` et `DatePicker` n'ont pas d'erreur externe : afficher le message près du groupe et le relier au résumé. Ne pas inventer de prop.
+- `TextInput` et `TextArea` : `state="error"` + `helperText`. `Dropdown`, `Autocomplete`, `DatePicker` et `TimePicker` : `error`.
+- Ces champs transmettent leur ref au contrôle : le focus se demande par ref, sans sélecteur DOM.
+- `FormField` donne libellé, aide et erreur à un contrôle qui n'en a pas (groupe de cases, champ métier). Il n'enveloppe jamais un champ Cadence.
 - Une erreur doit conduire à son champ : sélectionner le bon objet et la bonne étape, ouvrir le panneau, puis focaliser une cible visible et active.
 - `ErrorSummary` complète les messages de champ, il ne les remplace pas. Son focus automatique remonte en haut de page : si cela éloigne des actions, un toast et des messages locaux sont une alternative, à valider avec le produit.
 
@@ -217,8 +218,8 @@ La validation appartient au modèle applicatif, l'affichage aux composants.
 
 Distinguer donnée chargée, valeur confirmée, saisie en cours et valeur persistée.
 
-- `DatePicker` ne remonte qu'une valeur confirmée par `onChange`. Il n'expose pas sa saisie en cours : ne pas valider une étape sur une ancienne valeur pendant qu'une frappe est visible.
-- Stabiliser les objets `Date` passés au composant (`useMemo`).
+- `DatePicker` ne remonte qu'une valeur confirmée par `onChange`. `onInputStateChange` signale une frappe en cours ou refusée : ne pas valider une étape avant `"confirmed"`.
+- Une valeur facultative s'efface avec `clearable` et `onClear`.
 - Normaliser les valeurs restaurées : une date invalide redevient un champ à renseigner.
 - Définir le fuseau et éviter les conversions UTC involontaires. Voir [Dates, heures et fuseaux](../GUIDELINES.md#dates-heures-et-fuseaux).
 - Tester une période inversée, une saisie inachevée et une correction.
@@ -229,7 +230,7 @@ Associer avancement et erreurs à l'identité de chaque objet, jamais à sa posi
 
 ### 7.7 Overlays et débordement
 
-Lire toute la chaîne d'ancêtres : un menu peut être bien positionné et pourtant coupé. Un `z-index` ne corrige pas un `overflow`. Voir [Menus, calendriers et conteneurs](../GUIDELINES.md#menus-calendriers-et-conteneurs).
+Lire toute la chaîne d'ancêtres : un menu peut être bien positionné et pourtant coupé. Un `z-index` ne corrige pas un `overflow`. Les champs se retournent au-dessus quand ils y tiennent, sans surcharge CSS du type `top: auto; bottom: …` ; ils ne sortent pas pour autant d'un conteneur trop petit. Voir [Menus, calendriers et conteneurs](../GUIDELINES.md#menus-calendriers-et-conteneurs).
 
 ### 7.8 Responsive
 

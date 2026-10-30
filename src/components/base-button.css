@@ -133,8 +133,14 @@
 }
 
 /* La flèche reste sous le bouton quand la bulle est recalée */
-.base-button-tip__bubble .tooltip--arrow-top::after {
+.base-button-tip__bubble .tooltip--arrow-top::after,
+.base-button-tip__bubble .tooltip--arrow-bottom::after {
   left: calc(50% - var(--base-button-tip-shift, 0px));
+}
+
+.base-button-tip__bubble--up {
+  top: auto;
+  bottom: calc(100% + 6px);
 }
 
 /* :where() : spécificité d'une seule classe, pour que les composants qui

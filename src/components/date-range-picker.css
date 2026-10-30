@@ -172,3 +172,9 @@
   flex-shrink: 0;
   gap: 8px;
 }
+
+/* Retourné au-dessus par usePopoverFit */
+.date-range-picker__popover[data-placement="top"] {
+  top: auto;
+  bottom: calc(100% + 6px);
+}

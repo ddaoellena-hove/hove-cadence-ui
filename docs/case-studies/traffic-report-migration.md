@@ -55,7 +55,7 @@ Les documents antérieurs décrivant cinq étapes, les Options d'affichage ou un
 
 **Menus coupés.** `PageSection surface="card"` a coupé le menu Sévérité. Une fois ce point corrigé, `Accordion` a coupé le menu Cause. C'étaient deux ancêtres différents, et aucun `z-index` n'aurait suffi. Dans Cadence, `Accordion` ne coupe plus son contenu une fois ouvert ; `surface="card"` conserve son `overflow: hidden`.
 
-**Date non confirmée.** Après passage à `DatePicker` en variante champ, une frappe en cours pouvait laisser valider l'ancienne valeur. Le produit suit un état `datePending` et stabilise ses `Date` par `useMemo`. Le contournement inspecte encore le DOM : voir E6 dans le [backlog](../proposals/traffic-report-backlog.md).
+**Date non confirmée.** Après passage à `DatePicker` en variante champ, une frappe en cours pouvait laisser valider l'ancienne valeur. Le produit suit un état `datePending` et stabilise ses `Date` par `useMemo`. Le contournement inspecte le DOM ; Cadence fournit depuis `onInputStateChange`.
 
 **Avancement hérité.** Les étapes étaient déduites de l'index courant. Chaque impact porte désormais ses propres étapes ; modifier une étape invalide les suivantes.
 
@@ -80,4 +80,7 @@ Non réalisé : ces étapes supposent la publication de Cadence, ou une nouvelle
 - Transformation locale de `.app-layout__scroll` en colonne, au profit de `footer`.
 - `CompactImpactStepper`, à évaluer face à `Stepper density="compact"`. Celui-ci remplace le sélecteur mobile par des icônes qui passent à la ligne : à valider par le produit.
 - Repli local de `FieldRow` à 1024 px.
+- Surcharges `top: auto; bottom: …` du `Dropdown` et des infobulles dans le pied.
+- `datePending`, inspection du DOM et `useMemo` de `WorkflowDate`, au profit d'`onInputStateChange`.
+- Enveloppes d'erreur autour de `Dropdown` et `DatePicker`, au profit d'`error` et des refs.
 - Correctif de débordement du contenu d'`Accordion`.

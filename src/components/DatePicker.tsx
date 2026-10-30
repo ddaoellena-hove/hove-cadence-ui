@@ -2,20 +2,23 @@ import { TimeFields } from "./TimeFields";
 import { DateFields } from "./DateFields";
 import { GhostButton } from "./GhostButton";
 import { SegmentedControl } from "./SegmentedControl";
-import { useState, useRef, useEffect, useId, type KeyboardEvent } from "react";
+import { forwardRef, useState, useRef, useEffect, useId, useImperativeHandle, type KeyboardEvent } from "react";
 import { PrimaryButton } from "./PrimaryButton";
 import { ButtonTriggerContent } from "./ButtonTrigger";
 import { buttonTriggerClass, type TriggerVariant } from "./button-trigger-utils";
 import { Icons } from "./Icons";
 import { CalendarMonth } from "./CalendarMonth";
 import { dateToParts, dayKey, formatDate, getKeyboardTarget, isOutsideBounds, isSameDay, parseDateText, partsToDate } from "./date-utils";
-import { usePopoverFit } from "./use-popover-fit";
+import { usePopoverFit, type PopoverPlacement } from "./use-popover-fit";
 import "./date-picker.css";
 
 export interface DatePickerSegmentedOption {
   value: string;
   label: string;
 }
+
+/** État de la saisie au clavier : valeur confirmée, frappe en cours ou saisie refusée. */
+export type DateInputState = "confirmed" | "editing" | "invalid";
 
 export interface DatePickerProps {
   value?: Date | null;
@@ -46,6 +49,23 @@ export interface DatePickerProps {
   variant?: TriggerVariant;
   /** Nom accessible sans `label` visible (variante bouton) : « Date ». */
   "aria-label"?: string;
+  /** Message d'aide sous le champ. */
+  helperText?: string;
+  /** Erreur fournie par l'app ; prioritaire sur `helperText`. */
+  error?: string;
+  /** Champ obligatoire : marque le libellé. La validation reste à l'app. */
+  required?: boolean;
+  /**
+   * Signale l'état de la saisie. Tant qu'il n'est pas "confirmed", `value` ne
+   * reflète pas ce qui est affiché : ne pas valider sur cette valeur.
+   */
+  onInputStateChange?: (state: DateInputState) => void;
+  /** Valeur effaçable : bouton dans le champ, ou cases vidées. Fournir `onClear`. */
+  clearable?: boolean;
+  /** Effacement demandé : l'app repasse `value` à null. */
+  onClear?: () => void;
+  /** Côté d'ouverture : "auto" (dessous, retourné au-dessus si la place manque), "top" ou "bottom". Défaut "auto". */
+  placement?: PopoverPlacement;
 }
 
 /**
@@ -54,7 +74,7 @@ export interface DatePickerProps {
  * l'icône calendrier à droite ouvre le panneau. Quitter le champ ou Entrée
  * valide la saisie ; une date invalide ou hors bornes affiche un message.
  */
-export const DatePicker = ({
+export const DatePicker = forwardRef<HTMLElement, DatePickerProps>(({
   value = null,
   onChange,
   label,
@@ -69,7 +89,14 @@ export const DatePicker = ({
   onSegmentChange,
   variant = "field",
   "aria-label": ariaLabel,
-}: DatePickerProps) => {
+  helperText,
+  error,
+  required = false,
+  onInputStateChange,
+  clearable = false,
+  onClear,
+  placement = "auto",
+}, ref) => {
   const today = new Date();
   const resolvedPlaceholder =
     placeholder ?? (withTime ? "JJ/MM/AAAA HH:mm" : "JJ/MM/AAAA");
@@ -87,9 +114,10 @@ export const DatePicker = ({
   // Déclencheur du panneau : bouton (variante bouton) ou icône calendrier (champ)
   const triggerRef = useRef<HTMLButtonElement>(null);
   const firstFieldRef = useRef<HTMLInputElement>(null);
+  useImperativeHandle(ref, () => (variant === "button" ? triggerRef.current : firstFieldRef.current)!);
   // Le popover reste dans la zone visible (ex. déclencheur au bord droit d'un en-tête)
   const popoverRef = useRef<HTMLDivElement>(null);
-  usePopoverFit(popoverRef, open);
+  usePopoverFit(popoverRef, open, placement);
   const triggerId = useId();
   // Jour qui porte le focus clavier dans la grille
   const [focusedDate, setFocusedDate] = useState<Date>(value ?? today);
@@ -115,11 +143,14 @@ export const DatePicker = ({
   const [localError, setLocalError] = useState("");
 
   // Nouvelle valeur reçue : on recale les cases, le mois affiché, la date en attente et l'heure
+  // Comparée par instant : un parent qui recrée sa Date à chaque rendu n'efface
+  // pas la frappe en cours.
   const [syncedValue, setSyncedValue] = useState(value);
-  if (value !== syncedValue) {
+  if (value?.getTime() !== syncedValue?.getTime()) {
     setSyncedValue(value);
     setParts(dateToParts(value, withTime));
     setLocalError("");
+    if (!value) setPendingDate(null);
     if (value) {
       setViewYear(value.getFullYear());
       setViewMonth(value.getMonth());
@@ -160,9 +191,11 @@ export const DatePicker = ({
   const commit = () => {
     if (disabled) return;
     if (parts.every((part) => part === "")) {
-      // Pas d'effacement (onChange reçoit toujours une Date) : on rétablit la valeur
-      setParts(dateToParts(value, withTime));
+      // Sans `clearable`, pas d'effacement (onChange reçoit toujours une Date) :
+      // on rétablit la valeur
       setLocalError("");
+      if (clearable && value) onClear?.();
+      else setParts(dateToParts(value, withTime));
       return;
     }
     const typed = partsToDate(parts, withTime);
@@ -171,6 +204,13 @@ export const DatePicker = ({
     setLocalError("");
     if (!value || typed.getTime() !== value.getTime()) onChange?.(typed);
     else setParts(dateToParts(typed, withTime));
+  };
+
+  const clear = () => {
+    setParts(dateToParts(null, withTime));
+    setLocalError("");
+    onClear?.();
+    firstFieldRef.current?.focus();
   };
 
   const editPart = (index: number, next: string) => {
@@ -256,7 +296,23 @@ export const DatePicker = ({
   // Effective selected date for display in trigger
   const displayValue = withTime ? (value ?? null) : value;
   const isButton = variant === "button";
+
+  // Une saisie revenue à la valeur confirmée redevient "confirmed"
+  const inputState: DateInputState = localError
+    ? "invalid"
+    : parts.join() === dateToParts(value, withTime).join() ? "confirmed" : "editing";
+  const notifyInputState = useRef(onInputStateChange);
+  useEffect(() => { notifyInputState.current = onInputStateChange; });
+  const reportedState = useRef<DateInputState>("confirmed");
+  useEffect(() => {
+    if (inputState === reportedState.current) return;
+    reportedState.current = inputState;
+    notifyInputState.current?.(inputState);
+  }, [inputState]);
   const name = label || ariaLabel || "Date";
+  // Saisie refusée d'abord : c'est elle que l'utilisateur vient de provoquer
+  const fieldMessage = localError || error || helperText;
+  const invalid = Boolean(localError || error);
   const messageId = `${triggerId}-message`;
 
   // ARIA que GhostButton ne transmet pas : posé sur l'icône calendrier (champ)
@@ -280,7 +336,7 @@ export const DatePicker = ({
     >
       {label && (
         <label className="date-picker__label" htmlFor={triggerId}>
-          {label}
+          {label}{required && <><span aria-hidden="true"> *</span><span className="date-picker__sr-only"> (obligatoire)</span></>}
         </label>
       )}
       {isButton ? (
@@ -306,7 +362,7 @@ export const DatePicker = ({
         // Champ éditable (allure TextInput). Un clic sur la zone vide cible la
         // case du jour ; quitter le champ valide la saisie.
         <div
-          className={`date-picker__field${open ? " date-picker__field--open" : ""}${withTime ? " date-picker__field--time" : ""}${localError ? " date-picker__field--error" : ""}`}
+          className={`date-picker__field${open ? " date-picker__field--open" : ""}${withTime ? " date-picker__field--time" : ""}${invalid ? " date-picker__field--error" : ""}`}
           onPointerDown={(e) => {
             if (e.target === e.currentTarget) {
               e.preventDefault();
@@ -324,8 +380,9 @@ export const DatePicker = ({
             firstRef={firstFieldRef}
             label={name}
             disabled={disabled}
-            invalid={Boolean(localError)}
-            describedBy={localError ? messageId : undefined}
+            required={required}
+            invalid={invalid}
+            describedBy={fieldMessage ? messageId : undefined}
             onEdit={editPart}
             onPaste={pasteDate}
             onKeyDown={(e) => {
@@ -339,6 +396,15 @@ export const DatePicker = ({
               }
             }}
           />
+          {clearable && value && !disabled && (
+            <GhostButton
+              className="date-picker__clear"
+              size="sm"
+              icon="x-close"
+              aria-label={`Effacer — ${name.toLowerCase()}`}
+              onClick={clear}
+            />
+          )}
           <GhostButton
             ref={triggerRef}
             className="date-picker__calendar"
@@ -350,9 +416,9 @@ export const DatePicker = ({
           />
         </div>
       )}
-      {!isButton && localError && (
-        <p id={messageId} className="date-picker__message" role="alert">
-          {localError}
+      {!isButton && fieldMessage && (
+        <p id={messageId} className={`date-picker__message${invalid ? "" : " date-picker__message--helper"}`} role={localError ? "alert" : undefined}>
+          {fieldMessage}
         </p>
       )}
 
@@ -423,4 +489,6 @@ export const DatePicker = ({
       )}
     </div>
   );
-};
+});
+
+DatePicker.displayName = "DatePicker";

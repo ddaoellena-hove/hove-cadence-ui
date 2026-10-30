@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect, useId, type ReactNode } from "react";
+import { forwardRef, useState, useRef, useEffect, useId, useImperativeHandle, type ReactNode } from "react";
 import { ButtonTriggerContent } from "./ButtonTrigger";
 import { buttonTriggerClass, type TriggerVariant } from "./button-trigger-utils";
-import { usePopoverFit } from "./use-popover-fit";
+import { usePopoverFit, type PopoverPlacement } from "./use-popover-fit";
 import "./dropdown.css";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -37,6 +37,14 @@ export interface DropdownProps {
   variant?: TriggerVariant;
   /** Nom accessible sans `label` visible (variante bouton) : « Devise ». */
   "aria-label"?: string;
+  /** Message d'aide sous le champ. */
+  helperText?: string;
+  /** Erreur fournie par l'app ; prioritaire sur `helperText`. */
+  error?: string;
+  /** Champ obligatoire : marque le libellé. La validation reste à l'app. */
+  required?: boolean;
+  /** Côté d'ouverture : "auto" (dessous, retourné au-dessus si la place manque), "top" ou "bottom". Défaut "auto". */
+  placement?: PopoverPlacement;
   /** Classe CSS additionnelle. */
   className?: string;
 }
@@ -92,7 +100,7 @@ const toSections = (options: DropdownOption[]): MenuSection[] =>
 
 // ── Component ──────────────────────────────────────────────────────────────────
 
-export const Dropdown = ({
+export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(({
   options,
   label,
   value,
@@ -101,16 +109,24 @@ export const Dropdown = ({
   onChange,
   variant = "field",
   "aria-label": ariaLabel,
+  helperText,
+  error,
+  required = false,
+  placement = "auto",
   className,
-}: DropdownProps) => {
+}, ref) => {
   const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  useImperativeHandle(ref, () => triggerRef.current!);
   const containerRef = useRef<HTMLDivElement>(null);
   // Le menu reste dans la zone visible (ex. déclencheur au bord droit d'un en-tête)
   const menuRef = useRef<HTMLUListElement>(null);
-  usePopoverFit(menuRef, isOpen);
+  usePopoverFit(menuRef, isOpen, placement);
   const triggerId = useId();
   const labelId = useId();
   const menuId = useId();
+  const messageId = useId();
+  const message = variant === "field" ? error || helperText : undefined;
 
   const selectedOption = options.find((o) => o.id === value);
 
@@ -172,17 +188,20 @@ export const Dropdown = ({
     <div className={rootClass} ref={containerRef}>
       {label && (
         <label id={labelId} className="text-input__label" htmlFor={triggerId}>
-          {label}
+          {label}{required && <><span aria-hidden="true"> *</span><span className="dropdown__sr-only"> (obligatoire)</span></>}
         </label>
       )}
       <button
+        ref={triggerRef}
         id={triggerId}
         type="button"
-        className={variant === "button" ? buttonTriggerClass(Boolean(selectedOption?.icon), isOpen) : "dropdown__trigger"}
+        className={variant === "button" ? buttonTriggerClass(Boolean(selectedOption?.icon), isOpen) : `dropdown__trigger${error ? " dropdown__trigger--error" : ""}`}
         onClick={() => !disabled && setIsOpen((prev) => !prev)}
         onKeyDown={handleKeyDown}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={message ? messageId : undefined}
         disabled={disabled}
         aria-label={!label && ariaLabel ? `${ariaLabel} : ${selectedOption ? selectedOption.label : placeholder}` : undefined}
       >
@@ -205,6 +224,8 @@ export const Dropdown = ({
           </>
         )}
       </button>
+
+      {message && <p id={messageId} className={`dropdown__message${error ? " dropdown__message--error" : ""}`}>{message}</p>}
 
       {isOpen && (
         // Nom de la liste : le label visible, sinon l'aria-label (variante bouton)
@@ -239,4 +260,6 @@ export const Dropdown = ({
       )}
     </div>
   );
-};
+});
+
+Dropdown.displayName = "Dropdown";
