@@ -13,6 +13,9 @@
   "main": "./dist/hove-cadence-ui.cjs",
   "module": "./dist/hove-cadence-ui.js",
   "types": "./dist/index.d.ts",
+  "sideEffects": [
+    "**/*.css"
+  ],
   "exports": {
     ".": {
       "import": {

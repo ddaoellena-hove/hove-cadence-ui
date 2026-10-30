@@ -4,6 +4,10 @@
 
 Version mineure : aucun export retiré, 63 ajoutés (types compris) depuis la 1.0.0 (publiée depuis `2648ab7`). Pas de rupture d'API, mais plusieurs **changements de rendu sans modification de code** : à lire avant la mise à jour.
 
+### Poids dans les produits
+
+Le paquet ESM est livré en un fichier par module et déclare ses effets de bord : un produit n'embarque plus que ce qu'il importe. Un `PrimaryButton` seul passe de 260 à 89 Ko minifiés (85 à 24 Ko gzip, esbuild, hors React). Aucun changement d'API ni d'import ; `style.css` reste unique.
+
 ### ⚠️ Changements visuels
 
 | Composant | Changement | Pour revenir au rendu précédent |
@@ -11,6 +15,7 @@ Version mineure : aucun export retiré, 63 ajoutés (types compris) depuis la 1.
 | `PageSection` | `surface="elevated"` par défaut : une section sans `surface` devient une boîte | `surface="none"`, à passer aussi sur les sections imbriquées |
 | `FieldRow` | Une colonne à 1024px de large et moins | Grille applicative |
 | `GhostButton` | Graisse 600, affichée en Bold | — |
+| `PageSection` | Ombre `--cadence-shadow-section` plus diffuse : 3px et 12px au lieu de 2px et 10px | Redéfinir le token |
 | `DatePicker` | Avec `withTime`, heures à droite du calendrier ; calendrier toujours sur six semaines | — |
 | `DateRangePicker` | Calendrier toujours sur six semaines | — |
 | `Sidebar` | Repliée d'elle-même à 760px et moins | — |

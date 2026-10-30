@@ -27,15 +27,23 @@ export default defineConfig({
     rollupOptions: {
       // React, les icônes Untitled UI, TanStack et d3 ne doivent pas être inclus dans le bundle
       external: ['react', 'react-dom', 'react/jsx-runtime', /^@untitledui\/icons/, /^@tanstack\//, /^d3-/],
-      output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-          'react/jsx-runtime': 'jsxRuntime',
+      output: [
+        // ESM en un fichier par module : c'est ce qui permet aux produits de n'embarquer que ce qu'ils importent
+        {
+          format: 'es',
+          preserveModules: true,
+          preserveModulesRoot: path.resolve(dirname, 'src/components'),
+          entryFileNames: ({ name }) => (name === 'index' ? 'hove-cadence-ui.js' : '[name].js'),
+          assetFileNames: 'style.css',
         },
-        // Préserver les imports CSS dans chaque chunk
-        assetFileNames: 'style.css',
-      },
+        // CommonJS en un seul fichier : ni tree-shaking à préserver, ni require cassés par le nettoyage CSS de Vite
+        {
+          format: 'cjs',
+          exports: 'named',
+          entryFileNames: 'hove-cadence-ui.cjs',
+          assetFileNames: 'style.css',
+        },
+      ],
     },
     // Générer les sourcemaps pour faciliter le debug
     sourcemap: true,
