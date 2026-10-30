@@ -377,6 +377,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Message persistant dans la page | `InlineAlert` | `Toaster` (notification éphémère) |
 | Sections dépliables | `Accordion` | `TabList` (navigation) |
 | Étapes d'un import ou formulaire | `Stepper` | `ProgressBar` (avancement d'un traitement) |
+| Libellé, aide et erreur d'un contrôle sans libellé propre | `FormField` | un `<label>` et un paragraphe d'erreur à la main |
 | Étapes dans un pied d'actions | `Stepper density="compact"` | une rangée de `GhostButton` recomposée |
 | Actions toujours visibles d'un formulaire long | `AppLayout footer` + `FormActions` | un pied en `position: fixed` calé sur la `Sidebar` |
 | Déposer/sélectionner des fichiers | `FileUpload` | L'app assure l'envoi et la validation métier |
@@ -526,10 +527,12 @@ Tester les menus et calendriers ouverts dans leur contexte réel : carte, accord
 | `PageSection surface="elevated"` | Ne coupe pas les menus |
 | `Accordion` ouvert | Ne coupe pas les menus. Fermé, il masque son contenu |
 | `PageSection surface="card"` | ⚠️ `overflow: hidden` : coupe un menu qui dépasse |
-| Zone défilante d'`AppLayout` | ⚠️ Coupe ce qui dépasse en bas : `Dropdown`, `DatePicker`, `DateRangePicker` et `TimePicker` s'ouvrent vers le bas, sans se retourner |
+| `Dropdown`, `Autocomplete`, `DatePicker`, `DateRangePicker`, `TimePicker` | Dans le flux, sous le champ ; retournés au-dessus si la place manque et qu'ils y tiennent. `placement` force le côté |
+| Infobulle d'un bouton icône seule | Sous le bouton, au-dessus si la place manque |
 | `Popover`, `ActionMenu`, `ExportMenu`, `ColumnManager` | En portail, retournés au-dessus du déclencheur si la place manque |
 
 - ✅ Lire toute la chaîne d'ancêtres : deux conteneurs différents peuvent couper le même menu.
+- ⚠️ Le retournement ne sort pas du conteneur : si le panneau ne tient d'aucun côté (carte basse en `overflow: hidden`), il reste dessous et reste coupé.
 - ❌ Ne pas retirer globalement un `overflow` nécessaire à une transition : limiter le correctif à l'état ouvert.
 
 ### Pied d'actions persistant
@@ -771,7 +774,8 @@ Les anciennes API de boutons (0.2) et les composants dépréciés sont **supprim
 - ✅ Afficher les erreurs avec `state="error"` + message dans `helperText`.
 - ✅ Grouper les champs connexes avec un titre de section.
 - ✅ Un indicateur de complétude (« Remplie » / « À compléter ») réutilise les règles de validation du formulaire.
-- ✅ Une erreur conduit à son champ : l'app sélectionne le bon objet et la bonne étape, ouvre le panneau, puis focalise une cible visible et active. `Dropdown`, `Autocomplete` et `DatePicker` n'ont pas de prop d'erreur : placer le message près du groupe et le relier à `ErrorSummary`.
+- ✅ Une erreur conduit à son champ : l'app sélectionne le bon objet et la bonne étape, ouvre le panneau, puis focalise une cible visible et active. `Dropdown`, `Autocomplete`, `DatePicker` et `TimePicker` prennent `error`, `helperText` et `required`, et transmettent leur ref au contrôle : `ErrorSummary` ou une action de toast y amène sans sélecteur DOM.
+- ✅ `FormField` pour un contrôle sans libellé propre (groupe de cases, champ métier). ❌ Jamais autour d'un champ Cadence : le libellé serait doublé.
 - ✅ `Toggle` pour un effet immédiat, `Checkbox` pour une sélection confirmée à la soumission.
 - ✅ Utiliser `SegmentedControl` pour les choix exclusifs de 2 à 4 options, dans les formulaires comme pour changer de vue.
 - ❌ Ne jamais étirer un `SegmentedControl` sur toute la largeur : il épouse ses segments (voir sa [fiche API](#segmentedcontrol)).
@@ -1081,7 +1085,7 @@ Une `Card` est **interactive** de deux façons :
 | Avertissement non bloquant | `AlertToast type="warning"` |
 | Info contextuelle sur un élément UI | `TooltipTrigger` |
 | Explication d'un bouton désactivé | `TooltipTrigger` accolé au bouton `disabled` |
-| Erreur de validation d'un champ | `TextInput state="error"` + `helperText`, ou `TimePicker error` |
+| Erreur de validation d'un champ | `TextInput state="error"` + `helperText`, ou `error` (`Dropdown`, `Autocomplete`, `DatePicker`, `TimePicker`) |
 | Plusieurs erreurs à la soumission | `ErrorSummary` + erreurs locales des champs |
 | Confirmation avant action irréversible | `Modal size="small"` |
 
@@ -1128,7 +1132,7 @@ Les composants n'ont pas tous le même fuseau par défaut. Dans une composition,
 | `TimePicker`, `RouteStopList`, `ServiceCalendar` | heures et dates de service, sans fuseau | — |
 
 - ✅ Une page = un fuseau et une horloge (`now`) partagés par tous ses composants.
-- ✅ `DatePicker` ne remonte qu'une valeur confirmée et n'expose pas sa saisie en cours : ne pas fonder une validation sur l'ancienne valeur pendant une frappe. Stabiliser les `Date` passées en prop (`useMemo`) et normaliser les valeurs restaurées.
+- ✅ `DatePicker` ne remonte qu'une valeur confirmée : bloquer la validation tant que `onInputStateChange` n'a pas rendu `"confirmed"`. Normaliser les valeurs restaurées. Une `Date` recréée à chaque rendu n'efface plus la saisie.
 - ❌ Ne pas mélanger une date sans décalage (`2026-06-12T08:15:00`, lue en heure locale) et une date en UTC (`…Z`) dans une même vue.
 
 ## Page patterns
@@ -1780,7 +1784,7 @@ Squelette d'application : la `Sidebar` à gauche et le contenu de la page dans u
 ⚠️ Le fond de l'app reprend la couleur produit de la `Sidebar` passée dans `sidebar` (datahub par défaut). Il est lu par CSS (`:has()`) : pas de prop `product` à dupliquer.
 ⚠️ Le conteneur suit la largeur courante de la Sidebar (dépliée ou repliée) sans mesure : ne pas ajouter de `marginLeft` ni de `position: fixed`.
 ⚠️ Pas de navigation mobile intégrée : à 390px, une `Sidebar` ouverte écrase le contenu et son pied. L'app prévoit un menu.
-⚠️ Un `Dropdown` posé dans `footer` s'ouvre vers le bas et sera coupé par le conteneur : préférer `ActionMenu` ou `Popover`, retournés au-dessus.
+✅ Un `Dropdown` ou un `DatePicker` posé dans `footer` s'ouvre au-dessus du pied, par retournement automatique.
 
 ### AlertToast
 
@@ -2982,6 +2986,30 @@ Rangée de champs de formulaire à **largeurs égales**, alignés par le bas (`a
 - ✅ Pour 2-3 champs d'un même gabarit de hauteur (40 px) côte à côte dans une section.
 - ⚠️ Passe en une colonne à 1024px de fenêtre et moins. Le repli dépend de la fenêtre, pas de la place disponible.
 - ❌ Ne pas y mélanger un champ 40 px et un contrôle compact 29 px (voir [Hauteurs de contrôle](#hauteurs-de-contrôle-et-alignement-sur-une-rangée)). Pas de `helperText` sous un seul champ de la rangée (il décale l'alignement).
+
+### FormField
+
+Libellé, aide et erreur d'un contrôle qui n'en porte pas. Les champs Cadence ont déjà ces props.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `label` | `string` | **requis** | Libellé visible |
+| `children` | `ReactNode \| (control) => ReactNode` | **requis** | Fonction : contrôle unique, qui reçoit `id`, `aria-describedby`, `aria-invalid`, `aria-required`. Contenu : groupe (`role="group"`) nommé par le libellé |
+| `required` | `boolean` | `false` | Marque le libellé. La validation reste à l'app |
+| `helperText` / `error` | `string` | — | Aide ; erreur prioritaire |
+| `id` / `className` | `string` | — | `id` de la racine, cible possible d'`ErrorSummary` ; ref transmise à la racine |
+
+```tsx
+<FormField label="Jours d'application" error={daysError}>
+  <DayCheckboxes />
+</FormField>
+<FormField label="Code réseau" required>
+  {(control) => <NetworkCodeInput {...control} />}
+</FormField>
+```
+
+- ⚠️ Avec un contenu direct, nommer chaque case (`aria-label`).
+- ❌ Ne pas envelopper `TextInput`, `Dropdown`, `DatePicker` ou un autre champ Cadence.
 
 ### FormActions
 
@@ -4319,3 +4347,21 @@ Journal technique ou extrait de fichier. Les messages sont du texte React échap
 ### Pictogrammes métier du lot 6
 
 `Icons` accepte `database`, `layers`, `shield-check`, `target`, `activity`, `alert-circle`, `info-plain` (i sans cercle), `live` (signal radio), ainsi que les géométries métier fournies par Datapilot : `mobility-lignes`, `mobility-reseaux`, `mobility-compagnies`, `mobility-parcours`, `mobility-zones`, `mobility-modes-com`, `mobility-points`, `mobility-modes-phy`. Elles suivent currentColor et s’utilisent à 16/20/24px ; les libellés voisins portent leur sens. Aucun SVG distant.
+| `helperText` | `string` | — | Aide sous le champ |
+| `error` | `string` | — | Erreur fournie par l'app, prioritaire sur `helperText` ; bordure d'erreur et description accessible |
+| `required` | `boolean` | `false` | Marque le libellé (astérisque + « obligatoire » annoncé). La validation reste à l'app |
+| `placement` | `"auto" \| "top" \| "bottom"` | `"auto"` | Côté d'ouverture ; `"auto"` retourne au-dessus si la place manque |
+| `helperText` | `string` | — | Aide sous le champ |
+| `error` | `string` | — | Erreur fournie par l'app, prioritaire sur `helperText` ; bordure d'erreur et description accessible |
+| `required` | `boolean` | `false` | Marque le libellé (astérisque + « obligatoire » annoncé). La validation reste à l'app |
+| `placement` | `"auto" \| "top" \| "bottom"` | `"auto"` | Côté d'ouverture ; `"auto"` retourne au-dessus si la place manque |
+| `helperText` | `string` | — | Aide sous le champ |
+| `error` | `string` | — | Erreur fournie par l'app, prioritaire sur `helperText` ; bordure d'erreur et description accessible |
+| `required` | `boolean` | `false` | Marque le libellé (astérisque + « obligatoire » annoncé). La validation reste à l'app |
+| `placement` | `"auto" \| "top" \| "bottom"` | `"auto"` | Côté d'ouverture ; `"auto"` retourne au-dessus si la place manque |
+| `placement` | `"auto" \| "top" \| "bottom"` | `"auto"` | Côté d'ouverture ; `"auto"` retourne au-dessus si la place manque |
+| `placement` | `"auto" \| "top" \| "bottom"` | `"auto"` | Côté d'ouverture ; `"auto"` retourne au-dessus si la place manque |
+| `onInputStateChange` | `(state: "confirmed" \| "editing" \| "invalid") => void` | — | État de la saisie au clavier. Tant qu'il n'est pas `"confirmed"`, `value` ne reflète pas ce qui est affiché |
+| `clearable` / `onClear` | `boolean` / `() => void` | `false` / — | Valeur facultative : bouton d'effacement et cases vidées. `onChange` reçoit toujours une `Date` : l'app repasse `value` à `null` dans `onClear` |
+| `required` | `boolean` | `false` | Astérisque sur le libellé et `required` natif : en formulaire `noValidate` si l'app valide elle-même |
+| `required` | `boolean` | `false` | Astérisque sur le libellé et `required` natif : en formulaire `noValidate` si l'app valide elle-même |

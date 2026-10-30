@@ -1,7 +1,7 @@
-import { useState, type ComponentProps } from "react";
+import { useState, type ComponentProps, type ReactNode } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, fn, userEvent, within } from "storybook/test";
-import { DatePicker } from "./DatePicker";
+import { expect, fn, userEvent, waitFor, within } from "storybook/test";
+import { DatePicker, type DateInputState } from "./DatePicker";
 
 const meta: Meta<typeof DatePicker> = {
   title: "Composants/Formulaires/DatePicker",
@@ -265,5 +265,92 @@ export const VarianteBouton: Story = {
     await userEvent.click(trigger);
     await expect(trigger).toHaveAttribute("aria-expanded", "true");
     await expect(canvas.getByRole("dialog", { name: "Calendrier" })).toBeInTheDocument();
+  },
+};
+
+const ClipBox = ({ children, height }: { children: ReactNode; height: number }) => (
+  <div data-testid="clip" style={{ height, width: 360, overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: 16, boxSizing: "border-box" }}>
+    {children}
+  </div>
+);
+
+/** Dans un pied d'actions ou en bas de page : le calendrier passe au-dessus du champ. */
+export const RetourneAuDessus: Story = {
+  name: "Retourné au-dessus",
+  render: () => <ClipBox height={520}><DatePicker label="Début" value={new Date(2026, 9, 12)} /></ClipBox>,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const buttons = canvas.getAllByRole("button");
+    await userEvent.click(buttons[buttons.length - 1]);
+    const panel = canvas.getByRole("dialog", { name: "Calendrier" });
+    await expect(panel).toHaveAttribute("data-placement", "top");
+    await expect(panel.getBoundingClientRect().bottom).toBeLessThanOrEqual(canvas.getByTestId("clip").getBoundingClientRect().bottom);
+    await expect(panel.getBoundingClientRect().top).toBeGreaterThanOrEqual(canvas.getByTestId("clip").getBoundingClientRect().top);
+  },
+};
+
+const DateInputDemo = ({ onState }: { onState: (state: DateInputState) => void }) => {
+  const [tick, setTick] = useState(0);
+  return (
+    <>
+      {/* Date recréée à chaque rendu, comme un parent qui ne mémoïse pas */}
+      <DatePicker label="Début" value={new Date(2026, 9, 12)} onInputStateChange={onState} />
+      <button type="button" onClick={() => setTick(tick + 1)}>Rendu parent {tick}</button>
+    </>
+  );
+};
+
+/** La frappe survit à un rendu du parent ; l'état de saisie permet de bloquer une validation. */
+export const EtatDeSaisie: Story = {
+  name: "État de saisie",
+  args: { onInputStateChange: fn() },
+  render: (args) => <DateInputDemo onState={args.onInputStateChange!} />,
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    const onState = args.onInputStateChange!;
+    const year = canvas.getByRole("textbox", { name: /Année/ });
+
+    await userEvent.clear(year);
+    await userEvent.type(year, "20");
+    await waitFor(() => expect(onState).toHaveBeenLastCalledWith("editing"));
+    await userEvent.click(canvas.getByRole("button", { name: /Rendu parent/ }));
+    await expect(year).toHaveValue("20");
+
+    // Saisie refusée au départ du champ
+    await waitFor(() => expect(onState).toHaveBeenLastCalledWith("invalid"));
+
+    // Retour à la valeur initiale : le formulaire est débloqué
+    await userEvent.clear(year);
+    await userEvent.type(year, "2026");
+    await waitFor(() => expect(onState).toHaveBeenLastCalledWith("confirmed"));
+  },
+};
+
+const ClearableDemo = () => {
+  const [value, setValue] = useState<Date | null>(new Date(2026, 9, 12));
+  return <DatePicker label="Fin" value={value} onChange={setValue} clearable onClear={() => setValue(null)} helperText="Facultative." />;
+};
+
+/** Valeur facultative : bouton d'effacement, ou cases vidées puis champ quitté. */
+export const Effacable: Story = {
+  name: "Effaçable",
+  render: () => <ClearableDemo />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: "Effacer — fin" }));
+    await expect(canvas.getByRole("textbox", { name: /Année/ })).toHaveValue("");
+    await expect(canvas.queryByRole("button", { name: "Effacer — fin" })).toBeNull();
+    await expect(canvas.getByText("Facultative.")).toBeInTheDocument();
+  },
+};
+
+/** Erreur fournie par l'app, annoncée sur les cases. */
+export const ErreurExterne: Story = {
+  name: "Erreur externe",
+  args: { label: "Début", required: true, error: "La fin précède le début." },
+  play: async ({ canvasElement }) => {
+    const day = within(canvasElement).getByRole("textbox", { name: /Jour/ });
+    await expect(day).toHaveAttribute("aria-invalid", "true");
+    await expect(day).toHaveAccessibleDescription("La fin précède le début.");
   },
 };

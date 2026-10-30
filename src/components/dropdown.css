@@ -221,3 +221,33 @@
 .dropdown__option-check-mark {
   fill: var(--cadence-color-white, #ffffff);
 }
+
+/* Retourné au-dessus par usePopoverFit */
+.dropdown__menu[data-placement="top"] {
+  top: auto;
+  bottom: calc(100% + 6px);
+}
+
+.dropdown__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.dropdown__message {
+  margin: 6px 0 0 8px;
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.dropdown__message--error {
+  color: var(--cadence-color-danger-text, #b91c1c);
+}
+
+.dropdown__trigger--error {
+  border-color: var(--cadence-color-danger, #da1e28);
+}

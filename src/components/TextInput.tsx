@@ -26,6 +26,9 @@ export interface TextInputProps {
   /** Helper or error message displayed below the input. */
   helperText?: string;
 
+  /** Champ obligatoire : marque le libellé et le contrôle natif. */
+  required?: boolean;
+
   /** Native input type (text, email, password, etc.). */
   type?: HTMLInputTypeAttribute;
 
@@ -52,6 +55,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
       value,
       onChange,
       helperText,
+      required = false,
       type = "text",
       className,
       disabled = false,
@@ -107,7 +111,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
       <div className={rootClass}>
         {label && (
           <label className="text-input__label" htmlFor={inputId}>
-            {label}
+            {label}{required && <span aria-hidden="true"> *</span>}
           </label>
         )}
         <div
@@ -123,6 +127,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             placeholder={placeholder}
             value={value}
             onChange={onChange}
+            required={required}
             disabled={isDisabled}
             onFocus={handleFocus}
             onBlur={handleBlur}

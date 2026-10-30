@@ -25,6 +25,7 @@ export * from './DatasetHealth';
 export * from './ValidationIssueInspector';
 export type { ValidationVerdict, ValidationSeverity, ValidationIssueLocation, ValidationIssue } from './validation-types';
 export * from './DatePicker';
+export * from './FormField';
 export * from './DateRangePicker';
 export * from './Heatmap';
 export * from './Icons';

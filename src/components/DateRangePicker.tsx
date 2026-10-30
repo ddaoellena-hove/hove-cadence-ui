@@ -14,7 +14,7 @@ import {
   normalizeRange,
   type DateRangePreset,
 } from "./date-range-utils";
-import { usePopoverFit } from "./use-popover-fit";
+import { usePopoverFit, type PopoverPlacement } from "./use-popover-fit";
 import "./date-range-picker.css";
 
 export type { DateRangePreset };
@@ -52,6 +52,8 @@ export interface DateRangePickerProps {
    * `"button"` (PrimaryButton outline sm, pour l'en-tête d'un dashboard).
    */
   variant?: TriggerVariant;
+  /** Côté d'ouverture : "auto" (dessous, retourné au-dessus si la place manque), "top" ou "bottom". Défaut "auto". */
+  placement?: PopoverPlacement;
 }
 
 const CalendarIcon = () => (
@@ -87,6 +89,7 @@ export const DateRangePicker = ({
   months = 2,
   "aria-label": ariaLabel,
   variant = "field",
+  placement = "auto",
 }: DateRangePickerProps) => {
   const reference = referenceDate ?? new Date();
   const triggerId = useId();
@@ -126,7 +129,7 @@ export const DateRangePicker = ({
 
   // Le popover reste dans la zone visible (ex. déclencheur au bord droit d'un en-tête)
   const popoverRef = useRef<HTMLDivElement>(null);
-  usePopoverFit(popoverRef, open);
+  usePopoverFit(popoverRef, open, placement);
 
   const close = (restoreFocus = true) => {
     setOpen(false);

@@ -16,6 +16,7 @@ export interface DateFieldsProps {
   /** Nom du champ, repris dans le nom de chaque case. */
   label: string;
   disabled?: boolean;
+  required?: boolean;
   invalid?: boolean;
   describedBy?: string;
 }
@@ -42,6 +43,7 @@ export function DateFields({
   id,
   label,
   disabled = false,
+  required = false,
   invalid,
   describedBy,
 }: DateFieldsProps) {
@@ -94,6 +96,7 @@ export function DateFields({
             }}
             id={index === 0 ? id : undefined}
             className={`date-fields__box date-fields__box--${segment.length}`}
+            aria-required={required || undefined}
             type="text"
             inputMode="numeric"
             autoComplete="off"

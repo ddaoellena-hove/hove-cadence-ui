@@ -26,6 +26,10 @@ Changements postérieurs au paquet 1.0.0 (publié depuis `2648ab7`). Version à 
 - `FieldRow` : repli en une colonne à 1024px et moins, comme l'annonçait le pattern Formulaire. ⚠️ Changement visible pour toute page à 1024px de large ou moins.
 - `Accordion` : le contenu ouvert ne coupe plus les menus.
 - Tokens de composition de page et de section, `--cadence-shadow-section`, icône `translate-01`.
+- Overlays : `placement` (`auto`, `top`, `bottom`) sur `Dropdown`, `Autocomplete`, `DatePicker`, `DateRangePicker` et `TimePicker`, retournés au-dessus si la place manque ; infobulle des boutons icône seule retournée de même.
+- `FormField` : libellé, aide et erreur d'un contrôle sans libellé propre.
+- `Dropdown`, `Autocomplete`, `DatePicker` : `error`, `helperText`, `required`, ref transmise au contrôle. `TextInput`, `TextArea` : `required`.
+- `DatePicker` : `onInputStateChange`, `clearable`, `onClear` ; une `Date` recréée à chaque rendu n'efface plus la saisie.
 - Documentation : [guide de migration](docs/MIGRATION-TO-CADENCE.md), étude de cas, grille d'audit, [backlog restant](docs/proposals/traffic-report-backlog.md).
 
 ### Ajouté

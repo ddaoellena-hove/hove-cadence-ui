@@ -1,4 +1,6 @@
 import {
+  forwardRef,
+  useImperativeHandle,
   useState,
   useRef,
   useEffect,
@@ -7,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { Badge } from "./Badge";
+import { usePopoverFit, type PopoverPlacement } from "./use-popover-fit";
 import "./autocomplete.css";
 import "./scrollbar.css";
 
@@ -67,6 +70,14 @@ export interface AutocompleteProps {
   minChars?: number;
   loading?: boolean;
   limit?: number;
+  /** Message d'aide sous le champ. */
+  helperText?: string;
+  /** Erreur fournie par l'app ; prioritaire sur `helperText`. */
+  error?: string;
+  /** Champ obligatoire : marque le libellé. La validation reste à l'app. */
+  required?: boolean;
+  /** Côté d'ouverture : "auto" (dessous, retourné au-dessus si la place manque), "top" ou "bottom". Défaut "auto". */
+  placement?: PopoverPlacement;
   className?: string;
 }
 
@@ -94,7 +105,7 @@ const CheckIcon = () => (
 
 // ── Component ────────────────────────────────────────────────────────────────
 
-export const Autocomplete = ({
+export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(({
   options,
   label,
   placeholder = "Rechercher…",
@@ -106,12 +117,20 @@ export const Autocomplete = ({
   noResultsLabel = "Aucun résultat",
   onInputChange, filter = true, minChars = 0, loading = false, limit,
   className,
-}: AutocompleteProps) => {
+  helperText,
+  error,
+  required = false,
+  placement = "auto",
+}, ref) => {
+  const menuRef = useRef<HTMLUListElement>(null);
   const [isOpen, setIsOpen] = useState(defaultOpen);
+  usePopoverFit(menuRef, isOpen, placement);
   const [query, setQuery] = useState("");
   const [highlight, setHighlight] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  useImperativeHandle(ref, () => inputRef.current!);
+  const message = error || helperText;
   const fieldId = useId();
 
   // Normalisation de la valeur en tableau d'ids
@@ -242,11 +261,11 @@ export const Autocomplete = ({
     }}>
       {label && (
         <label className="autocomplete__label" htmlFor={fieldId}>
-          {label}
+          {label}{required && <><span aria-hidden="true"> *</span><span className="autocomplete__sr-only"> (obligatoire)</span></>}
         </label>
       )}
 
-      <div className="autocomplete__field" onClick={() => inputRef.current?.focus()}>
+      <div className={`autocomplete__field${error ? " autocomplete__field--error" : ""}`} onClick={() => inputRef.current?.focus()}>
         {/* Chips (mode multiple) */}
         {multiple &&
           selectedIds.map((id) => {
@@ -277,7 +296,9 @@ export const Autocomplete = ({
           aria-controls={`${fieldId}-listbox`}
           aria-autocomplete="list"
           aria-activedescendant={isOpen && activeIndex >= 0 ? `${fieldId}-option-${activeIndex}` : undefined}
-          aria-describedby={isOpen && (loading || query.trim().length < minChars) ? `${fieldId}-status` : undefined}
+          aria-describedby={[isOpen && (loading || query.trim().length < minChars) ? `${fieldId}-status` : "", message ? `${fieldId}-message` : ""].filter(Boolean).join(" ") || undefined}
+          aria-invalid={error ? true : undefined}
+          aria-required={required || undefined}
           autoComplete="off"
           disabled={disabled}
           placeholder={selectedIds.length === 0 ? placeholder : ""}
@@ -293,9 +314,12 @@ export const Autocomplete = ({
         <ChevronIcon open={isOpen} />
       </div>
 
+      {message && <p id={`${fieldId}-message`} className={`autocomplete__message${error ? " autocomplete__message--error" : ""}`}>{message}</p>}
+
       {isOpen && <span id={`${fieldId}-status`} className="autocomplete__status" role="status">{loading ? "Chargement des résultats…" : query.trim().length < minChars ? `Saisissez au moins ${minChars} caractères.` : `${filtered.length} résultat${filtered.length > 1 ? "s" : ""}`}</span>}
       {isOpen && (
         <ul
+          ref={menuRef}
           className="autocomplete__menu cadence-scrollbar"
           id={`${fieldId}-listbox`}
           role="listbox"
@@ -369,4 +393,6 @@ export const Autocomplete = ({
       )}
     </div>
   );
-};
+});
+
+Autocomplete.displayName = "Autocomplete";

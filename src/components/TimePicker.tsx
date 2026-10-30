@@ -5,11 +5,13 @@ import { GhostButton } from "./GhostButton";
 import { Icons } from "./Icons";
 import { ButtonTriggerContent } from "./ButtonTrigger";
 import { buttonTriggerClass, type TriggerVariant } from "./button-trigger-utils";
-import { usePopoverFit } from "./use-popover-fit";
+import { usePopoverFit, type PopoverPlacement } from "./use-popover-fit";
 import { formatTime, parseTime, timeBounds } from "./time-picker-utils";
 import "./time-picker.css";
 
 export interface TimePickerProps {
+  /** Côté d'ouverture : "auto" (dessous, retourné au-dessus si la place manque), "top" ou "bottom". Défaut "auto". */
+  placement?: PopoverPlacement;
   label?: string;
   "aria-label"?: string;
   value: string;
@@ -37,7 +39,7 @@ const split = (value: string) => (value ? value.split(":") : ["", ""]);
  * à droite (GhostButton, sans infobulle) ouvre le panneau de réglage (flèches).
  */
 export const TimePicker = forwardRef<HTMLInputElement, TimePickerProps>(
-  ({ label, "aria-label": ariaLabel, value, onChange, allowOvernight = false, min, max, minuteStep = 1, disabled = false, required = false, helperText, error, id, className, variant = "field" }, ref) => {
+  ({ label, "aria-label": ariaLabel, value, onChange, allowOvernight = false, min, max, minuteStep = 1, disabled = false, required = false, helperText, error, id, className, variant = "field", placement = "auto" }, ref) => {
     const rootRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const triggerRef = useRef<HTMLButtonElement>(null);
@@ -61,7 +63,7 @@ export const TimePicker = forwardRef<HTMLInputElement, TimePickerProps>(
     const invalidMessage = `Saisissez une heure entre ${formatTime(bounds.min)} et ${formatTime(bounds.max)}.`;
     const message = error || localError || helperText;
     const invalid = Boolean(error || localError);
-    usePopoverFit(popoverRef, open);
+    usePopoverFit(popoverRef, open, placement);
 
     useEffect(() => {
       inputRef.current?.setCustomValidity(error || (draft !== "" && !inRange ? invalidMessage : localError));

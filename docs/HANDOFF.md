@@ -4,6 +4,12 @@
 
 **`1.0.0` est la version `latest` sur npm**, publiée le 25 octobre 2026 depuis `2648ab7` (fusion de la #56). Tout ce qui suit ce commit n'est pas publié : voir « Non publié » dans le [changelog](../CHANGELOG.md). Les mentions « 1.0.0 non publiée » et « dernière version 0.1.6 » plus bas sont historiques. Source à consulter : `npm view @ddaoellena/cadence-ui`.
 
+## Mise à jour — 30 octobre 2026 : lots overlays, validation et dates
+
+- PR ouvertes : [#70](https://github.com/ddaoellena-hove/hove-cadence-ui/pull/70) (PageHero V2, vers `main`) et [#71](https://github.com/ddaoellena-hove/hove-cadence-ui/pull/71) (migration, empilée sur #70).
+- Branche `feat/overlays-placement`, depuis `feat/cadence-migration` : N2, E5, N1, E7, E6. Validé sous React 19 et 18 (1 048 tests, `tsc`) ; `build:lib`, `check:types` et `smoke:dist` sous React 19. Détail : [backlog](proposals/traffic-report-backlog.md).
+- Décisions : retournement vertical dans `usePopoverFit`, sans portail ; `onChange` de `DatePicker` reste typé `Date` (`onClear` à part) ; contrat calqué sur `TimePicker`.
+
 ## Mise à jour — 30 octobre 2026 : migration Traffic Report
 
 - **Source** : dossier de passation `cadence-migration-handoff.zip`. Périmètre choisi par l'utilisateur : documentation + P1 ciblés (E1 à E4, repli `FieldRow`). N1, N2, E5, E6, E7 et les P2/P3 restent à faire : [backlog](proposals/traffic-report-backlog.md).
