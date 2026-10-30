@@ -26,8 +26,8 @@
 
 .small-multiples__label {
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-small, 12px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -38,7 +38,7 @@
   color: var(--cadence-color-primary, #002830);
   flex-shrink: 0;
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
 }

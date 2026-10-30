@@ -20,8 +20,8 @@
 
 .time-space__stop {
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 11px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-caption, 11px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   left: 0;
   max-width: calc(100% - 8px);
   overflow: hidden;
@@ -108,7 +108,7 @@
   background: var(--cadence-color-white, #ffffff);
   color: var(--cadence-status-critical-fg, #b91c1c);
   font-size: 10px;
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
   left: 4px;
   position: absolute;
   top: 2px;
@@ -120,7 +120,7 @@
   color: var(--cadence-color-label, #1a3e45);
   display: flex;
   flex-wrap: wrap;
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   gap: 4px 16px;
   list-style: none;
   margin: 0;

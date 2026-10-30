@@ -18,7 +18,7 @@
   padding-inline-end: 8px;
   border-radius: var(--cadence-radius-sm, 6px);
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 14px;
+  font-size: var(--cadence-font-size-emphasis, 14px);
   cursor: pointer;
   user-select: none;
   box-sizing: border-box;
@@ -39,7 +39,7 @@
 .tree-view__item--selected,
 .tree-view__item--selected:hover {
   background: var(--cadence-color-selected-surface, #c8d6e4);
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
 }
 
 .tree-view__item--disabled {
@@ -93,7 +93,7 @@
   margin-inline-start: auto;
   padding-inline-start: 8px;
   color: var(--cadence-color-text-secondary, #607075);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
 }
 
 /* La case tri-état (classes .checkbox de checkbox.css) ne doit pas capter le focus. */
@@ -117,15 +117,15 @@
   align-items: center;
   gap: 4px;
   color: var(--cadence-color-link, #1d4ed8);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-small, 12px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
 }
 
 .tree-view__empty {
   margin: 0;
   padding: 12px 8px;
   color: var(--cadence-color-text-secondary, #607075);
-  font-size: 14px;
+  font-size: var(--cadence-font-size-emphasis, 14px);
 }
 
 .tree-view__spacer {

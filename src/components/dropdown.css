@@ -10,8 +10,8 @@
   display: block;
   color: var(--cadence-color-label, #1a3e45);
   font-family: var(--cadence-font-sans, "Inter", Helvetica);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   letter-spacing: 0;
   line-height: normal;
   padding: 0 0 10px 8px;
@@ -30,8 +30,8 @@
   border-radius: var(--cadence-radius-lg, 10px);
   cursor: pointer;
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   color: var(--cadence-color-primary, #002830);
   line-height: normal;
   white-space: nowrap;
@@ -88,7 +88,7 @@
 /* Placeholder au contraste AA (#bfc9cb n'atteignait que 1,7:1) */
 .dropdown__trigger-label--placeholder {
   color: var(--cadence-color-placeholder, #737373);
-  font-weight: 400;
+  font-weight: var(--cadence-font-weight-regular, 400);
 }
 
 /* ── Chevron ── */
@@ -141,8 +141,8 @@
 /* ── Libellé de groupe (en-tête de section) ── */
 .dropdown__group-label {
   padding: 8px 12px 4px;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-caption, 11px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   line-height: 12px;
   color: var(--cadence-color-placeholder, #737373);
   text-transform: uppercase;
@@ -163,8 +163,8 @@
   cursor: pointer;
   text-align: left;
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   color: var(--cadence-color-primary, #002830);
   line-height: 1.4;
   white-space: nowrap;
@@ -183,7 +183,7 @@
 /* ── Selected option ── */
 .dropdown__option--selected {
   background: var(--cadence-color-surface-alt, #eef1f4);
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
 }
 
 /* ── Disabled option ── */
@@ -240,7 +240,7 @@
 .dropdown__message {
   margin: 6px 0 0 8px;
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   line-height: 1.4;
 }
 

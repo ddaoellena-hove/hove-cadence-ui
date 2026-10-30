@@ -11,8 +11,8 @@
   white-space: nowrap;
   box-sizing: border-box;
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-emphasis, 14px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   letter-spacing: 0px;
   line-height: 1.5;
   color: var(--_color);

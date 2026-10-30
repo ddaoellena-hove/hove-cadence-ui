@@ -166,6 +166,7 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-radius-pill` | `999px` | Pilules et cercles : boutons, `SearchInput`, `Toggle`, halos ronds |
 | `--cadence-control-height-compact` | `29px` | Hauteur des contrôles compacts : boutons `size="sm"`, `SearchInput`, déclencheurs `variant="button"`, `SegmentedControl size="sm"` — voir [Hauteurs de contrôle](#hauteurs-de-contrôle-et-alignement-sur-une-rangée) |
 | `--cadence-control-height-field` | `40px` | Hauteur des champs d'une ligne (`TextInput`, `Dropdown`, `DatePicker`, `ColorField`…) et du `SegmentedControl` (`size="md"`) |
+| `--cadence-control-height-button` | `34px` | Hauteur des boutons `size="md"` |
 
 
 **Compléments lot 6 — tailles et fond sombre** :
@@ -179,6 +180,10 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-font-size-heading` | 22px | Titre de page |
 | `--cadence-font-size-kpi` | 28px | Compteur |
 | `--cadence-font-size-kpi-large` | 44px | Valeur principale |
+| `--cadence-font-weight-regular` | 400 | Texte courant |
+| `--cadence-font-weight-medium` | 500 | Libellés, `PrimaryButton` |
+| `--cadence-font-weight-semibold` | 600 | Titres, `GhostButton` |
+| `--cadence-font-weight-bold` | 700 | Forte emphase |
 | `--cadence-status-active-on-dark` | #40c2da | En cours |
 | `--cadence-status-upcoming-on-dark` | #c4b5fd | À venir |
 | `--cadence-status-completed-on-dark` | #86efac | Terminé |

@@ -4,7 +4,7 @@
    --cadence-color-surface-alt. */
 .ghost-button {
   background-color: transparent;
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
   color: var(--cadence-color-primary, rgb(0, 40, 48));
 }
 
@@ -40,4 +40,4 @@
   color: var(--cadence-color-text-disabled, rgb(128, 128, 128));
 }
 
-.base-button__counter { position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; padding: 0 3px; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--cadence-radius-pill, 999px); background: var(--cadence-color-accent, #1b6cff); color: var(--cadence-color-white, #fff); font-size: 11px; font-weight: 600; line-height: 1; }
+.base-button__counter { position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; padding: 0 3px; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--cadence-radius-pill, 999px); background: var(--cadence-color-accent, #1b6cff); color: var(--cadence-color-white, #fff); font-size: var(--cadence-font-size-caption, 11px); font-weight: var(--cadence-font-weight-semibold, 600); line-height: 1; }

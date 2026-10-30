@@ -5,8 +5,8 @@
   color: var(--cadence-color-label, #1a3e45);
   display: flex;
   flex-wrap: wrap;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-small, 12px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   gap: 8px 16px;
 }
 
@@ -18,7 +18,7 @@
 
 .line-diagram__direction-hint {
   color: var(--cadence-color-text-secondary, #607075);
-  font-weight: 400;
+  font-weight: var(--cadence-font-weight-regular, 400);
 }
 
 /* Défilement horizontal au-delà de la largeur disponible */
@@ -44,8 +44,8 @@
   box-sizing: border-box;
   color: var(--cadence-color-primary, #002830);
   display: inline-flex;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-caption, 11px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   gap: 4px;
   height: 22px;
   padding: 0 8px 0 6px;
@@ -176,7 +176,7 @@
 
 .line-diagram__name {
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 11px;
+  font-size: var(--cadence-font-size-caption, 11px);
   overflow: hidden;
   position: absolute;
   text-align: center;

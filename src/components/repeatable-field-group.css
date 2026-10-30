@@ -33,7 +33,7 @@
 .repeatable-group__error {
   margin: 0;
   color: var(--cadence-color-danger-text, #b91c1c);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   line-height: 1.4;
 }
 
@@ -46,7 +46,7 @@
 
 .repeatable-group__count {
   color: var(--cadence-color-text-secondary, #607075);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
 }
 
 .repeatable-group__status {

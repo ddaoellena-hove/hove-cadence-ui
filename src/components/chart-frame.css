@@ -53,15 +53,15 @@
 
 .chart__title {
   color: var(--cadence-color-primary, #002830);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-emphasis, 14px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   line-height: 1.4;
   margin: 0;
 }
 
 .chart__description {
   color: var(--cadence-color-text-secondary, #607075);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   line-height: 1.4;
   margin: 0;
 }
@@ -86,7 +86,7 @@
   color: var(--cadence-color-label, #1a3e45);
   display: flex;
   flex-direction: column;
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
   gap: 8px;
   justify-content: center;
   padding: 16px;
@@ -126,7 +126,7 @@
 .chart__axis-label {
   fill: var(--cadence-color-text-secondary, #607075);
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
-  font-size: 11px;
+  font-size: var(--cadence-font-size-caption, 11px);
 }
 
 .chart__axis-label--date {
@@ -156,7 +156,7 @@
   cursor: pointer;
   display: inline-flex;
   font-family: inherit;
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   gap: 6px;
   padding: 2px 4px;
 }
@@ -188,13 +188,13 @@
 /* ── Alternative tabulaire ── */
 .chart-table {
   border-collapse: collapse;
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   width: 100%;
 }
 
 .chart-table caption {
   color: var(--cadence-color-label, #1a3e45);
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
   padding-bottom: 6px;
   text-align: left;
 }
@@ -208,7 +208,7 @@
 
 .chart-table th {
   color: var(--cadence-color-label, #1a3e45);
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
 }
 
 .chart-table td.chart-table__number {
@@ -225,7 +225,7 @@
   color: var(--cadence-color-primary, #002830);
   cursor: pointer;
   font: inherit;
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
   padding: 0;
   text-align: left;
   text-decoration: underline;

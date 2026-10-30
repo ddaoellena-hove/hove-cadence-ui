@@ -78,8 +78,8 @@
   width: 28px;
   height: 28px;
   border-radius: var(--cadence-radius-pill, 999px);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   border: 2px solid var(--cadence-color-border-strong, #bfc9cb);
   background: var(--cadence-color-white, #ffffff);
   color: var(--cadence-color-label, #1a3e45);
@@ -113,8 +113,8 @@
 }
 
 .stepper__label {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   color: var(--cadence-color-primary, #002830);
 }
 
@@ -128,7 +128,7 @@
 
 .stepper__state,
 .stepper__description {
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   line-height: 1.4;
   color: var(--cadence-color-label, #1a3e45);
 }
@@ -205,8 +205,8 @@
   background: transparent;
   color: var(--cadence-color-label, #1a3e45);
   font-family: inherit;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-small, 12px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   cursor: pointer;
 }
 
@@ -278,12 +278,12 @@
 .stepper__context {
   margin: 0;
   min-width: 0;
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
   line-height: 1.4;
   color: var(--cadence-color-text-secondary, #607075);
 }
 
 .stepper__context strong {
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
   color: var(--cadence-color-primary, #002830);
 }

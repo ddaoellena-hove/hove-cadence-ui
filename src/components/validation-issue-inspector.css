@@ -18,8 +18,8 @@
 }
 
 .validation-issue-inspector__message {
-  font-size: 14px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-emphasis, 14px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   line-height: 1.5;
   margin: 0;
   overflow-wrap: anywhere;

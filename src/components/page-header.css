@@ -53,15 +53,15 @@
 .page-header__title {
   color: var(--cadence-color-primary, #002830);
   font-family: var(--cadence-font-display, "Uxum Grotesque", "Space Grotesk", sans-serif);
-  font-size: 22px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-heading, 22px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   line-height: 1.2;
   margin: 0;
 }
 
 .page-header__subtitle {
   color: var(--cadence-color-text-secondary, #607075);
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
   line-height: 1.4;
   margin: 0;
 }

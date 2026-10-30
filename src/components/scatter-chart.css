@@ -3,8 +3,8 @@
 .scatter-chart__axis-title {
   fill: var(--cadence-color-label, #1a3e45);
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-size: 11px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-caption, 11px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
 }
 
 .scatter-chart__plot--clickable {
@@ -21,8 +21,8 @@
 .scatter-chart__threshold text {
   fill: var(--cadence-dataviz-threshold, #1a3e45);
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-size: 11px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-caption, 11px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   paint-order: stroke;
   stroke: var(--cadence-color-white, #ffffff);
   stroke-linejoin: round;

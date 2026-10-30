@@ -7,10 +7,10 @@ button.summary-list__main:hover { background: var(--cadence-color-hover-overlay,
 button.summary-list__main:focus-visible { outline: 2px solid var(--cadence-focus-color, #1a3e45); outline-offset: -2px; }
 .summary-list__main:disabled { opacity: .5; cursor: default; }
 .summary-list__text { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; overflow-wrap: anywhere; }
-.summary-list__title { font-size: 14px; font-weight: 600; }
-.summary-list__description, .summary-list__meta { color: var(--cadence-color-text-secondary, #607075); font-size: 12px; }
+.summary-list__title { font-size: var(--cadence-font-size-emphasis, 14px); font-weight: var(--cadence-font-weight-semibold, 600); }
+.summary-list__description, .summary-list__meta { color: var(--cadence-color-text-secondary, #607075); font-size: var(--cadence-font-size-small, 12px); }
 /* Non lu : pastille d'accent + texte, pas la couleur de lien (ce n'est pas un lien) */
-.summary-list__unread { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--cadence-color-label, #1a3e45); }
+.summary-list__unread { display: inline-flex; align-items: center; gap: 6px; font-size: var(--cadence-font-size-small, 12px); font-weight: var(--cadence-font-weight-semibold, 600); color: var(--cadence-color-label, #1a3e45); }
 .summary-list__unread::before { content: ""; width: 8px; height: 8px; border-radius: var(--cadence-radius-pill, 999px); background: var(--cadence-color-accent, #1b6cff); }
 .summary-list__chevron { display: flex; color: var(--cadence-color-icon-muted, #69797d); }
 .summary-list__icon { flex: 0 0 auto; display: flex; }

@@ -36,21 +36,21 @@
 .timeline-shell__eyebrow {
   color: var(--cadence-color-text-secondary, #607075);
   font-size: var(--cadence-font-size-caption, 11px);
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .timeline-shell__window-value {
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
 }
 
 .timeline-shell__meta {
   color: var(--cadence-color-text-secondary, #607075);
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
 }
 
 .timeline-shell__scale {
@@ -146,7 +146,7 @@
 .timeline-shell__tick {
   color: var(--cadence-color-text-secondary, #607075);
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   padding-left: 4px;
   position: absolute;
   top: 50%;
@@ -156,7 +156,7 @@
 
 .timeline-shell__tick--major {
   color: var(--cadence-color-primary, #002830);
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
 }
 
 /* ── Aide ────────────────────────────────────────────────────────────────── */
@@ -164,7 +164,7 @@
   background-color: var(--cadence-color-surface-subtle, #fafafa);
   border-top: 1px solid var(--cadence-color-border, #e5e5e5);
   color: var(--cadence-color-text-secondary, #607075);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   margin: 0;
   padding: 10px 16px;
 }

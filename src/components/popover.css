@@ -24,7 +24,7 @@
   box-shadow: var(--cadence-shadow-lg, 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.1));
   color: var(--cadence-color-primary, #002830);
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
   line-height: 1.5;
 }
 
@@ -48,8 +48,8 @@
 }
 
 .popover__title {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
 }
 
 .popover__title--hidden {

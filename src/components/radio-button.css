@@ -122,13 +122,13 @@
 
 .radio-row__label {
   color: var(--cadence-color-primary, #002830);
-  font-size: 14px;
+  font-size: var(--cadence-font-size-emphasis, 14px);
   line-height: 18px;
 }
 
 .radio-row__description {
   color: var(--cadence-color-text-secondary, #607075);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   line-height: 1.4;
 }
 

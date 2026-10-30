@@ -29,8 +29,8 @@
   text-align: left;
   color: var(--cadence-color-primary, #002830);
   font-family: inherit;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-emphasis, 14px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   line-height: 1.4;
 }
 
@@ -73,7 +73,7 @@
   min-width: 0;
   overflow: hidden;
   color: var(--cadence-color-primary, #002830);
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
   line-height: 1.6;
 }
 

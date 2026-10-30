@@ -7,8 +7,8 @@
   color: var(--cadence-color-label, #1a3e45);
   display: inline-flex;
   font-family: var(--cadence-font-sans, "Inter", Helvetica);
-  font-size: 12px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-small, 12px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   gap: 5px;
   line-height: 1;
   padding: 5px 8px;

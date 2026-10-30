@@ -47,8 +47,8 @@
 
 .inline-alert__title {
   margin: 0;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   line-height: 1.4;
   color: inherit;
 }
@@ -56,7 +56,7 @@
 /* Le corps en encre pour une lecture confortable (le bandeau porte la couleur). */
 .inline-alert__text {
   color: var(--cadence-color-primary, #002830);
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
   line-height: 1.5;
 }
 

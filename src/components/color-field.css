@@ -11,8 +11,8 @@
 
 .color-field__label {
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   line-height: 1.4;
 }
 
@@ -30,7 +30,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 40px;
+  height: var(--cadence-control-height-field, 40px);
   padding: 0 12px;
   background: var(--cadence-color-white, #ffffff);
   border: 1px solid var(--cadence-color-border, #e5e5e5);
@@ -189,7 +189,7 @@
   background: transparent;
   color: var(--cadence-color-primary, #002830);
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
   text-transform: uppercase;
 }
 
@@ -212,7 +212,7 @@
 .color-field__message {
   margin: 0;
   color: var(--cadence-color-text-secondary, #607075);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   line-height: 1.5;
 }
 

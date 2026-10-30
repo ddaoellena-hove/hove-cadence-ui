@@ -15,7 +15,7 @@ Créée le 30 octobre 2026, mise à jour avec l'[audit d'usage](../audits/usage-
 | N° | Projet | Rupture | Statut | Dépend de |
 |---|---|---|---|---|
 | 1 | Audit d'usage dans les produits | Non | Fait | — |
-| 2 | Tokens de graisse | Non | À faire | — |
+| 2 | Tokens de graisse | Non | Fait | — |
 | 3 | Socle commun des champs | Non | À faire | — |
 | 4 | Contrat de validation complet | Non | À faire | 3 |
 | 5 | Placement unique des surcouches | Non | À faire | — |
@@ -78,8 +78,8 @@ Résultat : [audit du 30 octobre 2026](../audits/usage-composants-2026-10-30.md)
 
 Aucun token de graisse n'existe ; `font-weight` est écrit en dur dans les CSS (400, 500, 600, 700).
 
-- [ ] Définir les tokens et leurs rôles.
-- [ ] Remplacer les valeurs en dur et ajouter un garde-fou, sur le modèle de `font-tokens.test.ts`.
+- [x] Définir les tokens et leurs rôles.
+- [x] Remplacer les valeurs en dur et ajouter un garde-fou, dans `css-tokens.test.ts`.
 - [x] Hiérarchie des boutons tranchée : `GhostButton` reste à 600 pour ressortir, `PrimaryButton` à 500, distingué par son fond plein.
 
 **Fini quand** : aucune graisse en dur ne subsiste hors de `@font-face`.

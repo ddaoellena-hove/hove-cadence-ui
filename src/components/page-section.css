@@ -19,26 +19,26 @@
 
 .page-section__heading {
   margin: 0;
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
   color: var(--cadence-color-primary, #002830);
   line-height: 1.3;
 }
 
 .page-section__heading--2 {
-  font-size: 16px;
+  font-size: var(--cadence-font-size-section, 16px);
 }
 
 .page-section__heading--3 {
-  font-size: 14px;
+  font-size: var(--cadence-font-size-emphasis, 14px);
 }
 
 .page-section__heading--4 {
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
 }
 
 .page-section__description {
   margin: 4px 0 0;
-  font-size: 14px;
+  font-size: var(--cadence-font-size-emphasis, 14px);
   line-height: 1.4;
   color: var(--cadence-color-text-secondary, #607075);
 }

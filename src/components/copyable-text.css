@@ -9,13 +9,13 @@
   min-width: 0;
   color: var(--cadence-color-primary, #002830);
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
   vertical-align: middle;
 }
 
 .copyable-text--mono .copyable-text__value {
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
 }
 
 .copyable-text--truncate .copyable-text__value {
@@ -40,8 +40,8 @@
 .copyable-text__status {
   flex-shrink: 0;
   color: var(--cadence-status-completed-fg, #15803d);
-  font-size: 11px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-caption, 11px);
+  font-weight: var(--cadence-font-weight-medium, 500);
 }
 
 .copyable-text__status:empty {

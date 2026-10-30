@@ -23,8 +23,8 @@
   gap: 8px;
   min-width: 0;
   color: var(--cadence-color-primary, #002830);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   line-height: 1.3;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -34,8 +34,8 @@
 .stop-label__city {
   flex-shrink: 0;
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 12px;
-  font-weight: 400;
+  font-size: var(--cadence-font-size-small, 12px);
+  font-weight: var(--cadence-font-weight-regular, 400);
 }
 
 /* Conteneur du Badge d'identifiant (le style du texte vient de Badge). */

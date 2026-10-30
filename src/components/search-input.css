@@ -49,8 +49,8 @@
   color: inherit;
   flex: 1;
   font-family: inherit;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-small, 12px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   height: 100%;
   letter-spacing: -0.12px;
   min-width: 0;
@@ -61,7 +61,7 @@
 /* Placeholder dans le gris de la loupe (#69797d, AA 4,6:1 sur blanc) */
 .search-input__input::placeholder {
   color: var(--cadence-color-placeholder, #737373);
-  font-weight: 400;
+  font-weight: var(--cadence-font-weight-regular, 400);
   opacity: 1;
 }
 

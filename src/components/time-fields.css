@@ -4,7 +4,7 @@
 .time-fields__arrow { display: flex; align-items: center; justify-content: center; padding: 4px 16px; border: 0; border-radius: 4px; background: transparent; color: var(--cadence-color-primary, #002830); cursor: pointer; }
 .time-fields__arrow:hover:not(:disabled) { background: var(--cadence-color-hover-overlay, rgba(0,40,48,.06)); }
 .time-fields__arrow:disabled { color: var(--cadence-color-text-disabled, #808080); cursor: not-allowed; }
-.time-fields__box { box-sizing: border-box; display: flex; align-items: center; justify-content: center; text-align: center; width: 80px; height: 40px; border: 1px solid var(--cadence-color-border, #e5e5e5); border-radius: var(--cadence-radius-lg, 10px); font: 600 20px/1 var(--cadence-font-sans, Inter); color: var(--cadence-color-primary, #002830); background: var(--cadence-color-white, #ffffff); letter-spacing: .02em; }
+.time-fields__box { box-sizing: border-box; display: flex; align-items: center; justify-content: center; text-align: center; width: 80px; height: var(--cadence-control-height-field, 40px); border: 1px solid var(--cadence-color-border, #e5e5e5); border-radius: var(--cadence-radius-lg, 10px); font: 600 20px/1 var(--cadence-font-sans, Inter); color: var(--cadence-color-primary, #002830); background: var(--cadence-color-white, #ffffff); letter-spacing: .02em; }
 .time-fields__box:disabled { background: var(--cadence-color-surface-alt, #eef1f4); color: var(--cadence-color-text-disabled, #808080); }
 .time-fields__box[aria-invalid="true"] { border-color: var(--cadence-color-danger-text, #b91c1c); }
 .time-fields__box:focus-visible, .time-fields__arrow:focus-visible { outline: 2px solid var(--cadence-focus-color, #1a3e45); outline-offset: 2px; }
@@ -13,7 +13,7 @@
 /* ── Variante « inline » : cases éditables HH : mm dans un champ ── */
 .time-fields--inline { display: inline-flex; align-items: center; gap: 1px; }
 .time-fields--inline .time-fields__box { box-sizing: content-box; width: 2.75ch; height: auto; min-width: 0; padding: 4px 3px; border: 0; border-radius: 4px; background: transparent; text-align: center; letter-spacing: normal; font: 500 14px/1 var(--cadence-font-sans, Inter); color: var(--cadence-color-primary, #002830); }
-.time-fields--inline .time-fields__box::placeholder { color: var(--cadence-color-placeholder, #737373); font-weight: 400; }
+.time-fields--inline .time-fields__box::placeholder { color: var(--cadence-color-placeholder, #737373); font-weight: var(--cadence-font-weight-regular, 400); }
 /* Le champ porte le halo de focus : on signale juste la case active. */
 .time-fields--inline .time-fields__box:focus, .time-fields--inline .time-fields__box:focus-visible { outline: none; background: var(--cadence-color-surface-alt, #eef1f4); }
 .time-fields--inline .time-fields__box:disabled { background: transparent; color: var(--cadence-color-text-disabled, #808080); }

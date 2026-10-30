@@ -19,7 +19,7 @@
   color: var(--cadence-color-primary, #002830);
   display: grid;
   font-family: inherit;
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
   gap: 12px;
   grid-template-columns: minmax(80px, 28%) 1fr 56px 72px;
   min-height: 32px;
@@ -42,7 +42,7 @@
 }
 
 .bar-list__label {
-  font-weight: 500;
+  font-weight: var(--cadence-font-weight-medium, 500);
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -67,16 +67,16 @@
 .bar-list__value {
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
   font-variant-numeric: tabular-nums;
-  font-weight: 500;
+  font-weight: var(--cadence-font-weight-medium, 500);
   text-align: right;
 }
 
 .bar-list__delta {
   align-items: center;
   display: inline-flex;
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
   gap: 2px;
   justify-content: flex-end;
   white-space: nowrap;

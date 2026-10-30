@@ -78,8 +78,8 @@
 }
 
 .alert-toast__title {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   color: var(--cadence-color-primary, #002830);
   letter-spacing: 0;
   line-height: normal;
@@ -87,8 +87,8 @@
 }
 
 .alert-toast__description {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   color: var(--cadence-color-icon-neutral, #737373);
   letter-spacing: 0;
   line-height: normal;
