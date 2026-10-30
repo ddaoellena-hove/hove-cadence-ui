@@ -6,6 +6,7 @@ Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, 
 
 ### Lot 6 Datapilot — non publié
 
+- Drawer : navigation entre éléments sur une seconde ligne alignée à droite sous la croix ; badge/statut à gauche sur la même ligne, dans l’en-tête.
 - Nouveaux composants : ScopePicker (inline/popover, réseaux regroupés), SummaryList (actions distinctes et non lu), PageHero (synthèse sombre/KPI), SecretField, ValueComparison, PresenceStrip et LogViewer.
 - PageSection : tuiles icon/iconElement et trois tons ; Meter hideValue ; Autocomplete recherche distante, minimum de saisie, chargement, limite et accents ; Indicator point nommé, bouton et inverse ; DescriptionList labelWidth et tuiles ; TableCard selectable.
 - BarChart maxTicks ; LineChart/Histogram onDatumClick et sélection contrôlée ; BarList divergent et tolérance.
@@ -14,6 +15,7 @@ Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, 
 - Fondations : sept tailles typographiques, huit statuts sur fond sombre, gris dataviz neutre et seize pictogrammes.
 - Retours Datapilot : `PageSection surface="card"` ; infobulle des boutons icône seule hors du rendu quand masquée (plus de défilement horizontal parasite) et recalée dans la zone visible ; libellés d'annotation de `BarChart`, `LineChart` et `Histogram` ancrés à droite près du bord.
 - `PageHero` : valeurs texte (`valueType`, déduit du type de `value`) en sans-serif pour la valeur principale et les KPI ; `valueCaption` distinct de l'unité ; `valueTone` (alerte) ; tuile `icon` teintée par le statut.
+- `PageHero` V2 (supervision) : `tone` (accent du bandeau), `valueLabel`, `actionPanel` (sujets, impact, action de 44px), `actionLabel` par carte, `state` `"loading" | "error"` avec `errorMessage` / `onRetry`, fraîcheur dans l'en-tête et `updatedAt: null` ; cartes sur 1, 2 puis 4 colonnes selon la largeur du bandeau.
 
 ### Ajouté
 

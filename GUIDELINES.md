@@ -212,6 +212,13 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-color-active-overlay` | `rgba(0, 40, 48, 0.12)` | Appui d'un élément sans fond |
 | `--cadence-color-danger-hover-overlay` | `rgba(218, 30, 40, 0.06)` | Survol d'un `GhostButton tone="danger"` |
 | `--cadence-color-danger-active-overlay` | `rgba(218, 30, 40, 0.12)` | Appui d'un `GhostButton tone="danger"` |
+| `--cadence-page-padding-inline` | 32px | Padding latéral du contenu de page sur grand écran |
+| `--cadence-page-padding-inline-compact` | 16px | Padding latéral du contenu de page sur petit écran |
+| `--cadence-section-inset-inline` | 8px | Retrait latéral supplémentaire des sections dans le contenu de page |
+| `--cadence-section-padding-inline` | 8px | Padding latéral de l’en-tête extérieur et du corps de section |
+| `--cadence-section-heading-gap` | 12px | Espace entre l’en-tête extérieur et la surface de section |
+| `--cadence-section-gap` | 32px | Espace entre deux sections principales ; appliquer une seule fois |
+| `--cadence-shadow-section` | `0 0 2px 0 rgba(0, 0, 0, 0.10), 0 2px 10px 0 rgba(0, 0, 0, 0.05)` | Ombre au repos des sections de page, commune à tous les produits Cadence |
 | `--cadence-shadow-sm` | ombre 1–3px | Champs au repos |
 | `--cadence-shadow-md` | ombre diffuse 12px | Champs au survol |
 | `--cadence-shadow-lg` | ombre portée 10–15px | Menus déroulants |
@@ -3385,6 +3392,8 @@ Menu d'actions par ligne, déclenché par un bouton icône (« … »). À utili
 
 Panneau latéral droit pour consulter le détail d'un élément **sans quitter la liste** (≠ `Modal`, dialogue bloquant). Voile, Échap, clic sur le voile, bouton fermer, **piège à focus et retour du focus** (primitives de surcouche partagées, également utilisées par `Modal`). Entrée/sortie en `transform` (250 ms, comme la `Sidebar`), coupées sous `prefers-reduced-motion`.
 
+Avec `navigation`, les flèches précédent/suivant et le compteur occupent une seconde ligne alignée à droite sous la croix. Le contenu complémentaire `headerContent` (badge ou statut) est placé à gauche sur cette même ligne, dans l’en-tête.
+
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
 | `isOpen` | `boolean` | **requis** | Visibilité |
@@ -4117,23 +4126,50 @@ Bandeau sombre de synthèse, titre et KPI. La tuile interactive montre une flèc
 | title | string | requis | Titre |
 | headingLevel | 1 ou 2 | 1 | h2 si PageHeader porte déjà le h1 |
 | description | string | — | Contexte |
-| icon | IconName | — | Tuile d'icône à gauche du titre, teintée par `status` (couleurs sur fond sombre), statique |
+| icon | IconName | — | Tuile d'icône à gauche du titre, teintée par `status` (couleurs sur fond sombre), statique ; neutre en chargement et en erreur |
+| tone | "neutral", "positive", "warning" ou "critical" | "neutral" | Accent du bandeau : filet de 4px en haut et bordure du panneau d'action (vert sous contrôle, ambre à investiguer). ⚠️ Jamais seul : `status` / `statusLabel` disent l'état. Neutralisé en chargement et en erreur |
+| valueLabel | string | — | Libellé du KPI principal (« Variation des courses ») |
 | value / unit | number ou string / string | — | Valeur principale : nombre formaté fr-FR en mono, ou texte court ; unité courte en sans-serif (« courses ») |
 | valueType | "number" ou "text" | selon `value` | `"number"` : mono 44px ; `"text"` : sans-serif 28px 600. Défaut : "number" pour un nombre, "text" pour une chaîne |
 | valueCaption | string | — | Légende de la valeur, distincte de l'unité (« vs 26 août · −16 227 »), sans-serif secondaire |
 | valueTone | "default", "warning" ou "critical" | "default" | Couleur d'alerte de la valeur. ⚠️ Jamais seule : fournir `status` / `statusLabel` |
 | status / statusLabel | IndicatorVariant / string | — | Statut inverse |
-| freshness | DataFreshnessProps | — | Force inverse ; fournir now/timeZone si déterminisme requis |
+| freshness | DataFreshnessProps, `updatedAt` pouvant être `null` | — | Dans l'en-tête, sous la description. Force inverse ; fournir now/timeZone si déterminisme requis. `updatedAt: null` : « Heure d'actualisation inconnue », jamais reconstruite. Masquée en chargement et en erreur |
+| actionPanel | `{ title; description?; action?: { label; onClick; disabled? } }` | — | Panneau à côté du KPI principal (dessous sous 880px de large) : « 2 sujets à traiter », « Impact possible dès le 1er septembre », bouton clair de 44px « Examiner les anomalies » |
 | kpis | PageHeroKpi[] | [] | Grille de tuiles responsive |
 | actions | ReactNode | — | Actions compatibles avec fond sombre |
-| loading | boolean | false | Masque les valeurs, annonce le chargement |
+| state | "ready", "loading" ou "error" | "ready" | `"loading"` : squelettes, aucune valeur ancienne ; `"error"` : `errorMessage` + « Réessayer » (`onRetry`) |
+| loading | boolean | false | Équivalent de `state="loading"` |
+| errorMessage / onRetry | string / () => void | « Impossible de charger la synthèse. » / — | État `"error"` |
 | className | string | — | Classe racine |
 
-`PageHeroKpi` : `id`, `label`, `value` requis ; `valueType?` (même règle : une chaîne s'affiche en texte sans-serif 16px 600, « Intégrées · à vérifier », « 27 août · 15:41 » ; un nombre en mono 28px), `unit?`, `status?`, `statusLabel?`, `delta?: { value; unit?: "%" | "pt"; label? }`, `onClick?`, `disabled?`. La variation est signée sans jugement métier implicite. ⚠️ Fournir des statuts textuels pertinents, pas uniquement une couleur. `Card` conserve son contrat d’action visible. ⚠️ Un nombre déjà formaté en chaîne (« 1 245 ») s'affiche en texte : passer le nombre, ou `valueType="number"`.
+`PageHeroKpi` : `id`, `label`, `value` requis ; `valueType?` (même règle : une chaîne s'affiche en texte sans-serif 16px 600, « Intégrées · à vérifier », « 27 août · 15:41 » ; un nombre en mono 28px), `unit?`, `status?`, `statusLabel?`, `delta?: { value; unit?: "%" | "pt"; label? }`, `onClick?`, `actionLabel?` (défaut « Voir le détail » ; une action propre à chaque carte : « Consulter les flux »), `disabled?`. La variation est signée sans jugement métier implicite. ⚠️ Fournir des statuts textuels pertinents, pas uniquement une couleur. `Card` conserve son contrat d’action visible. Cartes sur 1 colonne sous 480px de large (largeur du bandeau), 2 jusqu'à 880px, puis jusqu'à 4 sur une ligne. ⚠️ Un nombre déjà formaté en chaîne (« 1 245 ») s'affiche en texte : passer le nombre, ou `valueType="number"`.
 
 ```tsx
 <PageHero title="Flux temps réel" value={courses} unit="courses" status="active" statusLabel="En direct" kpis={kpis} />
+
+{/* Supervision de publication : alerte, KPI libellé avec sa référence, panneau d'action */}
+<PageHero
+  title="Version du 27 août à vérifier"
+  description="Version intégrée à 15:47"
+  icon="alert-triangle"
+  tone="warning"
+  status="warning"
+  statusLabel="À investiguer"
+  valueLabel="Variation des courses"
+  value="−5,1 %"
+  valueType="number"
+  valueCaption="vs 26 août · −16 227 courses"
+  actionPanel={{ title: "2 sujets à traiter", description: "Impact possible dès le 1er septembre", action: { label: "Examiner les anomalies", onClick: examine } }}
+  freshness={{ updatedAt }}
+  kpis={[{ id: "realtime", label: "Temps réel", value: "2/2 flux reçus", status: "nominal", statusLabel: "Réception complète", onClick, actionLabel: "Consulter les flux" }]}
+/>
 ```
+
+- ✅ Toujours la référence de comparaison et le volume absolu avec une variation (`valueCaption`), signe conservé.
+- ✅ Impact au conditionnel tant qu'il n'est pas confirmé ; nombre de sujets seulement s'il vient d'une source et d'un périmètre explicites.
+- ✅ Une réception complète (« 2/2 flux reçus ») n'est pas une validation : statut « Réception complète », pas « Conforme ».
+- ❌ Pas de `tone="warning"` déduit du seul signe négatif d'une variation : l'app applique une règle métier mesurable.
 
 ### SecretField
 

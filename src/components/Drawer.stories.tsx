@@ -272,7 +272,7 @@ export const Formulaire: Story = {
   },
 };
 
-/** Navigation entre éléments dans l'en-tête (précédent / suivant, compteur annoncé), statut sous le titre. */
+/** Navigation sous la ligne titre/fermeture ; navigation à droite et statut à gauche dans l’en-tête. */
 function NavigationDemo() {
   const [current, setCurrent] = useState(1);
   return (
@@ -296,7 +296,7 @@ export const Navigation: Story = {
     const c = within(document.body);
     const dialog = c.getByRole("dialog", { name: "Objet 1" });
     const nav = within(dialog).getByRole("navigation", { name: "Navigation entre les éléments" });
-    // Dans l'en-tête, avant le bouton de fermeture ; flèches sans infobulle
+    // Dans l'en-tête, sous la ligne titre/fermeture ; flèches sans infobulle
     await expect(nav.closest(".drawer__header")).not.toBeNull();
     const bubble = nav.querySelector(".base-button-tip__bubble") as HTMLElement;
     await expect(getComputedStyle(bubble).display).toBe("none");

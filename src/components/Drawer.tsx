@@ -175,7 +175,9 @@ export const Drawer = ({
               </h2>
               {subtitle && <p className="drawer__subtitle">{subtitle}</p>}
             </div>
-            {/* Navigation entre éléments : dans l'en-tête, juste avant la fermeture */}
+            <CloseButton onClick={onClose} />
+            {headerContent && <div className="drawer__header-content">{headerContent}</div>}
+            {/* Navigation sur une seconde ligne, alignée à droite sous la croix. */}
             {navigation && (
               <nav className="drawer__navigation" aria-label="Navigation entre les éléments">
                 <GhostButton size="sm" icon="chevron-left" aria-label="Élément précédent" disabled={navigation.current <= 1} onClick={navigation.onPrevious} />
@@ -185,10 +187,8 @@ export const Drawer = ({
                 <GhostButton size="sm" icon="chevron-right" aria-label="Élément suivant" disabled={navigation.current >= navigation.total} onClick={navigation.onNext} />
               </nav>
             )}
-            <CloseButton onClick={onClose} />
           </div>
 
-          {headerContent && <div className="drawer__header-content">{headerContent}</div>}
           {onSubmit ? (
             <form className="drawer__form" onSubmit={onSubmit}>
               {content}

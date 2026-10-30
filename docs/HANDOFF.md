@@ -1,5 +1,18 @@
 # Relais de développement — 25 octobre 2026
 
+## Mise à jour — 28 octobre 2026 (fin de journée) : PageHero V2, non commité
+
+- **État de `main`** (`6314a54`) : PR #66 (clic `BarChart`), #67 (corrections visuelles du lot 6), #68 (Drawer : glissement avec onglets, navigation dans l'en-tête) et #69 (retours Datapilot : infobulle des boutons icône seule, libellés d'annotation, `PageSection surface="card"`, `PageHero` `valueType`/`valueCaption`/`valueTone`/`icon`, focus de `SecretField`) fusionnées. #69 a été fusionnée **sans attendre sa CI**, sur demande de l'utilisateur ; la suite complète sur `main` fusionné n'a pas été relancée : vérifier la CI de `main`.
+- **En cours** : branche locale `feat/page-hero-v2`, depuis `main`, **non commitée** (l'utilisateur a refusé le commit pour l'instant). Fichiers : `PageHero.tsx`, `page-hero.css`, `PageHero.stories.tsx`, `GUIDELINES.md` (fiche PageHero), `CHANGELOG.md`.
+- **Source** : `~/Downloads/hero-kpi-v2-specification.md` (spec UX « non validée métier »). Décisions de l'utilisateur : faire évoluer `PageHero` (props optionnelles, rétrocompatibles) plutôt qu'un nouveau composant ; couleurs = tokens existants, pas les hex de la spec.
+- **Ajouts** : `tone` (filet de 4px + bordure du panneau), `valueLabel`, `actionPanel` (`title`, `description`, `action` ; bouton clair 44px), `actionLabel` par KPI, `state` `"loading" | "error"` + `errorMessage` / `onRetry` (`loading` conservé), `freshness.updatedAt: null` → « Heure d'actualisation inconnue ». Fraîcheur déplacée dans l'en-tête. En chargement/erreur : ni fraîcheur, ni accent, ni icône teintée. Grille des KPI en container queries : 1 colonne < 480px, 2 jusqu'à 880px, puis `auto-fit` (jusqu'à 4).
+- **Stories** : *V2 — Alerte / Nominal / Données périmées / Fraîcheur inconnue / Chargement / Indisponible / Largeurs*.
+- **Validé** : `tsc`, ESLint des fichiers touchés, `build:lib`, `check:types`, suite complète 1 026 tests / 171 fichiers ; rendu contrôlé à 390, 768 et 1 100 px.
+- **Tests de stories** : Chromium 1217 absent ; utiliser la config temporaire `node_modules/.cache/mode-filter-vitest.config.mts` (Chromium 1248) : `npx vitest run --config node_modules/.cache/mode-filter-vitest.config.mts`.
+- **Instabilité connue** : la story `SecretField` *Defaut* échouait par intermittence (focus) ; corrigé dans #69, à surveiller en CI React 18.
+- **Prochaine étape** : commit + PR de `feat/page-hero-v2` quand l'utilisateur le demande. Questions métier ouvertes de la spec (seuils d'anomalie, sens des « points » qualité, SLA de fraîcheur) : hors DS, l'app fournit ton, statut et nombre de sujets.
+- **Pas publié** : npm reste en 1.0.0 (antérieure au lot 6 et à toutes les PR ci-dessus).
+
 ## Mise à jour — 28 octobre 2026 : Datapilot lot 6
 
 - Branche locale `feat/datapilot-lot6`, depuis `feat/bar-chart-datum-click` (`6bc4fb7`). Livraison directe sur `main` demandée par l’utilisateur le 28 octobre 2026 ; base synchronisée avec `origin/main` (`1af7bae`, fusion du clic BarChart). Fichiers locaux préexistants préservés. Aucune publication npm.
