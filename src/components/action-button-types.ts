@@ -17,12 +17,6 @@ export interface ActionButtonBaseProps {
   iconEnd?: IconName;
   /** En cours : clics ignorés, aria-busy, spinner, largeur conservée. */
   loading?: boolean;
-  /**
-   * Place du spinner sans `iconStart` : "center" (libellé masqué, largeur
-   * conservée) ou "start" (à gauche du libellé, qui reste lisible ; le bouton
-   * s'élargit). Défaut "center".
-   */
-  loadingPlacement?: "center" | "start";
   disabled?: boolean;
   /** Occupe toute la largeur du conteneur. */
   fullWidth?: boolean;

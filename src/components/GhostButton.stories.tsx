@@ -1,4 +1,3 @@
-import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import { GhostButton } from "./GhostButton";
@@ -143,30 +142,5 @@ export const Graisse: Story = {
   args: { label: "Annuler" },
   play: async ({ canvasElement }) => {
     await expect(getComputedStyle(within(canvasElement).getByRole("button")).fontWeight).toBe("600");
-  },
-};
-
-/** Spinner à gauche du libellé, qui reste lisible : pendant l'action, puis retour à l'état normal. */
-export const SpinnerAGauche: Story = {
-  name: "Spinner à gauche",
-  args: { label: "Enregistrer", onClick: fn() },
-  render: function Render(args) {
-    const [loading, setLoading] = useState(false);
-    return <GhostButton {...args} loading={loading} loadingPlacement="start" onClick={(event) => { args.onClick?.(event); setLoading(true); }} />;
-  },
-  play: async ({ args, canvasElement }) => {
-    const button = within(canvasElement).getByRole("button", { name: "Enregistrer" });
-    const before = button.getBoundingClientRect().width;
-    await userEvent.click(button);
-    await expect(button).toHaveAttribute("aria-busy", "true");
-    const spinner = button.querySelector<HTMLElement>(".base-button__spinner")!;
-    const text = button.querySelector<HTMLElement>(".base-button__label")!;
-    await expect(spinner.getBoundingClientRect().right).toBeLessThanOrEqual(text.getBoundingClientRect().left);
-    await expect(getComputedStyle(text).opacity).toBe("1");
-    await expect(button.querySelector(".base-button__spinner-overlay")).toBeNull();
-    await expect(button.getBoundingClientRect().width).toBeGreaterThan(before);
-    // Second appui ignoré pendant l'action
-    await userEvent.click(button);
-    await expect(args.onClick).toHaveBeenCalledTimes(1);
   },
 };

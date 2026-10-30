@@ -45,7 +45,6 @@ Version mineure : aucun export retiré, 63 ajoutés (types compris) depuis la 1.
 - `RadioButton` : `label`, `description`, `aside`, sur le même modèle.
 - `RadioGroup` : choix exclusif en lignes ou en cartes, avec flèches au clavier. `RadioButton` et `Checkbox` : `appearance="card"`, `size`, `icon`, `iconElement`.
 - Page patterns : Sélection transactionnelle multiple, Périodes et créneaux, Messages par canal.
-- `PrimaryButton`, `GhostButton` : `loadingPlacement="start"`, spinner à gauche du libellé, qui reste lisible.
 - `BarChart statusBand` : bande d'état sous le tracé, un état par catégorie, avec survol, clic, sélection, légende, tooltip et tableau partagés.
 - `DataTable` : `headerLabel`, nom lu d'une colonne sans en-tête visible.
 - `PageSection` : `surface="group"` et `headerPlacement="inside"` pour un titre de second niveau, dans la boîte au-dessus d'un filet.
