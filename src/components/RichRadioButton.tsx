@@ -18,6 +18,8 @@ export interface RichRadioButtonProps {
 /**
  * RichRadioButton — a pill-shaped card with an icon, label, and a radio indicator.
  * Mirrors the four visual states of the RadioButton component.
+ *
+ * @deprecated Retrait prévu en v2 : utiliser `RadioGroup appearance="card"`.
  */
 export const RichRadioButton = ({
   label = "Choice",
