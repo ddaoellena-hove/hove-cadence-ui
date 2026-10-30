@@ -1,4 +1,6 @@
 import { useId, type KeyboardEvent, type ReactNode } from "react";
+import { Icons, type IconName } from "./Icons";
+import "./choice-card.css";
 import "./radio-button.css";
 
 export interface RadioButtonProps {
@@ -18,6 +20,16 @@ export interface RadioButtonProps {
   description?: string;
   /** Complément décoratif après le libellé (badge de ligne). Non interactif. */
   aside?: ReactNode;
+  /** Présentation avec `label` : "default" (ligne) ou "card" (carte de choix). */
+  appearance?: "default" | "card";
+  /** Taille de la carte. Défaut "md". */
+  size?: "md" | "lg";
+  /** Icône décorative de la carte. */
+  icon?: IconName;
+  /** Prioritaire sur `icon` : illustration ou pictogramme métier, décoratif. */
+  iconElement?: ReactNode;
+  /** Géré par `RadioGroup` (tabulation itinérante). */
+  tabIndex?: number;
 }
 
 /**
@@ -33,6 +45,11 @@ export const RadioButton = ({
   label,
   description,
   aside,
+  appearance = "default",
+  size = "md",
+  icon,
+  iconElement,
+  tabIndex,
 }: RadioButtonProps) => {
   const uid = useId();
   const hasInner = ["hover", "selected", "disabled"].includes(state);
@@ -50,13 +67,16 @@ export const RadioButton = ({
     onChange?.();
   };
 
+  const card = appearance === "card";
+  const visual = iconElement ?? (icon ? <Icons icon={icon} size={size === "lg" ? 24 : 16} /> : null);
+
   // Un seul rôle radio : avec libellé, il porte sur la ligne, et le bouton
   // dessiné reste décoratif (annonce unique, clic sur le texte).
   const control = {
     role: "radio",
     "aria-checked": state === "selected",
     "aria-disabled": state === "disabled",
-    tabIndex: state === "disabled" ? -1 : 0,
+    tabIndex: tabIndex ?? (state === "disabled" ? -1 : 0),
     onClick: handleClick,
     onKeyDown: (e: KeyboardEvent<HTMLDivElement>) => {
       if (e.key === " " || e.key === "Enter") {
@@ -70,13 +90,20 @@ export const RadioButton = ({
     return (
       <div
         {...control}
-        className={`radio-row${state === "disabled" ? " radio-row--disabled" : ""}`}
+        className={[
+          "radio-row",
+          state === "disabled" ? "radio-row--disabled" : "",
+          card ? `choice-card choice-card--${size}` : "",
+          card && state === "selected" ? "choice-card--active" : "",
+          card && state === "disabled" ? "choice-card--disabled" : "",
+        ].filter(Boolean).join(" ")}
         aria-labelledby={`${uid}-label`}
         aria-describedby={description ? `${uid}-description` : undefined}
       >
         <div className={rootClass} aria-hidden="true">
           {hasInner && <div className={innerClass} />}
         </div>
+        {card && visual && <span className="choice-card__icon" aria-hidden="true">{visual}</span>}
         <span className="radio-row__text">
           <span id={`${uid}-label`} className="radio-row__label">{label}</span>
           {description && <span id={`${uid}-description`} className="radio-row__description">{description}</span>}

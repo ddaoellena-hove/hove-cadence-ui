@@ -162,7 +162,7 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-radius-md` | `8px` | Contenus internes |
 | `--cadence-radius-lg` | `10px` | Champs et cards |
 | `--cadence-radius-xl` | `12px` | Conteneurs : `AppLayout`, `CounterInput` |
-| `--cadence-radius-2xl` | `16px` | `Modal`, grandes cartes riches (`RichCheckbox` / `RichRadioButton` large) |
+| `--cadence-radius-2xl` | `16px` | `Modal`, grandes cartes de choix (`appearance="card"`, `size="lg"`) |
 | `--cadence-radius-pill` | `999px` | Pilules et cercles : boutons, `SearchInput`, `Toggle`, halos ronds |
 | `--cadence-control-height-compact` | `29px` | Hauteur des contrôles compacts : boutons `size="sm"`, `SearchInput`, déclencheurs `variant="button"`, `SegmentedControl size="sm"` — voir [Hauteurs de contrôle](#hauteurs-de-contrôle-et-alignement-sur-une-rangée) |
 | `--cadence-control-height-field` | `40px` | Hauteur des champs d'une ligne (`TextInput`, `Dropdown`, `DatePicker`, `ColorField`…) et du `SegmentedControl` (`size="md"`) |
@@ -315,8 +315,8 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Option booléenne dans un formulaire (validée à la soumission) | `Checkbox` | `Toggle` |
 | Activation/désactivation à effet immédiat | `Toggle` | `Checkbox` |
 | Choix exclusif 2-5 options courtes | `RadioButton` | — |
-| Choix exclusif avec description | `RadioButton label description` | `RichRadioButton` (retrait prévu en v2) |
-| Sélection multiple avec description | `Checkbox label description` | `RichCheckbox` (retrait prévu en v2) |
+| Choix exclusif (liste ou cartes, avec description ou icône) | `RadioGroup` (`appearance="card"` pour des cartes) | `RichRadioButton` (retrait prévu en v2) |
+| Sélection multiple avec description ou icône | `Checkbox label` (`appearance="card"` pour des cartes) | `RichCheckbox` (retrait prévu en v2) |
 | Étiquette d'information neutre (catégorie, tag, code) | `Badge` | `Indicator` (qui porte un état) |
 | Chip amovible (filtre actif « Ligne 38 × », « Tout effacer ») | `Badge dismissible` ; sous une liste, `FilterBar` (`activeFilters` + `onRemoveFilter`) | un composant `Tag` dédié (doublon inutile) |
 | État ou statut avec picto + couleur sémantique | `Indicator` | `Badge` (purement informatif) |
@@ -765,9 +765,9 @@ Les anciennes API de boutons (0.2) et les composants dépréciés sont **supprim
 | `DateRangePicker` | Sélection d'une période (début → fin) avec préréglages ; jours entiers. |
 | `Checkbox` | Option booléenne indépendante, ou sélection multiple. |
 | `RadioButton` | Sélection exclusive parmi 2 à 5 options courtes. |
-| `RadioButton label` | Sélection exclusive avec libellé cliquable et description. Grouper dans un `role="radiogroup"` nommé. |
-| `RichRadioButton` | ⚠️ Retrait prévu en v2 : utiliser `RadioButton label`. |
-| `RichCheckbox` | ⚠️ Retrait prévu en v2 : utiliser `Checkbox label`. |
+| `RadioGroup` | Sélection exclusive avec libellés, en lignes ou en cartes ; clavier fourni. |
+| `RichRadioButton` | ⚠️ Retrait prévu en v2 : utiliser `RadioGroup appearance="card"`. |
+| `RichCheckbox` | ⚠️ Retrait prévu en v2 : utiliser `Checkbox appearance="card"`. |
 | `Toggle` | Activation/désactivation à effet immédiat (hors soumission). |
 
 ### Règles
@@ -2164,6 +2164,9 @@ Chargement à la demande : un nœud `hasChildren` sans `children` déclenche `lo
 | `label` | `string` | — | Libellé cliquable : la ligne entière devient la case, annoncée une seule fois |
 | `description` | `string` | — | Précision sous le libellé, en description accessible |
 | `aside` | `ReactNode` | — | Complément décoratif, non interactif (badge de ligne) |
+| `appearance` | `"default" \| "card"` | `"default"` | Avec `label` : ligne, ou carte de choix pleine largeur |
+| `size` | `"md" \| "lg"` | `"md"` | Taille de la carte |
+| `icon` / `iconElement` | `IconName` / `ReactNode` | — | Visuel décoratif de la carte ; `iconElement` prime |
 
 - ✅ `Checkbox label` pour toute liste de choix avec libellé (directions, jours).
 
@@ -3168,9 +3171,46 @@ API identique pour les deux ; seul le rendu change (`PrimaryButton` plein ou con
 | `label` | `string` | — | Libellé cliquable : la ligne entière devient le bouton radio, annoncé une seule fois |
 | `description` | `string` | — | Précision sous le libellé, en description accessible |
 | `aside` | `ReactNode` | — | Complément décoratif, non interactif (badge) |
+| `appearance` | `"default" \| "card"` | `"default"` | Avec `label` : ligne, ou carte de choix pleine largeur |
+| `size` | `"md" \| "lg"` | `"md"` | Taille de la carte |
+| `icon` / `iconElement` | `IconName` / `ReactNode` | — | Visuel décoratif de la carte ; `iconElement` prime |
 
-- ✅ Placer les boutons dans un conteneur `role="radiogroup"` nommé. Le parent gère l'exclusivité.
-- ⚠️ Pas de déplacement aux flèches : chaque bouton est un arrêt de tabulation.
+- ✅ Préférer [`RadioGroup`](#radiogroup) : il fournit le nom, l'exclusivité et les flèches.
+- ⚠️ Utilisé seul, le bouton doit être placé dans un `role="radiogroup"` nommé, et le parent gère exclusivité et clavier.
+
+### RadioGroup
+
+Choix exclusif : nom du groupe, exclusivité, aide, erreur, et clavier du motif ARIA (une tabulation, flèches pour changer d'option, options désactivées sautées).
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `label` / `aria-label` | `string` | — | Nom du groupe, visible ou non |
+| `options` | `RadioGroupOption[]` | **requis** | `{ value, label, description?, aside?, icon?, iconElement?, disabled? }` |
+| `value` / `onChange` | `string` / `(value) => void` | — | Valeur contrôlée |
+| `appearance` | `"default" \| "card"` | `"default"` | Lignes ou cartes de choix |
+| `size` | `"md" \| "lg"` | `"md"` | Taille des cartes |
+| `columns` | `1 \| 2` | `1` | Colonnes ; une seule à 560px et moins |
+| `helperText` / `error` | `string` | — | Aide ; erreur prioritaire |
+| `required` | `boolean` | `false` | Marque le libellé. La validation reste à l'app |
+| `className` | `string` | — | — |
+
+```tsx
+<RadioGroup
+  label="Mode de réception"
+  appearance="card"
+  size="lg"
+  columns={2}
+  value={mode}
+  onChange={setMode}
+  options={[
+    { value: "auto", label: "Automatique", description: "Récupéré chaque nuit.", icon: "clock" },
+    { value: "manual", label: "Manuel", description: "Déposé par vos soins.", icon: "upload-02" },
+  ]}
+/>
+```
+
+- ✅ Les flèches sélectionnent l'option, conformément au motif ARIA : pas d'effet coûteux dans `onChange`.
+- ❌ Pas de cartes pour des options courtes sans description : `SegmentedControl`, ou `RadioGroup` en lignes.
 
 ### RichCheckbox
 
@@ -3184,7 +3224,7 @@ API identique pour les deux ; seul le rendu change (`PrimaryButton` plein ou con
 
 Carte cliquable avec label + description + carré de coche. Sélection **multiple**.
 
-⚠️ **Retrait prévu en v2.** Utiliser `Checkbox label description`.
+⚠️ **Retrait prévu en v2.** Utiliser `Checkbox appearance="card"`.
 
 ### RichRadioButton
 
@@ -3196,7 +3236,7 @@ Carte cliquable avec label + description + carré de coche. Sélection **multipl
 | `size` | `"medium" \| "large"` | `"medium"` | — |
 | `onChange` | `() => void` | — | Clic (le parent gère l'exclusivité) |
 
-⚠️ **Retrait prévu en v2.** Utiliser `RadioButton label description`.
+⚠️ **Retrait prévu en v2.** Utiliser `RadioGroup appearance="card"`.
 
 ### SearchInput
 

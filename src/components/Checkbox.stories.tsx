@@ -115,3 +115,14 @@ export const LibelleEtats: Story = {
     await expect(canvas.getByRole("checkbox", { name: "Dimanche" })).toHaveAttribute("aria-disabled", "true");
   },
 };
+
+/** Remplace `RichCheckbox` : carte de choix avec icône, sélection multiple. */
+export const Carte: Story = {
+  args: { appearance: "card", size: "lg", label: "Application mobile", description: "Notification aux voyageurs abonnés.", icon: "bell-01", onChange: fn() },
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getAllByRole("checkbox")).toHaveLength(1);
+    await userEvent.click(canvas.getByText("Application mobile"));
+    await expect(args.onChange).toHaveBeenCalledWith(true);
+  },
+};

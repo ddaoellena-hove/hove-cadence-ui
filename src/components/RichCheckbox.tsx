@@ -18,6 +18,8 @@ export interface RichCheckboxProps {
 /**
  * RichCheckbox — a pill-shaped card with an icon, label, and a checkbox indicator.
  * Multi-select counterpart of RichRadioButton; mirrors the Checkbox indicator.
+ *
+ * @deprecated Retrait prévu en v2 : utiliser `Checkbox appearance="card"`.
  */
 export const RichCheckbox = ({
   label = "Choice",

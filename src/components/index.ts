@@ -44,6 +44,7 @@ export * from './CardGrid';
 export * from './Pagination';
 export * from './PrimaryButton';
 export * from './RadioButton';
+export * from './RadioGroup';
 export * from './RichCheckbox';
 export * from './RichRadioButton';
 export * from './SearchInput';
