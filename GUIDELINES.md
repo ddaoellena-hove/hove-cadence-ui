@@ -221,7 +221,7 @@ Les couleurs, polices, rayons, ombres et couches (z-index) sont centralisés dan
 | `--cadence-section-padding-inline` | 8px | Padding latéral de l’en-tête extérieur et du corps de section |
 | `--cadence-section-heading-gap` | 12px | Espace entre l’en-tête extérieur et la surface de section |
 | `--cadence-section-gap` | 32px | Espace entre deux sections principales ; appliquer une seule fois |
-| `--cadence-shadow-section` | `0 0 2px 0 rgba(0, 0, 0, 0.10), 0 2px 10px 0 rgba(0, 0, 0, 0.05)` | Ombre au repos des sections de page, commune à tous les produits Cadence |
+| `--cadence-shadow-section` | `0 0 3px 0 rgba(0, 0, 0, 0.10), 0 2px 12px 0 rgba(0, 0, 0, 0.05)` | Ombre au repos des sections de page, commune à tous les produits Cadence |
 | `--cadence-shadow-sm` | ombre 1–3px | Champs au repos |
 | `--cadence-shadow-md` | ombre diffuse 12px | Champs au survol |
 | `--cadence-shadow-lg` | ombre portée 10–15px | Menus déroulants |

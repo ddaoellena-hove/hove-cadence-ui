@@ -17,6 +17,7 @@ React 19 · TypeScript ~6 (strict) · Vite 8 · Storybook 10 (`@storybook/react-
 - Couleurs/polices : toujours via tokens avec fallback — `var(--cadence-color-primary, #002830)`, jamais de hex nu. Tokens dans `tokens.css`.
 - `Checkbox`/`Toggle`/`RadioButton`/`RichCheckbox`/`RichRadioButton` se pilotent par la prop `state`, jamais `checked`.
 - Icônes via `<Icons icon="…" size={…} />` (suit `currentColor`). Nouvelle icône → entrée dans `icon-registry.ts` (kebab → composant PascalCase). Jamais d'URL distante.
+- Couches : Core ← DataViz ← Domain (`docs/proposals/refactoring-v2.md`). Core n'importe ni le transport ni d3 ; nouveau composant métier ou graphique → l'ajouter à `couches.test.ts`.
 - Libellés FR accentués en UTF-8 (« Créer », « Sévérité »…), jamais d'ASCII aplati. Commentaires en français.
 
 ## Ajouter / modifier un composant
@@ -38,5 +39,6 @@ React 19 · TypeScript ~6 (strict) · Vite 8 · Storybook 10 (`@storybook/react-
 ## Pièges connus
 - `npm install` exige `--legacy-peer-deps` (conflit préexistant sur `@storybook/addon-a11y`).
 - `@untitledui/icons` doit rester externe au bundle (configuré dans `vite.config.lib.ts`).
+- `dist/` ESM est en un fichier par module (`preserveModules`) pour le tree-shaking ; `hove-cadence-ui.js` n'est que le point d'entrée. CommonJS reste en un seul fichier : `preserveModules` y casse des `require` au nettoyage CSS de Vite.
 - Un seul gestionnaire : npm (`package-lock.json`), en local comme sur Vercel (`npm ci --legacy-peer-deps`). ⚠️ `npm ci` échoue si `package-lock.json` n'est pas synchronisé avec `package.json` : toujours commiter les deux ensemble. Pas de `pnpm-lock.yaml`.
 - Vercel : un seul projet, `hove-cadence-ui` (lié localement via `.vercel/repo.json`). Chaque push sur une branche avec PR déclenche un déploiement preview du Storybook ; chaque push sur `main`, la production (https://hove-cadence-ui.vercel.app). `hove-cadence-ui-test` est déconnecté de Git.

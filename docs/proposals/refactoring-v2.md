@@ -4,6 +4,10 @@ Liste de suivi, à mettre à jour au fur et à mesure. Objectif : un design syst
 
 Créée le 30 octobre 2026, mise à jour avec l'[audit d'usage](../audits/usage-composants-2026-10-30.md). Les décisions proposées restent à valider.
 
+**Périmètre stratégique (30 octobre 2026)** : Cadence sert **trois produits actuellement** et doit pouvoir accueillir d'autres produits aux usages hétérogènes. L'audit chiffré ci-dessus ne couvre que **Datapilot et Traffic Report** : il ne constitue ni une mesure d'adoption globale ni une preuve d'inutilité des composants absents de ces deux produits.
+
+**Principe directeur** : simplifier l'expérience des équipes consommatrices sans appauvrir la couverture fonctionnelle. Ne pas prendre le nombre de composants de Polaris App Home comme objectif chiffré : il s'agit d'une API publique destinée à une surface Shopify, non de l'inventaire complet de toutes ses interfaces internes.
+
 **Statuts** : À faire · En cours · Fait · Abandonné. **Rupture** : Non = possible en 1.x ; Oui = réservé à la v2, après dépréciation.
 
 ## Vue d'ensemble
@@ -17,12 +21,45 @@ Créée le 30 octobre 2026, mise à jour avec l'[audit d'usage](../audits/usage-
 | 5 | Placement unique des surcouches | Non | À faire | — |
 | 6 | Découpage de GUIDELINES.md | Non | À faire | — |
 | 7 | Fusion des doublons | Oui | À faire | 1 |
-| 8 | Paquet métier transport | Oui | À faire | 1 |
-| 9 | Paquet graphiques | Oui | À faire | 1 |
-| 10 | Préparation de la v2 | Oui | À faire | 7, 8, 9 |
+| 8 | Point d'entrée métier transport | Non, retrait de la racine en v2 | À faire | 15 |
+| 9 | Point d'entrée graphiques | Non, retrait de la racine en v2 | À faire | 15 |
+| 10 | Préparation de la v2 | Oui | À faire | 7, 8, 9, 15 |
 | 11 | Primitive de texte | Non | À faire | — |
 | 12 | Densité de PageSection et TableCard | Non | À faire | — |
 | 13 | Composants internes exposés | Oui | À faire | — |
+| 14 | Cartographie multi-produits et matrice de couverture | Non | À faire | 1 |
+| 15 | Architecture logique Core / DataViz / Domain et catalogue | Non pour les frontières ; Oui pour les fuites | En cours | 14 |
+| 16 | Catalogue de compositions et contrats de patterns | Non | À faire | 14, 15 |
+| 17 | Benchmark UX et validation de la cohérence interproduits | Non | À faire | 14, 16 |
+| 18 | Paquet réductible à l'usage | Non | En cours | — |
+
+## Architecture cible proposée — à valider
+
+**Trois couches de code et un catalogue de compositions**, dans un seul paquet npm tant qu'une mesure ne justifie pas mieux. Une frontière se décide selon les dépendances, la fréquence de réutilisation et les coûts réels de maintenance et de livraison. Le sens des dépendances est imposé par `src/components/couches.test.ts`.
+
+| Niveau | Rôle | Contenu indicatif | Règle de dépendance |
+|---|---|---|---|
+| **Cadence Core** | Socle transversal stable | Foundations, tokens, typographie, champs, boutons, overlays, tableaux, primitives de layout, utilitaires de format et de palette, micro-visualisations sans d3 (`Sparkline`, `Meter`) | Ne dépend ni de la mobilité, ni des produits, ni de d3 ; API publique volontairement lisible |
+| **Cadence DataViz** | Représentation et exploration des données | `BarChart`, `LineChart`, `SankeyChart` et les graphiques d3 | Peut dépendre de Core ; jamais de Domain |
+| **Cadence Domain** | Langage métier réutilisable | `LineBadge`, `ModeIcon`, `LineDiagram`, `TimeSpaceDiagram`, `RouteStopList`, `ServiceCalendar`, états de qualité | Peut dépendre de Core et DataViz ; aucune dépendance inverse |
+| **Catalogue de compositions** | Assemblages et modèles de parcours | `src/patterns/`, documentation, recettes : KPI overview, filtres + tableau, supervision, formulaires à étapes | N'est pas une couche d'exécution : non exporté, peut utiliser toutes les couches ; un composite n'est extrait que si la duplication est démontrée |
+
+### Règles de classement
+
+1. **Core** si la responsabilité est valable dans des produits de domaines différents, sans vocabulaire métier imposé.
+2. **DataViz** si le contrat principal est la représentation ou l'interaction avec des données ; une visualisation spécialisée peut être légitime même si peu utilisée aujourd'hui. Une micro-visualisation sans d3, utilisée par le socle, reste dans Core.
+3. **Domain** si les données, libellés ou interactions supposent un modèle de transport ou de qualité de données particulier, avec potentiel de réutilisation entre produits. Ce critère prime sur DataViz : un graphique qui parle de lignes est dans Domain.
+4. **Catalogue** pour un assemblage récurrent répondant à une intention utilisateur ou à un parcours ; documenter la composition avant de créer une nouvelle abstraction.
+5. **Interne** pour les détails d'implémentation qui n'ont pas besoin d'un contrat public stable. Une absence d'usage JSX direct ne suffit pas à justifier leur retrait.
+
+### Critères de réussite multi-produits
+
+- Un quatrième produit peut adopter Core sans dépendance métier : importer un bouton ajoute au plus 95 Ko minifiés et aucun module d3 ou TanStack, mesuré à chaque publication. Le registre d'icônes reste à traiter pour descendre sous ce seuil (projet 18).
+- Les trois produits actuels sont représentés dans la matrice d'usage, avec les versions de Cadence effectivement consommées.
+- Les patterns récurrents sont documentés avec leurs états, responsive, clavier et cas limites, même sans composant React dédié.
+- Les composants publics offrent un contrat homogène ; les produits ne ciblent plus des classes CSS internes pour obtenir des comportements standards.
+- Toute fusion ou dépréciation est justifiée par l'usage, les contrats fonctionnels et une migration testée, non par un quota de composants.
+- Les décisions sur les packages s'appuient sur les imports réels, le tree-shaking, les bundles et la maintenance, pas uniquement sur les lignes de code.
 
 ## Projets
 
@@ -99,23 +136,24 @@ Décisions proposées par l'audit :
 
 **Fini quand** : chaque point est tranché. Une fusion ne doit pas créer un composant chargé de variantes.
 
-### 8. Paquet métier transport
+### 8. Point d'entrée métier transport
 
 Rejoint M1 du [backlog Traffic Report](traffic-report-backlog.md).
 
 - [ ] Décider du périmètre. Candidats : `LineDiagram`, `TimeSpaceDiagram`, `RouteStopList`, `StopLabel`, `ServiceCalendar`, `JourneyTimeline`, `DatasetHealth`, `ValidationIssueInspector`, `DataSourceStatus`.
-- [ ] Trancher pour `LineBadge` et `ModeIcon` : utilisés par le noyau, ils y restent, sauf à revoir ces composants.
-- [ ] Définir le nom, la dépendance au noyau et le mode de publication.
+- [x] `LineBadge` et `ModeIcon` sont classés dans Domain. Leurs trois usages par Core sont des fuites à retirer (projet 15).
+- [ ] Vérifier si un point d'entrée apporte encore quelque chose aux produits maintenant que la racine se réduit à l'usage (projet 18).
 - [ ] Étudier le schéma de conséquence de Traffic Report.
 
-**Fini quand** : le paquet est publié et les produits y sont migrés.
+**Fini quand** : le besoin est tranché par la mesure. Un paquet séparé n'est créé que si une entrée dédiée ne suffit pas.
 
-### 9. Paquet graphiques
+### 9. Point d'entrée graphiques
 
 Les graphiques représentent 27 % des lignes `.tsx`, pour un usage direct limité à `BarChart` et `Meter`.
 
 - [ ] Mesurer le gain réel sur un paquet construit : poids, dépendances `d3-*`, tree-shaking.
-- [ ] Décider : point d'entrée dédié du paquet actuel (piste privilégiée), ou paquet séparé.
+- [x] Gain mesuré à la racine : voir le projet 18. Un `BarChart` seul coûte 134 Ko minifiés.
+- [ ] Décider si une entrée dédiée reste utile ; le CSS est le principal argument restant.
 
 **Fini quand** : la décision est prise et, si elle est retenue, appliquée.
 
@@ -126,7 +164,7 @@ Les graphiques représentent 27 % des lignes `.tsx`, pour un usage direct limit�
 - [ ] Vérifier les produits consommateurs sous React 18 et 19.
 - [ ] Publier sur demande explicite.
 
-**Fini quand** : Datapilot et Traffic Report tournent sur la v2.
+**Fini quand** : les trois produits actuellement consommateurs ont une stratégie de migration validée et leurs parcours critiques sont vérifiés sur la v2 ; les produits migrés utilisent effectivement la version publiée prévue.
 
 ### 11. Primitive de texte
 
@@ -157,10 +195,79 @@ Plusieurs exports ne servent aujourd'hui qu'à d'autres composants de la bibliot
 
 **Fini quand** : l'API publique ne contient que des composants destinés aux produits.
 
+### 14. Cartographie multi-produits et matrice de couverture
+
+L'audit existant porte sur deux produits, alors que Cadence en couvre trois. Compléter l'inventaire avant toute suppression.
+
+- [ ] Identifier le troisième produit, son dépôt, ses parcours et la version ou copie de Cadence utilisée ; inventorier les autres consommateurs éventuels.
+- [ ] Mesurer imports directs, usages indirects, patterns, composants spécifiques, overrides CSS et contrats manquants par produit.
+- [ ] Pour chacun des 108 exports, classer : **Core / DataViz / Domain / Pattern / Interne**, puis **conserver / fusion proposée / internaliser proposé / déprécier proposé / à instruire**.
+- [ ] Distinguer absence d'usage, usage indirect, besoin prévu et investissement exploratoire ; indiquer le niveau de confiance et les preuves.
+- [ ] Vérifier les parcours critiques des trois produits et leur couverture en états, responsive et accessibilité.
+
+**Fini quand** : les trois produits sont analysés et toute proposition de retrait indique les consommateurs, les impacts et une alternative vérifiée.
+
+### 15. Architecture logique Core / DataViz / Domain et catalogue
+
+Appliquer les frontières proposées ci-dessus sans imposer prématurément une séparation physique des packages.
+
+- [x] Dépendances relevées et sens imposé par `couches.test.ts`. Trois fuites connues restent : `ColorField → LineBadge`, `ScopePicker → LineBadge`, `TreeView → ModeIcon`.
+- [ ] Retirer ces fuites par des emplacements génériques en 1.x, puis supprimer `TreeNode.mode` et `ScopeNode.badge` en v2. `ColorField` peut aussi rejoindre Domain : sa raison d'être est la couleur de ligne.
+- [ ] Définir les critères d'une API publique stable, d'un module interne et d'une composition documentée.
+- [ ] Comparer points d'entrée dédiés et option multi-packages sur les bundles réels des produits, après le projet 18.
+- [ ] Publier une proposition d'arborescence cible, de dépendances autorisées et de stratégie de migration progressive.
+- [ ] Faire valider les frontières avant tout déplacement ou changement cassant.
+
+**Fini quand** : chaque famille a une responsabilité, une politique d'export et une stratégie de migration explicites ; aucun découpage physique n'est décidé sans mesure.
+
+### 16. Catalogue de compositions et contrats de patterns
+
+Les quinze **Page patterns** de Storybook constituent le point de départ ; les auditer et les enrichir avant d'en inventer d'autres.
+
+- [ ] Cartographier les patterns existants aux besoins des trois produits et identifier leurs variantes réelles.
+- [ ] Documenter en priorité : **KPI Overview**, **Data Explorer** (recherche, filtres, tableau), **Status Overview**, **Multi-step Form** et **Route Comparison**, seulement si leur récurrence est démontrée.
+- [ ] Décrire pour chacun : intention, composants assemblés, structure, données attendues, interactions, états vide/chargement/erreur, responsive, accessibilité, limites et anti-patterns.
+- [ ] Distinguer une **recette Storybook** d'un **composant composite exporté** ; extraire une API seulement si cela réduit effectivement la duplication sans figer un parcours métier.
+
+**Fini quand** : une équipe peut reconstruire les parcours transversaux à partir des patterns documentés, sans CSS de contournement ni nouvelle abstraction par écran.
+
+### 17. Benchmark UX et validation de la cohérence interproduits
+
+Comparer la qualité de l'expérience et des contrats, pas le seul nombre de composants.
+
+- [ ] Sélectionner des interfaces représentatives des trois produits et leurs équivalents documentés dans **Shopify Polaris**, **IBM Carbon** et **Atlassian Design System** ; noter les différences de périmètre.
+- [ ] Évaluer six dimensions sur des preuves explicites : **couverture**, **réutilisabilité**, **composition**, **comportements**, **qualité technique** et **adoption**.
+- [ ] Examiner notamment densité, hiérarchie, navigation, états, erreurs, affichages de données complexes et cohérence visuelle entre produits.
+- [ ] Tester desktop/mobile, clavier et lecteur d'écran sur un échantillon de parcours critiques ; distinguer tests automatisés et validation humaine.
+- [ ] Constituer un backlog priorisé avec captures ou stories, impacts, hypothèses, coût et critères d'acceptation.
+
+**Fini quand** : les écarts observés sont traçables à une interface et à un comportement, avec une priorité et une correction proposée ; aucun score esthétique global non étayé.
+
+### 18. Paquet réductible à l'usage
+
+Le fichier ESM unique empêchait les produits de n'embarquer que ce qu'ils importent. C'est le gain le plus fort du refactoring, et il ne casse aucune API.
+
+Mesures esbuild, sans React, minifié / gzip :
+
+| Import | Avant | Après |
+|---|---|---|
+| `PrimaryButton` seul | 260 / 85 Ko | 89 / 24 Ko |
+| 5 composants de formulaire | 264 / 86 Ko | 117 / 33 Ko |
+| `DataTable` | 299 / 98 Ko | 163 / 47 Ko |
+| `BarChart` | — | 134 / 41 Ko |
+| Tout le paquet | 614 / 203 Ko | 629 / 209 Ko |
+
+- [x] Sortie ESM en un fichier par module et `sideEffects` déclaré. CommonJS reste en un seul fichier.
+- [ ] Publier, puis mesurer sur les bundles réels de Datapilot et Traffic Report.
+- [ ] Ajouter un contrôle de poids en CI, avec le seuil des critères de réussite.
+- [ ] Réduire le registre d'icônes : `icon="…"` charge les 118 icônes dès le premier bouton (environ 85 Ko minifiés, dont 25 Ko d'icônes mobilité). Une prop acceptant un composant d'icône permettrait de déprécier le registre en v2.
+- [ ] Rendre `style.css` (229 Ko) réductible : feuilles par couche, ou CSS importé par composant.
+
+**Fini quand** : un produit ne paie que ce qu'il importe, en JS comme en CSS, et la CI le vérifie.
+
 ## Hors de cette liste
 
 - `RadioButton` : l'état `disabled` affiche un point qui se lit comme « sélectionné » ; prévoir un état `disabled-selected`, comme `Checkbox` (1.2).
-
 - Datapilot : aligner développement et production, épinglés différemment, et passer au paquet npm une fois publié.
 - Avant la v2, à faire quoi qu'il arrive : tests au lecteur d'écran, `RichTextEditor` sous Firefox et Safari, prochaine publication 1.x.
 - Suivi des besoins de Traffic Report : [backlog](traffic-report-backlog.md).
@@ -173,3 +280,5 @@ Plusieurs exports ne servent aujourd'hui qu'à d'autres composants de la bibliot
 | 30 octobre 2026 | Audit d'usage fait ; projets 7, 8 et 9 précisés ; projets 11 à 13 ajoutés |
 | 30 octobre 2026 | Décision : retrait de `RichCheckbox` et `RichRadioButton` en v2 ; `RadioButton label` ajouté |
 | 30 octobre 2026 | `appearance="card"` et `RadioGroup` livrés, cartes de choix dépréciées |
+| 30 octobre 2026 | Proposition ajoutée : architecture logique à quatre couches, périmètre de trois produits et projets 14 à 17. Aucune séparation de paquet ni dépréciation supplémentaire validée par cet ajout. |
+| 30 octobre 2026 | Architecture revue sur mesures : trois couches de code et un catalogue, dépendances réordonnées, projets 8 et 9 en points d'entrée, projet 18 ajouté, sortie ESM par module et `couches.test.ts` livrés |
