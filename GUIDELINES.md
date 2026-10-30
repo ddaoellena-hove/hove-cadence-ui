@@ -1158,12 +1158,15 @@ Catalogue de gabarits de page nommés. **Choisir d'abord un pattern dans le tabl
 | Réglages (sections, enregistrement explicite) | Paramètres | ✅ |
 | États d'une page (chargement, erreur, accès, introuvable, vide) | États de page | ✅ |
 | Examiner la validation d'un jeu de données (bilan, constats, détail) | Rapport qualité | ✅ |
+| Choisir plusieurs objets, puis confirmer en une fois | Sélection transactionnelle multiple | ✅ |
+| Saisir des périodes datées ou des créneaux récurrents | Périodes et créneaux | ✅ |
+| Rédiger un message par canal, avec traductions | Messages par canal | ✅ |
 
 ### Correspondance recette → pattern
 
 R1 → Coque d'application · R2 → Liste / index · R3 → Formulaire · R4 → États de page · R5 → Liste / index · R6 → Supervision · R7 → Analyse · R8 → Liste + détail latéral · R9 → Assistant · R10 → Planification / temps.
 
-> Les 12 fiches sont ci-dessous. Les stories `Recettes/*` ont été retirées en 1.0.0 : leurs parcours sont couverts par les patterns (correspondance ci-dessus). Les recettes de code plus bas restent des exemples à adapter.
+> Les 15 fiches sont ci-dessous. Les stories `Recettes/*` ont été retirées en 1.0.0 : leurs parcours sont couverts par les patterns (correspondance ci-dessus). Les recettes de code plus bas restent des exemples à adapter.
 
 ### Pattern — Formulaire
 
@@ -1241,6 +1244,18 @@ FormActions  →  Link · GhostButton · PrimaryButton
 ### Pattern — Rapport qualité
 
 **Quand l'utiliser** — examiner le résultat de la validation d'un jeu de données (import GTFS, NeTEx…). **Ne pas confondre avec** — Assistant / import (étapes de l'import), `ErrorSummary` (champs d'un formulaire). **Anatomie** : `PageHeader` · `DatasetHealth` (bilan global) · `FilterBar` (recherche, `Dropdown` de niveau) · `DataTable` des constats (`onRowClick`) · `Drawer` de la page contenant `ValidationIssueInspector`. **Comportements** : le bilan porte sur tous les constats, indépendamment des filtres ; Échap referme le détail et rend le focus à la ligne. **Règles** : ✅ verdict et constats fournis par l'application ; ✅ garder le constat affiché pendant la fermeture du `Drawer` (état `open` séparé de la sélection) ; ❌ « Aucun constat pour ces filtres » n'est pas « aucune erreur » ; ❌ pas d'action « Ouvrir dans la source » sans destination réelle. **Gabarit** — vérifié : [`src/patterns/RapportQualitePattern.tsx`](src/patterns/RapportQualitePattern.tsx).
+
+### Pattern — Sélection transactionnelle multiple
+
+**Quand l'utiliser** — rechercher, ajouter à une sélection temporaire, retirer, puis confirmer en une fois. **Anatomie** : `PageSection` · `Drawer` · `Autocomplete multiple` · `TableCard`. Annuler laisse la donnée intacte ; le produit fournit l'identité de déduplication. **Gabarit** — vérifié : [`src/patterns/SelectionMultiplePattern.tsx`](src/patterns/SelectionMultiplePattern.tsx).
+
+### Pattern — Périodes et créneaux
+
+**Quand l'utiliser** — saisir des périodes continues ou des créneaux récurrents, nuit comprise. **Anatomie** : `SegmentedControl` · `RepeatableFieldGroup` · `DatePicker withTime` ou `Checkbox label` + `TimePicker` · `DescriptionList`. Les deux modes conservent leur saisie ; la logique est hors du rendu ([`schedule-rules.ts`](src/patterns/schedule-rules.ts)) ; le fuseau reste une décision du produit. **Gabarit** — vérifié : [`src/patterns/PeriodesCreneauxPattern.tsx`](src/patterns/PeriodesCreneauxPattern.tsx).
+
+### Pattern — Messages par canal
+
+**Quand l'utiliser** — rédiger un message commun ou par canal, avec traductions. **Anatomie** : `FormField` + `Checkbox label` · `SegmentedControl` · `RichTextEditor` · `RepeatableFieldGroup`. Les saisies survivent au changement de mode ; un canal sans mise en forme reçoit `richTextToPlainText`. ❌ Aucune action ne prétend diffuser : envoi et traduction automatique sont des intégrations produit. **Gabarit** — vérifié : [`src/patterns/MessagesCanauxPattern.tsx`](src/patterns/MessagesCanauxPattern.tsx).
 
 ## Recettes de pages complètes
 
@@ -2144,6 +2159,11 @@ Chargement à la demande : un nœud `hasChildren` sans `children` déclenche `lo
 | `state` | `"unchecked" \| "hover" \| "checked" \| "indeterminate" \| "disabled" \| "disabled-checked"` | `"unchecked"` | ⚠️ Pas de prop `checked` — piloter via `state`. |
 | `onChange` | `(nextChecked: boolean) => void` | — | Clic (sauf disabled) |
 | `aria-label` | `string` | — | Nom accessible. ⚠️ Obligatoire en pratique quand aucun texte n'accompagne la case (ligne de tableau, « Tout sélectionner ») |
+| `label` | `string` | — | Libellé cliquable : la ligne entière devient la case, annoncée une seule fois |
+| `description` | `string` | — | Précision sous le libellé, en description accessible |
+| `aside` | `ReactNode` | — | Complément décoratif, non interactif (badge de ligne) |
+
+- ✅ `Checkbox label` pour une liste dense (directions, jours) ; `RichCheckbox` pour des cartes de choix.
 
 ### CounterInput
 
@@ -3034,6 +3054,7 @@ Blocs de champs répétés : ajout, retrait, limites, erreur par bloc, focus et 
 
 - ✅ Après un ajout, le focus va au premier champ du nouveau bloc. Après un retrait, au bloc qui prend sa place, sinon au bouton d'ajout. Un changement d'`items` venu du parent ne déplace pas le focus.
 - ❌ Pas d'index dans `getId` : un retrait transférerait valeurs et erreurs au bloc suivant.
+- ⚠️ Les blocs portent un titre `h3` par défaut : placer le groupe sous un titre `h2`, par exemple une `PageSection`.
 
 ### RichTextEditor
 

@@ -1,0 +1,46 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import gabarit from "../../patterns/MessagesCanauxPattern.tsx?raw";
+
+<Meta title="Page patterns/Messages par canal/Documentation" />
+
+<style>{`.pp{font-family:var(--cadence-font-sans,"ABC Diatype","Inter",sans-serif);max-width:820px;color:var(--cadence-color-primary,#002830)}.pp h1{font-family:var(--cadence-font-display,"Uxum Grotesque",sans-serif);font-size:32px;font-weight:500}.pp h2{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--cadence-color-text-secondary,#607075);margin:32px 0 10px;border-bottom:1px solid var(--cadence-color-divider,#f0f0f0);padding-bottom:6px}.pp pre{background:var(--cadence-color-surface-subtle,#fafafa);border:1px solid var(--cadence-color-divider,#f0f0f0);border-radius:8px;padding:16px;overflow:auto;font-family:var(--cadence-font-mono,monospace);font-size:12px;line-height:1.6}`}</style>
+
+<div className="pp">
+
+# Pattern — Messages par canal et traductions
+
+**Quand l'utiliser** — rédiger un message commun ou personnalisé par canal, avec ses traductions. **Ne pas confondre avec** — un envoi : le gabarit ne diffuse rien.
+
+## Anatomie
+```
+FormField(Checkbox par canal)
+SegmentedControl : Message commun | Par canal
+RichTextEditor (commun, ou un par canal)
+Aperçu texte simple (canal sans mise en forme)
+RepeatableFieldGroup (traductions)
+FormActions
+```
+
+## Variantes
+Message commun ; message par canal.
+
+## États
+Erreur par canal ; absence de canal (`FormField error`).
+
+## Comportements
+Changer de mode conserve les saisies. Une langue déjà traduite n'est plus proposée. Les canaux sans mise en forme reçoivent `richTextToPlainText`.
+
+## Responsive
+Champs en pleine largeur, largeur de lecture 720px.
+
+## Accessibilité
+Chaque éditeur est nommé par son canal ; erreurs portées par `error`.
+
+## Règles
+- ✅ Aucune action ne prétend diffuser.
+- ❌ Choix des canaux, traduction automatique et envoi sont des intégrations produit.
+
+## Gabarit
+<pre><code>{gabarit}</code></pre>
+
+</div>

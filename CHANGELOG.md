@@ -32,6 +32,8 @@ Changements postérieurs au paquet 1.0.0 (publié depuis `2648ab7`). Version à 
 - `DatePicker` : `onInputStateChange`, `clearable`, `onClear` ; une `Date` recréée à chaque rendu n'efface plus la saisie.
 - `RichTextEditor` et `RichTextContent` : texte enrichi stocké en JSON (`RichTextDocument`), collage assaini, liens limités à http, https et mailto, sortie texte simple. Pictogrammes `bold-01`, `italic-01`, `dotpoints-01`, `reverse-left`, `reverse-right`.
 - `RepeatableFieldGroup` : blocs de champs répétés, avec identité stable, limites, erreur par bloc et focus.
+- `Checkbox` : `label`, `description`, `aside` pour une ligne compacte cliquable.
+- Page patterns : Sélection transactionnelle multiple, Périodes et créneaux, Messages par canal.
 - Documentation : [guide de migration](docs/MIGRATION-TO-CADENCE.md), étude de cas, grille d'audit, [backlog restant](docs/proposals/traffic-report-backlog.md).
 
 ### Ajouté

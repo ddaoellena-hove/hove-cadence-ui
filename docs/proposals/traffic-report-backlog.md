@@ -21,19 +21,17 @@ Sur la même branche : **N1, E7, E6**. `FormField` ; `error`, `helperText`, `req
 
 Sur `feat/rich-text-repeatable` : **N3, N4**. `RichTextEditor`, `RichTextContent` et `RepeatableFieldGroup`. Format stocké : JSON restreint (`RichTextDocument`), jamais de HTML. Aucune dépendance ajoutée : `contentEditable` + `document.execCommand`, relus par liste blanche. Fonctions de la maquette non reprises : voir arbitrages.
 
+Sur `feat/recettes-formulaires` : **E8, R1, R2, R3**. `Checkbox label`, `description`, `aside` ; patterns Sélection transactionnelle multiple, Périodes et créneaux, Messages par canal, avec gabarits vérifiés et règles testées hors rendu (`schedule-rules.ts`).
+
 Écart assumé pour E2 : pas de sélecteur `Dropdown` intégré sur mobile. Les icônes passent à la ligne ; un sélecteur peut désormais s'ouvrir vers le haut si le produit le préfère.
 
 ## Restant
 
 | Réf. | Besoin | Priorité | Point de départ vérifié |
 |---|---|---|---|
-| E8 | Case avec libellé compact | P2 | Examiner `RichCheckbox` d'abord |
-| R1 | Recette : sélection transactionnelle multiple | P2 | `Drawer`, `Autocomplete`, `ModeFilter`, `TableCard` |
-| R2 | Recette : périodes et créneaux récurrents | P2 | `DatePicker`, `TimePicker`, groupes répétables |
-| R3 | Recette : messages par canal et traductions | P2 | Dépend de N3 pour le texte riche |
 | M1 | Objets de transport et schéma de conséquence | P3 | Bibliothèque métier distincte, hors noyau |
 
-Ordre conseillé : E8, puis les recettes. Chaque contribution comprend API, stories (états, libellés longs, clavier, responsive), tests, guidelines et retrait des contournements devenus inutiles.
+Seul M1 reste : un chantier métier distinct. Chaque contribution comprend API, stories (états, libellés longs, clavier, responsive), tests, guidelines et retrait des contournements devenus inutiles.
 
 ## Points à arbitrer
 

@@ -1,0 +1,47 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import gabarit from "../../patterns/PeriodesCreneauxPattern.tsx?raw";
+
+<Meta title="Page patterns/Périodes et créneaux/Documentation" />
+
+<style>{`.pp{font-family:var(--cadence-font-sans,"ABC Diatype","Inter",sans-serif);max-width:820px;color:var(--cadence-color-primary,#002830)}.pp h1{font-family:var(--cadence-font-display,"Uxum Grotesque",sans-serif);font-size:32px;font-weight:500}.pp h2{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--cadence-color-text-secondary,#607075);margin:32px 0 10px;border-bottom:1px solid var(--cadence-color-divider,#f0f0f0);padding-bottom:6px}.pp pre{background:var(--cadence-color-surface-subtle,#fafafa);border:1px solid var(--cadence-color-divider,#f0f0f0);border-radius:8px;padding:16px;overflow:auto;font-family:var(--cadence-font-mono,monospace);font-size:12px;line-height:1.6}`}</style>
+
+<div className="pp">
+
+# Pattern — Périodes continues et créneaux récurrents
+
+**Quand l'utiliser** — saisir plusieurs périodes datées, ou des créneaux répétés par jour. **Ne pas confondre avec** — Planification / temps, qui visualise des amplitudes de service.
+
+## Anatomie
+```
+SegmentedControl : Périodes | Créneaux
+RepeatableFieldGroup
+  Période : FieldRow(DatePicker withTime × 2)
+  Créneau : FormField(Checkbox × 7) · FieldRow(TimePicker × 2)
+DescriptionList (récapitulatif)
+FormActions
+```
+
+## Variantes
+Périodes continues ; créneaux récurrents, nuit comprise.
+
+## États
+Erreur par bloc (`getError`) ; saisie non confirmée (`onInputStateChange`).
+
+## Comportements
+Changer de mode conserve les deux saisies ; seul le mode actif est appliqué. Une fin plus tôt que le début désigne le lendemain ; des heures égales sont refusées.
+
+## Responsive
+`FieldRow` passe en une colonne à 1024px ; les jours passent à la ligne.
+
+## Accessibilité
+Chaque jour est une `Checkbox` à libellé cliquable, groupée par `FormField`.
+
+## Règles
+- ✅ Logique hors du rendu : `schedule-rules.ts`, testée.
+- ✅ Fuseau et changements d'heure décidés par le produit.
+- ❌ Ne pas copier ces règles dans le noyau : elles dépendent du métier.
+
+## Gabarit
+<pre><code>{gabarit}</code></pre>
+
+</div>

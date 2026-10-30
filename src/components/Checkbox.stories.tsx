@@ -1,6 +1,8 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, fn, userEvent, within } from "storybook/test";
 import { Checkbox } from "./Checkbox";
+import { Badge } from "./Badge";
 
 const meta: Meta<typeof Checkbox> = {
   title: "Composants/Formulaires/Checkbox",
@@ -78,4 +80,38 @@ export const AllStates: Story = {
       <Checkbox state="disabled-checked" aria-label="Désactivée cochée" />
     </div>
   ),
+};
+
+/** Liste dense : cliquer le texte coche la case, avec une seule annonce et un complément décoratif. */
+export const AvecLibelle: Story = {
+  name: "Avec libellé",
+  args: { label: "Direction Nation", description: "12 arrêts desservis", aside: <Badge label="Ligne 1" />, onChange: fn() },
+  play: async ({ args, canvasElement }) => {
+    const canvas = within(canvasElement);
+    const box = canvas.getByRole("checkbox", { name: "Direction Nation" });
+    await expect(canvas.getAllByRole("checkbox")).toHaveLength(1);
+    await expect(box).toHaveAccessibleDescription("12 arrêts desservis");
+    await userEvent.click(canvas.getByText("Direction Nation"));
+    await expect(args.onChange).toHaveBeenCalledWith(true);
+    box.focus();
+    await userEvent.keyboard(" ");
+    await expect(args.onChange).toHaveBeenCalledTimes(2);
+  },
+};
+
+/** États conservés avec libellé : indéterminé annoncé, désactivé sans effet. */
+export const LibelleEtats: Story = {
+  name: "Libellé et états",
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <Checkbox label="Toutes les directions" state="indeterminate" />
+      <Checkbox label="Lundi" state="checked" />
+      <Checkbox label="Dimanche" state="disabled" />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("checkbox", { name: "Toutes les directions" })).toHaveAttribute("aria-checked", "mixed");
+    await expect(canvas.getByRole("checkbox", { name: "Dimanche" })).toHaveAttribute("aria-disabled", "true");
+  },
 };
