@@ -82,5 +82,6 @@ Non réalisé : ces étapes supposent la publication de Cadence, ou une nouvelle
 - Repli local de `FieldRow` à 1024 px.
 - Surcharges `top: auto; bottom: …` du `Dropdown` et des infobulles dans le pied.
 - `datePending`, inspection du DOM et `useMemo` de `WorkflowDate`, au profit d'`onInputStateChange`.
+- `TextArea` des messages, à évaluer face à `RichTextEditor` : décision produit, le stockage changeant.
 - Enveloppes d'erreur autour de `Dropdown` et `DatePicker`, au profit d'`error` et des refs.
 - Correctif de débordement du contenu d'`Accordion`.

@@ -30,6 +30,8 @@ Changements postérieurs au paquet 1.0.0 (publié depuis `2648ab7`). Version à 
 - `FormField` : libellé, aide et erreur d'un contrôle sans libellé propre.
 - `Dropdown`, `Autocomplete`, `DatePicker` : `error`, `helperText`, `required`, ref transmise au contrôle. `TextInput`, `TextArea` : `required`.
 - `DatePicker` : `onInputStateChange`, `clearable`, `onClear` ; une `Date` recréée à chaque rendu n'efface plus la saisie.
+- `RichTextEditor` et `RichTextContent` : texte enrichi stocké en JSON (`RichTextDocument`), collage assaini, liens limités à http, https et mailto, sortie texte simple. Pictogrammes `bold-01`, `italic-01`, `dotpoints-01`, `reverse-left`, `reverse-right`.
+- `RepeatableFieldGroup` : blocs de champs répétés, avec identité stable, limites, erreur par bloc et focus.
 - Documentation : [guide de migration](docs/MIGRATION-TO-CADENCE.md), étude de cas, grille d'audit, [backlog restant](docs/proposals/traffic-report-backlog.md).
 
 ### Ajouté

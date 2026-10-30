@@ -24,7 +24,7 @@ Quatre statuts ne doivent jamais se confondre dans un document de migration :
 | Règle officielle | [GUIDELINES.md](../GUIDELINES.md) | Un seul `PrimaryButton` plein par vue |
 | Composition applicative | Code du produit | `FormActions` plus un statut d'enregistrement dans `AppLayout footer` |
 | Exception projet | Audit du projet | Boutons `sm` dans un formulaire, sur décision produit |
-| Proposition d'évolution | [Backlog](proposals/traffic-report-backlog.md) | Éditeur de texte riche |
+| Proposition d'évolution | [Backlog](proposals/traffic-report-backlog.md) | Sélection transactionnelle multiple |
 
 ## 2. Rassembler les entrées
 
@@ -67,6 +67,8 @@ La ressemblance ne prouve pas l'équivalence. Avant de substituer un composant, 
 | Section titrée | [`PageSection`](../GUIDELINES.md#pagesection) | Surface `none`, `card` ou `elevated`, niveau de titre |
 | Sous-section repliable | `Accordion` | État initial, focus, contenu masqué |
 | Texte libre | `TextInput`, `TextArea` | `label`, `state`, `helperText` |
+| Texte enrichi | [`RichTextEditor`](../GUIDELINES.md#richtexteditor) | Format stocké JSON, sortie texte simple par canal |
+| Blocs répétés | [`RepeatableFieldGroup`](../GUIDELINES.md#repeatablefieldgroup) | Identifiant stable, limites, focus |
 | Liste courte fixe | [`Dropdown`](../GUIDELINES.md#dropdown) | `divider`, `groupLabel`, clavier, `error` |
 | Liste longue | [`Autocomplete`](../GUIDELINES.md#autocomplete) | `multiple`, recherche distante, chargement |
 | 2 à 4 choix exclusifs | [`SegmentedControl`](../GUIDELINES.md#segmentedcontrol) | Longueur des libellés |
@@ -106,7 +108,7 @@ Isoler sur une branche les essais à valider visuellement. Un essai rejeté rest
 
 ## 6. Exemples de composition
 
-Ces exemples utilisent les API actuelles de la branche de travail. Vérifier la version consommée : `surface="elevated"`, `density="compact"`, `footer`, `FormField` et les props `error` des champs ne sont pas dans la 1.0.0 publiée.
+Ces exemples utilisent les API actuelles de la branche de travail. Vérifier la version consommée : `surface="elevated"`, `density="compact"`, `footer`, `FormField`, `RichTextEditor`, `RepeatableFieldGroup` et les props `error` des champs ne sont pas dans la 1.0.0 publiée.
 
 ### Section à titre extérieur
 
@@ -226,7 +228,7 @@ Distinguer donnée chargée, valeur confirmée, saisie en cours et valeur persis
 
 ### 7.6 Objets répétés
 
-Associer avancement et erreurs à l'identité de chaque objet, jamais à sa position. Une étape n'est pas terminée parce que son index précède l'étape affichée. Changer d'objet restaure son propre avancement, sans hériter de celui d'un autre. Modifier une étape invalide les étapes qui en dépendent.
+Associer avancement et erreurs à l'identité de chaque objet, jamais à sa position. `RepeatableFieldGroup` l'applique aux blocs de champs. Une étape n'est pas terminée parce que son index précède l'étape affichée. Changer d'objet restaure son propre avancement, sans hériter de celui d'un autre. Modifier une étape invalide les étapes qui en dépendent.
 
 ### 7.7 Overlays et débordement
 

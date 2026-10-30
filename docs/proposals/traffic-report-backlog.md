@@ -19,25 +19,26 @@ Sur `feat/overlays-placement` : **N2 + E5**. `usePopoverFit` gère aussi l'axe v
 
 Sur la même branche : **N1, E7, E6**. `FormField` ; `error`, `helperText`, `required` et ref sur `Dropdown`, `Autocomplete`, `DatePicker` ; `required` sur `TextInput` et `TextArea` ; `DatePicker` : `onInputStateChange`, `clearable`, `onClear`, comparaison de `value` par instant. `onChange` reste typé `Date` pour ne casser aucun consommateur : d'où `onClear`, distinct. `TextInput` garde `state` + `helperText`, sans `error`. Pas de lecture seule ajoutée.
 
+Sur `feat/rich-text-repeatable` : **N3, N4**. `RichTextEditor`, `RichTextContent` et `RepeatableFieldGroup`. Format stocké : JSON restreint (`RichTextDocument`), jamais de HTML. Aucune dépendance ajoutée : `contentEditable` + `document.execCommand`, relus par liste blanche. Fonctions de la maquette non reprises : voir arbitrages.
+
 Écart assumé pour E2 : pas de sélecteur `Dropdown` intégré sur mobile. Les icônes passent à la ligne ; un sélecteur peut désormais s'ouvrir vers le haut si le produit le préfère.
 
 ## Restant
 
 | Réf. | Besoin | Priorité | Point de départ vérifié |
 |---|---|---|---|
-| N3 | Éditeur de texte riche | P2 | Format stocké et assainissement à définir |
-| N4 | Groupes de champs répétables | P2 | La numérotation n'est jamais l'identité |
 | E8 | Case avec libellé compact | P2 | Examiner `RichCheckbox` d'abord |
 | R1 | Recette : sélection transactionnelle multiple | P2 | `Drawer`, `Autocomplete`, `ModeFilter`, `TableCard` |
 | R2 | Recette : périodes et créneaux récurrents | P2 | `DatePicker`, `TimePicker`, groupes répétables |
 | R3 | Recette : messages par canal et traductions | P2 | Dépend de N3 pour le texte riche |
 | M1 | Objets de transport et schéma de conséquence | P3 | Bibliothèque métier distincte, hors noyau |
 
-Ordre conseillé : N3 et N4, puis les recettes. Chaque contribution comprend API, stories (états, libellés longs, clavier, responsive), tests, guidelines et retrait des contournements devenus inutiles.
+Ordre conseillé : E8, puis les recettes. Chaque contribution comprend API, stories (états, libellés longs, clavier, responsive), tests, guidelines et retrait des contournements devenus inutiles.
 
 ## Points à arbitrer
 
 - Mobile du `Stepper` compact : conserver les icônes à la ligne, ou composer un sélecteur.
 - `surface="card"` garde `overflow: hidden` : ses menus internes peuvent être coupés. Retirer cette règle demanderait de vérifier les contenus bord à bord qui comptent sur l'arrondi.
+- `RichTextEditor` : `document.execCommand` est dépréciée. Si le navigateur la retire ou si Firefox et Safari divergent, passer à une bibliothèque d'édition (ProseMirror) sans changer le format stocké. Les fonctions avancées de la maquette ne sont pas reprises.
 - Couleurs de sévérité : officialisation éventuelle, après contrôle des contrastes.
 - `FieldRow` se replie selon la fenêtre, pas selon la place disponible : à reconsidérer avec une container query si cela gêne dans un `Drawer` étroit sur grand écran.

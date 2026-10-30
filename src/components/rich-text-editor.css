@@ -1,0 +1,180 @@
+/* RichTextEditor et RichTextContent. Tokens uniquement. */
+
+.rich-text-editor {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+}
+
+/* Même gabarit que le libellé de TextInput */
+.rich-text-editor__label {
+  padding: 0 0 10px 8px;
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.rich-text-editor__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.rich-text-editor__box {
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-lg, 10px);
+  box-shadow: var(--cadence-shadow-sm, 0px 1px 3px rgba(0, 0, 0, 0.06), 0px 1px 2px rgba(0, 0, 0, 0.04));
+}
+
+.rich-text-editor__box:focus-within {
+  border-color: var(--cadence-color-primary, #002830);
+}
+
+.rich-text-editor--error .rich-text-editor__box {
+  border-color: var(--cadence-color-danger, #da1e28);
+}
+
+.rich-text-editor__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 6px;
+  border-bottom: 1px solid var(--cadence-color-divider, #f0f0f0);
+}
+
+.rich-text-editor__tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--cadence-control-height-compact, 29px);
+  height: var(--cadence-control-height-compact, 29px);
+  padding: 0;
+  border: none;
+  border-radius: var(--cadence-radius-sm, 6px);
+  background: transparent;
+  color: var(--cadence-color-label, #1a3e45);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.rich-text-editor__tool:hover:not(:disabled) {
+  background: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
+}
+
+.rich-text-editor__tool:focus-visible {
+  outline: none;
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+}
+
+.rich-text-editor__tool[aria-pressed="true"] {
+  background: var(--cadence-color-primary, #002830);
+  color: var(--cadence-color-white, #ffffff);
+}
+
+.rich-text-editor__tool:disabled {
+  color: var(--cadence-color-text-secondary, #607075);
+  cursor: not-allowed;
+}
+
+.rich-text-editor__link {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid var(--cadence-color-divider, #f0f0f0);
+}
+
+.rich-text-editor__link-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.rich-text-editor__content {
+  min-height: 120px;
+  padding: 12px;
+  outline: none;
+  overflow-wrap: anywhere;
+}
+
+/* Le texte d'aide n'est pas du contenu : affiché seulement si l'éditeur est vide */
+.rich-text-editor__content[data-empty]::before {
+  content: attr(data-placeholder);
+  position: absolute;
+  color: var(--cadence-color-text-secondary, #607075);
+  pointer-events: none;
+}
+
+.rich-text-editor--disabled .rich-text-editor__box {
+  background: var(--cadence-color-surface-alt, #eef1f4);
+  box-shadow: none;
+}
+
+.rich-text-editor__read {
+  padding: 0 8px;
+}
+
+.rich-text-editor__footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 6px 8px 0;
+}
+
+.rich-text-editor__message {
+  margin: 0;
+  color: var(--cadence-color-label, #1a3e45);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.rich-text-editor__message--error,
+.rich-text-editor__counter--over {
+  color: var(--cadence-color-danger-text, #b91c1c);
+}
+
+.rich-text-editor__counter {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.rich-text-editor__counter:not(.rich-text-editor__counter--over) {
+  color: var(--cadence-color-text-secondary, #607075);
+}
+
+/* ── Contenu, en lecture comme en édition ── */
+.rich-text-content {
+  color: var(--cadence-color-primary, #002830);
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.rich-text-content p,
+.rich-text-content ul,
+.rich-text-content ol {
+  margin: 0 0 8px;
+}
+
+.rich-text-content > :last-child {
+  margin-bottom: 0;
+}
+
+.rich-text-content ul,
+.rich-text-content ol {
+  padding-left: 20px;
+}
+
+.rich-text-content a {
+  color: var(--cadence-color-link, #1d4ed8);
+}
