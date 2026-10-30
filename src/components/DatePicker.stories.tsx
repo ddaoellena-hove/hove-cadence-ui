@@ -354,3 +354,18 @@ export const ErreurExterne: Story = {
     await expect(day).toHaveAccessibleDescription("La fin précède le début.");
   },
 };
+
+/** Cases vides, heure et effacement : le gabarit lisible tient dans le champ. */
+export const GabaritComplet: Story = {
+  name: "Gabarit complet",
+  render: () => <DatePicker label="Fin" withTime clearable value={new Date(2026, 9, 12, 8, 30)} />,
+  play: async ({ canvasElement }) => {
+    const field = canvasElement.querySelector<HTMLElement>(".date-picker__field")!;
+    await expect(field.scrollWidth).toBeLessThanOrEqual(field.clientWidth);
+    const box = within(canvasElement).getByRole("textbox", { name: /Mois/ });
+    const style = getComputedStyle(box);
+    const context = document.createElement("canvas").getContext("2d")!;
+    context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+    await expect(parseFloat(style.width)).toBeGreaterThanOrEqual(context.measureText("MM").width);
+  },
+};

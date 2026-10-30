@@ -282,6 +282,8 @@
   color: var(--cadence-color-danger-text, #b91c1c);
 }
 
+/* 2px comme TextInput, sans changer la hauteur : ce champ ajoute sa bordure */
 .autocomplete__field--error {
   border-color: var(--cadence-color-danger, #da1e28);
+  box-shadow: inset 0 0 0 1px var(--cadence-color-danger, #da1e28);
 }

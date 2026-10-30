@@ -249,5 +249,5 @@
 }
 
 .dropdown__trigger--error {
-  border-color: var(--cadence-color-danger, #da1e28);
+  border: 2px solid var(--cadence-color-danger, #da1e28);
 }

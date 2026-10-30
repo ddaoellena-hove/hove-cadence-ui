@@ -362,7 +362,7 @@ export const DatePicker = forwardRef<HTMLElement, DatePickerProps>(({
         // Champ éditable (allure TextInput). Un clic sur la zone vide cible la
         // case du jour ; quitter le champ valide la saisie.
         <div
-          className={`date-picker__field${open ? " date-picker__field--open" : ""}${withTime ? " date-picker__field--time" : ""}${invalid ? " date-picker__field--error" : ""}`}
+          className={`date-picker__field${open ? " date-picker__field--open" : ""}${withTime ? " date-picker__field--time" : ""}${clearable ? " date-picker__field--clearable" : ""}${invalid ? " date-picker__field--error" : ""}`}
           onPointerDown={(e) => {
             if (e.target === e.currentTarget) {
               e.preventDefault();
