@@ -84,13 +84,15 @@
 /* ── Surface surélevée (surface="elevated") ──
    Titre et actions restent hors de la boîte ; seul le corps porte la surface.
    Pas d'overflow: hidden : les menus des champs doivent pouvoir déborder. */
-.page-section--elevated {
+.page-section--elevated,
+.page-section--group {
   gap: var(--cadence-section-heading-gap, 12px);
   margin-inline: var(--cadence-section-inset-inline, 8px);
   min-width: 0;
 }
 
-.page-section--elevated > .page-section__head {
+.page-section--elevated > .page-section__head,
+.page-section--group > .page-section__head {
   padding-inline: var(--cadence-section-padding-inline, 8px);
 }
 
@@ -110,6 +112,33 @@
 
 .page-section--elevated > .page-section__body--padded {
   padding: 20px;
+}
+
+/* En-tête dans la boîte (headerPlacement="inside") : la section entière porte la
+   surface, le filet sépare l'en-tête du corps. Pas de retrait dans un groupe. */
+.page-section--header-inside {
+  gap: 0;
+  background: var(--cadence-color-white, #ffffff);
+  border: 1px solid var(--cadence-color-border, #e5e5e5);
+  border-radius: var(--cadence-radius-xl, 12px);
+  box-shadow: var(--cadence-shadow-section, 0 0 2px 0 rgba(0, 0, 0, 0.10), 0 2px 10px 0 rgba(0, 0, 0, 0.05));
+}
+
+.page-section--group > .page-section__body > .page-section--elevated,
+.page-section--group > .page-section__body > * > .page-section--elevated {
+  margin-inline: 0;
+}
+
+.page-section--header-inside > .page-section__head {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--cadence-color-divider, #f0f0f0);
+}
+
+.page-section--header-inside > .page-section__body {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 /* Accordéon en contenu : ses filets extrêmes doubleraient la bordure du corps. */

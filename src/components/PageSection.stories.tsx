@@ -172,3 +172,21 @@ export const SureleveeAvecAccordeon: Story = {
     await expect(getComputedStyle(items[items.length - 1]).borderBottomWidth).toBe("0px");
   },
 };
+
+/** Second niveau de titre : le groupe reste hors de la boîte, chaque section porte son en-tête dedans, au-dessus d'un filet. */
+export const GroupeEnTeteInterne: Story = {
+  name: "Groupe et en-tête dans la boîte",
+  render: () => (
+    <PageSection surface="group" title="Données théoriques" description="Version du 27 août" gap={16}>
+      <PageSection headerPlacement="inside" headingLevel={3} title="Chaîne de traitement" description="Exécution du 27 août" bodyPadding="all"><span>Contenu</span></PageSection>
+      <PageSection headerPlacement="inside" headingLevel={3} title="Qualité des données" bodyPadding="all"><span>Contenu</span></PageSection>
+    </PageSection>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("heading", { level: 2, name: "Données théoriques" })).toBeVisible();
+    await expect(canvas.getAllByRole("heading", { level: 3 })).toHaveLength(2);
+    const head = canvas.getByRole("heading", { level: 3, name: "Chaîne de traitement" }).closest(".page-section__head")!;
+    await expect(getComputedStyle(head).borderBottomStyle).toBe("solid");
+  },
+};

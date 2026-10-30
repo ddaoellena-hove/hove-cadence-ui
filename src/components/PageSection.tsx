@@ -29,9 +29,17 @@ export interface PageSectionProps {
    * liste bord à bord) ; `gap` espace ses enfants.
    * "elevated" (défaut) : titre et actions hors de la boîte ; seul le corps porte
    * fond, bordure, rayon et ombre de section.
+   * "group" : titre aligné sur celui d'une section "elevated", corps sans boîte :
+   * regroupe des sections de second niveau, chacune dans sa propre boîte.
    * "none" : section nue, pour une sous-section déjà dans une surface.
    */
-  surface?: "none" | "card" | "elevated";
+  surface?: "none" | "card" | "elevated" | "group";
+  /**
+   * Place de l'en-tête en `surface="elevated"` : "outside" (défaut, hors de la
+   * boîte) ou "inside" (dans la boîte, séparé du corps par un filet), pour un
+   * titre de second niveau sous une section "group".
+   */
+  headerPlacement?: "outside" | "inside";
   /**
    * Padding du corps en `surface="elevated"` : "inline" (défaut, latéral), "all"
    * (20px, contenu simple sans marges propres) ou "none" pour une progression,
@@ -52,6 +60,7 @@ export const PageSection = ({
   gap = 20,
   surface = "elevated",
   bodyPadding = "inline",
+  headerPlacement = "outside",
   children,
   id,
   className,
@@ -63,10 +72,10 @@ export const PageSection = ({
   return (
     <section
       id={id}
-      className={["page-section", surface !== "none" ? `page-section--${surface}` : "", className].filter(Boolean).join(" ")}
+      className={["page-section", surface !== "none" ? `page-section--${surface}` : "", surface === "elevated" && headerPlacement === "inside" ? "page-section--header-inside" : "", className].filter(Boolean).join(" ")}
       aria-labelledby={headingId}
       // En carte, l'en-tête est séparé du corps par un filet, pas par un espace ;
-      // en surface surélevée, l'espace vient du token de section (CSS)
+      // en surface surélevée ou en groupe, l'espace vient du token de section (CSS)
       style={{ gap: surface === "none" ? gap : surface === "card" ? 0 : undefined }}
     >
       <div className={`page-section__head${icon || iconElement ? " page-section__head--icon" : ""}`}>
