@@ -43,7 +43,7 @@ Aucun token de graisse n'existe ; `font-weight` est écrit en dur dans les CSS (
 
 - [ ] Définir les tokens et leurs rôles.
 - [ ] Remplacer les valeurs en dur et ajouter un garde-fou, sur le modèle de `font-tokens.test.ts`.
-- [ ] Trancher la hiérarchie des boutons : `GhostButton` est à 600, `PrimaryButton` à 500.
+- [x] Hiérarchie des boutons tranchée : `GhostButton` reste à 600 pour ressortir, `PrimaryButton` à 500, distingué par son fond plein.
 
 **Fini quand** : aucune graisse en dur ne subsiste hors de `@font-face`.
 
@@ -158,6 +158,8 @@ Plusieurs exports ne servent aujourd'hui qu'à d'autres composants de la bibliot
 **Fini quand** : l'API publique ne contient que des composants destinés aux produits.
 
 ## Hors de cette liste
+
+- `RadioButton` : l'état `disabled` affiche un point qui se lit comme « sélectionné » ; prévoir un état `disabled-selected`, comme `Checkbox` (1.2).
 
 - Datapilot : aligner développement et production, épinglés différemment, et passer au paquet npm une fois publié.
 - Avant la v2, à faire quoi qu'il arrive : tests au lecteur d'écran, `RichTextEditor` sous Firefox et Safari, prochaine publication 1.x.

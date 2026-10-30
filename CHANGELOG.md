@@ -1,30 +1,39 @@
 # Changelog — @ddaoellena/cadence-ui
 
-## Non publié
+## 1.1.0 (non publiée)
 
-Changements postérieurs au paquet 1.0.0 (publié depuis `2648ab7`). Version à décider avant publication.
+Version mineure : aucun export retiré, 63 ajoutés (types compris) depuis la 1.0.0 (publiée depuis `2648ab7`). Pas de rupture d'API, mais plusieurs **changements de rendu sans modification de code** : à lire avant la mise à jour.
 
-### Lot 6 Datapilot
+### ⚠️ Changements visuels
 
-- Drawer : navigation entre éléments sur une seconde ligne alignée à droite sous la croix ; badge/statut à gauche sur la même ligne, dans l’en-tête.
+| Composant | Changement | Pour revenir au rendu précédent |
+|---|---|---|
+| `PageSection` | `surface="elevated"` par défaut : une section sans `surface` devient une boîte | `surface="none"`, à passer aussi sur les sections imbriquées |
+| `FieldRow` | Une colonne à 1024px de large et moins | Grille applicative |
+| `GhostButton` | Graisse 600, affichée en Bold | — |
+| `DatePicker` | Avec `withTime`, heures à droite du calendrier ; calendrier toujours sur six semaines | — |
+| `DateRangePicker` | Calendrier toujours sur six semaines | — |
+| `Sidebar` | Repliée d'elle-même à 760px et moins | — |
+| `LineBadge` | Rond jusqu'à deux caractères, pilule au-delà | — |
+| `TextInput`, `Autocomplete` | `line-height` de 1.4 ; hauteur de champ inchangée | — |
+
+### Déprécié
+
+- `RichCheckbox` et `RichRadioButton`, retrait prévu en v2. Remplacement : `Checkbox appearance="card"` et `RadioGroup appearance="card"`, avec `size`, `icon` et `iconElement`. Leur icône personne, codée en dur, n'est pas reprise.
+
+### Ajouté
+
 - Nouveaux composants : ScopePicker (inline/popover, réseaux regroupés), SummaryList (actions distinctes et non lu), PageHero (synthèse sombre/KPI), SecretField, ValueComparison, PresenceStrip et LogViewer.
 - PageSection : tuiles icon/iconElement et trois tons ; Meter hideValue ; Autocomplete recherche distante, minimum de saisie, chargement, limite et accents ; Indicator point nommé, bouton et inverse ; DescriptionList labelWidth et tuiles ; TableCard selectable.
 - BarChart maxTicks ; LineChart/Histogram onDatumClick et sélection contrôlée ; BarList divergent et tolérance.
 - Drawer navigation, headerContent et largeur 576px ; PageHeader tabs/tabsActions ; Stepper warning ; GhostButton compteur ; DataTable hauteur automatique hors virtualisation ; DataFreshness inverse.
-- Corrections : statut Card étroit ; plage intermédiaire BulletChart correctement décrite et barre visible dans une carte de 240px.
 - Fondations : sept tailles typographiques, huit statuts sur fond sombre, gris dataviz neutre et seize pictogrammes.
 - Retours Datapilot : `PageSection surface="card"` ; infobulle des boutons icône seule hors du rendu quand masquée (plus de défilement horizontal parasite) et recalée dans la zone visible ; libellés d'annotation de `BarChart`, `LineChart` et `Histogram` ancrés à droite près du bord.
 - `PageHero` : valeurs texte (`valueType`, déduit du type de `value`) en sans-serif pour la valeur principale et les KPI ; `valueCaption` distinct de l'unité ; `valueTone` (alerte) ; tuile `icon` teintée par le statut.
 - `PageHero` V2 (supervision) : `tone` (accent du bandeau), `valueLabel`, `actionPanel` (sujets, impact, action de 44px), `actionLabel` par carte, `state` `"loading" | "error"` avec `errorMessage` / `onRetry`, fraîcheur dans l'en-tête et `updatedAt: null` ; cartes sur 1, 2 puis 4 colonnes selon la largeur du bandeau.
-
-### Migration Traffic Report
-
 - `PageSection surface="elevated"` (titre hors de la boîte, corps avec `--cadence-shadow-section`) et `bodyPadding` ; anciennes surfaces inchangées.
 - `Stepper density="compact"`, `context`, `tooltipPlacement`, `steps[].icon` et `steps[].available`. `onStepClick` : comportement par défaut inchangé.
 - `AppLayout footer` et `footerPadding` : pied persistant hors du défilement ; les toasts se placent au-dessus de lui.
-- `Drawer` : entrée animée aussi quand il est monté ouvert.
-- `FieldRow` : repli en une colonne à 1024px et moins, comme l'annonçait le pattern Formulaire. ⚠️ Changement visible pour toute page à 1024px de large ou moins.
-- `Accordion` : le contenu ouvert ne coupe plus les menus.
 - Tokens de composition de page et de section, `--cadence-shadow-section`, icône `translate-01`.
 - Overlays : `placement` (`auto`, `top`, `bottom`) sur `Dropdown`, `Autocomplete`, `DatePicker`, `DateRangePicker` et `TimePicker`, retournés au-dessus si la place manque ; infobulle des boutons icône seule retournée de même.
 - `FormField` : libellé, aide et erreur d'un contrôle sans libellé propre.
@@ -33,25 +42,13 @@ Changements postérieurs au paquet 1.0.0 (publié depuis `2648ab7`). Version à 
 - `RichTextEditor` et `RichTextContent` : texte enrichi stocké en JSON (`RichTextDocument`), collage assaini, liens limités à http, https et mailto, sortie texte simple. Pictogrammes `bold-01`, `italic-01`, `dotpoints-01`, `reverse-left`, `reverse-right`.
 - `RepeatableFieldGroup` : blocs de champs répétés, avec identité stable, limites, erreur par bloc et focus.
 - `Checkbox` : `label`, `description`, `aside` pour une ligne compacte cliquable.
-- `RadioButton` : `label`, `description`, `aside`, sur le même modèle. `RichCheckbox` et `RichRadioButton` sont dépréciés, retrait prévu en v2.
+- `RadioButton` : `label`, `description`, `aside`, sur le même modèle.
 - `RadioGroup` : choix exclusif en lignes ou en cartes, avec flèches au clavier. `RadioButton` et `Checkbox` : `appearance="card"`, `size`, `icon`, `iconElement`.
 - Page patterns : Sélection transactionnelle multiple, Périodes et créneaux, Messages par canal.
-- `DatePicker` : cases élargies, « MM » n'est plus tronqué ; bordure d'erreur de 2px harmonisée sur `Dropdown`, `Autocomplete` et `RichTextEditor`.
-- `GhostButton` : graisse portée à 600.
 - `PrimaryButton`, `GhostButton` : `loadingPlacement="start"`, spinner à gauche du libellé, qui reste lisible.
-- `DatePicker withTime` : heures et validation à droite du calendrier, sous celui-ci à 560px et moins ; panneau moins haut.
-- `TextInput`, `Autocomplete` : `line-height` de 1.4, le bas du g et du q n'est plus coupé.
 - `BarChart statusBand` : bande d'état sous le tracé, un état par catégorie, avec survol, clic, sélection, légende, tooltip et tableau partagés.
 - `DataTable` : `headerLabel`, nom lu d'une colonne sans en-tête visible.
-- `Sidebar` : repliée d'elle-même à 760px et moins ; libellé de section long sur deux lignes au lieu d'être coupé. ⚠️ Changement visible sur écran étroit.
-- `LineBadge` : rond jusqu'à deux caractères, pilule au-delà ; un code de trois caractères débordait du cercle. ⚠️ Changement visible.
-- `Drawer navigation` : compteur formaté (« 1 sur 216 459 »).
 - `PageSection` : `surface="group"` et `headerPlacement="inside"` pour un titre de second niveau, dans la boîte au-dessus d'un filet.
-- `PageSection` : `surface="elevated"` devient le défaut ; `bodyPadding="all"` (20px) pour un contenu simple ; boîtes de même hauteur dans une grille. ⚠️ Changement visible : toute `PageSection` sans `surface` est concernée. Passer `surface="none"` pour une sous-section déjà encadrée.
-- Documentation : [guide de migration](docs/MIGRATION-TO-CADENCE.md), étude de cas, grille d'audit, [backlog restant](docs/proposals/traffic-report-backlog.md).
-
-### Ajouté
-
 - **`BulkActionBar`** (*Données et tableaux*) : barre d'actions groupées flottante pour une sélection multiple (`DataTable selectable`, liste de `TableCard`). Placée après la liste, elle colle au bas de la zone visible pendant le défilement ; surface blanche surélevée, compteur puis actions `size="sm"`, masquée sans sélection, compteur annoncé aux lecteurs d'écran (`countLabel` pour nommer les éléments). Le pattern **Liste / index** et les recettes 2 et 5 l'utilisent à la place de la barre de sélection assemblée à la main.
 - **Qualité des données** (premier lot de l'audit *Mobility Data Design System*) :
   - **`DatasetHealth`** (*Retours et statuts*) : bilan de validation d'un jeu de données — verdict fourni (`not-run`, `unknown`, `passed`, `warning`, `failed`), erreurs et avertissements (inconnu distinct de 0), date de la dernière validation, accès au rapport, chargement.
@@ -61,13 +58,33 @@ Changements postérieurs au paquet 1.0.0 (publié depuis `2648ab7`). Version à 
 - **`DataSourceStatus`** (*Retours et statuts*) : état d'une source de données — disponibilité fournie (`available`, `degraded`, `unavailable`, `unknown`), dernière observation, dernière réussite (conservée après une erreur), fraîcheur des données servies, dernière erreur, accès au détail. Disponibilité et fraîcheur restent indépendantes. Type `DataSourceAvailability` exporté. Lot L3 de l'audit *Mobility Data Design System*.
 - **`CategoryFilter`** (*Données et tableaux*) : filtre exclusif par catégorie en tuiles compactes entièrement cliquables — picto (`ReactNode`, pictogrammes métier compris), libellé sur deux lignes sans troncature, effectif formaté en français dessous. Sélection obligatoire (recliquer l'active la conserve), effectif nul affiché et distinct de `disabled`, grille adaptée à la largeur. Groupe radio nommé, une seule tuile tabulable, flèches et Home/End en sautant les tuiles désactivées. Type `CategoryFilterItem` exporté.
 
+### Modifié
+
+- Drawer : navigation entre éléments sur une seconde ligne alignée à droite sous la croix ; badge/statut à gauche sur la même ligne, dans l’en-tête.
+- `FieldRow` : repli en une colonne à 1024px et moins, comme l'annonçait le pattern Formulaire. ⚠️ Changement visible pour toute page à 1024px de large ou moins.
+- `GhostButton` : graisse portée à 600.
+- `DatePicker withTime` : heures et validation à droite du calendrier, sous celui-ci à 560px et moins ; panneau moins haut.
+- `Sidebar` : repliée d'elle-même à 760px et moins ; libellé de section long sur deux lignes au lieu d'être coupé. ⚠️ Changement visible sur écran étroit.
+- `LineBadge` : rond jusqu'à deux caractères, pilule au-delà ; un code de trois caractères débordait du cercle. ⚠️ Changement visible.
+- `Drawer navigation` : compteur formaté (« 1 sur 216 459 »).
+- `PageSection` : `surface="elevated"` devient le défaut ; `bodyPadding="all"` (20px) pour un contenu simple ; boîtes de même hauteur dans une grille. ⚠️ Changement visible : toute `PageSection` sans `surface` est concernée. Passer `surface="none"` pour une sous-section déjà encadrée.
+
 ### Corrigé
 
+- Corrections : statut Card étroit ; plage intermédiaire BulletChart correctement décrite et barre visible dans une carte de 240px.
+- `Drawer` : entrée animée aussi quand il est monté ouvert.
+- `Accordion` : le contenu ouvert ne coupe plus les menus.
+- `DatePicker` : cases élargies, « MM » n'est plus tronqué ; bordure d'erreur de 2px harmonisée sur `Dropdown`, `Autocomplete` et `RichTextEditor`.
+- `TextInput`, `Autocomplete` : `line-height` de 1.4, le bas du g et du q n'est plus coupé.
 - `DatePicker`, `DateRangePicker` : calendrier toujours sur six semaines, sa hauteur ne change plus entre les mois.
 - **`TooltipTrigger`** : la bulle s'ouvre aussi au focus clavier, se ferme à la sortie du focus et sur Échap (WCAG 1.4.13). Le bouton passe en `type="button"` (il soumettait un formulaire englobant) ; la bulle est `aria-hidden`, son texte étant déjà le nom du bouton.
 - **`DataFreshness`** : une date future n'est plus présentée comme fraîche. Jusqu'à une minute d'avance (horloges décalées) : « à l'instant » ; au-delà : point neutre, date absolue et « (date future) ». Sans `now`, le libellé relatif se recalcule toutes les 30 s au lieu de rester figé.
 - **`LineDiagram`** : un véhicule sans `delay` n'est plus classé « à l'heure » mais « écart inconnu » (pastille tiretée « ? », « n sans écart connu » dans la description). Le type `VehicleStatus` gagne `"unknown"`.
 - **Fuseaux** : `freshness` des graphiques accepte `timeZone` ; GUIDELINES liste le fuseau par défaut de chaque composant et demande un `timeZone` et un `now` explicites dans les compositions.
+
+### Documentation
+
+- Documentation : [guide de migration](docs/MIGRATION-TO-CADENCE.md), étude de cas, grille d'audit, [backlog restant](docs/proposals/traffic-report-backlog.md).
 
 ## 1.0.0 — 25 octobre 2026
 
