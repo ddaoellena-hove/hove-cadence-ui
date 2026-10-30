@@ -61,6 +61,7 @@ Changements postérieurs au paquet 1.0.0 (publié depuis `2648ab7`). Version à 
 
 ### Corrigé
 
+- `DatePicker`, `DateRangePicker` : calendrier toujours sur six semaines, sa hauteur ne change plus entre les mois.
 - **`TooltipTrigger`** : la bulle s'ouvre aussi au focus clavier, se ferme à la sortie du focus et sur Échap (WCAG 1.4.13). Le bouton passe en `type="button"` (il soumettait un formulaire englobant) ; la bulle est `aria-hidden`, son texte étant déjà le nom du bouton.
 - **`DataFreshness`** : une date future n'est plus présentée comme fraîche. Jusqu'à une minute d'avance (horloges décalées) : « à l'instant » ; au-delà : point neutre, date absolue et « (date future) ». Sans `now`, le libellé relatif se recalcule toutes les 30 s au lieu de rester figé.
 - **`LineDiagram`** : un véhicule sans `delay` n'est plus classé « à l'heure » mais « écart inconnu » (pastille tiretée « ? », « n sans écart connu » dans la description). Le type `VehicleStatus` gagne `"unknown"`.

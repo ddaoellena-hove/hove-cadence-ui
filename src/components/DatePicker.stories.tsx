@@ -386,3 +386,52 @@ export const HeuresADroite: Story = {
     await waitFor(() => expect(canvas.getByRole("button", { name: "Valider" })).toBeVisible());
   },
 };
+
+/** Changer de mois ne déplace ni les flèches ni le panneau : pas de clic perdu hors du calendrier. */
+export const HauteurStable: Story = {
+  name: "Hauteur stable",
+  render: () => <div style={{ paddingBottom: 420 }}><DatePicker label="Début" withTime value={new Date(2026, 9, 12, 8, 30)} /></div>,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: /Ouvrir le calendrier/ }));
+    const panel = canvas.getByRole("dialog", { name: "Calendrier" });
+    const next = canvas.getByRole("button", { name: "Mois suivant" });
+    // Mesure après l'animation d'ouverture, qui décale le panneau de 4px
+    await Promise.all(panel.getAnimations().map((animation) => animation.finished));
+    const height = panel.getBoundingClientRect().height;
+    const arrow = next.getBoundingClientRect().top;
+    // Octobre 2026 à février 2027 : mois de 5 et 6 semaines, puis le plus court
+    for (let step = 0; step < 4; step++) {
+      await userEvent.click(next);
+      await expect(panel.getBoundingClientRect().height).toBe(height);
+      await expect(next.getBoundingClientRect().top).toBe(arrow);
+    }
+    await expect(canvas.getByRole("dialog", { name: "Calendrier" })).toBeInTheDocument();
+  },
+};
+
+const insets = (panel: HTMLElement) => {
+  const box = panel.getBoundingClientRect();
+  const calendar = panel.querySelector(".calendar-month")!.getBoundingClientRect();
+  return { left: calendar.left - box.left, right: box.right - calendar.right };
+};
+
+/** Le calendrier occupe toute la largeur du panneau : marges égales, en champ comme en bouton. */
+export const MargesEgales: Story = {
+  name: "Marges égales",
+  render: () => (
+    <div style={{ display: "flex", gap: 24, paddingBottom: 380 }}>
+      <DatePicker label="Champ" />
+      <DatePicker aria-label="Bouton" variant="button" />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    for (const name of [/Ouvrir le calendrier/, /Bouton/]) {
+      await userEvent.click(canvas.getByRole("button", { name }));
+      const { left, right } = insets(canvas.getByRole("dialog", { name: "Calendrier" }));
+      await expect(left).toBe(right);
+      await userEvent.keyboard("{Escape}");
+    }
+  },
+};

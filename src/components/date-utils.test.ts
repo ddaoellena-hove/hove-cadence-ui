@@ -22,6 +22,18 @@ describe("buildWeeks", () => {
     expect(weeks[0][3].getMonth()).toBe(9);
   });
 
+  it("produit toujours six semaines, quel que soit le mois", () => {
+    for (let year = 2026; year <= 2032; year++) {
+      for (let month = 0; month < 12; month++) {
+        expect(buildWeeks(year, month)).toHaveLength(6);
+      }
+    }
+    // Février 2027 commence un lundi et tient sur quatre semaines : mois le plus court
+    const february = buildWeeks(2027, 1);
+    expect(february[0][0].getDate()).toBe(1);
+    expect(february[5][6].getMonth()).toBe(2);
+  });
+
   it("complète la dernière semaine jusqu'au dimanche", () => {
     const weeks = buildWeeks(2026, 9);
     const last = weeks[weeks.length - 1];

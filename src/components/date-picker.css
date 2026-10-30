@@ -5,8 +5,13 @@
 }
 
 .date-picker__calendar-panel {
-  flex: 0 0 248px;
+  flex: 1;
   min-width: 0;
+}
+
+/* Largeur fixée seulement à côté de la colonne des heures */
+.date-picker__popover--time .date-picker__calendar-panel {
+  flex: 0 0 248px;
 }
 
 /* Colonne à droite du calendrier : la validation reste en bas de colonne */
@@ -165,7 +170,7 @@
     flex-direction: column;
   }
 
-  .date-picker__calendar-panel {
+  .date-picker__popover--time .date-picker__calendar-panel {
     flex-basis: auto;
   }
 
