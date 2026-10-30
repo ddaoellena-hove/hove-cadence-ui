@@ -45,8 +45,8 @@ const MODE_LABEL: Record<LineMode, string> = {
 export const LineBadge = ({ code, mode, color: colorProp, textColor: textColorProp, size = "md", className }: LineBadgeProps) => {
   const color = colorProp ? normalizeLineColor(colorProp) ?? undefined : undefined;
   const textColor = textColorProp ? normalizeLineColor(textColorProp) ?? undefined : undefined;
-  // Forme ronde pour un code court, pilule au-delà.
-  const round = code.replace(/\s/g, "").length <= 3;
+  // Rond jusqu'à deux caractères : trois caractères (« TER ») dépassent du cercle de 18 ou 22px.
+  const round = code.replace(/\s/g, "").length <= 2;
 
   // Couleur de texte : fournie (on fait confiance aux données), sinon calculée
   // (toujours AA).

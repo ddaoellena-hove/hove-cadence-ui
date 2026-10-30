@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Avatar } from "./Avatar";
 import { Dropdown, type DropdownOption } from "./Dropdown";
 import "./sidebar.css";
@@ -196,6 +196,10 @@ const HoveLogo = ({ size = 28 }: { size?: number }) => (
   </svg>
 );
 
+/** Largeur sous laquelle la Sidebar se replie d'elle-même. */
+const NARROW_VIEWPORT = "(max-width: 760px)";
+const isNarrowViewport = () => typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia(NARROW_VIEWPORT).matches;
+
 const CollapseIcon = ({ collapsed }: { collapsed: boolean }) => (
   <svg
     width="16"
@@ -260,7 +264,16 @@ export const Sidebar = ({
   user,
   className,
 }: SidebarProps) => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(() => isNarrowViewport());
+
+  // Écran étroit : repliée d'office pour laisser la place au contenu, le bouton reste actif
+  useEffect(() => {
+    if (typeof window.matchMedia !== "function") return;
+    const query = window.matchMedia(NARROW_VIEWPORT);
+    const onChange = (e: MediaQueryListEvent) => setIsCollapsed(e.matches);
+    query.addEventListener("change", onChange);
+    return () => query.removeEventListener("change", onChange);
+  }, []);
 
   // Initialise which collapsible sections are open
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {

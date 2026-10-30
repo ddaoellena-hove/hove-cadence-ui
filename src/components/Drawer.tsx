@@ -184,7 +184,7 @@ export const Drawer = ({
               <nav className="drawer__navigation" aria-label="Navigation entre les éléments">
                 <GhostButton size="sm" icon="chevron-left" aria-label="Élément précédent" disabled={navigation.current <= 1} onClick={navigation.onPrevious} />
                 <span role="status" aria-atomic="true">
-                  {navigation.current} sur {navigation.total}
+                  {navigation.current.toLocaleString("fr-FR")} sur {navigation.total.toLocaleString("fr-FR")}
                 </span>
                 <GhostButton size="sm" icon="chevron-right" aria-label="Élément suivant" disabled={navigation.current >= navigation.total} onClick={navigation.onNext} />
               </nav>

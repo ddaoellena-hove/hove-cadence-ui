@@ -10,6 +10,8 @@ export interface ChartLegendItem {
   /** Pastille à la place du marqueur (motif de barre). */
   icon?: ReactNode;
   hidden?: boolean;
+  /** Entrée informative, jamais un bouton (états d'une bande de statut). */
+  fixed?: boolean;
 }
 
 interface ChartLegendProps {
@@ -23,7 +25,7 @@ export const ChartLegend = ({ items, onToggle }: ChartLegendProps) => (
   <ul className="chart-legend" aria-label="Légende">
     {items.map((item) => (
       <li key={item.id}>
-        {onToggle ? (
+        {onToggle && !item.fixed ? (
           <button
             type="button"
             className="chart-legend__item"

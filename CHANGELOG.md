@@ -38,6 +38,11 @@ Changements postérieurs au paquet 1.0.0 (publié depuis `2648ab7`). Version à 
 - `GhostButton` : graisse portée à 600.
 - `DatePicker withTime` : heures et validation à droite du calendrier, sous celui-ci à 560px et moins ; panneau moins haut.
 - `TextInput`, `Autocomplete` : `line-height` de 1.4, le bas du g et du q n'est plus coupé.
+- `BarChart statusBand` : bande d'état sous le tracé, un état par catégorie, avec survol, clic, sélection, légende, tooltip et tableau partagés.
+- `DataTable` : `headerLabel`, nom lu d'une colonne sans en-tête visible.
+- `Sidebar` : repliée d'elle-même à 760px et moins ; libellé de section long sur deux lignes au lieu d'être coupé. ⚠️ Changement visible sur écran étroit.
+- `LineBadge` : rond jusqu'à deux caractères, pilule au-delà ; un code de trois caractères débordait du cercle. ⚠️ Changement visible.
+- `Drawer navigation` : compteur formaté (« 1 sur 216 459 »).
 - Documentation : [guide de migration](docs/MIGRATION-TO-CADENCE.md), étude de cas, grille d'audit, [backlog restant](docs/proposals/traffic-report-backlog.md).
 
 ### Ajouté

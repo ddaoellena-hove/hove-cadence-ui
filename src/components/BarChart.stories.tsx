@@ -376,3 +376,37 @@ export const Erreur: Story = {
 
 import * as lot6Test from "storybook/test";
 export const Activite240Lot6: Story = { args: { title: "Activité sur 12 heures", maxTicks: 12, categories: Array.from({ length: 240 }, (_, i) => `${String(Math.floor(i * 3 / 60)).padStart(2, "0")}:${String(i * 3 % 60).padStart(2, "0")}`), series: [{ id: "a", label: "Réceptions", data: Array.from({ length: 240 }, (_, i) => i % 17) }], selectedCategory: "06:00", onDatumClick: lot6Test.fn(), annotations: [{ at: ["04:00", "04:15"], label: "Coupure" }] }, play: async ({ canvasElement, args }) => { const c = lot6Test.within(canvasElement); const plot = c.getByRole("group", { name: "Activité sur 12 heures" }); plot.focus(); await lot6Test.userEvent.keyboard("{End}{Enter}"); await lot6Test.expect(args.onDatumClick).toHaveBeenCalledWith(lot6Test.expect.objectContaining({ index: 239 })); await lot6Test.expect(canvasElement.querySelectorAll(".chart__axis-label--date").length).toBeLessThanOrEqual(12); } };
+
+/** État par créneau : visible même quand la barre est nulle. */
+export const BandeEtat: Story = {
+  args: {
+    title: "Réceptions par créneau",
+    unit: "courses",
+    categories: ["08:00", "08:03", "08:06", "08:09", "08:12", "08:15"],
+    series: [{ id: "courses", label: "Courses reçues", data: [120, 118, 0, 3, null, 122] }],
+    statusBand: {
+      label: "Santé des réceptions",
+      values: ["ok", "ok", "ko", "ko", "gap", "ok"],
+      states: [
+        { id: "ok", label: "Réception OK", color: "var(--cadence-color-success)" },
+        { id: "ko", label: "En erreur", color: "var(--cadence-color-danger)", pattern: "diagonal" },
+        { id: "gap", label: "Aucune réception", color: "var(--cadence-color-warning)", pattern: "cross" },
+      ],
+    },
+    onDatumClick: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    // Bouton de série, entrées d'état statiques
+    const legend = within(canvas.getByRole("list", { name: "Légende" }));
+    await expect(legend.getByRole("button", { name: "Courses reçues" })).toBeInTheDocument();
+    await expect(legend.queryByRole("button", { name: "En erreur" })).toBeNull();
+    await expect(legend.getByText("En erreur")).toBeInTheDocument();
+    const plot = canvas.getByRole("group", { name: "Réceptions par créneau" });
+    plot.focus();
+    await userEvent.keyboard("{ArrowRight}{ArrowRight}");
+    await waitFor(() => expect(canvasElement.querySelector("[aria-live=polite]")).toHaveTextContent("Santé des réceptions : En erreur"));
+    await userEvent.keyboard("{Enter}");
+    await expect(args.onDatumClick).toHaveBeenCalledWith(expect.objectContaining({ index: 2 }));
+  },
+};

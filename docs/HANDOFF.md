@@ -4,6 +4,13 @@
 
 **`1.0.0` est la version `latest` sur npm**, publiée le 25 octobre 2026 depuis `2648ab7` (fusion de la #56). Tout ce qui suit ce commit n'est pas publié : voir « Non publié » dans le [changelog](../CHANGELOG.md). Les mentions « 1.0.0 non publiée » et « dernière version 0.1.6 » plus bas sont historiques. Source à consulter : `npm view @ddaoellena/cadence-ui`.
 
+## Mise à jour — 30 octobre 2026 : audit Datapilot
+
+- Branche `fix/audit-datapilot`, depuis `origin/main` (`cb11f6e`), worktree `~/hove-cadence-ui-audit`, non commitée : une autre session occupait le checkout principal.
+- `BarChart statusBand` (+ `ChartLegend fixed`), `DataTable headerLabel`, `Sidebar` repliée à 760px et moins et libellé de section sur deux lignes, `LineBadge` rond jusqu'à deux caractères, compteur de `Drawer navigation` formaté.
+- ⚠️ `Sidebar` et `LineBadge` changent le rendu de Traffic Report : à vérifier avant fusion.
+- Sidebar dépliée sur écran étroit : elle écrase encore le contenu. Une surimpression reste à concevoir.
+
 ## Mise à jour — 30 octobre 2026 : retours sur les champs et boutons
 
 - Branche `fix/retours-champs-boutons`, depuis `main` (#70 à #75 fusionnées). `GhostButton` 600, heures de `DatePicker` à droite, `line-height` 1.4 sur `TextInput` et `Autocomplete`.
