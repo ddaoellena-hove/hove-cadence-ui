@@ -37,6 +37,7 @@ Changements postérieurs au paquet 1.0.0 (publié depuis `2648ab7`). Version à 
 - Page patterns : Sélection transactionnelle multiple, Périodes et créneaux, Messages par canal.
 - `DatePicker` : cases élargies, « MM » n'est plus tronqué ; bordure d'erreur de 2px harmonisée sur `Dropdown`, `Autocomplete` et `RichTextEditor`.
 - `GhostButton` : graisse portée à 600.
+- `PrimaryButton`, `GhostButton` : `loadingPlacement="start"`, spinner à gauche du libellé, qui reste lisible.
 - `DatePicker withTime` : heures et validation à droite du calendrier, sous celui-ci à 560px et moins ; panneau moins haut.
 - `TextInput`, `Autocomplete` : `line-height` de 1.4, le bas du g et du q n'est plus coupé.
 - `BarChart statusBand` : bande d'état sous le tracé, un état par catégorie, avec survol, clic, sélection, légende, tooltip et tableau partagés.

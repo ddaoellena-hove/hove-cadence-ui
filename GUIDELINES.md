@@ -570,7 +570,7 @@ Pour un formulaire long, utiliser `footer` d'[`AppLayout`](#applayout) : le cont
 - ✅ Les boutons d'un même groupe ont la même `size`.
 - ✅ Un `GhostButton` isolé porte une icône (`iconStart`) ou se trouve à côté d'un `PrimaryButton` : seul et sans icône, il se lit comme un simple texte.
 - ✅ Icône seule : `icon` + `aria-label` (obligatoire, le typage le vérifie).
-- ✅ Action en cours (soumission, export) : `loading` — clics ignorés, spinner, largeur conservée.
+- ✅ Action en cours (soumission, export) : `loading` — clics ignorés, spinner, largeur conservée. `loadingPlacement="start"` garde le libellé lisible, pour une action longue ; l'application passe `loading` à `true` à l'appui et le retire à la fin.
 - ❌ Jamais deux `PrimaryButton` côte à côte.
 - ❌ Pas de `Link` pour une action secondaire hors de la 3e position d'un groupe ou d'une phrase : utiliser `GhostButton`.
 - ❌ Ne pas utiliser `PrimaryButton` pour de la navigation : `Link href`.
@@ -3147,6 +3147,7 @@ API identique pour les deux ; seul le rendu change (`PrimaryButton` plein ou con
 | `size` | `"sm" \| "md"` | `"md"` | 29 / 34px, texte 11 / 13px. Dépend du contexte, ne porte pas de sens. ⚠️ Pas de `"lg"` |
 | `outline` | `boolean` | `false` | **`PrimaryButton` uniquement** : variante contour (fond blanc, bordure `--cadence-color-border-strong`), pour les actions secondaires d'un dashboard |
 | `loading` | `boolean` | `false` | Clics ignorés, `aria-busy`, spinner (à la place de `iconStart`), largeur conservée |
+| `loadingPlacement` | `"center" \| "start"` | `"center"` | Sans `iconStart` : spinner centré et libellé masqué, ou à gauche du libellé qui reste lisible. ⚠️ `"start"` élargit le bouton pendant l'action. Sans effet sur un bouton icône seule |
 | `disabled` | `boolean` | `false` | — |
 | `fullWidth` | `boolean` | `false` | Occupe toute la largeur |
 | `type` | `"button" \| "submit" \| "reset"` | `"button"` | — |
