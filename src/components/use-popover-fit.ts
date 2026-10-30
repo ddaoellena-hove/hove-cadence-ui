@@ -4,9 +4,15 @@ import { useLayoutEffect, type RefObject } from "react";
 // s'il dépasse à droite, il est décalé vers la gauche (aligné sur le bord du
 // déclencheur si possible), sans jamais dépasser à gauche. La zone visible est
 // la fenêtre, réduite par le premier ancêtre qui coupe ou fait défiler son
-// contenu (ex. le conteneur d'AppLayout).
+// contenu (ex. le conteneur d'AppLayout). Verticalement, il passe au-dessus du
+// déclencheur s'il manque de place en dessous et qu'il y tient : `data-placement`
+// porte ce choix, appliqué par le CSS de chaque panneau.
 
 const MARGIN = 8;
+const GAP = 6;
+
+/** Côté d'ouverture. "auto" : dessous, retourné au-dessus si la place manque. */
+export type PopoverPlacement = "auto" | "top" | "bottom";
 
 /** Bords gauche / droit de la zone où le popover doit tenir. */
 const getBounds = (el: HTMLElement) => {
@@ -26,15 +32,43 @@ const getBounds = (el: HTMLElement) => {
   return { left: left + MARGIN, right: right - MARGIN };
 };
 
-/** Applique le décalage horizontal via la variable --_popover-shift (propriété CSS `translate`). */
-export const usePopoverFit = (ref: RefObject<HTMLElement | null>, open: boolean) => {
+/** Haut / bas de la zone visible : la fenêtre, réduite par chaque ancêtre qui coupe. */
+export const getVerticalBounds = (el: HTMLElement) => {
+  let top = 0;
+  let bottom = document.documentElement.clientHeight;
+  for (let node = el.parentElement; node && node !== document.body; node = node.parentElement) {
+    if (getComputedStyle(node).overflowY !== "visible") {
+      const rect = node.getBoundingClientRect();
+      const innerTop = rect.top + node.clientTop;
+      top = Math.max(top, innerTop);
+      bottom = Math.min(bottom, innerTop + node.clientHeight);
+    }
+  }
+  return { top: top + MARGIN, bottom: bottom - MARGIN };
+};
+
+/** Retourne le panneau, déjà mesuré à sa place par défaut, s'il tient mieux au-dessus. */
+const shouldOpenUp = (el: HTMLElement, rect: DOMRect) => {
+  const bounds = getVerticalBounds(el);
+  if (rect.bottom <= bounds.bottom) return false;
+  const anchorTop = (el.offsetParent ?? el.parentElement)?.getBoundingClientRect().top ?? rect.top;
+  return anchorTop - GAP - rect.height >= bounds.top;
+};
+
+/**
+ * Applique le décalage horizontal via la variable --_popover-shift (propriété
+ * CSS `translate`) et le côté d'ouverture via `data-placement`.
+ */
+export const usePopoverFit = (ref: RefObject<HTMLElement | null>, open: boolean, placement: PopoverPlacement = "auto") => {
   useLayoutEffect(() => {
     const el = ref.current;
     if (!open || !el) return;
 
     const fit = () => {
       el.style.setProperty("--_popover-shift", "0px");
+      delete el.dataset.placement;
       const rect = el.getBoundingClientRect();
+      if (placement === "top" || (placement === "auto" && shouldOpenUp(el, rect))) el.dataset.placement = "top";
       const bounds = getBounds(el);
       let shift = 0;
       if (rect.right > bounds.right) shift = bounds.right - rect.right;
@@ -58,5 +92,5 @@ export const usePopoverFit = (ref: RefObject<HTMLElement | null>, open: boolean)
       observer?.disconnect();
       window.removeEventListener("resize", fit);
     };
-  }, [ref, open]);
+  }, [ref, open, placement]);
 };

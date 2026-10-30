@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
+import { Dropdown } from "./Dropdown";
 import { Accordion } from "./Accordion";
 import { StopLabel } from "./StopLabel";
 
@@ -57,5 +58,31 @@ export const OuvertureInitialeUnique: Story = {
   play: async ({ canvasElement }) => {
     const buttons = within(canvasElement).getAllByRole("button");
     await expect(buttons.filter((button) => button.getAttribute("aria-expanded") === "true")).toHaveLength(1);
+  },
+};
+
+/** Un menu ouvert dans le contenu déborde du panneau sans être coupé. */
+export const MenuDansLeContenu: Story = {
+  name: "Menu dans le contenu",
+  render: () => (
+    <div style={{ width: 420, paddingBottom: 220 }}>
+      <Accordion items={[{
+        id: "details",
+        title: "Détails de la perturbation",
+        defaultOpen: true,
+        content: <Dropdown label="Cause" placeholder="Sélectionner" options={[{ id: "a", label: "Travaux" }, { id: "b", label: "Météo" }, { id: "c", label: "Incident technique" }, { id: "d", label: "Grève" }]} />,
+      }]} />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const content = canvasElement.querySelector<HTMLElement>(".accordion__content")!;
+    await waitFor(() => expect(getComputedStyle(content).overflowY).toBe("visible"));
+    await userEvent.click(canvas.getByRole("button", { name: /Cause/ }));
+    const last = await canvas.findByRole("option", { name: "Grève" });
+    const box = last.getBoundingClientRect();
+    await expect(box.bottom).toBeGreaterThan(content.getBoundingClientRect().bottom);
+    // Le point le plus bas du menu est bien l'option, pas ce qui suit le panneau
+    await expect(last.contains(document.elementFromPoint(box.left + box.width / 2, box.bottom - 4))).toBe(true);
   },
 };

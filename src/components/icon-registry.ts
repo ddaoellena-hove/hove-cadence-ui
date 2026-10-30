@@ -1,3 +1,4 @@
+import { Translate01 } from "./icon-translate";
 import { Database01 } from "@untitledui/icons/Database01";
 import { LayersThree01 } from "@untitledui/icons/LayersThree01";
 import { ShieldTick } from "@untitledui/icons/ShieldTick";
@@ -128,6 +129,7 @@ import { Walk } from "./icon-walk";
 export type IconComponent = FC<SVGProps<SVGSVGElement> & { size?: number; color?: string }>;
 
 export const ICONS = {
+  "translate-01": Translate01 as IconComponent,
   "database": Database01 as IconComponent,
   "layers": LayersThree01 as IconComponent,
   "shield-check": ShieldTick as IconComponent,

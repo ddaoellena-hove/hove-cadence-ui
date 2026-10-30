@@ -27,8 +27,16 @@ export interface PageSectionProps {
    * "card" : section en carte — bordure, rayon, fond blanc, en-tête rembourré
    * séparé du corps par un filet. Le corps n'a pas de padding imposé (tableau ou
    * liste bord à bord) ; `gap` espace ses enfants. Défaut "none" (section nue).
+   * "elevated" : titre et actions hors de la boîte ; seul le corps porte fond,
+   * bordure, rayon et ombre de section.
    */
-  surface?: "none" | "card";
+  surface?: "none" | "card" | "elevated";
+  /**
+   * Padding latéral du corps en `surface="elevated"` : "inline" (défaut) ou
+   * "none" pour une progression, un tableau ou des séparateurs bord à bord.
+   * Sans effet sur les autres surfaces.
+   */
+  bodyPadding?: "inline" | "none";
   children: ReactNode;
   id?: string;
   className?: string;
@@ -42,6 +50,7 @@ export const PageSection = ({
   actions,
   gap = 20,
   surface = "none",
+  bodyPadding = "inline",
   children,
   id,
   className,
@@ -53,10 +62,11 @@ export const PageSection = ({
   return (
     <section
       id={id}
-      className={["page-section", surface === "card" ? "page-section--card" : "", className].filter(Boolean).join(" ")}
+      className={["page-section", surface !== "none" ? `page-section--${surface}` : "", className].filter(Boolean).join(" ")}
       aria-labelledby={headingId}
-      // En carte, l'en-tête est séparé du corps par un filet, pas par un espace
-      style={{ gap: surface === "card" ? 0 : gap }}
+      // En carte, l'en-tête est séparé du corps par un filet, pas par un espace ;
+      // en surface surélevée, l'espace vient du token de section (CSS)
+      style={{ gap: surface === "none" ? gap : surface === "card" ? 0 : undefined }}
     >
       <div className={`page-section__head${icon || iconElement ? " page-section__head--icon" : ""}`}>
         {(iconElement || icon) && <span aria-hidden="true" className={`page-section__icon page-section__icon--${iconTone}`}>{iconElement ?? <Icons icon={icon!} size={20} />}</span>}
@@ -68,7 +78,7 @@ export const PageSection = ({
         </div>
         {actions && <div className="page-section__actions">{actions}</div>}
       </div>
-      <div className="page-section__body" style={{ gap }}>
+      <div className={`page-section__body${surface === "elevated" && bodyPadding === "none" ? " page-section__body--flush" : ""}`} style={{ gap }}>
         {children}
       </div>
     </section>

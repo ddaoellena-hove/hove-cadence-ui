@@ -134,3 +134,22 @@
     transform: translateY(0);
   }
 }
+
+/* Retourné au-dessus par usePopoverFit */
+.date-picker__popover[data-placement="top"] {
+  top: auto;
+  bottom: calc(100% + 6px);
+}
+
+.date-picker__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.date-picker__message--helper {
+  color: var(--cadence-color-label, #1a3e45);
+}

@@ -242,9 +242,19 @@
   --cadence-dataviz-annotation: #55606e;        /* 6,39:1 — trait / bord de bande annotée + libellé */
   --cadence-dataviz-annotation-band: rgba(85, 96, 110, 0.08);  /* remplissage d'une bande annotée */
 
+  /* ── Composition de page : valeurs partagées entre produits ─────────── */
+  --cadence-page-padding-inline: 32px; /* Padding latéral du contenu de page sur grand écran */
+  --cadence-page-padding-inline-compact: 16px; /* Padding latéral du contenu de page sur petit écran */
+  --cadence-section-inset-inline: 8px; /* Retrait latéral supplémentaire des sections dans le contenu de page */
+  --cadence-section-padding-inline: 8px; /* Padding latéral de l’en-tête extérieur et du corps de section */
+  --cadence-section-heading-gap: 12px; /* Espace entre l’en-tête extérieur et la surface de section */
+  --cadence-section-gap: 32px; /* Espace entre deux sections principales ; appliquer une seule fois */
+
   /* ── Élévation ─────────────────────────────────────────────────────────── */
   /* Ombres portées partagées. Les reliefs internes (inset) des boutons et du
      Toggle restent propres à chaque composant. */
+  /* Sections de page, partagées par tous les produits Cadence. */
+  --cadence-shadow-section: 0 0 2px 0 rgba(0, 0, 0, 0.10), 0 2px 10px 0 rgba(0, 0, 0, 0.05);
   /* Champs au repos (TextInput, TextArea, Dropdown, Autocomplete, CounterInput) */
   --cadence-shadow-sm: 0px 1px 3px rgba(0, 0, 0, 0.06), 0px 1px 2px rgba(0, 0, 0, 0.04);
   /* Champs au survol */

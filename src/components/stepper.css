@@ -169,3 +169,121 @@
 
 .stepper__step--warning .stepper__marker { color: var(--cadence-status-warning-fg, #c2410c); background: var(--cadence-status-warning-bg, #fff7ed); border-color: var(--cadence-status-warning-fg, #c2410c); }
 .stepper__step--warning .stepper__state { color: var(--cadence-status-warning-fg, #c2410c); }
+
+/* ── Densité compacte ──
+   Rangée d'icônes pour un pied d'actions : hauteur de contrôle compacte, état
+   porté par une pastille de forme distincte, nom complet dans l'infobulle. */
+.stepper-compact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  min-width: 0;
+  font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
+}
+
+.stepper--compact {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.stepper--compact .stepper__step {
+  flex-direction: row;
+}
+
+.stepper__compact-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--cadence-control-height-compact, 29px);
+  height: var(--cadence-control-height-compact, 29px);
+  padding: 0;
+  border: none;
+  border-radius: var(--cadence-radius-sm, 6px);
+  background: transparent;
+  color: var(--cadence-color-label, #1a3e45);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.stepper__compact-button:hover:not([aria-disabled="true"]) {
+  background: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
+}
+
+.stepper__compact-button:focus-visible {
+  outline: none;
+  box-shadow: var(--cadence-focus-ring, 0 0 0 2px #ffffff, 0 0 0 4px #1a3e45);
+}
+
+.stepper__compact-button[aria-disabled="true"] {
+  color: var(--cadence-color-text-secondary, #607075);
+  cursor: not-allowed;
+}
+
+.stepper--compact .stepper__step--current .stepper__compact-button {
+  background: var(--cadence-color-primary, #002830);
+  color: var(--cadence-color-white, #ffffff);
+  cursor: default;
+}
+
+.stepper__pip {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--cadence-radius-pill, 999px);
+  color: var(--cadence-color-white, #ffffff);
+  background: var(--cadence-color-success, #24a148);
+  box-shadow: 0 0 0 1px var(--cadence-color-white, #ffffff);
+  font-size: 9px;
+  line-height: 1;
+}
+
+.stepper__step--warning .stepper__pip { background: var(--cadence-status-warning-fg, #c2410c); }
+.stepper__step--error .stepper__pip { background: var(--cadence-color-danger, #da1e28); }
+
+/* Infobulle : même composant que celle des boutons, ouverte au survol et au focus. */
+.stepper__tip {
+  position: absolute;
+  left: 50%;
+  z-index: var(--cadence-z-popover, 100);
+  display: none;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.stepper--tip-top .stepper__tip { bottom: calc(100% + 6px); }
+.stepper--tip-bottom .stepper__tip { top: calc(100% + 6px); }
+
+.stepper__compact-button:hover + .stepper__tip,
+.stepper__compact-button:focus-visible + .stepper__tip {
+  display: block;
+}
+
+/* Premières étapes : bulle alignée à gauche, pour rester dans le cadre. */
+.stepper--compact .stepper__step:nth-child(-n + 2) .stepper__tip {
+  left: 0;
+  transform: none;
+}
+
+.stepper__context {
+  margin: 0;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--cadence-color-text-secondary, #607075);
+}
+
+.stepper__context strong {
+  font-weight: 600;
+  color: var(--cadence-color-primary, #002830);
+}

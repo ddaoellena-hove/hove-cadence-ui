@@ -8,6 +8,9 @@ export interface TextAreaProps {
   value?: string;
   onChange?: ChangeEventHandler<HTMLTextAreaElement>;
   helperText?: string;
+
+  /** Champ obligatoire : marque le libellé et le contrôle natif. */
+  required?: boolean;
   rows?: number;
   className?: string;
   disabled?: boolean;
@@ -23,6 +26,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       value,
       onChange,
       helperText,
+      required = false,
       rows = 4,
       className,
       disabled = false,
@@ -72,7 +76,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       <div className={rootClass}>
         {label && (
           <label className="text-area__label" htmlFor={textareaId}>
-            {label}
+            {label}{required && <span aria-hidden="true"> *</span>}
           </label>
         )}
         <div
@@ -88,6 +92,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
             value={value}
             onChange={onChange}
             rows={rows}
+            required={required}
             disabled={isDisabled}
             onFocus={handleFocus}
             onBlur={handleBlur}

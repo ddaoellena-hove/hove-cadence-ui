@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { expect, userEvent, within } from "storybook/test";
 import { Dropdown } from "./Dropdown";
 import type { DropdownOption } from "./Dropdown";
@@ -225,3 +225,38 @@ export const ListeNommeeParLeLabel: Story = {
   },
 };
 
+const ClipBox = ({ children, height }: { children: ReactNode; height: number }) => (
+  <div data-testid="clip" style={{ height, width: 360, overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: 16, boxSizing: "border-box" }}>
+    {children}
+  </div>
+);
+
+const CAUSES = [{ id: "a", label: "Travaux" }, { id: "b", label: "Météo" }, { id: "c", label: "Incident technique" }];
+
+/** Près du bas d'un conteneur qui coupe : le menu passe au-dessus du champ. */
+export const RetourneAuDessus: Story = {
+  name: "Retourné au-dessus",
+  render: () => <ClipBox height={260}><Dropdown label="Cause" options={CAUSES} /></ClipBox>,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: /Cause/ }));
+    const panel = canvas.getByRole("listbox");
+    await expect(panel).toHaveAttribute("data-placement", "top");
+    await expect(panel.getBoundingClientRect().bottom).toBeLessThanOrEqual(canvas.getByTestId("clip").getBoundingClientRect().bottom);
+    await expect(panel.getBoundingClientRect().top).toBeGreaterThanOrEqual(canvas.getByTestId("clip").getBoundingClientRect().top);
+  },
+};
+
+/** `placement="top"` force l'ouverture au-dessus ; le menu ne se retourne pas s'il tient en dessous. */
+export const PlacementForce: Story = {
+  name: "Placement forcé",
+  render: () => <div style={{ padding: "180px 16px", width: 320 }}><Dropdown label="Cause" options={CAUSES} placement="top" /><Dropdown label="Motif" options={CAUSES} /></div>,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: /Cause/ }));
+    await expect(canvas.getByRole("listbox")).toHaveAttribute("data-placement", "top");
+    await userEvent.keyboard("{Escape}");
+    await userEvent.click(canvas.getByRole("button", { name: /Motif/ }));
+    await expect(canvas.getByRole("listbox")).not.toHaveAttribute("data-placement");
+  },
+};

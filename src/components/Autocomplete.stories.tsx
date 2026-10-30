@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Autocomplete, type AutocompleteOption } from "./Autocomplete";
 
@@ -213,3 +213,22 @@ export const RechercheDistanteLot6: Story = { render: () => <RemoteExample />, p
   await lot6Test.userEvent.tab(); await lot6Test.expect(input).toHaveValue("Zone d’arrêt 42");
 } };
 export const AccentsLot6: Story = { args: { label: "Arrêt", options: [{ id: "a", label: "École", description: "Référence ABC" }] }, play: async ({ canvasElement }) => { const c = lot6Test.within(canvasElement); await lot6Test.userEvent.type(c.getByRole("combobox"), "ecole"); await lot6Test.expect(c.getByRole("option", { name: /École/ })).toBeVisible(); } };
+
+const ClipBox = ({ children, height }: { children: ReactNode; height: number }) => (
+  <div data-testid="clip" style={{ height, width: 360, overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: 16, boxSizing: "border-box" }}>
+    {children}
+  </div>
+);
+
+/** Près du bas d'un conteneur qui coupe : la liste passe au-dessus du champ. */
+export const RetourneAuDessus: Story = {
+  name: "Retourné au-dessus",
+  render: () => <ClipBox height={320}><Autocomplete label="Arrêt" options={[{ id: "a", label: "Bastille" }, { id: "b", label: "Nation" }, { id: "c", label: "Gambetta" }]} /></ClipBox>,
+  play: async ({ canvasElement }) => {
+    const canvas = lot6Test.within(canvasElement);
+    await lot6Test.userEvent.click(canvas.getByRole("combobox"));
+    const panel = await canvas.findByRole("listbox");
+    await lot6Test.expect(panel).toHaveAttribute("data-placement", "top");
+    await lot6Test.expect(panel.getBoundingClientRect().bottom).toBeLessThanOrEqual(canvas.getByTestId("clip").getBoundingClientRect().bottom);
+  },
+};

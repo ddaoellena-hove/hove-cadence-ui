@@ -21,3 +21,9 @@
 .time-picker__popover { box-sizing: border-box; position: absolute; top: calc(100% + 6px); left: 0; translate: var(--_popover-shift, 0px) 0; z-index: var(--cadence-z-popover, 100); width: 256px; max-width: calc(100vw - 16px); padding: 16px; border: 1px solid var(--cadence-color-border, #e5e5e5); border-radius: var(--cadence-radius-xl, 12px); background: var(--cadence-color-white, #ffffff); box-shadow: var(--cadence-shadow-lg, 0 10px 20px rgba(0,0,0,.12)); }
 .time-picker__popover:not([hidden]) { display: flex; flex-direction: column; gap: 12px; }
 .time-picker__footer { display: flex; justify-content: space-between; gap: 8px; padding-top: 12px; border-top: 1px solid var(--cadence-color-divider, #f0f0f0); }
+
+/* Retourné au-dessus par usePopoverFit */
+.time-picker__popover[data-placement="top"] {
+  top: auto;
+  bottom: calc(100% + 6px);
+}

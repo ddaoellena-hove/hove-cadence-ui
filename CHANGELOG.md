@@ -1,11 +1,12 @@
 # Changelog — @ddaoellena/cadence-ui
 
-## 1.0.0 (non publiée)
+## Non publié
 
-Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, nettoyage du Storybook, contrastes AA et vérification du paquet (feuille de route § 5). Le guide de migration ci-dessous couvre le passage de n'importe quelle 0.x à la 1.0.
+Changements postérieurs au paquet 1.0.0 (publié depuis `2648ab7`). Version à décider avant publication.
 
-### Lot 6 Datapilot — non publié
+### Lot 6 Datapilot
 
+- Drawer : navigation entre éléments sur une seconde ligne alignée à droite sous la croix ; badge/statut à gauche sur la même ligne, dans l’en-tête.
 - Nouveaux composants : ScopePicker (inline/popover, réseaux regroupés), SummaryList (actions distinctes et non lu), PageHero (synthèse sombre/KPI), SecretField, ValueComparison, PresenceStrip et LogViewer.
 - PageSection : tuiles icon/iconElement et trois tons ; Meter hideValue ; Autocomplete recherche distante, minimum de saisie, chargement, limite et accents ; Indicator point nommé, bouton et inverse ; DescriptionList labelWidth et tuiles ; TableCard selectable.
 - BarChart maxTicks ; LineChart/Histogram onDatumClick et sélection contrôlée ; BarList divergent et tolérance.
@@ -14,6 +15,22 @@ Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, 
 - Fondations : sept tailles typographiques, huit statuts sur fond sombre, gris dataviz neutre et seize pictogrammes.
 - Retours Datapilot : `PageSection surface="card"` ; infobulle des boutons icône seule hors du rendu quand masquée (plus de défilement horizontal parasite) et recalée dans la zone visible ; libellés d'annotation de `BarChart`, `LineChart` et `Histogram` ancrés à droite près du bord.
 - `PageHero` : valeurs texte (`valueType`, déduit du type de `value`) en sans-serif pour la valeur principale et les KPI ; `valueCaption` distinct de l'unité ; `valueTone` (alerte) ; tuile `icon` teintée par le statut.
+- `PageHero` V2 (supervision) : `tone` (accent du bandeau), `valueLabel`, `actionPanel` (sujets, impact, action de 44px), `actionLabel` par carte, `state` `"loading" | "error"` avec `errorMessage` / `onRetry`, fraîcheur dans l'en-tête et `updatedAt: null` ; cartes sur 1, 2 puis 4 colonnes selon la largeur du bandeau.
+
+### Migration Traffic Report
+
+- `PageSection surface="elevated"` (titre hors de la boîte, corps avec `--cadence-shadow-section`) et `bodyPadding` ; anciennes surfaces inchangées.
+- `Stepper density="compact"`, `context`, `tooltipPlacement`, `steps[].icon` et `steps[].available`. `onStepClick` : comportement par défaut inchangé.
+- `AppLayout footer` et `footerPadding` : pied persistant hors du défilement ; les toasts se placent au-dessus de lui.
+- `Drawer` : entrée animée aussi quand il est monté ouvert.
+- `FieldRow` : repli en une colonne à 1024px et moins, comme l'annonçait le pattern Formulaire. ⚠️ Changement visible pour toute page à 1024px de large ou moins.
+- `Accordion` : le contenu ouvert ne coupe plus les menus.
+- Tokens de composition de page et de section, `--cadence-shadow-section`, icône `translate-01`.
+- Overlays : `placement` (`auto`, `top`, `bottom`) sur `Dropdown`, `Autocomplete`, `DatePicker`, `DateRangePicker` et `TimePicker`, retournés au-dessus si la place manque ; infobulle des boutons icône seule retournée de même.
+- `FormField` : libellé, aide et erreur d'un contrôle sans libellé propre.
+- `Dropdown`, `Autocomplete`, `DatePicker` : `error`, `helperText`, `required`, ref transmise au contrôle. `TextInput`, `TextArea` : `required`.
+- `DatePicker` : `onInputStateChange`, `clearable`, `onClear` ; une `Date` recréée à chaque rendu n'efface plus la saisie.
+- Documentation : [guide de migration](docs/MIGRATION-TO-CADENCE.md), étude de cas, grille d'audit, [backlog restant](docs/proposals/traffic-report-backlog.md).
 
 ### Ajouté
 
@@ -25,6 +42,17 @@ Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, 
   - Page pattern **Rapport qualité** (`src/patterns/RapportQualitePattern.tsx`), qui remplace le rapport qualité de l'ancienne recette *Offre et qualité*.
 - **`DataSourceStatus`** (*Retours et statuts*) : état d'une source de données — disponibilité fournie (`available`, `degraded`, `unavailable`, `unknown`), dernière observation, dernière réussite (conservée après une erreur), fraîcheur des données servies, dernière erreur, accès au détail. Disponibilité et fraîcheur restent indépendantes. Type `DataSourceAvailability` exporté. Lot L3 de l'audit *Mobility Data Design System*.
 - **`CategoryFilter`** (*Données et tableaux*) : filtre exclusif par catégorie en tuiles compactes entièrement cliquables — picto (`ReactNode`, pictogrammes métier compris), libellé sur deux lignes sans troncature, effectif formaté en français dessous. Sélection obligatoire (recliquer l'active la conserve), effectif nul affiché et distinct de `disabled`, grille adaptée à la largeur. Groupe radio nommé, une seule tuile tabulable, flèches et Home/End en sautant les tuiles désactivées. Type `CategoryFilterItem` exporté.
+
+### Corrigé
+
+- **`TooltipTrigger`** : la bulle s'ouvre aussi au focus clavier, se ferme à la sortie du focus et sur Échap (WCAG 1.4.13). Le bouton passe en `type="button"` (il soumettait un formulaire englobant) ; la bulle est `aria-hidden`, son texte étant déjà le nom du bouton.
+- **`DataFreshness`** : une date future n'est plus présentée comme fraîche. Jusqu'à une minute d'avance (horloges décalées) : « à l'instant » ; au-delà : point neutre, date absolue et « (date future) ». Sans `now`, le libellé relatif se recalcule toutes les 30 s au lieu de rester figé.
+- **`LineDiagram`** : un véhicule sans `delay` n'est plus classé « à l'heure » mais « écart inconnu » (pastille tiretée « ? », « n sans écart connu » dans la description). Le type `VehicleStatus` gagne `"unknown"`.
+- **Fuseaux** : `freshness` des graphiques accepte `timeZone` ; GUIDELINES liste le fuseau par défaut de chaque composant et demande un `timeZone` et un `now` explicites dans les compositions.
+
+## 1.0.0 — 25 octobre 2026
+
+Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, nettoyage du Storybook, contrastes AA et vérification du paquet (feuille de route § 5). Le guide de migration ci-dessous couvre le passage de n'importe quelle 0.x à la 1.0.
 
 ### ⚠️ Supprimé
 
@@ -41,10 +69,6 @@ Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, 
 
 ### Corrigé
 
-- **`TooltipTrigger`** : la bulle s'ouvre aussi au focus clavier, se ferme à la sortie du focus et sur Échap (WCAG 1.4.13). Le bouton passe en `type="button"` (il soumettait un formulaire englobant) ; la bulle est `aria-hidden`, son texte étant déjà le nom du bouton.
-- **`DataFreshness`** : une date future n'est plus présentée comme fraîche. Jusqu'à une minute d'avance (horloges décalées) : « à l'instant » ; au-delà : point neutre, date absolue et « (date future) ». Sans `now`, le libellé relatif se recalcule toutes les 30 s au lieu de rester figé.
-- **`LineDiagram`** : un véhicule sans `delay` n'est plus classé « à l'heure » mais « écart inconnu » (pastille tiretée « ? », « n sans écart connu » dans la description). Le type `VehicleStatus` gagne `"unknown"`.
-- **Fuseaux** : `freshness` des graphiques accepte `timeZone` ; GUIDELINES liste le fuseau par défaut de chaque composant et demande un `timeZone` et un `now` explicites dans les compositions.
 - **Types publiés regroupés** : `dist/index.d.ts` (import) et `dist/index.d.cts` (require) sont désormais deux fichiers autonomes générés par `dts-bundle-generator` (script `build:types`), au lieu d'une déclaration par module. Le paquet se type en `moduleResolution` `node16` et `nodenext`, en ESM comme en CommonJS (imports relatifs sans extension et absence de `.d.cts` le cassaient), et sous TypeScript 6 (les déclarations gardaient des `import "./x.css"`, refusés par défaut). Les `exports` donnent des types distincts par condition. Contrôle `npm run check:types` (node16, nodenext, bundler ; `strict`, `skipLibCheck: false`), lancé par la CI pour React 18 et 19. Pour un regroupement correct, les composants n'importent plus `React` par défaut (imports nommés) et les types React homonymes d'un type DOM sont aliasés (`ReactMouseEvent`, `ReactDragEvent`).
 - **Types publics sans d3** : `BarChart`, `ComboChart` et `ScatterChart` n'exposent plus de types `d3-scale` dans leurs déclarations (`BarLayout` et `ScatterPointInput` déplacés dans un module sans d3). Une application en `skipLibCheck: false` compilait en erreur faute de `@types/d3-scale`.
 
@@ -60,7 +84,7 @@ Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, 
 
 ### Guide de migration 0.x → 1.0
 
-La dernière version publiée sur npm est la **0.1.6** ; les 0.2 à 0.9 ne l'ont pas été. Les étapes ci-dessous, dans l'ordre, couvrent tout l'écart. TypeScript signale la plupart des points : compiler après chaque étape.
+La version publiée sur npm avant la 1.0.0 est la **0.1.6** ; les 0.2 à 0.9 ne l'ont pas été. Les étapes ci-dessous, dans l'ordre, couvrent tout l'écart. TypeScript signale la plupart des points : compiler après chaque étape.
 
 **1. Installer et charger les styles**
 
