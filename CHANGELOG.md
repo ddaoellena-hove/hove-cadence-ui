@@ -44,6 +44,7 @@ Changements postérieurs au paquet 1.0.0 (publié depuis `2648ab7`). Version à 
 - `Sidebar` : repliée d'elle-même à 760px et moins ; libellé de section long sur deux lignes au lieu d'être coupé. ⚠️ Changement visible sur écran étroit.
 - `LineBadge` : rond jusqu'à deux caractères, pilule au-delà ; un code de trois caractères débordait du cercle. ⚠️ Changement visible.
 - `Drawer navigation` : compteur formaté (« 1 sur 216 459 »).
+- `PageSection` : `surface="elevated"` devient le défaut ; `bodyPadding="all"` (20px) pour un contenu simple ; boîtes de même hauteur dans une grille. ⚠️ Changement visible : toute `PageSection` sans `surface` est concernée. Passer `surface="none"` pour une sous-section déjà encadrée.
 - Documentation : [guide de migration](docs/MIGRATION-TO-CADENCE.md), étude de cas, grille d'audit, [backlog restant](docs/proposals/traffic-report-backlog.md).
 
 ### Ajouté

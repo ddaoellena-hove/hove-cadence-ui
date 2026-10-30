@@ -13,6 +13,12 @@
 - ⚠️ `Sidebar` et `LineBadge` changent le rendu de Traffic Report : à vérifier avant fusion.
 - Sidebar dépliée sur écran étroit : elle écrase encore le contenu. Une surimpression reste à concevoir.
 
+## Mise à jour — 30 octobre 2026 : surface surélevée par défaut
+
+- Branche `feat/page-section-elevated-defaut`, depuis `origin/main` (`b380ef4`), worktree `~/hove-cadence-ui-audit`, à la demande de l'utilisateur : `PageSection surface` passe de `"none"` à `"elevated"`.
+- `bodyPadding="all"` (20px) ajouté ; gabarits passés dessus ; `RepeatableFieldGroup` reste en `surface="none"` ; `DataTable` perd son cadre dans la surface.
+- ⚠️ Traffic Report : toute `PageSection` sans `surface` change de rendu, à vérifier avant fusion.
+
 ## Mise à jour — 30 octobre 2026 : retours sur les champs et boutons
 
 - Branche `fix/retours-champs-boutons`, depuis `main` (#70 à #75 fusionnées). `GhostButton` 600, heures de `DatePicker` à droite, `line-height` 1.4 sur `TextInput` et `Autocomplete`.

@@ -25,7 +25,7 @@ export const PlanificationPattern = () => {
 
       {errors.length > 0 && <ErrorSummary title="Corrigez les erreurs" errors={errors} focusOnMount />}
 
-      <PageSection title="Plage de service">
+      <PageSection bodyPadding="all" title="Plage de service">
         <FieldRow>
           <TimePicker label="Début" value={start} onChange={setStart} allowOvernight />
           <TimePicker label="Fin" value={end} onChange={setEnd} allowOvernight />

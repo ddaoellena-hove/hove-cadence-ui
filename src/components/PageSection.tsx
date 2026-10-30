@@ -26,17 +26,18 @@ export interface PageSectionProps {
   /**
    * "card" : section en carte — bordure, rayon, fond blanc, en-tête rembourré
    * séparé du corps par un filet. Le corps n'a pas de padding imposé (tableau ou
-   * liste bord à bord) ; `gap` espace ses enfants. Défaut "none" (section nue).
-   * "elevated" : titre et actions hors de la boîte ; seul le corps porte fond,
-   * bordure, rayon et ombre de section.
+   * liste bord à bord) ; `gap` espace ses enfants.
+   * "elevated" (défaut) : titre et actions hors de la boîte ; seul le corps porte
+   * fond, bordure, rayon et ombre de section.
+   * "none" : section nue, pour une sous-section déjà dans une surface.
    */
   surface?: "none" | "card" | "elevated";
   /**
-   * Padding latéral du corps en `surface="elevated"` : "inline" (défaut) ou
-   * "none" pour une progression, un tableau ou des séparateurs bord à bord.
-   * Sans effet sur les autres surfaces.
+   * Padding du corps en `surface="elevated"` : "inline" (défaut, latéral), "all"
+   * (20px, contenu simple sans marges propres) ou "none" pour une progression,
+   * un tableau ou des séparateurs bord à bord. Sans effet sur les autres surfaces.
    */
-  bodyPadding?: "inline" | "none";
+  bodyPadding?: "inline" | "all" | "none";
   children: ReactNode;
   id?: string;
   className?: string;
@@ -49,7 +50,7 @@ export const PageSection = ({
   description,
   actions,
   gap = 20,
-  surface = "none",
+  surface = "elevated",
   bodyPadding = "inline",
   children,
   id,
@@ -78,7 +79,7 @@ export const PageSection = ({
         </div>
         {actions && <div className="page-section__actions">{actions}</div>}
       </div>
-      <div className={`page-section__body${surface === "elevated" && bodyPadding === "none" ? " page-section__body--flush" : ""}`} style={{ gap }}>
+      <div className={`page-section__body${surface === "elevated" && bodyPadding !== "inline" ? ` page-section__body--${bodyPadding === "none" ? "flush" : "padded"}` : ""}`} style={{ gap }}>
         {children}
       </div>
     </section>

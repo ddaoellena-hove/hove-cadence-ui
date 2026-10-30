@@ -37,7 +37,7 @@ export const SelectionMultiplePattern = ({ error = false, loading = false }: { e
     <div style={{ display: "flex", flexDirection: "column", gap: 24, maxWidth: 760 }}>
       <PageHeader title="Objets impactés" subtitle="Ajoutez plusieurs objets en une seule fois." />
 
-      <PageSection title="Sélection" actions={<GhostButton size="sm" iconStart="plus" label="Ajouter des objets" onClick={start} />}>
+      <PageSection bodyPadding="all" title="Sélection" actions={<GhostButton size="sm" iconStart="plus" label="Ajouter des objets" onClick={start} />}>
         {selected.length === 0 ? (
           <EmptyState size="inline" title="Aucun objet" description="Ajoutez une ou plusieurs lignes ou arrêts." />
         ) : (

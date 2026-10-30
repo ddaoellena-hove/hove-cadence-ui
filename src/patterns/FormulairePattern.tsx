@@ -40,7 +40,7 @@ export const FormulairePattern = ({ onSave = () => {}, onLeave = () => {} }: {
 
       {errors.length > 0 && <ErrorSummary title="Corrigez les erreurs suivantes" errors={errors} focusOnMount />}
 
-      <PageSection title="Informations générales">
+      <PageSection bodyPadding="all" title="Informations générales">
         <TextInput ref={titleRef} label="Titre" placeholder="Ex : Tronçon Melun – Montereau"
           value={title} onChange={(e) => setTitle(e.target.value)}
           helperText={errors.some((x) => x.id === "title") ? "Ce champ est requis." : undefined}
@@ -55,7 +55,7 @@ export const FormulairePattern = ({ onSave = () => {}, onLeave = () => {} }: {
           options={[{ value: "planifiee", label: "Planifiée" }, { value: "immediate", label: "Immédiate" }]} />
       </PageSection>
 
-      <PageSection title="Période">
+      <PageSection bodyPadding="all" title="Période">
         <FieldRow>
           <DatePicker label="Début" value={start} onChange={setStart} withTime />
           <DatePicker label="Fin" value={end} onChange={setEnd} withTime />
@@ -65,7 +65,7 @@ export const FormulairePattern = ({ onSave = () => {}, onLeave = () => {} }: {
           value={description} onChange={(e) => setDescription(e.target.value)} />
       </PageSection>
 
-      <PageSection title="Récapitulatif" gap={12}>
+      <PageSection bodyPadding="all" title="Récapitulatif" gap={12}>
         <DescriptionList aria-label="Scénario à créer" items={[
           { id: "title", label: "Titre", value: title || undefined },
           { id: "type", label: "Type et cause", value: type && cause ? `${type} · ${cause}` : undefined },
