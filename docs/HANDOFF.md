@@ -1,5 +1,9 @@
 # Relais de développement — 25 octobre 2026
 
+## Version publiée (vérifiée sur npm le 30 octobre 2026)
+
+**`1.0.0` est la version `latest` sur npm**, publiée le 25 octobre 2026 depuis `2648ab7` (fusion de la #56). Tout ce qui suit ce commit n'est pas publié : voir « Non publié » dans le [changelog](../CHANGELOG.md). Les mentions « 1.0.0 non publiée » et « dernière version 0.1.6 » plus bas sont historiques. Source à consulter : `npm view @ddaoellena/cadence-ui`.
+
 ## Mise à jour — 30 octobre 2026 : migration Traffic Report
 
 - **Source** : dossier de passation `cadence-migration-handoff.zip`. Périmètre choisi par l'utilisateur : documentation + P1 ciblés (E1 à E4, repli `FieldRow`). N1, N2, E5, E6, E7 et les P2/P3 restent à faire : [backlog](proposals/traffic-report-backlog.md).
@@ -7,7 +11,7 @@
 - **Fait** : `PageSection surface="elevated"` + `bodyPadding`, `Stepper density="compact"`, `AppLayout footer`, entrée du `Drawer`, repli `FieldRow`, `Accordion` ouvert sans clipping. Guide, étude de cas et grille dans `docs/`.
 - **Décisions** : `Stepper` compact sans `Dropdown` mobile (icônes à la ligne), car `Dropdown` ne s'ouvre pas vers le haut. Étapes indisponibles en `aria-disabled` pour rester lisibles au clavier. Hauteur du pied transmise au `Toaster` par `--cadence-app-footer-offset`, posée sur la racine, hors `tokens.css`.
 - **À savoir** : `placeAnchored` / `useAnchoredPanel` couvrent déjà une partie de N2, contrairement à ce que suppose le backlog d'origine. Les stories Drawer qui testent la visibilité attendent désormais la fin de l'entrée.
-- **Validé** : `tsc`, ESLint des fichiers touchés, `build:lib`, `check:types`, suite complète 1 036 tests / 171 fichiers (config Chromium 1248), exemples du guide compilés, liens et ancres contrôlés ; pied et toasts à 1 280 px, pied à 390 px, repli `FieldRow` à 1 000 px, infobulle au clavier. Non exécutés : `test:react18`, lecteur d'écran, `prefers-reduced-motion`.
+- **Validé** : `tsc`, ESLint des fichiers touchés, `build:lib`, `check:types`, suite complète 1 036 tests / 171 fichiers (config Chromium 1248), exemples du guide compilés, liens et ancres contrôlés ; pied et toasts à 1 280 px, pied à 390 px, repli `FieldRow` à 1 000 px, infobulle au clavier. Sous React 18.3.1 : `tsc`, 1 036 tests, `build:lib` et `check:types` réussis ; `smoke:dist` réussi sous React 19, le script appelant Chromium 1217 absent en local (copie temporaire vers Chromium 1248). CI de `main` verte après la #69. Non exécutés : lecteur d'écran, `prefers-reduced-motion`.
 - **Traffic Report non migré** : contournements à retirer listés dans [l'étude de cas](case-studies/traffic-report-migration.md).
 
 ## Mise à jour — 28 octobre 2026 (fin de journée) : PageHero V2, non commité
