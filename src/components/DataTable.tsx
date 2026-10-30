@@ -42,6 +42,8 @@ export interface DataTableColumn<T> {
   id: string;
   /** Libellé FR, affiché en majuscules (style de TableHeader). */
   header: string;
+  /** Nom lu de l'en-tête quand `header` est vide (colonne d'actions, d'état). */
+  headerLabel?: string;
   /** Valeur brute : sert au tri et au rendu par défaut. */
   accessor: (row: T) => DataTableValue;
   /** Rendu personnalisé (Indicator, Badge…). Sans `cell`, rendu texte par défaut. */
@@ -483,8 +485,10 @@ export function DataTable<T extends object>({
                         <span className="data-table__sort-index" aria-hidden="true">{sortIndex}</span>
                       )}
                     </button>
-                  ) : (
+                  ) : col.header ? (
                     <span className="data-table__label">{col.header}</span>
+                  ) : (
+                    col.headerLabel && <span className="data-table__sr-only">{col.headerLabel}</span>
                   )}
                 </th>
               );

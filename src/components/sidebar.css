@@ -237,9 +237,12 @@
   color: var(--cadence-color-on-dark, rgba(255, 255, 255, 0.9));
   line-height: 18px;
   transition: color 0.15s;
+  /* Un libellé trop long passe sur deux lignes plutôt que d'être coupé */
+  overflow-wrap: anywhere;
+}
+.sidebar--collapsed .sidebar__section-label {
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 .sidebar__section-btn:hover .sidebar__section-label {
   color: var(--cadence-color-white, #ffffff);

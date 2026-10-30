@@ -240,3 +240,13 @@
 .data-table__row--auto { align-items: start; }
 .data-table__row--auto .data-table__cell { white-space: normal; overflow-wrap: anywhere; align-items: flex-start; padding-top: 12px; padding-bottom: 12px; }
 .data-table__row--auto .data-table__text { white-space: normal; overflow: visible; }
+
+/* Nom d'un en-tête sans libellé visible */
+.data-table__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

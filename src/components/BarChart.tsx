@@ -6,7 +6,7 @@ import { ChartLegend } from "./ChartLegend";
 import { ChartPatternDef, ChartPatternSwatch } from "./ChartPattern";
 import { ChartTooltip, type ChartTooltipRow } from "./ChartTooltip";
 import { annotationLabelPlacement, formatGap, formatKpiValue, formatValueWithUnit } from "./chart-format";
-import { paletteIndex, REFERENCE_COLOR, seriesColor, seriesMarker, seriesPattern, svgId } from "./chart-palette";
+import { type PatternKind, paletteIndex, REFERENCE_COLOR, seriesColor, seriesMarker, seriesPattern, svgId } from "./chart-palette";
 import { ReferenceSwatch } from "./ChartMarker";
 import {
   buildCategoryScale,
@@ -75,6 +75,20 @@ export interface BarChartProps extends ChartCommonProps {
   selectedCategory?: string;
   /** Rappel d'interaction (tooltip, description lue). Défaut « Entrée ou clic : voir le détail ». */
   clickHint?: string;
+  /**
+   * Vertical uniquement : bande d'état sous le tracé, un état par catégorie,
+   * visible même quand la barre est nulle. Partage survol, clic et sélection.
+   */
+  statusBand?: BarChartStatusBand;
+}
+
+export interface BarChartStatusBand {
+  /** Un identifiant d'état par catégorie, dans l'ordre de `categories` ; null = pas d'état. */
+  values: (string | null)[];
+  /** États de la légende. `color` : token de statut ; `pattern` conseillé pour les alertes (pas la couleur seule). */
+  states: { id: string; label: string; color: string; pattern?: PatternKind }[];
+  /** Nom de la bande dans le tooltip et le tableau. Défaut « État ». */
+  label?: string;
 }
 
 /** Catégorie cliquée (onDatumClick) : la colonne entière, toutes séries hors références. */
@@ -94,6 +108,9 @@ export interface BarChartAnnotation {
 }
 
 const BAR_ROW = 36;
+/** Bande d'état : 12px, plus 4px d'écart avec les barres. */
+const STATUS_HEIGHT = 12;
+const STATUS_SPACE = STATUS_HEIGHT + 4;
 
 /**
  * Barres empilées ou groupées, verticales ou horizontales : comparaison de
@@ -117,6 +134,7 @@ export const BarChart = ({
   onDatumClick,
   selectedCategory,
   clickHint = "Entrée ou clic : voir le détail",
+  statusBand,
   ...frame
 }: BarChartProps) => {
   const titleId = useId();
@@ -154,11 +172,16 @@ export const BarChart = ({
     if (datum) onDatumClick?.(datum);
   };
 
+  // Bande d'état : un état par catégorie, sous le tracé
+  const statusSpace = statusBand && !horizontal ? STATUS_SPACE : 0;
+  const statusLabel = statusBand?.label ?? "État";
+  const statusAt = (c: number) => (statusSpace ? statusBand?.states.find((s) => s.id === statusBand.values[c]) : undefined);
+
   // Marge gauche : valeurs (vertical) ou libellés de catégories (horizontal, ~6,5px par caractère)
   const longestLabel = Math.max(0, ...categories.map((c) => c.length));
   const margin = horizontal
     ? { top: 8, right: showValues ? 48 : 16, bottom: 28, left: Math.min(180, Math.max(56, longestLabel * 6.5 + 16)) }
-    : { top: showValues || annotations.length > 0 ? 20 : 12, right: 16, bottom: 28, left: 52 };
+    : { top: showValues || annotations.length > 0 ? 20 : 12, right: 16, bottom: 28 + statusSpace, left: 52 };
   const height = heightProp ?? (horizontal ? categories.length * BAR_ROW + margin.top + margin.bottom : 280);
   const plotWidth = Math.max(0, width - margin.left - margin.right);
   const plotHeight = Math.max(0, height - margin.top - margin.bottom);
@@ -217,6 +240,10 @@ export const BarChart = ({
   if (active !== null) {
     for (const r of references) rows.push({ id: r.id, label: r.label, value: formatValue(r.data[active] ?? null), icon: <ReferenceSwatch /> });
   }
+  const activeStatus = active === null ? undefined : statusAt(active);
+  if (activeStatus) {
+    rows.push({ id: "status", label: statusLabel, value: activeStatus.label, icon: <ChartPatternSwatch kind={activeStatus.pattern ?? "solid"} color={activeStatus.color} /> });
+  }
   const total = active !== null && stacked && visible.length > 1 ? categoryTotal(visible, active) : null;
   // Une seule référence : écart avec la série (ou le total empilé) de la catégorie
   const gap = (() => {
@@ -257,7 +284,7 @@ export const BarChart = ({
     const rect = e.currentTarget.getBoundingClientRect();
     const px = e.clientX - rect.left - margin.left;
     const py = e.clientY - rect.top - margin.top;
-    if (px < 0 || px > plotWidth || py < 0 || py > plotHeight) return null;
+    if (px < 0 || px > plotWidth || py < 0 || py > plotHeight + statusSpace) return null;
     const position = horizontal ? e.clientY - rect.top - margin.top : e.clientX - rect.left - margin.left;
     const step = band.step();
     const index = Math.floor((position - (band(categories[0]) ?? 0) + (step - band.bandwidth()) / 2) / step);
@@ -307,7 +334,7 @@ export const BarChart = ({
     });
 
   const legend =
-    showLegend && series.length > 1 ? (
+    showLegend && (series.length > 1 || statusSpace > 0) ? (
       <ChartLegend
         items={indexed.map((s) => ({
           id: s.id,
@@ -316,7 +343,15 @@ export const BarChart = ({
           marker: seriesMarker(s.index),
           icon: s.reference ? <ReferenceSwatch /> : <ChartPatternSwatch kind={s.pattern} color={s.color} />,
           hidden: hidden.has(s.id),
-        }))}
+        })).concat(statusSpace ? (statusBand?.states ?? []).map((s) => ({
+          id: `status-${s.id}`,
+          label: s.label,
+          color: s.color,
+          marker: seriesMarker(0),
+          icon: <ChartPatternSwatch kind={s.pattern ?? "solid"} color={s.color} />,
+          hidden: false,
+          fixed: true,
+        })) : [])}
         onToggle={toggleSeries}
       />
     ) : undefined;
@@ -331,6 +366,7 @@ export const BarChart = ({
         ...visible.map((s) => (unit ? `${s.label} (${unit})` : s.label)),
         ...(withTotal ? ["Total"] : []),
         ...references.map((s) => (unit ? `${s.label} (${unit})` : s.label)),
+        ...(statusSpace ? [statusLabel] : []),
       ]}
       numeric={[...visible, ...(withTotal ? [null] : []), ...references].map((_, i) => i + 1)}
       rows={categories.map((category, c) => [
@@ -338,6 +374,7 @@ export const BarChart = ({
         ...visible.map((s) => formatKpiValue(s.data[c] ?? "—", format)),
         ...(withTotal ? [formatKpiValue(categoryTotal(visible, c), format)] : []),
         ...references.map((s) => formatKpiValue(s.data[c] ?? "—", format)),
+        ...(statusSpace ? [statusAt(c)?.label ?? "—"] : []),
       ])}
       rowActions={onDatumClick ? categories.map((_, c) => (clickable(c) ? () => select(c) : undefined)) : undefined}
       currentRow={selected >= 0 ? selected : undefined}
@@ -390,6 +427,9 @@ export const BarChart = ({
             {indexed.map((s) => (
               <ChartPatternDef key={s.id} id={`${patternPrefix}-${s.index}`} kind={s.pattern} />
             ))}
+            {statusSpace > 0 && statusBand?.states.map((s) => (
+              <ChartPatternDef key={s.id} id={`${patternPrefix}-status-${s.id}`} kind={s.pattern ?? "solid"} />
+            ))}
           </defs>
           <g transform={`translate(${margin.left},${margin.top})`}>
             {/* Axe des valeurs et grille */}
@@ -432,7 +472,7 @@ export const BarChart = ({
                 className="bar-chart__hover"
                 {...(horizontal
                   ? { x: 0, y: (band(categories[shown]) ?? 0) - (band.step() - band.bandwidth()) / 2, width: plotWidth, height: band.step() }
-                  : { x: (band(categories[shown]) ?? 0) - (band.step() - band.bandwidth()) / 2, y: 0, width: band.step(), height: plotHeight })}
+                  : { x: (band(categories[shown]) ?? 0) - (band.step() - band.bandwidth()) / 2, y: 0, width: band.step(), height: plotHeight + statusSpace })}
               />
             )}
 
@@ -449,6 +489,20 @@ export const BarChart = ({
                 );
               }),
             )}
+
+            {/* Bande d'état : toute la largeur de la catégorie, couleur + motif */}
+            {statusSpace > 0 &&
+              categories.map((category, c) => {
+                const state = statusAt(c);
+                if (!state) return null;
+                const rect = { x: (band(category) ?? 0) - (band.step() - band.bandwidth()) / 2, y: plotHeight + STATUS_SPACE - STATUS_HEIGHT, width: band.step(), height: STATUS_HEIGHT };
+                return (
+                  <g key={`status-${category}`} className={`bar-chart__bar${selected >= 0 && c !== selected ? " bar-chart__bar--muted" : ""}`}>
+                    <rect {...rect} fill={state.color} />
+                    {state.pattern && state.pattern !== "solid" && <rect {...rect} fill={`url(#${patternPrefix}-status-${state.id})`} />}
+                  </g>
+                );
+              })}
 
             {/* Références : trait tireté en travers de la catégorie */}
             {references.map((r) =>
@@ -475,7 +529,7 @@ export const BarChart = ({
                 rx={3}
                 {...(horizontal
                   ? { x: 1, y: (band(categories[selected]) ?? 0) - (band.step() - band.bandwidth()) / 2 + 1, width: Math.max(0, plotWidth - 2), height: Math.max(0, band.step() - 2) }
-                  : { x: (band(categories[selected]) ?? 0) - (band.step() - band.bandwidth()) / 2 + 1, y: 1, width: Math.max(0, band.step() - 2), height: Math.max(0, plotHeight - 2) })}
+                  : { x: (band(categories[selected]) ?? 0) - (band.step() - band.bandwidth()) / 2 + 1, y: 1, width: Math.max(0, band.step() - 2), height: Math.max(0, plotHeight + statusSpace - 2) })}
               />
             )}
 
@@ -514,7 +568,7 @@ export const BarChart = ({
                 <line className="chart__axis-line" x1={0} x2={0} y1={0} y2={plotHeight} />
               </g>
             ) : (
-              <ChartAxisBottom ticks={categoryTicks} y={plotHeight} plotWidth={plotWidth} dates />
+              <ChartAxisBottom ticks={categoryTicks} y={plotHeight + statusSpace} plotWidth={plotWidth} dates />
             )}
           </g>
         </svg>

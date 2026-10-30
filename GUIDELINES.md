@@ -1900,6 +1900,7 @@ Barres empilées ou groupées, verticales ou horizontales : comparaison de caté
 | `onDatumClick` | `(datum: BarChartDatum) => void` | — | Catégorie cliquable (ouvrir le détail, filtrer une liste) : clic sur sa **bande entière** (toute la hauteur du tracé, pas seulement la barre), ou Entrée / Espace sur la catégorie active. `BarChartDatum` : `{ category, index, values: { seriesId, value }[] }`, séries de référence exclues. Curseur `pointer`, rappel dans le tooltip et la description lue ; dans « Voir les données », les en-têtes de ligne deviennent des boutons |
 | `selectedCategory` | `string` | — | Catégorie mise en avant, **contrôlée** (filtre actif côté app) : contour plein en encre principale, autres barres atténuées, « sélectionné » dans l'annonce, ligne marquée `aria-current` dans le tableau |
 | `clickHint` | `string` | `"Entrée ou clic : voir le détail"` | Rappel d'interaction (tooltip, `aria-describedby`) ; à adapter (« Entrée ou clic : filtrer les réceptions ») |
+| `statusBand` | `{ values: (string \| null)[], states: { id, label, color, pattern? }[], label? }` | — | Vertical uniquement. Bande de 12px sous le tracé, un état par catégorie, visible même si la barre est nulle (flux, supervision). Survol, clic et sélection partagés avec la barre ; état repris dans la légende, le tooltip, l'annonce et « Voir les données ». Donner un `pattern` aux états d'alerte (pas la couleur seule) |
 
 Clavier : le tracé est focusable ; ←/→ (vertical) ou ↑/↓ (horizontal) d'une catégorie à l'autre, Début / Fin, Échap masque le tooltip ; la catégorie est annoncée (`aria-live`). Avec `onDatumClick`, Entrée ou Espace activent la catégorie active.
 
@@ -3272,9 +3273,9 @@ Composant unique : apparence de l’ancien Alt, pour les formulaires et les basc
 | `user` | `SidebarUser` | — | Utilisateur connecté en pied : `{ name, avatarSrc? }` — avatar et nom seuls. Avatar seul quand la Sidebar est repliée |
 | `className` | `string` | — | — |
 
-**Repli** — géré en interne : le bouton « » fait passer la Sidebar de **220 px** (dépliée) à **80 px** (repliée), avec une transition de 250 ms. Il n'y a pas de prop pour piloter ou lire cet état. Dans `AppLayout`, le conteneur de la page suit cette largeur tout seul.
+**Repli** — géré en interne : le bouton « » fait passer la Sidebar de **220 px** (dépliée) à **80 px** (repliée), avec une transition de 250 ms. À 760 px de large et moins, elle se replie d'elle-même ; le bouton reste actif. Il n'y a pas de prop pour piloter ou lire cet état. Dans `AppLayout`, le conteneur de la page suit cette largeur tout seul.
 
-**Apparence** — libellés en casse normale (13px, jamais en capitales), icônes ramenées à 18px ; l'élément actif est une pastille claire en relief, texte blanc. ⚠️ À 220 px, un libellé de section dépasse vite (≈ 18 caractères avec chevron) et se tronque : préférer des libellés courts (« Données géo » plutôt que « Données Géographiques »).
+**Apparence** — libellés en casse normale (13px, jamais en capitales), icônes ramenées à 18px ; l'élément actif est une pastille claire en relief, texte blanc. ⚠️ À 220 px, un libellé de section dépasse vite (≈ 18 caractères avec chevron) et passe sur deux lignes : préférer des libellés courts (« Données géo » plutôt que « Données Géographiques »).
 
 ```tsx
 <AppLayout
