@@ -118,6 +118,8 @@ export const formatMonthLabel = (year: number, month: number): string => `${capi
  * Semaines du mois, du lundi au dimanche. Les cases hors du mois sont
  * complétées avec les jours des mois voisins.
  */
+const WEEKS_IN_GRID = 6;
+
 export const buildWeeks = (year: number, month: number): Date[][] => {
   // getDay() renvoie 0 pour dimanche : on décale pour une semaine qui commence le lundi
   const firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
@@ -130,11 +132,10 @@ export const buildWeeks = (year: number, month: number): Date[][] => {
   for (let d = 1; d <= daysInMonth; d++) {
     cells.push(new Date(year, month, d));
   }
-  const remaining = 7 - (cells.length % 7);
-  if (remaining < 7) {
-    for (let d = 1; d <= remaining; d++) {
-      cells.push(new Date(year, month + 1, d));
-    }
+  // Toujours six semaines : la hauteur du calendrier ne varie pas d'un mois à
+  // l'autre, et les flèches de navigation restent sous le curseur.
+  for (let d = 1; cells.length < WEEKS_IN_GRID * 7; d++) {
+    cells.push(new Date(year, month + 1, d));
   }
 
   const weeks: Date[][] = [];

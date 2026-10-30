@@ -386,3 +386,26 @@ export const HeuresADroite: Story = {
     await waitFor(() => expect(canvas.getByRole("button", { name: "Valider" })).toBeVisible());
   },
 };
+
+/** Changer de mois ne déplace ni les flèches ni le panneau : pas de clic perdu hors du calendrier. */
+export const HauteurStable: Story = {
+  name: "Hauteur stable",
+  render: () => <div style={{ paddingBottom: 420 }}><DatePicker label="Début" withTime value={new Date(2026, 9, 12, 8, 30)} /></div>,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: /Ouvrir le calendrier/ }));
+    const panel = canvas.getByRole("dialog", { name: "Calendrier" });
+    const next = canvas.getByRole("button", { name: "Mois suivant" });
+    // Mesure après l'animation d'ouverture, qui décale le panneau de 4px
+    await Promise.all(panel.getAnimations().map((animation) => animation.finished));
+    const height = panel.getBoundingClientRect().height;
+    const arrow = next.getBoundingClientRect().top;
+    // Octobre 2026 à février 2027 : mois de 5 et 6 semaines, puis le plus court
+    for (let step = 0; step < 4; step++) {
+      await userEvent.click(next);
+      await expect(panel.getBoundingClientRect().height).toBe(height);
+      await expect(next.getBoundingClientRect().top).toBe(arrow);
+    }
+    await expect(canvas.getByRole("dialog", { name: "Calendrier" })).toBeInTheDocument();
+  },
+};

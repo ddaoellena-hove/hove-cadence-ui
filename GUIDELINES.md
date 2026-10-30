@@ -2276,6 +2276,8 @@ Barre d'actions groupées flottante pour une sélection multiple (`DataTable sel
 
 ### DatePicker
 
+Le calendrier affiche toujours six semaines : sa hauteur, et donc la place des flèches, ne varie pas d'un mois à l'autre.
+
 **Variante champ** (défaut) : la date se **saisit au clavier** dans des cases **JJ / MM / AAAA** (+ **HH : mm** avec `withTime`) séparées de « / » fixes, à l'allure d'un `TextInput`, comme `TimePicker`. Le curseur passe seul à la case suivante quand une case est remplie (taper « / » aussi) ; Retour arrière sur une case vide revient à la précédente ; coller « 12/06/2026 » remplit tout. Cliquer le champ place le curseur — **il n'ouvre pas le calendrier** ; seule l'**icône calendrier** à droite (`GhostButton` sans infobulle) ouvre le panneau, positionné sur la date saisie. Entrée ou quitter le champ valide la saisie ; Échap l'annule. Une date inexistante (31/02) ou hors bornes affiche un message d'erreur sous le champ, sans appeler `onChange`. Largeur 220px (260px avec `withTime`). **Variante bouton** : inchangée, le déclencheur entier ouvre le calendrier.
 
 | Prop | Type | Défaut | Description |
