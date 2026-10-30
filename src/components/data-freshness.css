@@ -5,7 +5,7 @@
   align-items: center;
   gap: 6px;
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
   color: var(--cadence-color-text-secondary, #607075);
   white-space: nowrap;
 }

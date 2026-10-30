@@ -21,9 +21,9 @@
 
 .pagination__range {
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
   font-variant-numeric: tabular-nums;
-  font-weight: 500;
+  font-weight: var(--cadence-font-weight-medium, 500);
   white-space: nowrap;
 }
 
@@ -46,9 +46,9 @@
   cursor: pointer;
   display: inline-flex;
   font-family: inherit;
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
   font-variant-numeric: tabular-nums;
-  font-weight: 500;
+  font-weight: var(--cadence-font-weight-medium, 500);
   height: 32px;
   justify-content: center;
   min-width: 32px;
@@ -82,7 +82,7 @@
 
 .pagination__ellipsis {
   color: var(--cadence-color-text-secondary, #607075);
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
   min-width: 24px;
   text-align: center;
 }

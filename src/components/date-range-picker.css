@@ -16,8 +16,8 @@
 .date-range-picker__label {
   color: var(--cadence-color-label, #1a3e45);
   display: block;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   line-height: normal;
   padding: 0 0 10px 8px;
 }
@@ -55,16 +55,16 @@
 
 .date-range-picker__trigger-text {
   color: var(--cadence-color-primary, #002830);
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
   font-variant-numeric: tabular-nums;
-  font-weight: 500;
+  font-weight: var(--cadence-font-weight-medium, 500);
   line-height: 1;
   white-space: nowrap;
 }
 
 .date-range-picker__trigger-text--placeholder {
   color: var(--cadence-color-placeholder, #737373);
-  font-weight: 400;
+  font-weight: var(--cadence-font-weight-regular, 400);
 }
 
 .date-range-picker__icon {
@@ -106,8 +106,8 @@
   color: var(--cadence-color-primary, #002830);
   cursor: pointer;
   font-family: inherit;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   padding: 8px 12px;
   text-align: left;
   white-space: nowrap;
@@ -125,7 +125,7 @@
 
 .date-range-picker__preset--active {
   background: var(--cadence-color-surface-alt, #eef1f4);
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
 }
 
 .date-range-picker__main {
@@ -158,7 +158,7 @@
   color: var(--cadence-color-label, #1a3e45);
   display: flex;
   flex-direction: column;
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   font-variant-numeric: tabular-nums;
   gap: 2px;
 }

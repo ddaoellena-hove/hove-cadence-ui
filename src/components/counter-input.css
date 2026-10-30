@@ -9,8 +9,8 @@
   color: var(--cadence-color-label, #1a3e45);
   display: block;
   font-family: var(--cadence-font-sans, "Inter", Helvetica);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   letter-spacing: 0;
   line-height: normal;
   padding: 0 0 10px 8px;
@@ -59,8 +59,8 @@
   background: transparent;
   border: none;
   outline: none;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-section, 16px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   color: var(--cadence-color-primary, #002830);
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
   line-height: 1;
@@ -81,8 +81,8 @@
 }
 
 .counter-input__unit {
-  font-size: 14px;
-  font-weight: 400;
+  font-size: var(--cadence-font-size-emphasis, 14px);
+  font-weight: var(--cadence-font-weight-regular, 400);
   color: var(--cadence-color-placeholder, #737373);
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   line-height: 1;

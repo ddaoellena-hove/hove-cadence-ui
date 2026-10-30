@@ -36,8 +36,8 @@
 .line-chart__threshold text {
   fill: var(--cadence-dataviz-threshold, #1a3e45);
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-size: 11px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-caption, 11px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
 }
 
 .line-chart__threshold--breached text {
@@ -57,8 +57,8 @@
 .line-chart__annotation-label {
   fill: var(--cadence-dataviz-annotation, #55606e);
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-size: 11px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-caption, 11px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
 }
 
 /* Période en cours de sélection (onRangeSelect) */

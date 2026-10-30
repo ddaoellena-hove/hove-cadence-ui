@@ -69,16 +69,16 @@
 }
 
 .choice-card :is(.radio-row__label, .checkbox-row__label) {
-  font-weight: 500;
+  font-weight: var(--cadence-font-weight-medium, 500);
   line-height: 1.2;
 }
 
 .choice-card--lg :is(.radio-row__label, .checkbox-row__label) {
-  font-size: 16px;
+  font-size: var(--cadence-font-size-section, 16px);
 }
 
 .choice-card--lg :is(.radio-row__description, .checkbox-row__description) {
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
 }
 
 .choice-card--lg > .radio-button {

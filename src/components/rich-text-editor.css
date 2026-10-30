@@ -11,8 +11,8 @@
 .rich-text-editor__label {
   padding: 0 0 10px 8px;
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   line-height: normal;
 }
 
@@ -60,8 +60,8 @@
   background: transparent;
   color: var(--cadence-color-label, #1a3e45);
   font-family: inherit;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-small, 12px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   cursor: pointer;
 }
 
@@ -133,7 +133,7 @@
 .rich-text-editor__message {
   margin: 0;
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   line-height: 1.4;
 }
 
@@ -144,7 +144,7 @@
 
 .rich-text-editor__counter {
   flex-shrink: 0;
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   font-variant-numeric: tabular-nums;
 }
 
@@ -156,7 +156,7 @@
 .rich-text-content {
   color: var(--cadence-color-primary, #002830);
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-size: 14px;
+  font-size: var(--cadence-font-size-emphasis, 14px);
   line-height: 1.5;
 }
 

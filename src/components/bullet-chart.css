@@ -29,8 +29,8 @@
 }
 
 .bullet-chart__label {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -38,7 +38,7 @@
 
 .bullet-chart__status {
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 11px;
+  font-size: var(--cadence-font-size-caption, 11px);
   line-height: 1.3;
 }
 
@@ -112,9 +112,9 @@
   align-items: baseline;
   display: inline-flex;
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
-  font-size: 14px;
+  font-size: var(--cadence-font-size-emphasis, 14px);
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
   gap: 2px;
   justify-content: flex-end;
   white-space: nowrap;
@@ -122,8 +122,8 @@
 
 .bullet-chart__unit {
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 12px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-small, 12px);
+  font-weight: var(--cadence-font-weight-medium, 500);
 }
 
 @media (prefers-reduced-motion: no-preference) {

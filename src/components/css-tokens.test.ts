@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { stripTokens } from "./css-test-utils";
 
-// Harmonisation : dans les CSS des composants, couleurs et rayons passent par
+// Harmonisation : dans les CSS des composants, couleurs, rayons, tailles de texte et graisses passent par
 // les tokens (tokens.css), une valeur en dur n'étant admise qu'en repli d'un
 // var(--token, repli). Exceptions assumées : les ombres décoratives
 // (box-shadow, filter : reliefs propres à un composant) et les micro-rayons
@@ -33,6 +33,24 @@ describe("CSS des composants : tokens uniquement", () => {
       declarations(file)
         .filter((d) => COLOR_PROPERTIES.test(d.property) && COLOR_LITERAL.test(d.value))
         .map((d) => `${file} : ${d.property}: ${d.value.trim()}`),
+    );
+    expect(offenders).toEqual([]);
+  });
+
+  it("aucune taille de texte en dur quand un token existe : --cadence-font-size-*", () => {
+    const offenders = styles.flatMap((file) =>
+      declarations(file)
+        .filter((d) => d.property === "font-size" && /^\s*(11|12|13|14|16|22|28|44)px/.test(d.value))
+        .map((d) => `${file} : font-size: ${d.value.trim()}`),
+    );
+    expect(offenders).toEqual([]);
+  });
+
+  it("aucune graisse en dur : --cadence-font-weight-*", () => {
+    const offenders = styles.flatMap((file) =>
+      declarations(file)
+        .filter((d) => d.property === "font-weight" && /^\s*\d/.test(d.value))
+        .map((d) => `${file} : font-weight: ${d.value.trim()}`),
     );
     expect(offenders).toEqual([]);
   });

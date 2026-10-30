@@ -26,8 +26,8 @@
 
 .dataset-health__title {
   color: var(--cadence-color-primary, #002830);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-emphasis, 14px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   line-height: 1.4;
   margin: 0;
   min-width: 0;

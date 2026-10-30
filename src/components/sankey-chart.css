@@ -19,8 +19,8 @@
 .sankey-chart__label {
   fill: var(--cadence-color-primary, #002830);
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-small, 12px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   paint-order: stroke;
   stroke: var(--cadence-color-white, #ffffff);
   stroke-linejoin: round;
@@ -30,7 +30,7 @@
 .sankey-chart__value {
   fill: var(--cadence-color-label, #1a3e45);
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
-  font-weight: 500;
+  font-weight: var(--cadence-font-weight-medium, 500);
 }
 
 @media (prefers-reduced-motion: no-preference) {

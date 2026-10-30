@@ -48,8 +48,8 @@
 .bulk-action-bar__count {
   color: var(--cadence-color-accent, #1b6cff);
   font-family: var(--cadence-font-sans, "ABC Diatype", "Inter", Helvetica, sans-serif);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   line-height: 1.4;
   white-space: nowrap;
 }

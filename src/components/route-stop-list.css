@@ -1,6 +1,6 @@
 .route-stop-list { color: var(--cadence-color-primary, #002830); font: 14px/1.5 var(--cadence-font-sans, Inter); min-width: 0; }
 .route-stop-list__heading { display: flex; align-items: center; gap: 12px; }
-.route-stop-list__heading h3 { margin: 0; font-size: 16px; overflow-wrap: anywhere; }
+.route-stop-list__heading h3 { margin: 0; font-size: var(--cadence-font-size-section, 16px); overflow-wrap: anywhere; }
 .route-stop-list__list { list-style: none; margin: 16px 0 0; padding: 0; }
 .route-stop-list__stop { position: relative; display: flex; gap: 12px; padding-bottom: 24px; }
 .route-stop-list__stop:not(:last-child)::before { content: ""; position: absolute; top: 28px; bottom: 0; left: 13px; border-left: 2px solid var(--cadence-color-border-strong, #bfc9cb); }

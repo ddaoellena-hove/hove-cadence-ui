@@ -93,8 +93,8 @@
 /* ── Label ── */
 .rich-checkbox-label {
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-size: 14px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-emphasis, 14px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   line-height: 1.2;
   overflow-wrap: break-word;
 }
@@ -102,8 +102,8 @@
 /* ── Description ── */
 .rich-checkbox-description {
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-size: 12px;
-  font-weight: 400;
+  font-size: var(--cadence-font-size-small, 12px);
+  font-weight: var(--cadence-font-weight-regular, 400);
   line-height: 1.3;
   color: var(--cadence-color-placeholder, #737373);
   overflow-wrap: break-word;
@@ -193,11 +193,11 @@
 }
 
 .rich-checkbox--large .rich-checkbox-label {
-  font-size: 16px;
+  font-size: var(--cadence-font-size-section, 16px);
 }
 
 .rich-checkbox--large .rich-checkbox-description {
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
 }
 
 .rich-checkbox--large .rich-checkbox-box {

@@ -1,7 +1,7 @@
 .service-calendar { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; min-width: 0; color: var(--cadence-color-primary, #002830); font: 14px/1.5 var(--cadence-font-sans, Inter); }
-.service-calendar__title { margin: 0; font-size: 16px; }
+.service-calendar__title { margin: 0; font-size: var(--cadence-font-size-section, 16px); }
 .service-calendar__days { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 12px 20px; }
-.service-calendar__days legend { padding: 0; margin-bottom: 8px; font-weight: 600; }
+.service-calendar__days legend { padding: 0; margin-bottom: 8px; font-weight: var(--cadence-font-weight-semibold, 600); }
 .service-calendar__day { display: flex; align-items: center; gap: 8px; }
 .service-calendar__summary { margin: 0; }
 .service-calendar__editor { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; max-width: 100%; }

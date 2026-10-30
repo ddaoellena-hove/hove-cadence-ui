@@ -23,8 +23,8 @@
 
 .meter__label {
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -35,9 +35,9 @@
   color: var(--cadence-color-primary, #002830);
   flex-shrink: 0;
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
 }
 
 /* ── Piste ── */
@@ -97,7 +97,7 @@
 
 .meter__status {
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
 }
 
 /* ── Segments (mode proportionnel) ── */
@@ -124,7 +124,7 @@
   align-items: center;
   color: var(--cadence-color-label, #1a3e45);
   display: inline-flex;
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   gap: 6px;
 }
 
@@ -159,7 +159,7 @@
 }
 
 .meter--sm .meter__value {
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   grid-column: 2;
   grid-row: 1;
 }

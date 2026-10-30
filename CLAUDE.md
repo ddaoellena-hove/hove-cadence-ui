@@ -14,7 +14,7 @@ React 19 · TypeScript ~6 (strict) · Vite 8 · Storybook 10 (`@storybook/react-
 ## Conventions
 - Fichiers plats dans `src/components/` : pour `Foo` → `Foo.tsx`, `foo.css` (kebab-case), `Foo.stories.tsx`, puis export dans `index.ts`.
 - CSS autonome : chaque composant importe son seul `.css`. BEM-like (`.foo`, `.foo__el`, `.foo--mod`).
-- Couleurs/polices : toujours via tokens avec fallback — `var(--cadence-color-primary, #002830)`, jamais de hex nu. Tokens dans `tokens.css`.
+- Couleurs/polices/tailles de texte/graisses : toujours via tokens avec fallback — `var(--cadence-color-primary, #002830)`, jamais de hex nu. Tokens dans `tokens.css`.
 - `Checkbox`/`Toggle`/`RadioButton`/`RichCheckbox`/`RichRadioButton` se pilotent par la prop `state`, jamais `checked`.
 - Icônes via `<Icons icon="…" size={…} />` (suit `currentColor`). Nouvelle icône → entrée dans `icon-registry.ts` (kebab → composant PascalCase). Jamais d'URL distante.
 - Couches : Core ← DataViz ← Domain (`docs/proposals/refactoring-v2.md`). Core n'importe ni le transport ni d3 ; nouveau composant métier ou graphique → l'ajouter à `couches.test.ts`.

@@ -52,9 +52,9 @@
 
 .filter-bar__count {
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
   font-variant-numeric: tabular-nums;
-  font-weight: 500;
+  font-weight: var(--cadence-font-weight-medium, 500);
   margin-left: auto;
   white-space: nowrap;
 }

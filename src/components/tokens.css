@@ -174,6 +174,10 @@
   --cadence-font-display: "Uxum Grotesque", "Space Grotesk", sans-serif;
   --cadence-font-mono: "Spline Sans Mono", monospace;
   --cadence-font-size-caption: 11px;  /* Petits textes : aide sous un champ, fil d'Ariane */
+  --cadence-font-weight-regular: 400;  /* Texte courant */
+  --cadence-font-weight-medium: 500;   /* Libellés, PrimaryButton */
+  --cadence-font-weight-semibold: 600; /* Titres, GhostButton */
+  --cadence-font-weight-bold: 700;     /* Forte emphase */
 
   /* ── Rayons ────────────────────────────────────────────────────────────── */
   /* Référence pour les nouveaux composants — les existants migrent au fil de l'eau. */
@@ -188,9 +192,10 @@
      Deux gabarits pour aligner des contrôles sur une même rangée.
      compact : barres d'outils et en-têtes de dashboard (boutons sm,
      SearchInput, déclencheurs variant="button"). field : champs d'une ligne
-     de formulaire et SegmentedControl. */
+     de formulaire et SegmentedControl. button : boutons md. */
   --cadence-control-height-compact: 29px;
   --cadence-control-height-field: 40px;
+  --cadence-control-height-button: 34px;
 
   /* ── Statuts (Indicator) ───────────────────────────────────────────────── */
   /* Paires texte/fond des 8 variantes d'Indicator. Dans du code applicatif,

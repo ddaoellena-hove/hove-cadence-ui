@@ -8,7 +8,7 @@
   justify-content: center;
   box-sizing: border-box;
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-weight: 700;
+  font-weight: var(--cadence-font-weight-bold, 700);
   line-height: 1;
   white-space: nowrap;
   vertical-align: middle;
@@ -20,14 +20,14 @@
   height: 22px;
   min-width: 22px;
   padding: 0 7px;
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
 }
 
 .line-badge--sm {
   height: 18px;
   min-width: 18px;
   padding: 0 5px;
-  font-size: 11px;
+  font-size: var(--cadence-font-size-caption, 11px);
 }
 
 /* ── Formes ── */

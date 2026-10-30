@@ -9,8 +9,8 @@
   border-radius: var(--cadence-radius-pill, 999px);
   cursor: pointer;
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   color: var(--cadence-color-text-secondary, #607075);
   transition: background-color 0.15s ease, color 0.15s ease;
   white-space: nowrap;
@@ -30,7 +30,7 @@
 .secondary-tab--active {
   background-color: var(--cadence-color-hover-overlay, rgba(0, 40, 48, 0.06));
   color: var(--cadence-color-primary, #002830);
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
 }
 
 .secondary-tab--active:hover:not(.secondary-tab--disabled) {

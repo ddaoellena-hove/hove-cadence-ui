@@ -16,8 +16,8 @@
 
 .chart-tooltip__title {
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-small, 12px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   margin: 0 0 6px;
 }
 
@@ -34,7 +34,7 @@
   align-items: center;
   display: flex;
   flex-wrap: wrap;
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   gap: 2px 6px;
 }
 
@@ -51,7 +51,7 @@
   flex: 0 1 auto;
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
   font-variant-numeric: tabular-nums;
-  font-weight: 500;
+  font-weight: var(--cadence-font-weight-medium, 500);
   margin-left: auto;
   max-width: 100%;
   min-width: 0;
@@ -66,7 +66,7 @@
 .chart-tooltip__note {
   border-top: 1px solid var(--cadence-color-divider, #f0f0f0);
   color: var(--cadence-color-text-secondary, #607075);
-  font-size: 11px;
+  font-size: var(--cadence-font-size-caption, 11px);
   margin: 6px 0 0;
   padding-top: 6px;
 }

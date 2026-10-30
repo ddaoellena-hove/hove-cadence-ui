@@ -6,7 +6,7 @@
 /* Assez large pour « MM » et « mm », plus larges que les chiffres */
 .date-fields__box--2 { width: 3.2ch; }
 .date-fields__box--4 { width: 4.8ch; }
-.date-fields__box::placeholder { color: var(--cadence-color-placeholder, #737373); font-weight: 400; }
+.date-fields__box::placeholder { color: var(--cadence-color-placeholder, #737373); font-weight: var(--cadence-font-weight-regular, 400); }
 /* Le champ porte le halo de focus : on signale juste la case active. */
 .date-fields__box:focus, .date-fields__box:focus-visible { outline: none; background: var(--cadence-color-surface-alt, #eef1f4); }
 .date-fields__box:disabled { background: transparent; color: var(--cadence-color-text-disabled, #808080); }

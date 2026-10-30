@@ -8,6 +8,10 @@ Version mineure : aucun export retiré, 63 ajoutés (types compris) depuis la 1.
 
 Le paquet ESM est livré en un fichier par module et déclare ses effets de bord : un produit n'embarque plus que ce qu'il importe. Un `PrimaryButton` seul passe de 260 à 89 Ko minifiés (85 à 24 Ko gzip, esbuild, hors React). Aucun changement d'API ni d'import ; `style.css` reste unique.
 
+### Tokens
+
+Tailles de texte, graisses et hauteurs de contrôle passent par les tokens dans les CSS des composants, sans changement de rendu. Nouveaux : `--cadence-font-weight-regular`, `-medium`, `-semibold`, `-bold` et `--cadence-control-height-button`.
+
 ### ⚠️ Changements visuels
 
 | Composant | Changement | Pour revenir au rendu précédent |

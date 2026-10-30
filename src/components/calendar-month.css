@@ -15,8 +15,8 @@
 
 .date-picker__month-label {
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-emphasis, 14px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   color: var(--cadence-color-primary, #002830);
   line-height: 1;
 }
@@ -67,7 +67,7 @@
   height: 34px;
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
   font-size: 10px;
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
   color: var(--cadence-color-placeholder, #737373);
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -97,8 +97,8 @@
   border: none;
   border-radius: var(--cadence-radius-sm, 6px);
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   color: var(--cadence-color-primary, #002830);
   cursor: pointer;
   transition:
@@ -121,13 +121,13 @@
 .date-picker__day--today {
   background: var(--cadence-color-field-focus-subtle, rgba(45, 95, 107, 0.1));
   color: var(--cadence-color-field-focus, #2d5f6b);
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
 }
 
 .date-picker__day--selected {
   background: var(--cadence-color-primary, #002830);
   color: var(--cadence-color-white, #ffffff);
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
 }
 
 .date-picker__day--selected:hover {

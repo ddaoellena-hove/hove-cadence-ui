@@ -35,20 +35,20 @@
 .empty-state__title {
   color: var(--cadence-color-primary, #002830);
   font-size: 15px;
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
   line-height: 1.4;
   margin: 0;
 }
 
 .empty-state--inline .empty-state__title {
-  font-size: 14px;
+  font-size: var(--cadence-font-size-emphasis, 14px);
 }
 
 /* ── Description ── */
 /* Couleur sombre (label) et non text-muted : AA à 13px (text-muted = 3,2:1). */
 .empty-state__description {
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
   line-height: 1.5;
   margin: 0;
   max-width: 420px;

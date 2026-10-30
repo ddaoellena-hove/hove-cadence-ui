@@ -9,8 +9,8 @@
 .text-area__label {
   color: var(--cadence-color-label, #1a3e45);
   font-family: var(--cadence-font-sans, "Inter", Helvetica);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   letter-spacing: 0;
   line-height: normal;
   padding: 0 0 10px 8px;
@@ -74,8 +74,8 @@
   color: var(--cadence-color-primary, #002830);
   flex: 1;
   font-family: var(--cadence-font-sans, "Inter", Helvetica);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   letter-spacing: 0;
   line-height: 1.5;
   min-width: 0;
@@ -86,7 +86,7 @@
 
 .text-area__textarea::placeholder {
   color: var(--cadence-color-border-strong, #bfc9cb);
-  font-weight: 400;
+  font-weight: var(--cadence-font-weight-regular, 400);
 }
 
 .text-area__textarea:disabled {
@@ -99,7 +99,7 @@
 .text-area__helper {
   font-family: var(--cadence-font-sans, "Inter", Helvetica);
   font-size: var(--cadence-font-size-caption, 11px);
-  font-weight: 400;
+  font-weight: var(--cadence-font-weight-regular, 400);
   letter-spacing: 0;
   line-height: normal;
   margin: 6px 0 0 8px;

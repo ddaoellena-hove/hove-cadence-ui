@@ -9,8 +9,8 @@
   border: none;
   cursor: pointer;
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--cadence-color-text-secondary, #607075);
@@ -32,7 +32,7 @@
 /* ── Active ── */
 .tab--active {
   color: var(--cadence-color-primary, #002830);
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
 }
 
 .tab--active:hover:not(.tab--disabled) {

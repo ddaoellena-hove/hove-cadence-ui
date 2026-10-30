@@ -1,4 +1,4 @@
-.presence-strip { font-family: var(--cadence-font-sans, "Inter", sans-serif); color: var(--cadence-color-primary, #002830); font-size: 12px; }
+.presence-strip { font-family: var(--cadence-font-sans, "Inter", sans-serif); color: var(--cadence-color-primary, #002830); font-size: var(--cadence-font-size-small, 12px); }
 .presence-strip__items { display: flex; flex-wrap: wrap; gap: 4px; list-style: none; padding: 0; margin: 8px 0 0; }
 .presence-strip__cell { position: relative; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border: 1px solid var(--cadence-color-border-strong, #bfc9cb); border-radius: 3px; }
 .presence-strip__cell--present { background: var(--cadence-status-info-bg, #eff6ff); color: var(--cadence-status-info-fg, #1d4ed8); }

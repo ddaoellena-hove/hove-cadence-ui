@@ -20,13 +20,13 @@
 
 .progress-bar__label {
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-medium, 500);
 }
 
 .progress-bar__value {
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   font-variant-numeric: tabular-nums;
 }
 

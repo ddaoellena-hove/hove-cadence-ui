@@ -35,13 +35,13 @@
 .file-upload__zone-text {
   margin: 0;
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
 }
 
 .file-upload__hint {
   margin: 4px 0 0;
   color: var(--cadence-color-label, #1a3e45);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
 }
 
 /* Input natif masqué visuellement mais accessible. */
@@ -72,7 +72,7 @@
   align-items: center;
   gap: 6px;
   color: var(--cadence-color-danger-text, #b91c1c);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
 }
 
 /* ── Liste des fichiers : une carte par fichier ── */
@@ -107,8 +107,8 @@
   gap: 6px;
   margin: 0;
   color: var(--cadence-color-placeholder, #737373);
-  font-size: 11px;
-  font-weight: 500;
+  font-size: var(--cadence-font-size-caption, 11px);
+  font-weight: var(--cadence-font-weight-medium, 500);
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
@@ -155,8 +155,8 @@
 
 .file-upload__file-name {
   color: var(--cadence-color-primary, #002830);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--cadence-font-size-body, 13px);
+  font-weight: var(--cadence-font-weight-semibold, 600);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -164,7 +164,7 @@
 
 .file-upload__file-size {
   color: var(--cadence-color-placeholder, #737373);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
 }
 
 /* Corbeille : bouton outline danger élargi, comme la maquette. */
@@ -198,7 +198,7 @@
   flex-shrink: 0;
   min-width: 32px;
   color: var(--cadence-color-placeholder, #737373);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
@@ -206,5 +206,5 @@
 .file-upload__file-error {
   margin: 0;
   color: var(--cadence-color-danger-text, #b91c1c);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
 }

@@ -22,7 +22,7 @@
 .journey-timeline__label {
   color: var(--cadence-color-text-secondary, #607075);
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
-  font-size: 13px;
+  font-size: var(--cadence-font-size-body, 13px);
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -80,7 +80,7 @@
 
 .journey-timeline__seg-duration {
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
 }
 
 /* Étape étroite : le picto se centre. */
@@ -93,7 +93,7 @@
 .journey-timeline__summary {
   color: var(--cadence-color-text-secondary, #607075);
   font-family: var(--cadence-font-mono, "Spline Sans Mono", monospace);
-  font-size: 12px;
+  font-size: var(--cadence-font-size-small, 12px);
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -103,13 +103,13 @@
 
 .journey-timeline__total {
   color: var(--cadence-color-primary, #002830);
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
 }
 
 .journey-timeline__recommended {
   color: var(--cadence-color-link, #1d4ed8);
   font-family: var(--cadence-font-sans, "Inter", Helvetica, sans-serif);
-  font-weight: 600;
+  font-weight: var(--cadence-font-weight-semibold, 600);
 }
 
 /* Texte réservé aux lecteurs d'écran (annonce de l'étape focalisée). */
