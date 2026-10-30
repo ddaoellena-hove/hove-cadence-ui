@@ -315,8 +315,8 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Option booléenne dans un formulaire (validée à la soumission) | `Checkbox` | `Toggle` |
 | Activation/désactivation à effet immédiat | `Toggle` | `Checkbox` |
 | Choix exclusif 2-5 options courtes | `RadioButton` | — |
-| Choix exclusif avec icône + description | `RichRadioButton` | `RichCheckbox` (sélection multiple) |
-| Sélection multiple avec icône + description | `RichCheckbox` | `RichRadioButton` (choix exclusif) |
+| Choix exclusif avec description | `RadioButton label description` | `RichRadioButton` (retrait prévu en v2) |
+| Sélection multiple avec description | `Checkbox label description` | `RichCheckbox` (retrait prévu en v2) |
 | Étiquette d'information neutre (catégorie, tag, code) | `Badge` | `Indicator` (qui porte un état) |
 | Chip amovible (filtre actif « Ligne 38 × », « Tout effacer ») | `Badge dismissible` ; sous une liste, `FilterBar` (`activeFilters` + `onRemoveFilter`) | un composant `Tag` dédié (doublon inutile) |
 | État ou statut avec picto + couleur sémantique | `Indicator` | `Badge` (purement informatif) |
@@ -765,8 +765,9 @@ Les anciennes API de boutons (0.2) et les composants dépréciés sont **supprim
 | `DateRangePicker` | Sélection d'une période (début → fin) avec préréglages ; jours entiers. |
 | `Checkbox` | Option booléenne indépendante, ou sélection multiple. |
 | `RadioButton` | Sélection exclusive parmi 2 à 5 options courtes. |
-| `RichRadioButton` | Sélection exclusive avec description par option. |
-| `RichCheckbox` | Sélection multiple avec description par option. |
+| `RadioButton label` | Sélection exclusive avec libellé cliquable et description. Grouper dans un `role="radiogroup"` nommé. |
+| `RichRadioButton` | ⚠️ Retrait prévu en v2 : utiliser `RadioButton label`. |
+| `RichCheckbox` | ⚠️ Retrait prévu en v2 : utiliser `Checkbox label`. |
 | `Toggle` | Activation/désactivation à effet immédiat (hors soumission). |
 
 ### Règles
@@ -2164,7 +2165,7 @@ Chargement à la demande : un nœud `hasChildren` sans `children` déclenche `lo
 | `description` | `string` | — | Précision sous le libellé, en description accessible |
 | `aside` | `ReactNode` | — | Complément décoratif, non interactif (badge de ligne) |
 
-- ✅ `Checkbox label` pour une liste dense (directions, jours) ; `RichCheckbox` pour des cartes de choix.
+- ✅ `Checkbox label` pour toute liste de choix avec libellé (directions, jours).
 
 ### CounterInput
 
@@ -3164,6 +3165,12 @@ API identique pour les deux ; seul le rendu change (`PrimaryButton` plein ou con
 | `state` | `"default" \| "hover" \| "selected" \| "disabled"` | `"default"` | ⚠️ Pas de prop `checked` |
 | `onChange` | `() => void` | — | — |
 | `aria-label` | `string` | — | Nom accessible quand aucun texte n'est associé au bouton radio |
+| `label` | `string` | — | Libellé cliquable : la ligne entière devient le bouton radio, annoncé une seule fois |
+| `description` | `string` | — | Précision sous le libellé, en description accessible |
+| `aside` | `ReactNode` | — | Complément décoratif, non interactif (badge) |
+
+- ✅ Placer les boutons dans un conteneur `role="radiogroup"` nommé. Le parent gère l'exclusivité.
+- ⚠️ Pas de déplacement aux flèches : chaque bouton est un arrêt de tabulation.
 
 ### RichCheckbox
 
@@ -3175,7 +3182,9 @@ API identique pour les deux ; seul le rendu change (`PrimaryButton` plein ou con
 | `size` | `"medium" \| "large"` | `"medium"` | — |
 | `onChange` | `(nextChecked: boolean) => void` | — | Bascule, comme `Checkbox` |
 
-Carte cliquable avec icône + label + description + carré de coche. Sélection **multiple** — pour un choix exclusif, utiliser `RichRadioButton`.
+Carte cliquable avec label + description + carré de coche. Sélection **multiple**.
+
+⚠️ **Retrait prévu en v2.** Utiliser `Checkbox label description`.
 
 ### RichRadioButton
 
@@ -3186,6 +3195,8 @@ Carte cliquable avec icône + label + description + carré de coche. Sélection 
 | `state` | `"default" \| "hover" \| "selected" \| "disabled"` | `"default"` | ⚠️ Pas de prop `checked` — piloter via `state` |
 | `size` | `"medium" \| "large"` | `"medium"` | — |
 | `onChange` | `() => void` | — | Clic (le parent gère l'exclusivité) |
+
+⚠️ **Retrait prévu en v2.** Utiliser `RadioButton label description`.
 
 ### SearchInput
 

@@ -33,6 +33,7 @@ Changements postérieurs au paquet 1.0.0 (publié depuis `2648ab7`). Version à 
 - `RichTextEditor` et `RichTextContent` : texte enrichi stocké en JSON (`RichTextDocument`), collage assaini, liens limités à http, https et mailto, sortie texte simple. Pictogrammes `bold-01`, `italic-01`, `dotpoints-01`, `reverse-left`, `reverse-right`.
 - `RepeatableFieldGroup` : blocs de champs répétés, avec identité stable, limites, erreur par bloc et focus.
 - `Checkbox` : `label`, `description`, `aside` pour une ligne compacte cliquable.
+- `RadioButton` : `label`, `description`, `aside`, sur le même modèle. `RichCheckbox` et `RichRadioButton` sont appelés à disparaître en v2.
 - Page patterns : Sélection transactionnelle multiple, Périodes et créneaux, Messages par canal.
 - `DatePicker` : cases élargies, « MM » n'est plus tronqué ; bordure d'erreur de 2px harmonisée sur `Dropdown`, `Autocomplete` et `RichTextEditor`.
 - `GhostButton` : graisse portée à 600.

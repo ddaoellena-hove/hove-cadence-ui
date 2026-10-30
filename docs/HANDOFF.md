@@ -1,5 +1,7 @@
 # Relais de développement — 25 octobre 2026
 
+> Refactoring prévu pour la v2 : [liste des projets](proposals/refactoring-v2.md), à tenir à jour. Audit d'usage fait : [résultats](audits/usage-composants-2026-10-30.md).
+
 ## Version publiée (vérifiée sur npm le 30 octobre 2026)
 
 **`1.0.0` est la version `latest` sur npm**, publiée le 25 octobre 2026 depuis `2648ab7` (fusion de la #56). Tout ce qui suit ce commit n'est pas publié : voir « Non publié » dans le [changelog](../CHANGELOG.md). Les mentions « 1.0.0 non publiée » et « dernière version 0.1.6 » plus bas sont historiques. Source à consulter : `npm view @ddaoellena/cadence-ui`.
