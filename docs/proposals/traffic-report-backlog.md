@@ -10,7 +10,7 @@ Non publié sur npm.
 |---|---|
 | E1 | `PageSection surface="elevated"` et `bodyPadding` |
 | E2 | `Stepper density="compact"`, `context`, `tooltipPlacement`, `steps[].icon`, `steps[].available` |
-| E3 | `AppLayout footer` et `footerPadding`, toasts au-dessus du pied |
+| E3 | `AppLayout actionBar` et `actionBarPadding` (d'abord nommées `footer`), toasts au-dessus de la barre |
 | E4 | `Drawer` : entrée animée quand il est monté ouvert |
 | — | `FieldRow` : repli en une colonne à 1024 px, conforme à ce qu'annonçait le pattern Formulaire |
 | — | `Accordion` : le contenu ouvert ne coupe plus les menus |

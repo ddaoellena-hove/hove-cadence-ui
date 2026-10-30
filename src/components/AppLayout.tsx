@@ -9,38 +9,41 @@ export interface AppLayoutProps {
   children: ReactNode;
   /** Libellé de la zone de contenu pour les lecteurs d'écran. Défaut « Contenu principal ». */
   contentLabel?: string;
-  /** Actions persistantes : pied du conteneur, hors de la zone qui défile. */
-  footer?: ReactNode;
-  /** Padding du pied. "none" : l'app gère ses marges (progression bord à bord). Défaut "default". */
-  footerPadding?: "default" | "none";
+  /**
+   * Barre d'actions persistante du formulaire en cours : en bas du conteneur,
+   * hors de la zone qui défile. Pas un pied de site : voir `PageFooter`.
+   */
+  actionBar?: ReactNode;
+  /** Padding de la barre. "none" : l'app gère ses marges (progression bord à bord). Défaut "default". */
+  actionBarPadding?: "default" | "none";
   /** Classe CSS additionnelle. */
   className?: string;
 }
 
-/** Distance entre le bas de la fenêtre et le haut du pied, lue par toaster.css. */
-const FOOTER_OFFSET_VAR = "--cadence-app-footer-offset";
+/** Distance entre le bas de la fenêtre et le haut de la barre, lue par toaster.css. */
+const ACTION_BAR_OFFSET_VAR = "--cadence-app-action-bar-offset";
 
 /**
  * Squelette d'application : la Sidebar à gauche, fondue dans le fond de l'app,
  * et le contenu de la page dans un conteneur blanc arrondi, bordé d'un liseré.
  * Le conteneur suit la largeur de la Sidebar (dépliée ou repliée) sans mesure :
  * les deux sont dans la même ligne flex. Seule la zone intérieure du conteneur
- * défile, et ses barres de scroll restent dans l'arrondi. Le pied `footer` suit
- * ce conteneur ; sa hauteur courante décale les toasts pour ne pas le recouvrir.
+ * défile, et ses barres de scroll restent dans l'arrondi. La barre `actionBar` suit
+ * ce conteneur ; sa hauteur courante décale les toasts pour ne pas la recouvrir.
  */
-export const AppLayout = ({ sidebar, children, contentLabel = "Contenu principal", footer, footerPadding = "default", className }: AppLayoutProps) => {
+export const AppLayout = ({ sidebar, children, contentLabel = "Contenu principal", actionBar, actionBarPadding = "default", className }: AppLayoutProps) => {
   const rootClass = ["app-layout", className].filter(Boolean).join(" ");
-  const footerRef = useRef<HTMLDivElement>(null);
-  const hasFooter = footer != null;
+  const actionBarRef = useRef<HTMLDivElement>(null);
+  const hasActionBar = actionBar != null;
 
   // Hauteur mesurée, pas figée : traductions longues et retour à la ligne mobile
   // la font varier. Le Toaster est en position fixe : la valeur passe par la racine.
   useLayoutEffect(() => {
-    const el = footerRef.current;
-    if (!hasFooter || !el) return;
+    const el = actionBarRef.current;
+    if (!hasActionBar || !el) return;
     const root = document.documentElement;
     const update = () => {
-      root.style.setProperty(FOOTER_OFFSET_VAR, `${Math.ceil(window.innerHeight - el.getBoundingClientRect().top)}px`);
+      root.style.setProperty(ACTION_BAR_OFFSET_VAR, `${Math.ceil(window.innerHeight - el.getBoundingClientRect().top)}px`);
     };
     update();
     window.addEventListener("resize", update);
@@ -49,9 +52,9 @@ export const AppLayout = ({ sidebar, children, contentLabel = "Contenu principal
     return () => {
       observer?.disconnect();
       window.removeEventListener("resize", update);
-      root.style.removeProperty(FOOTER_OFFSET_VAR);
+      root.style.removeProperty(ACTION_BAR_OFFSET_VAR);
     };
-  }, [hasFooter]);
+  }, [hasActionBar]);
 
   return (
     <div className={rootClass}>
@@ -61,9 +64,9 @@ export const AppLayout = ({ sidebar, children, contentLabel = "Contenu principal
             scroll restent dans l'arrondi */}
         <div className="app-layout__container">
           <div className="app-layout__scroll cadence-scrollbar">{children}</div>
-          {hasFooter && (
-            <div ref={footerRef} className={`app-layout__footer${footerPadding === "none" ? " app-layout__footer--flush" : ""}`}>
-              {footer}
+          {hasActionBar && (
+            <div ref={actionBarRef} className={`app-layout__action-bar${actionBarPadding === "none" ? " app-layout__action-bar--flush" : ""}`}>
+              {actionBar}
             </div>
           )}
         </div>

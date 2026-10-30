@@ -33,7 +33,8 @@ Version mineure : aucun export retiré, 63 ajoutés (types compris) depuis la 1.
 - `PageHero` V2 (supervision) : `tone` (accent du bandeau), `valueLabel`, `actionPanel` (sujets, impact, action de 44px), `actionLabel` par carte, `state` `"loading" | "error"` avec `errorMessage` / `onRetry`, fraîcheur dans l'en-tête et `updatedAt: null` ; cartes sur 1, 2 puis 4 colonnes selon la largeur du bandeau.
 - `PageSection surface="elevated"` (titre hors de la boîte, corps avec `--cadence-shadow-section`) et `bodyPadding` ; anciennes surfaces inchangées.
 - `Stepper density="compact"`, `context`, `tooltipPlacement`, `steps[].icon` et `steps[].available`. `onStepClick` : comportement par défaut inchangé.
-- `AppLayout footer` et `footerPadding` : pied persistant hors du défilement ; les toasts se placent au-dessus de lui.
+- `AppLayout actionBar` et `actionBarPadding` : barre d'actions persistante hors du défilement ; les toasts se placent au-dessus d'elle.
+- `PageFooter` : pied de site, copyright et liens, à la fin de la page.
 - Tokens de composition de page et de section, `--cadence-shadow-section`, icône `translate-01`.
 - Overlays : `placement` (`auto`, `top`, `bottom`) sur `Dropdown`, `Autocomplete`, `DatePicker`, `DateRangePicker` et `TimePicker`, retournés au-dessus si la place manque ; infobulle des boutons icône seule retournée de même.
 - `FormField` : libellé, aide et erreur d'un contrôle sans libellé propre.

@@ -22,7 +22,7 @@ Quatre statuts ne doivent jamais se confondre dans un document de migration :
 | Statut | Où il vit | Exemple |
 |---|---|---|
 | Règle officielle | [GUIDELINES.md](../GUIDELINES.md) | Un seul `PrimaryButton` plein par vue |
-| Composition applicative | Code du produit | `FormActions` plus un statut d'enregistrement dans `AppLayout footer` |
+| Composition applicative | Code du produit | `FormActions` plus un statut d'enregistrement dans `AppLayout actionBar` |
 | Exception projet | Audit du projet | Boutons `sm` dans un formulaire, sur décision produit |
 | Proposition d'évolution | [Backlog](proposals/traffic-report-backlog.md) | Sélection transactionnelle multiple |
 
@@ -89,6 +89,7 @@ La ressemblance ne prouve pas l'équivalence. Avant de substituer un composant, 
 | Lignes nombreuses | [`DataTable`](../GUIDELINES.md#datatable) | Tri, sélection, virtualisation |
 | Absence de donnée | `EmptyState` | Vide initial, aucun résultat, échec |
 | Retour transitoire | `useToast` + `Toaster` | Un seul `Toaster`, niveau |
+| Pied de site | [`PageFooter`](../GUIDELINES.md#pagefooter) | Ne pas confondre avec la barre d'actions d'`AppLayout` |
 | Message persistant | `InlineAlert` | Une gravité transport n'est pas une erreur de saisie |
 | Actions | `FormActions`, `PrimaryButton`, `GhostButton`, `Link` | Hiérarchie, densité, `loading` |
 | Détail en surcouche | `Modal`, `Drawer` | Modalité, focus, contenu défilant |
@@ -111,7 +112,7 @@ Isoler sur une branche les essais à valider visuellement. Un essai rejeté rest
 
 ## 6. Exemples de composition
 
-Ces exemples utilisent les API actuelles de la branche de travail. Vérifier la version consommée : `surface="elevated"`, `density="compact"`, `footer`, `FormField`, `RichTextEditor`, `RepeatableFieldGroup` et les props `error` des champs ne sont pas dans la 1.0.0 publiée.
+Ces exemples utilisent les API actuelles de la branche de travail. Vérifier la version consommée : `surface="elevated"`, `density="compact"`, `actionBar`, `FormField`, `RichTextEditor`, `RepeatableFieldGroup` et les props `error` des champs ne sont pas dans la 1.0.0 publiée.
 
 ### Section à titre extérieur
 
@@ -136,7 +137,7 @@ Le corps ne porte qu'un padding latéral : le contenu apporte son padding vertic
 ```tsx
 <AppLayout
   sidebar={<Sidebar {...sidebarProps} />}
-  footer={
+  actionBar={
     <FormActions>
       <GhostButton size="sm" label="Enregistrer le brouillon" onClick={saveDraft} />
       <PrimaryButton size="sm" label="Créer" disabled={!canCreate} onClick={create} />
@@ -147,7 +148,7 @@ Le corps ne porte qu'un padding latéral : le contenu apporte son padding vertic
 </AppLayout>
 ```
 
-Le pied est hors de la zone qui défile et suit la largeur de la `Sidebar`. Les toasts se placent au-dessus de lui, quelle que soit sa hauteur. Pour une progression bord à bord, passer `footerPadding="none"` et poser le padding sur un enfant, comme dans la story *AppLayout / Pied persistant*.
+La barre est hors de la zone qui défile et suit la largeur de la `Sidebar`. Les toasts se placent au-dessus d'elle, quelle que soit sa hauteur. Pour une progression bord à bord, passer `actionBarPadding="none"` et poser le padding sur un enfant, comme dans la story *AppLayout / Barre d'actions*.
 
 ### Étapes compactes
 
@@ -247,7 +248,7 @@ Séparer largeur de page et largeur de lecture. Tester avec la `Sidebar` ouverte
 
 ### 7.9 Actions persistantes
 
-Utiliser `AppLayout footer` (section 6). `FormActions` compose les boutons et n'est pas un moteur de layout. Dans une version sans `footer`, reprendre l'anatomie suivante :
+Utiliser `AppLayout actionBar` (section 6). `FormActions` compose les boutons et n'est pas un moteur de layout. Dans une version sans `footer`, reprendre l'anatomie suivante :
 
 ```text
 Cadre en colonne
