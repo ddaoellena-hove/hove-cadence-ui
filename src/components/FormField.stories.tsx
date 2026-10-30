@@ -95,6 +95,9 @@ export const FormulaireMixte: Story = {
     await expect(canvas.getByRole("combobox", { name: /Ligne/ })).toHaveAttribute("aria-required", "true");
     await expect(canvas.getByRole("textbox", { name: /Jour/ })).toHaveAttribute("aria-invalid", "true");
 
+    // L'erreur ne change pas la hauteur de champ
+    await expect(canvasElement.querySelector(".autocomplete__field")!.getBoundingClientRect().height).toBe(40);
+
     await userEvent.click(canvas.getByRole("button", { name: "Choisissez une cause." }));
     await expect(canvas.getByRole("button", { name: /Cause/ })).toHaveFocus();
     await userEvent.click(canvas.getByRole("button", { name: "Renseignez le début." }));

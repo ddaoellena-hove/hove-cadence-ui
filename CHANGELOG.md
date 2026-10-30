@@ -34,6 +34,7 @@ Changements postérieurs au paquet 1.0.0 (publié depuis `2648ab7`). Version à 
 - `RepeatableFieldGroup` : blocs de champs répétés, avec identité stable, limites, erreur par bloc et focus.
 - `Checkbox` : `label`, `description`, `aside` pour une ligne compacte cliquable.
 - Page patterns : Sélection transactionnelle multiple, Périodes et créneaux, Messages par canal.
+- `DatePicker` : cases élargies, « MM » n'est plus tronqué ; bordure d'erreur de 2px harmonisée sur `Dropdown`, `Autocomplete` et `RichTextEditor`.
 - Documentation : [guide de migration](docs/MIGRATION-TO-CADENCE.md), étude de cas, grille d'audit, [backlog restant](docs/proposals/traffic-report-backlog.md).
 
 ### Ajouté
