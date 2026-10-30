@@ -1,19 +1,35 @@
 /* ── Time picker ─────────────────────────────────────────────────────── */
+.date-picker__panels {
+  display: flex;
+  gap: 16px;
+}
+
+.date-picker__calendar-panel {
+  flex: 0 0 248px;
+  min-width: 0;
+}
+
+/* Colonne à droite du calendrier : la validation reste en bas de colonne */
+.date-picker__time-panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  padding-left: 16px;
+  border-left: 1px solid var(--cadence-color-divider, #f0f0f0);
+}
+
 .date-picker__time-section {
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  padding: 12px 0 4px;
-  border-top: 1px solid var(--cadence-color-divider, #f0f0f0);
-  margin-top: 12px;
 }
 
 /* ── Footer (confirm button) ─────────────────────────────────────────── */
 .date-picker__footer {
   margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--cadence-color-divider, #f0f0f0);
 }
 
 /* ── Segmented header inside popover ────────────────────────────────── */
@@ -131,6 +147,34 @@
   padding: 16px;
   width: 280px;
   animation: dp-pop-in 0.12s ease;
+}
+
+.date-picker__popover--time {
+  box-sizing: border-box;
+  width: 498px;
+  max-width: calc(100vw - 16px);
+}
+
+/* Trop étroit pour deux colonnes : heures sous le calendrier */
+@media (max-width: 560px) {
+  .date-picker__popover--time {
+    width: 280px;
+  }
+
+  .date-picker__panels {
+    flex-direction: column;
+  }
+
+  .date-picker__calendar-panel {
+    flex-basis: auto;
+  }
+
+  .date-picker__time-panel {
+    padding-top: 12px;
+    padding-left: 0;
+    border-top: 1px solid var(--cadence-color-divider, #f0f0f0);
+    border-left: 0;
+  }
 }
 
 @keyframes dp-pop-in {

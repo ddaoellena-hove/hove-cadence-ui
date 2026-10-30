@@ -369,3 +369,20 @@ export const GabaritComplet: Story = {
     await expect(parseFloat(style.width)).toBeGreaterThanOrEqual(context.measureText("MM").width);
   },
 };
+
+/** Avec heure : les heures sont à droite du calendrier, le panneau reste court. */
+export const HeuresADroite: Story = {
+  name: "Heures à droite",
+  render: () => <div style={{ paddingBottom: 380 }}><DatePicker label="Début" withTime value={new Date(2026, 9, 12, 8, 30)} /></div>,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: /Ouvrir le calendrier/ }));
+    const panel = canvas.getByRole("dialog", { name: "Calendrier" });
+    const calendar = panel.querySelector<HTMLElement>(".date-picker__calendar-panel")!;
+    const time = panel.querySelector<HTMLElement>(".date-picker__time-panel")!;
+    await expect(time.getBoundingClientRect().left).toBeGreaterThanOrEqual(calendar.getBoundingClientRect().right);
+    await expect(panel.getBoundingClientRect().height).toBeLessThan(400);
+    await expect(panel.scrollWidth).toBeLessThanOrEqual(panel.clientWidth);
+    await waitFor(() => expect(canvas.getByRole("button", { name: "Valider" })).toBeVisible());
+  },
+};

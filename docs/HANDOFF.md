@@ -4,6 +4,11 @@
 
 **`1.0.0` est la version `latest` sur npm**, publiée le 25 octobre 2026 depuis `2648ab7` (fusion de la #56). Tout ce qui suit ce commit n'est pas publié : voir « Non publié » dans le [changelog](../CHANGELOG.md). Les mentions « 1.0.0 non publiée » et « dernière version 0.1.6 » plus bas sont historiques. Source à consulter : `npm view @ddaoellena/cadence-ui`.
 
+## Mise à jour — 30 octobre 2026 : retours sur les champs et boutons
+
+- Branche `fix/retours-champs-boutons`, depuis `main` (#70 à #75 fusionnées). `GhostButton` 600, heures de `DatePicker` à droite, `line-height` 1.4 sur `TextInput` et `Autocomplete`.
+- ⚠️ Aucun token de graisse n'existe : `GhostButton` porte `600` en dur, comme le reste du dépôt. `PrimaryButton` reste à 500.
+
 ## Mise à jour — 30 octobre 2026 : lots overlays, validation et dates
 
 - PR ouvertes : [#70](https://github.com/ddaoellena-hove/hove-cadence-ui/pull/70) (PageHero V2, vers `main`) et [#71](https://github.com/ddaoellena-hove/hove-cadence-ui/pull/71) (migration, empilée sur #70).

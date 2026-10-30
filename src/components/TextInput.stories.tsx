@@ -111,3 +111,17 @@ export const ErreurAuFocus: Story = {
     await expect(input.closest(".text-input")).toHaveClass("text-input--error");
   },
 };
+
+/** Les jambages (g, q, p, j, y) ne sont pas coupés et la hauteur du champ ne change pas. */
+export const Jambages: Story = {
+  args: { label: "Nom", value: "gagnant quelque pjy" },
+  play: async ({ canvasElement }) => {
+    const input = canvasElement.querySelector("input")!;
+    const style = getComputedStyle(input);
+    const context = document.createElement("canvas").getContext("2d")!;
+    context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+    const ink = context.measureText("gqpjy");
+    await expect(input.getBoundingClientRect().height).toBeGreaterThanOrEqual(ink.actualBoundingBoxAscent + ink.actualBoundingBoxDescent);
+    await expect(input.parentElement!.getBoundingClientRect().height).toBe(40);
+  },
+};

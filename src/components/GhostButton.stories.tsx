@@ -136,3 +136,11 @@ export const InfobulleAuDessus: Story = {
     await expect(bubble.getBoundingClientRect().bottom).toBeLessThanOrEqual(canvas.getByRole("button", { name: "Modifier" }).getBoundingClientRect().top);
   },
 };
+
+/** Graisse plus marquée que le gabarit commun ; PrimaryButton reste inchangé. */
+export const Graisse: Story = {
+  args: { label: "Annuler" },
+  play: async ({ canvasElement }) => {
+    await expect(getComputedStyle(within(canvasElement).getByRole("button")).fontWeight).toBe("600");
+  },
+};
