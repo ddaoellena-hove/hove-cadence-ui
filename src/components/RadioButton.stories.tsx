@@ -114,3 +114,14 @@ export const LibelleDesactive: Story = {
     await expect(args.onChange).not.toHaveBeenCalled();
   },
 };
+
+/** Pictogramme métier fourni : `iconElement` prime sur `icon`, le rendu reste décoratif. */
+export const CarteIllustree: Story = {
+  name: "Carte illustrée",
+  args: { "aria-label": undefined, appearance: "card", label: "Tronçon", description: "Une partie de la ligne.", state: "selected", iconElement: <span style={{ fontSize: 20 }}>◐</span> },
+  decorators: [(Story) => <div role="radiogroup" aria-label="Objet" style={{ maxWidth: 320 }}><Story /></div>],
+  play: async ({ canvasElement }) => {
+    await expect(within(canvasElement).getByRole("radio", { name: "Tronçon" })).toHaveClass("choice-card--active");
+    await expect(canvasElement.querySelector(".choice-card__icon")).toHaveAttribute("aria-hidden", "true");
+  },
+};

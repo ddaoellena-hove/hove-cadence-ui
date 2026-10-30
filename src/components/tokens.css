@@ -181,7 +181,7 @@
   --cadence-radius-md: 8px;    /* Contenus internes : body de TableCard */
   --cadence-radius-lg: 10px;   /* Champs et wrappers : inputs, cards */
   --cadence-radius-xl: 12px;   /* Conteneurs : counter-input, AppLayout */
-  --cadence-radius-2xl: 16px;  /* Modale, grandes cartes riches : RichCheckbox / RichRadioButton large */
+  --cadence-radius-2xl: 16px;  /* Modale, grandes cartes de choix */
   --cadence-radius-pill: 999px; /* Pilules et cercles : boutons, SearchInput, Toggle, halos ronds */
 
   /* ── Hauteurs de contrôle ─────────────────────────────────────────────────

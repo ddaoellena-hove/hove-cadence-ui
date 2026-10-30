@@ -41,7 +41,7 @@
   transform: translateY(-4px);
 }
 
-/* Sélectionnée : état coché de RichCheckbox — bordure foncée doublée
+/* Sélectionnée : bordure foncée doublée
    (repère non chromatique : épaisseur) et relief intérieur. Elle reste posée,
    sans se soulever : elle est déjà choisie. */
 .category-filter__tile--selected,
@@ -77,7 +77,7 @@
   transform: none;
 }
 
-/* Désactivée : état désactivé de RichCheckbox. */
+/* Désactivée. */
 .category-filter__tile:disabled {
   border-color: var(--cadence-color-border-strong, #bfc9cb);
   background: var(--cadence-color-border, #e5e5e5);

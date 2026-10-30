@@ -1,4 +1,6 @@
 import { useId, type KeyboardEvent, type ReactNode } from "react";
+import { Icons, type IconName } from "./Icons";
+import "./choice-card.css";
 import "./checkbox.css";
 
 export interface CheckboxProps {
@@ -18,6 +20,14 @@ export interface CheckboxProps {
   description?: string;
   /** Complément décoratif après le libellé (badge de ligne). Non interactif. */
   aside?: ReactNode;
+  /** Présentation avec `label` : "default" (ligne) ou "card" (carte de choix). */
+  appearance?: "default" | "card";
+  /** Taille de la carte. Défaut "md". */
+  size?: "md" | "lg";
+  /** Icône décorative de la carte. */
+  icon?: IconName;
+  /** Prioritaire sur `icon` : illustration ou pictogramme métier, décoratif. */
+  iconElement?: ReactNode;
 }
 
 /**
@@ -34,6 +44,10 @@ export const Checkbox = ({
   label,
   description,
   aside,
+  appearance = "default",
+  size = "md",
+  icon,
+  iconElement,
 }: CheckboxProps) => {
   const uid = useId();
   const isChecked = state === "checked" || state === "disabled-checked";
@@ -48,6 +62,9 @@ export const Checkbox = ({
     if (isDisabled) return;
     onChange?.(!(state === "checked"));
   };
+
+  const card = appearance === "card";
+  const visual = iconElement ?? (icon ? <Icons icon={icon} size={size === "lg" ? 24 : 16} /> : null);
 
   // Un seul rôle checkbox : avec libellé, il porte sur la ligne, et la case
   // dessinée reste décorative (annonce unique, clic sur le texte).
@@ -69,13 +86,20 @@ export const Checkbox = ({
     return (
       <div
         {...control}
-        className={`checkbox-row${isDisabled ? " checkbox-row--disabled" : ""}`}
+        className={[
+          "checkbox-row",
+          isDisabled ? "checkbox-row--disabled" : "",
+          card ? `choice-card choice-card--${size}` : "",
+          card && (isChecked || isIndeterminate) ? "choice-card--active" : "",
+          card && isDisabled ? "choice-card--disabled" : "",
+        ].filter(Boolean).join(" ")}
         aria-labelledby={`${uid}-label`}
         aria-describedby={description ? `${uid}-description` : undefined}
       >
         <div className={rootClass} aria-hidden="true">
           {hasInner && <div className={innerClass} />}
         </div>
+        {card && visual && <span className="choice-card__icon" aria-hidden="true">{visual}</span>}
         <span className="checkbox-row__text">
           <span id={`${uid}-label`} className="checkbox-row__label">{label}</span>
           {description && <span id={`${uid}-description`} className="checkbox-row__description">{description}</span>}
