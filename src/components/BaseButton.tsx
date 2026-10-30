@@ -76,6 +76,7 @@ export const BaseButton = forwardRef<HTMLButtonElement, BaseButtonProps>(
       icon,
       label,
       loading = false,
+      loadingPlacement = "center",
       disabled = false,
       fullWidth = false,
       type = "button",
@@ -89,6 +90,8 @@ export const BaseButton = forwardRef<HTMLButtonElement, BaseButtonProps>(
     const [tipUp, setTipUp] = useState(false);
     const iconOnly = icon !== undefined && !label;
     const iconSize = ICON_SIZE[size];
+    // Spinner dans l'emplacement de l'icône de début, libellé conservé
+    const spinnerAtStart = loading && !iconOnly && (Boolean(iconStart) || loadingPlacement === "start");
     const root = variant === "ghost" ? "ghost-button" : "primary-button";
     // Même contrôle pour les deux composants : pas de texte de repli
     const accessibleName = checkButtonContent(variant === "ghost" ? "GhostButton" : "PrimaryButton", {
@@ -104,7 +107,7 @@ export const BaseButton = forwardRef<HTMLButtonElement, BaseButtonProps>(
       variant === "outline" ? "primary-button--outline" : "",
       tone === "danger" ? `${root}--danger` : "",
       iconOnly ? "base-button--icon-only" : "",
-      !iconOnly && iconStart ? "base-button--icon-start" : "",
+      !iconOnly && (iconStart || spinnerAtStart) ? "base-button--icon-start" : "",
       !iconOnly && iconEnd ? "base-button--icon-end" : "",
       fullWidth ? "base-button--full-width" : "",
       loading ? "base-button--loading" : "",
@@ -139,11 +142,11 @@ export const BaseButton = forwardRef<HTMLButtonElement, BaseButtonProps>(
           loading ? <Spinner /> : renderIcon(icon)
         ) : (
           <>
-            {iconStart && (loading ? <Spinner /> : renderIcon(iconStart))}
+            {spinnerAtStart ? <Spinner /> : iconStart && renderIcon(iconStart)}
             {label && <span className="base-button__label">{label}</span>}
             {iconEnd && renderIcon(iconEnd)}
             {/* Sans icône de début : spinner centré, libellé masqué (largeur conservée) */}
-            {loading && !iconStart && (
+            {loading && !spinnerAtStart && (
               <span className="base-button__spinner-overlay" aria-hidden="true">
                 <Spinner />
               </span>
