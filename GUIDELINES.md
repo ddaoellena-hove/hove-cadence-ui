@@ -4430,6 +4430,7 @@ Journal technique ou extrait de fichier. Les messages sont du texte React échap
 | `placement` | `"auto" \| "top" \| "bottom"` | `"auto"` | Côté d'ouverture ; `"auto"` retourne au-dessus si la place manque |
 | `placement` | `"auto" \| "top" \| "bottom"` | `"auto"` | Côté d'ouverture ; `"auto"` retourne au-dessus si la place manque |
 | `placement` | `"auto" \| "top" \| "bottom"` | `"auto"` | Côté d'ouverture ; `"auto"` retourne au-dessus si la place manque |
+| `withTime` | `boolean` | `false` | Ajoute les heures. Dans le panneau, heures et validation sont à droite du calendrier, sous celui-ci à 560px de large ou moins |
 | `onInputStateChange` | `(state: "confirmed" \| "editing" \| "invalid") => void` | — | État de la saisie au clavier. Tant qu'il n'est pas `"confirmed"`, `value` ne reflète pas ce qui est affiché |
 | `clearable` / `onClear` | `boolean` / `() => void` | `false` / — | Valeur facultative : bouton d'effacement et cases vidées. `onChange` reçoit toujours une `Date` : l'app repasse `value` à `null` dans `onClear` |
 | `required` | `boolean` | `false` | Astérisque sur le libellé et `required` natif : en formulaire `noValidate` si l'app valide elle-même |

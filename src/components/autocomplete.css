@@ -75,7 +75,9 @@
   font-size: 13px;
   font-weight: 500;
   color: var(--cadence-color-primary, #002830);
-  line-height: normal;
+  /* Diatype déclare moins de descente que ses lettres n'en ont : « normal »
+     couperait le bas du g et du q */
+  line-height: 1.4;
 }
 
 .autocomplete__input::placeholder {

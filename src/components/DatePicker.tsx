@@ -425,7 +425,7 @@ export const DatePicker = forwardRef<HTMLElement, DatePickerProps>(({
       {open && (
         <div
           ref={popoverRef}
-          className="date-picker__popover"
+          className={`date-picker__popover${withTime ? " date-picker__popover--time" : ""}`}
           role="dialog"
           aria-label="Calendrier"
         >
@@ -443,7 +443,9 @@ export const DatePicker = forwardRef<HTMLElement, DatePickerProps>(({
               </div>
             )}
 
+          <div className="date-picker__panels">
           {/* ── Mois (calendrier partagé) ── */}
+          <div className="date-picker__calendar-panel">
           <CalendarMonth
             year={viewYear}
             month={viewMonth}
@@ -464,10 +466,11 @@ export const DatePicker = forwardRef<HTMLElement, DatePickerProps>(({
                   : false,
             })}
           />
+          </div>
 
-          {/* ── Time picker (only when withTime) ── */}
+          {/* ── Heures à droite du calendrier : le panneau reste court ── */}
           {withTime && (
-            <>
+            <div className="date-picker__time-panel">
               <div className="date-picker__time-section">
                 <TimeFields hour={String(hour).padStart(2, "0")} minute={String(minute).padStart(2, "0")}
                   onStep={(unit, direction) => unit === "hour" ? cycleHour(direction) : cycleMinute(direction * 15)} />
@@ -483,8 +486,9 @@ export const DatePicker = forwardRef<HTMLElement, DatePickerProps>(({
                   onClick={handleConfirm}
                 />
               </div>
-            </>
+            </div>
           )}
+          </div>
         </div>
       )}
     </div>
