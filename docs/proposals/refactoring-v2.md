@@ -91,7 +91,9 @@ Décisions proposées par l'audit :
 
 - [ ] **Fusionner** `DisruptionScopePicker` dans `ScopePicker`.
 - [ ] **À trancher** : déprécier `Gauge` au profit de `Meter`.
-- [ ] **À trancher** : déprécier `RichCheckbox`, au prix de la symétrie avec `RichRadioButton`.
+- [ ] **Décidé : retirer `RichCheckbox` et `RichRadioButton` en v2.** Remplacement : `Checkbox label` et `RadioButton label`, avec `description`. Datapilot a 5 usages de `RichRadioButton` à migrer, tous sans icône ; `size="large"` n'a pas d'équivalent.
+- [ ] Pour un choix avec icône ou illustration : `Card` n'a ni état sélectionné ni rôle `radio`. Si le besoin apparaît, lui ajouter une sélection ou écrire une composition.
+- [ ] Déprécier ces deux composants en 1.x (`@deprecated`), avant leur retrait.
 - [ ] **À réévaluer** : `TooltipTrigger`, sans usage produit.
 - [x] **Conserver** `Sparkline`, `Tooltip`, `SummaryList`, `DescriptionList`, `DataFreshness`.
 
@@ -167,3 +169,4 @@ Plusieurs exports ne servent aujourd'hui qu'à d'autres composants de la bibliot
 |---|---|
 | 30 octobre 2026 | Création de la liste |
 | 30 octobre 2026 | Audit d'usage fait ; projets 7, 8 et 9 précisés ; projets 11 à 13 ajoutés |
+| 30 octobre 2026 | Décision : retrait de `RichCheckbox` et `RichRadioButton` en v2 ; `RadioButton label` ajouté |
