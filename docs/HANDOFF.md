@@ -8,6 +8,8 @@
 
 - PR ouvertes : [#70](https://github.com/ddaoellena-hove/hove-cadence-ui/pull/70) (PageHero V2, vers `main`) et [#71](https://github.com/ddaoellena-hove/hove-cadence-ui/pull/71) (migration, empilée sur #70).
 - Branche `feat/overlays-placement`, depuis `feat/cadence-migration` : N2, E5, N1, E7, E6. Validé sous React 19 et 18 (1 048 tests, `tsc`) ; `build:lib`, `check:types` et `smoke:dist` sous React 19. Détail : [backlog](proposals/traffic-report-backlog.md).
+- Branche `feat/rich-text-repeatable`, depuis `feat/overlays-placement` : `RichTextEditor`, `RichTextContent`, `RepeatableFieldGroup`. Validé sous React 19 et 18 (1 066 tests, `tsc`).
+- Décisions N3 : format JSON restreint, pas de dépendance, `contentEditable` + `execCommand`, DOM relu par liste blanche, rendu React sans HTML injecté. `userEvent` ne frappe pas dans un `contentEditable` : les stories utilisent `insertText`. Testé sous Chromium seulement.
 - Décisions : retournement vertical dans `usePopoverFit`, sans portail ; `onChange` de `DatePicker` reste typé `Date` (`onClear` à part) ; contrat calqué sur `TimePicker`.
 
 ## Mise à jour — 30 octobre 2026 : migration Traffic Report

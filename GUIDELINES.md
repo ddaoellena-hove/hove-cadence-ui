@@ -377,6 +377,8 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Message persistant dans la page | `InlineAlert` | `Toaster` (notification éphémère) |
 | Sections dépliables | `Accordion` | `TabList` (navigation) |
 | Étapes d'un import ou formulaire | `Stepper` | `ProgressBar` (avancement d'un traitement) |
+| Texte long avec mise en forme (gras, listes, liens) | `RichTextEditor` ; `RichTextContent` pour l'afficher | `TextArea` si le texte simple suffit ; jamais de HTML stocké |
+| Blocs de champs répétés (périodes, créneaux, canaux) | `RepeatableFieldGroup` | une liste indexée recomposée à la main |
 | Libellé, aide et erreur d'un contrôle sans libellé propre | `FormField` | un `<label>` et un paragraphe d'erreur à la main |
 | Étapes dans un pied d'actions | `Stepper density="compact"` | une rangée de `GhostButton` recomposée |
 | Actions toujours visibles d'un formulaire long | `AppLayout footer` + `FormActions` | un pied en `position: fixed` calé sur la `Sidebar` |
@@ -753,6 +755,7 @@ Les anciennes API de boutons (0.2) et les composants dépréciés sont **supprim
 |---|---|
 | `TextInput` | Texte libre — nom, description. Pour une recherche à côté de filtres ou de boutons : `SearchInput`. |
 | `TextArea` | Texte long multi-lignes — descriptions, commentaires. |
+| `RichTextEditor` | Texte long avec gras, italique, listes et liens. |
 | `CounterInput` | Valeur numérique bornée avec +/−. |
 | `Dropdown` | Choix parmi une liste fixe et courte (3 à ~10 options). |
 | `Autocomplete` | Choix dans une longue liste, avec recherche au clavier. Sélection simple ou multiple (`multiple`). |
@@ -3010,6 +3013,51 @@ Libellé, aide et erreur d'un contrôle qui n'en porte pas. Les champs Cadence o
 
 - ⚠️ Avec un contenu direct, nommer chaque case (`aria-label`).
 - ❌ Ne pas envelopper `TextInput`, `Dropdown`, `DatePicker` ou un autre champ Cadence.
+
+### RepeatableFieldGroup
+
+Blocs de champs répétés : ajout, retrait, limites, erreur par bloc, focus et annonces. Valeurs et règles restent au formulaire.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `label` | `string` | **requis** | Nom du groupe, annoncé |
+| `items` | `T[]` | **requis** | Blocs |
+| `getId` | `(item) => string` | **requis** | Identifiant stable, jamais un index |
+| `getTitle` | `(item, index) => string` | **requis** | Titre affiché ; la numérotation n'est qu'une présentation |
+| `renderItem` | `(item, index) => ReactNode` | **requis** | Champs du bloc |
+| `onAdd` / `onRemove` | `() => void` / `(id) => void` | **requis** | L'app modifie `items` |
+| `getError` | `(item) => string \| undefined` | — | Erreur propre au bloc |
+| `min` / `max` | `number` | `0` / — | Limites : retrait ou ajout désactivé, compteur annoncé avec `max` |
+| `addLabel` | `string` | `"Ajouter"` | Bouton d'ajout |
+| `headingLevel` | `3 \| 4` | `3` | Niveau du titre des blocs |
+| `className` | `string` | — | — |
+
+- ✅ Après un ajout, le focus va au premier champ du nouveau bloc. Après un retrait, au bloc qui prend sa place, sinon au bouton d'ajout. Un changement d'`items` venu du parent ne déplace pas le focus.
+- ❌ Pas d'index dans `getId` : un retrait transférerait valeurs et erreurs au bloc suivant.
+
+### RichTextEditor
+
+Saisie de texte enrichi : paragraphes, gras, italique, listes à un niveau, liens, annuler et rétablir. `Ctrl`/`Cmd` + `K` pour un lien.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `label` | `string` | **requis** | Libellé |
+| `value` | `RichTextDocument` | **requis** | Document contrôlé ; `{ blocks: [] }` pour un champ vide |
+| `onChange` | `(value) => void` | — | À chaque saisie |
+| `placeholder` / `helperText` / `error` | `string` | — | Erreur prioritaire sur l'aide |
+| `required` | `boolean` | `false` | Marque le libellé. La validation reste à l'app |
+| `maxLength` | `number` | — | Compteur. ⚠️ Ne bloque pas la saisie : l'app valide le dépassement |
+| `disabled` / `readOnly` | `boolean` | `false` | `readOnly` : contenu seul, sans barre d'outils |
+| `className` | `string` | — | Ref transmise à la zone éditable |
+
+**Format stocké** : `RichTextDocument`, un JSON de paragraphes et de listes (`{ text, bold?, italic?, href? }`). Jamais de HTML. Utilitaires exportés : `richTextToPlainText` (canaux sans mise en forme), `plainTextToRichText`, `richTextLength`, `isRichTextEmpty`, `safeHref`.
+
+`RichTextContent` (`value`, `className`) affiche un document sans éditeur.
+
+- ✅ Le collage ne garde que paragraphes, listes, gras, italique et liens ; le reste est réduit à son texte. Listes imbriquées aplaties, images retirées.
+- ✅ Liens limités à `http`, `https` et `mailto`, vérifiés à la saisie, au collage et au rendu.
+- ⚠️ Fondé sur `contentEditable` et `document.execCommand`, seul moyen de garder l'annulation native. Cette API est dépréciée, bien que toujours prise en charge : testé sous Chromium uniquement à ce jour.
+- ❌ Ne pas injecter un document dans du HTML : afficher avec `RichTextContent`.
 
 ### FormActions
 

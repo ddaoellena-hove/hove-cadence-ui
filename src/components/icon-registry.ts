@@ -1,4 +1,9 @@
 import { Translate01 } from "./icon-translate";
+import { Bold01 } from "@untitledui/icons/Bold01";
+import { Dotpoints01 } from "@untitledui/icons/Dotpoints01";
+import { Italic01 } from "@untitledui/icons/Italic01";
+import { ReverseLeft } from "@untitledui/icons/ReverseLeft";
+import { ReverseRight } from "@untitledui/icons/ReverseRight";
 import { Database01 } from "@untitledui/icons/Database01";
 import { LayersThree01 } from "@untitledui/icons/LayersThree01";
 import { ShieldTick } from "@untitledui/icons/ShieldTick";
@@ -129,6 +134,11 @@ import { Walk } from "./icon-walk";
 export type IconComponent = FC<SVGProps<SVGSVGElement> & { size?: number; color?: string }>;
 
 export const ICONS = {
+  "bold-01": Bold01 as IconComponent,
+  "dotpoints-01": Dotpoints01 as IconComponent,
+  "italic-01": Italic01 as IconComponent,
+  "reverse-left": ReverseLeft as IconComponent,
+  "reverse-right": ReverseRight as IconComponent,
   "translate-01": Translate01 as IconComponent,
   "database": Database01 as IconComponent,
   "layers": LayersThree01 as IconComponent,
