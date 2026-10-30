@@ -1,4 +1,5 @@
 import { Translate01 } from "./icon-translate";
+import { LinkExternal01 } from "@untitledui/icons/LinkExternal01";
 import { Bold01 } from "@untitledui/icons/Bold01";
 import { Dotpoints01 } from "@untitledui/icons/Dotpoints01";
 import { Italic01 } from "@untitledui/icons/Italic01";
@@ -134,6 +135,7 @@ import { Walk } from "./icon-walk";
 export type IconComponent = FC<SVGProps<SVGSVGElement> & { size?: number; color?: string }>;
 
 export const ICONS = {
+  "link-external-01": LinkExternal01 as IconComponent,
   "bold-01": Bold01 as IconComponent,
   "dotpoints-01": Dotpoints01 as IconComponent,
   "italic-01": Italic01 as IconComponent,

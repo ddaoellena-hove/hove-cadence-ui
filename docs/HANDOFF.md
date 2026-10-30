@@ -19,6 +19,11 @@
 - `bodyPadding="all"` (20px) ajouté ; gabarits passés dessus ; `RepeatableFieldGroup` reste en `surface="none"` ; `DataTable` perd son cadre dans la surface.
 - ⚠️ Traffic Report : toute `PageSection` sans `surface` change de rendu, à vérifier avant fusion.
 
+## Mise à jour — 30 octobre 2026 : barre d'actions et pied de site
+
+- `AppLayout footer` renommée `actionBar`, avant toute publication : le nom prêtait à confusion avec un pied de site. `PageFooter` ajouté pour ce besoin.
+- ⚠️ Traffic Report embarque encore `footer` et `footerPadding` (`app.jsx`) : à renommer lors de sa prochaine synchronisation.
+
 ## Mise à jour — 30 octobre 2026 : retours sur les champs et boutons
 
 - Branche `fix/retours-champs-boutons`, depuis `main` (#70 à #75 fusionnées). `GhostButton` 600, heures de `DatePicker` à droite, `line-height` 1.4 sur `TextInput` et `Autocomplete`.

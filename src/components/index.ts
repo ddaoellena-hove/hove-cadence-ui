@@ -37,6 +37,7 @@ export * from './ModeFilter';
 export * from './CategoryFilter';
 export * from './Indicator';
 export * from './PageHeader';
+export * from './PageFooter';
 export * from './PageSection';
 export * from './FieldRow';
 export * from './FormActions';

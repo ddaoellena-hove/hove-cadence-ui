@@ -7,6 +7,7 @@ import { Icons } from "./Icons";
 import { PrimaryButton } from "./PrimaryButton";
 import { Card } from "./Card";
 import { PageHeader } from "./PageHeader";
+import { PageFooter } from "./PageFooter";
 import { PageSection } from "./PageSection";
 import { TextInput } from "./TextInput";
 import { GhostButton } from "./GhostButton";
@@ -165,17 +166,17 @@ export const ContenuLarge: Story = {
   },
 };
 
-/** Formulaire long : corps défilant, actions persistantes hors du scroll, toasts au-dessus du pied. */
-export const PiedPersistant: Story = {
-  name: "Pied persistant",
+/** Formulaire long : corps défilant, actions persistantes hors du scroll, toasts au-dessus de la barre. */
+export const BarreActions: Story = {
+  name: "Barre d'actions",
   render: function Render() {
     const { toast } = useToast();
     return (
       <>
         <AppLayout
           sidebar={<AppSidebar product="traffic-report" />}
-          footerPadding="none"
-          footer={
+          actionBarPadding="none"
+          actionBar={
             <>
               <ProgressBar aria-label="Position dans le parcours" value={50} />
               <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "12px var(--cadence-page-padding-inline, 32px)" }}>
@@ -211,17 +212,17 @@ export const PiedPersistant: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const footer = canvasElement.querySelector<HTMLElement>(".app-layout__footer")!;
+    const actionBar = canvasElement.querySelector<HTMLElement>(".app-layout__action-bar")!;
     const scroll = canvasElement.querySelector<HTMLElement>(".app-layout__scroll")!;
 
-    // Le pied suit le conteneur et n'appartient pas à la zone qui défile
-    await expect(scroll.contains(footer)).toBe(false);
+    // La barre suit le conteneur et n'appartient pas à la zone qui défile
+    await expect(scroll.contains(actionBar)).toBe(false);
     await expect(scroll.scrollHeight).toBeGreaterThan(scroll.clientHeight);
-    const top = footer.getBoundingClientRect().top;
+    const top = actionBar.getBoundingClientRect().top;
     scroll.scrollTop = scroll.scrollHeight;
-    await expect(footer.getBoundingClientRect().top).toBe(top);
+    await expect(actionBar.getBoundingClientRect().top).toBe(top);
 
-    // Dernier champ atteignable, non recouvert par le pied
+    // Dernier champ atteignable, non recouvert par la barre
     const last = canvas.getByLabelText("Champ 6");
     await expect(last.getBoundingClientRect().bottom).toBeLessThanOrEqual(top);
 
@@ -233,5 +234,29 @@ export const PiedPersistant: Story = {
       return el;
     });
     await waitFor(() => expect(toaster.getBoundingClientRect().bottom).toBeLessThanOrEqual(top));
+  },
+};
+
+/** Pied de site : à la fin de la page, il défile avec elle, à la différence de la barre d'actions. */
+export const AvecPiedDePage: Story = {
+  name: "Avec pied de page",
+  render: () => (
+    <AppLayout sidebar={<AppSidebar />}>
+      <PageContent />
+      <PageFooter
+        copyright="© 2026 Hove · Tous droits réservés"
+        links={[{ label: "Support", href: "https://www.hove.com/", external: true }]}
+      />
+    </AppLayout>
+  ),
+  play: async ({ canvasElement }) => {
+    const scroll = canvasElement.querySelector<HTMLElement>(".app-layout__scroll")!;
+    const footer = canvasElement.querySelector<HTMLElement>(".page-footer")!;
+    await expect(scroll.contains(footer)).toBe(true);
+    // Page courte : calé en bas, bord à bord, sans défilement horizontal
+    const box = scroll.getBoundingClientRect();
+    await expect(Math.round(footer.getBoundingClientRect().bottom)).toBe(Math.round(box.bottom));
+    await expect(Math.round(footer.getBoundingClientRect().left)).toBe(Math.round(box.left));
+    await expect(scroll.scrollWidth).toBeLessThanOrEqual(scroll.clientWidth);
   },
 };

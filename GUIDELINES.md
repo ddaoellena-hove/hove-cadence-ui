@@ -381,7 +381,8 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Blocs de champs répétés (périodes, créneaux, canaux) | `RepeatableFieldGroup` | une liste indexée recomposée à la main |
 | Libellé, aide et erreur d'un contrôle sans libellé propre | `FormField` | un `<label>` et un paragraphe d'erreur à la main |
 | Étapes dans un pied d'actions | `Stepper density="compact"` | une rangée de `GhostButton` recomposée |
-| Actions toujours visibles d'un formulaire long | `AppLayout footer` + `FormActions` | un pied en `position: fixed` calé sur la `Sidebar` |
+| Pied de site : copyright, liens, contact | `PageFooter` | `AppLayout actionBar`, réservée aux actions de la tâche |
+| Actions toujours visibles d'un formulaire long | `AppLayout actionBar` + `FormActions` | un pied en `position: fixed` calé sur la `Sidebar` |
 | Déposer/sélectionner des fichiers | `FileUpload` | L'app assure l'envoi et la validation métier |
 | Progression déterminée ou indéterminée | `ProgressBar` | `Gauge`, `Meter` (mesure, pas un traitement) |
 | Proportion unique, objectif | `Gauge` | `Card` (KPI chiffré) |
@@ -537,9 +538,9 @@ Tester les menus et calendriers ouverts dans leur contexte réel : carte, accord
 - ⚠️ Le retournement ne sort pas du conteneur : si le panneau ne tient d'aucun côté (carte basse en `overflow: hidden`), il reste dessous et reste coupé.
 - ❌ Ne pas retirer globalement un `overflow` nécessaire à une transition : limiter le correctif à l'état ouvert.
 
-### Pied d'actions persistant
+### Barre d'actions persistante
 
-Pour un formulaire long, utiliser `footer` d'[`AppLayout`](#applayout) : le contenu défile, les actions restent dans le cadre et suivent la largeur de la `Sidebar`. Les toasts se placent au-dessus du pied. `FormActions` compose les boutons, sans gérer la page.
+Pour un formulaire long, utiliser `actionBar` d'[`AppLayout`](#applayout) : le contenu défile, les actions restent dans le cadre et suivent la largeur de la `Sidebar`. Les toasts se placent au-dessus du pied. `FormActions` compose les boutons, sans gérer la page.
 
 ---
 
@@ -1096,7 +1097,7 @@ Une `Card` est **interactive** de deux façons :
 ### Règles
 
 - ✅ Les toasts s'affichent via le **`Toaster`** : monter un seul `<Toaster />` à la racine de l'app, puis déclencher avec `useToast()`. Ne pas instancier `AlertToast` à la main dans le flux.
-- ✅ Position : **bas à droite**, en `position: fixed`, au-dessus du `footer` d'`AppLayout` s'il existe. Empilement avec effet de profondeur (la plus récente au premier plan) ; au survol, la pile se déploie.
+- ✅ Position : **bas à droite**, en `position: fixed`, au-dessus de l'`actionBar` d'`AppLayout` s'il existe. Empilement avec effet de profondeur (la plus récente au premier plan) ; au survol, la pile se déploie.
 - ✅ `success` / `information` / `warning` : auto-dismiss après 4 s (géré par le `Toaster`, en pause au survol). `error` : reste jusqu'à fermeture manuelle.
 - ✅ Max 3 toasts simultanés (le `Toaster` retire les plus anciens au-delà).
 - ✅ Boutons d'action d'un toast : **faible emphase** — `GhostButton` (secondaire) + `PrimaryButton outline` (principale). **Jamais de bouton rempli** : exception assumée à la règle « groupe de deux = outline + rempli », justifiée par le contexte transitoire et non bloquant du toast.
@@ -1796,8 +1797,8 @@ Squelette d'application : la `Sidebar` à gauche et le contenu de la page dans u
 | `sidebar` | `ReactNode` | **requis** | La `Sidebar` de l'app |
 | `children` | `ReactNode` | **requis** | Contenu de la page |
 | `contentLabel` | `string` | `"Contenu principal"` | Nom accessible de la zone `<main>` |
-| `footer` | `ReactNode` | — | Pied persistant : hors de la zone qui défile, dans le conteneur. Sa hauteur mesurée décale les toasts |
-| `footerPadding` | `"default" \| "none"` | `"default"` | `"none"` : l'app gère ses marges (progression bord à bord). Par défaut `12px` et `--cadence-page-padding-inline`, compact sous 760px |
+| `actionBar` | `ReactNode` | — | Barre d'actions persistante : hors de la zone qui défile, dans le conteneur. Sa hauteur mesurée décale les toasts. ❌ Pas un pied de site : utiliser [`PageFooter`](#pagefooter) |
+| `actionBarPadding` | `"default" \| "none"` | `"default"` | `"none"` : l'app gère ses marges (progression bord à bord). Par défaut `12px` et `--cadence-page-padding-inline`, compact sous 760px |
 | `className` | `string` | — | — |
 
 ⚠️ Le fond de l'app reprend la couleur produit de la `Sidebar` passée dans `sidebar` (datahub par défaut). Il est lu par CSS (`:has()`) : pas de prop `product` à dupliquer.
@@ -2969,6 +2970,29 @@ En-tête de page : titre (`<h1>`, display 22px), sous-titre et actions sur une l
 ```tsx
 <PageHeader title="Catalogue" tabs={tabs} tabsActions={createAction} />
 ```
+
+### PageFooter
+
+Pied de site : copyright, liens et contact. Placé en dernier dans la page, il défile avec elle. Dans `AppLayout`, il va bord à bord et se cale en bas d'une page courte.
+
+| Prop | Type | Défaut | Description |
+|---|---|---|---|
+| `copyright` | `string` | **requis** | « © 2026 Hove · Tous droits réservés » |
+| `links` | `PageFooterLink[]` | — | `{ label, href, external? }`. `external` : nouvel onglet, icône, et annonce aux lecteurs d'écran |
+| `className` | `string` | — | — |
+
+```tsx
+<PageFooter
+  copyright="© 2026 Hove · Tous droits réservés"
+  links={[
+    { label: "Questions fréquentes", href: "https://…", external: true },
+    { label: "Par mail", href: "mailto:…" },
+    { label: "+33 (0) 809 40 02 95", href: "tel:+33809400295" },
+  ]}
+/>
+```
+
+- ❌ Pas d'action de la tâche en cours : `AppLayout actionBar`.
 
 ### PageSection
 

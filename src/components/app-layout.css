@@ -64,9 +64,9 @@
   position: relative;
 }
 
-/* Pied persistant : frère de la zone qui défile, il suit la largeur du conteneur.
+/* Barre d'actions persistante : frère de la zone qui défile, il suit la largeur du conteneur.
    Positionné au-dessus d'elle pour qu'un menu ouvert vers le haut la recouvre. */
-.app-layout__footer {
+.app-layout__action-bar {
   background: var(--cadence-color-white, #ffffff);
   border-top: 1px solid var(--cadence-color-divider, #f0f0f0);
   box-sizing: border-box;
@@ -77,12 +77,12 @@
   z-index: 1;
 }
 
-.app-layout__footer--flush {
+.app-layout__action-bar--flush {
   padding: 0;
 }
 
 @media (max-width: 760px) {
-  .app-layout__footer:not(.app-layout__footer--flush) {
+  .app-layout__action-bar:not(.app-layout__action-bar--flush) {
     padding-inline: var(--cadence-page-padding-inline-compact, 16px);
   }
 }
