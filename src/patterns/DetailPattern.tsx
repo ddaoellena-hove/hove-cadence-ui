@@ -28,7 +28,7 @@ export const DetailPattern = () => {
       </TabList>
 
       {tab === "infos" ? (
-        <PageSection title="Informations">
+        <PageSection bodyPadding="all" title="Informations">
           <DescriptionList aria-label="Détail de la perturbation" items={[
             { id: "line", label: "Ligne", value: <LineBadge code="1" mode="metro" /> },
             { id: "type", label: "Type", value: "Travaux planifiés" },
@@ -37,7 +37,7 @@ export const DetailPattern = () => {
           ]} />
         </PageSection>
       ) : (
-        <PageSection title="Historique d'activité">
+        <PageSection bodyPadding="all" title="Historique d'activité">
           <ActivityFeed aria-label="Historique de la perturbation" timeZone="Europe/Paris" items={[
             { id: "pub", title: "Message voyageurs publié", date: new Date("2026-06-11T07:00:00Z"), author: "Camille Martin", tone: "success" },
             { id: "cre", title: "Travaux programmés", date: new Date("2026-06-10T14:00:00Z"), author: "Alex Dupont" },

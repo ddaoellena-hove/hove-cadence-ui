@@ -89,6 +89,7 @@ export const RepeatableFieldGroup = <T,>({
             return (
               <li key={id} className={`repeatable-group__item${error ? " repeatable-group__item--error" : ""}`}>
                 <PageSection
+                  surface="none"
                   title={title}
                   headingLevel={headingLevel}
                   gap={16}

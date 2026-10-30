@@ -45,7 +45,7 @@ export const PeriodesCreneauxPattern = () => {
         options={[{ value: "periods", label: "Périodes continues" }, { value: "slots", label: "Créneaux récurrents" }]}
       />
 
-      <PageSection title={mode === "periods" ? "Périodes" : "Créneaux"} description={mode === "slots" ? "Une heure de fin plus tôt que le début désigne le lendemain." : undefined}>
+      <PageSection bodyPadding="all" title={mode === "periods" ? "Périodes" : "Créneaux"} description={mode === "slots" ? "Une heure de fin plus tôt que le début désigne le lendemain." : undefined}>
       {mode === "periods" ? (
         <RepeatableFieldGroup
           label="Périodes"
@@ -100,7 +100,7 @@ export const PeriodesCreneauxPattern = () => {
       </PageSection>
 
       {mode === "slots" && (
-        <PageSection title="Récapitulatif">
+        <PageSection bodyPadding="all" title="Récapitulatif">
           <DescriptionList aria-label="Créneaux saisis" items={slots.map((slot, index) => ({ id: slot.id, label: `Créneau ${index + 1}`, value: describeSlot(slot) }))} />
         </PageSection>
       )}

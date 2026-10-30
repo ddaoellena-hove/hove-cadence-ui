@@ -11,7 +11,7 @@ export const EtatsPattern = ({ state = "empty" }: { state?: PageState } = {}) =>
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
         <PageHeader title="Perturbations" subtitle="Chargement…" />
-        <PageSection title="Perturbations en cours">
+        <PageSection bodyPadding="all" title="Perturbations en cours">
           <Skeleton variant="rect" height={48} />
           <Skeleton variant="rect" height={48} />
           <Skeleton variant="rect" height={48} />

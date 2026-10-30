@@ -76,12 +76,12 @@ export const MessagesCanauxPattern = () => {
       )}
 
       {smsPreview && (
-        <PageSection title="Aperçu SMS">
+        <PageSection bodyPadding="all" title="Aperçu SMS">
           <p style={{ margin: 0, whiteSpace: "pre-wrap" }}>{smsPreview}</p>
         </PageSection>
       )}
 
-      <PageSection title="Traductions">
+      <PageSection bodyPadding="all" title="Traductions">
       <RepeatableFieldGroup
         label="Traductions"
         items={translations}

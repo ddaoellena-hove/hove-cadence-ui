@@ -23,12 +23,12 @@ export const ParametresPattern = () => {
     <div style={{ display: "flex", flexDirection: "column", gap: 32, maxWidth: 720 }}>
       <PageHeader title="Paramètres" subtitle="Préférences de notification du réseau." />
 
-      <PageSection title="Notifications" description="À effet immédiat.">
+      <PageSection bodyPadding="all" title="Notifications" description="À effet immédiat.">
         <Row title="Notifications par e-mail" description="Un e-mail à chaque nouvelle perturbation critique."
           control={<Toggle state={emailOn ? "active" : "default"} aria-label="Notifications par e-mail" onChange={setEmailOn} />} />
       </PageSection>
 
-      <PageSection title="Fréquence du récapitulatif">
+      <PageSection bodyPadding="all" title="Fréquence du récapitulatif">
         <Row title="Quotidien" description="Un récapitulatif chaque matin."
           control={<RadioButton state={digest === "daily" ? "selected" : "default"} aria-label="Récapitulatif quotidien" onChange={() => setDigest("daily")} />} />
         <Row title="Hebdomadaire" description="Un récapitulatif le lundi."
