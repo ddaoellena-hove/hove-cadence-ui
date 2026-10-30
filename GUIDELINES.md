@@ -39,6 +39,7 @@ Règles impératives pour générer du code avec ce design system :
 9. **Toujours passer `label`** sur les champs de formulaire (`TextInput`, `TextArea`, `Dropdown`, `DatePicker`, `DateRangePicker`, `CounterInput`, `TimePicker`). Exception, qui prend `aria-label` à la place : la variante bouton (`variant="button"` de `DatePicker`, `DateRangePicker`, `Dropdown`, `TimePicker`), notamment pour les filtres rapides d'une `FilterBar`.
 10. **Imports** : composants depuis `@ddaoellena/cadence-ui`, styles via un unique `import "@ddaoellena/cadence-ui/style.css"`, polices via les `<link>` de la section [Installation](#installation--setup).
 11. **Libellés en français correct, accents UTF-8 obligatoires.** Tout texte visible (labels, titres, boutons, placeholders, messages) s'écrit avec ses accents — jamais de français « aplati » en ASCII. Les fichiers source sont en UTF-8 : `é è ê à ç û É À` s'écrivent tels quels, sans entité HTML ni échappement unicode.
+12. **Migrer une maquette, une capture ou un prototype** : avant de coder, inventorier zones et états, choisir un pattern, décider pour chaque zone (réutiliser, composer, spécifique justifié), vérifier les API, puis composer et tester. Procédure complète : [guide de migration](docs/MIGRATION-TO-CADENCE.md). Toute exception porte une justification et une portée projet.
 
 ### Rédaction des libellés français
 
@@ -67,7 +68,9 @@ Règles impératives pour générer du code avec ce design system :
 npm install @ddaoellena/cadence-ui
 ```
 
-Prérequis : `react` et `react-dom` 18 ou 19 (dépendances paires). Les icônes (`@untitledui/icons`), `@tanstack/react-table`, `@tanstack/react-virtual` et les modules `d3-*` sont des dépendances du paquet, installées avec lui et laissées hors du bundle. Migration depuis une 0.x : guide en tête du `CHANGELOG.md`.
+Prérequis : `react` et `react-dom` 18 ou 19 (dépendances paires). Les icônes (`@untitledui/icons`), `@tanstack/react-table`, `@tanstack/react-virtual` et les modules `d3-*` sont des dépendances du paquet, installées avec lui et laissées hors du bundle. Migration depuis une 0.x : guide en tête du `CHANGELOG.md`. Migration d'une maquette ou d'un prototype : [guide dédié](docs/MIGRATION-TO-CADENCE.md).
+
+Un produit peut consommer le paquet publié, un checkout local ou une copie embarquée. Noter laquelle, avec sa révision : la version du manifeste ne dit pas ce qui est publié sur npm.
 
 ### 1. Importer les styles (une seule fois, à la racine)
 
@@ -265,6 +268,7 @@ Trois polices, chacune réservée à un rôle précis. Ne pas les substituer.
 - ✅ Utiliser le token `--cadence-font-sans` (ABC Diatype) pour tout texte d'interface — c'est déjà la police par défaut de tous les composants.
 - ✅ Utiliser le token `--cadence-font-display` pour les `<h1>` de page.
 - ✅ Utiliser `--cadence-font-mono` uniquement pour les valeurs numériques affichées (codes, identifiants, axes de graphiques).
+- ✅ Les titres internes d'un formulaire restent en `--cadence-font-sans`, même en `h2` ou `h3` : le niveau HTML ne décide pas de la police, et `PageSection` l'applique déjà.
 - ❌ Ne jamais utiliser une police système ou une autre police web.
 - ❌ Ne pas utiliser la display pour du texte courant — réservée aux titres.
 - ❌ Ne pas utiliser la mono pour des labels ou du texte d'interface.
@@ -320,6 +324,7 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Fraîcheur d'une donnée (dernière mise à jour, péremption) | `DataFreshness` | `Indicator` (statut métier, pas temporel) ; `ActivityFeed` (journal d'événements horodatés) |
 | En-tête de page (titre, sous-titre, actions), collé en haut au défilement | `PageHeader` | `<h1>` à la main |
 | Section de page (titre `h2`, description, actions) | `PageSection` | un `<section>` + `<h2>` en style inline |
+| Section principale d'un formulaire ou d'un tableau de bord, titre hors de la boîte | `PageSection surface="elevated"` | une `Card` ou une ombre appliquée à la main |
 | Section d'écran en carte (filet sous l'en-tête, liste ou tableau bord à bord) | `PageSection surface="card"` | un padding et un filet ajoutés à `.page-section__head` depuis l'app ; une `Card` (pas de titre `h2` ni d'actions d'en-tête) |
 | Rangée de champs à largeurs égales, alignés par le bas | `FieldRow` | `<div style="display:flex;gap:12">` + `flex:1` à la main |
 | Barre d'actions de formulaire (à droite, ordre `Link` → `Ghost` → `Primary`) | `FormActions` | un `<div>` `justify-content:flex-end` à la main |
@@ -372,6 +377,8 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Message persistant dans la page | `InlineAlert` | `Toaster` (notification éphémère) |
 | Sections dépliables | `Accordion` | `TabList` (navigation) |
 | Étapes d'un import ou formulaire | `Stepper` | `ProgressBar` (avancement d'un traitement) |
+| Étapes dans un pied d'actions | `Stepper density="compact"` | une rangée de `GhostButton` recomposée |
+| Actions toujours visibles d'un formulaire long | `AppLayout footer` + `FormActions` | un pied en `position: fixed` calé sur la `Sidebar` |
 | Déposer/sélectionner des fichiers | `FileUpload` | L'app assure l'envoi et la validation métier |
 | Progression déterminée ou indéterminée | `ProgressBar` | `Gauge`, `Meter` (mesure, pas un traitement) |
 | Proportion unique, objectif | `Gauge` | `Card` (KPI chiffré) |
@@ -404,6 +411,8 @@ Table de correspondance : ce que l'interface doit faire → le composant à util
 | Présence binaire par exécution | `PresenceStrip` | `Sparkline` pour une mesure continue |
 | Journal technique ou extrait de fichier | `LogViewer` | `ValidationIssueInspector` pour expliquer un constat métier |
 | Icône seule | `Icons` | — |
+
+La ressemblance ne suffit pas : un composant convient s'il représente la même information et le même comportement. `LineDiagram` supervise des véhicules et ne remplace pas un schéma de ruptures ; un pictogramme officiel ne remplace pas forcément une illustration animée. Décider **réutiliser**, **composer** ou **spécifique justifié** ([méthode](docs/MIGRATION-TO-CADENCE.md#4-construire-la-matrice-de-mapping)).
 
 ---
 
@@ -438,6 +447,8 @@ Ces valeurs ne sont pas des tokens CSS : ce sont les largeurs fixées par `sideb
 - ✅ Le layout (flex, grid, gap, margins) se fait en style inline ou CSS applicatif — c'est le seul CSS custom autorisé.
 - ✅ La zone de contenu n'a pas de `max-width` : elle occupe toute la largeur du conteneur d'`AppLayout`.
 - ✅ Largeurs de contenu : les formulaires sont limités à `max-width: 720px` (à l'intérieur de la zone de contenu) ; les listes, tableaux et tableaux de bord prennent toute la largeur.
+- ✅ Distinguer largeur de page et largeur de lecture : une page peut occuper toute la largeur tandis que ses champs restent contenus.
+- ✅ `FieldRow` pour des parts égales ; une proportion voulue (2:1) reste une grille applicative, à déclarer dans le mapping.
 - ❌ Pas de largeur fixe en px sur les conteneurs de page (grille de `Card`, graphiques, `TableCard`, `DataTable`) : ils doivent s'étendre quand la Sidebar se replie.
 - ❌ Ne pas inventer de valeurs d'espacement hors échelle (pas de `gap: 7px` ou `padding: 13px`).
 
@@ -506,6 +517,25 @@ Le multi-colonnes est un outil de **densité locale**, pas un outil de **découp
 
 **Test pour distinguer panneau et sous-bloc :** un bloc qui possède son propre titre de niveau page/section **et** sa propre finalité (saisir / vérifier) est un *panneau de premier niveau* → il s'empile. Un bloc qui n'est qu'un regroupement de champs *à l'intérieur* d'une section est un *sous-bloc* → il peut passer en colonnes. Critère mécanique : le conteneur de page est `flexDirection: "column"` ; le seul `flexDirection: "row"` autorisé est **à l'intérieur** d'une `<section>`.
 
+### Menus, calendriers et conteneurs
+
+Tester les menus et calendriers ouverts dans leur contexte réel : carte, accordéon, zone défilante, surcouche. Un `z-index` élevé n'annule pas l'`overflow` d'un ancêtre.
+
+| Contexte | Comportement |
+|---|---|
+| `PageSection surface="elevated"` | Ne coupe pas les menus |
+| `Accordion` ouvert | Ne coupe pas les menus. Fermé, il masque son contenu |
+| `PageSection surface="card"` | ⚠️ `overflow: hidden` : coupe un menu qui dépasse |
+| Zone défilante d'`AppLayout` | ⚠️ Coupe ce qui dépasse en bas : `Dropdown`, `DatePicker`, `DateRangePicker` et `TimePicker` s'ouvrent vers le bas, sans se retourner |
+| `Popover`, `ActionMenu`, `ExportMenu`, `ColumnManager` | En portail, retournés au-dessus du déclencheur si la place manque |
+
+- ✅ Lire toute la chaîne d'ancêtres : deux conteneurs différents peuvent couper le même menu.
+- ❌ Ne pas retirer globalement un `overflow` nécessaire à une transition : limiter le correctif à l'état ouvert.
+
+### Pied d'actions persistant
+
+Pour un formulaire long, utiliser `footer` d'[`AppLayout`](#applayout) : le contenu défile, les actions restent dans le cadre et suivent la largeur de la `Sidebar`. Les toasts se placent au-dessus du pied. `FormActions` compose les boutons, sans gérer la page.
+
 ---
 
 ## Boutons
@@ -544,6 +574,8 @@ Le multi-colonnes est un outil de **densité locale**, pas un outil de **découp
 - ❌ Pas de bouton bleu plein : `--cadence-color-accent` est réservé aux états (sélection, élément actif), jamais à une action.
 
 ### Taille selon le contexte
+
+Un écart de densité décidé par un produit (boutons `sm` dans un formulaire) est consigné comme exception de ce projet ; il ne remplace pas la règle ci-dessous.
 
 La taille ne porte **pas de sens** : elle suit le contexte, pas l'importance de l'action (l'importance, c'est le niveau).
 
@@ -738,6 +770,9 @@ Les anciennes API de boutons (0.2) et les composants dépréciés sont **supprim
 - ✅ Utiliser la prop `helperText` de `TextInput`/`TextArea` pour les instructions.
 - ✅ Afficher les erreurs avec `state="error"` + message dans `helperText`.
 - ✅ Grouper les champs connexes avec un titre de section.
+- ✅ Un indicateur de complétude (« Remplie » / « À compléter ») réutilise les règles de validation du formulaire.
+- ✅ Une erreur conduit à son champ : l'app sélectionne le bon objet et la bonne étape, ouvre le panneau, puis focalise une cible visible et active. `Dropdown`, `Autocomplete` et `DatePicker` n'ont pas de prop d'erreur : placer le message près du groupe et le relier à `ErrorSummary`.
+- ✅ `Toggle` pour un effet immédiat, `Checkbox` pour une sélection confirmée à la soumission.
 - ✅ Utiliser `SegmentedControl` pour les choix exclusifs de 2 à 4 options, dans les formulaires comme pour changer de vue.
 - ❌ Ne jamais étirer un `SegmentedControl` sur toute la largeur : il épouse ses segments (voir sa [fiche API](#segmentedcontrol)).
 - ❌ Ne pas mélanger `Checkbox` et `RadioButton` dans la même liste.
@@ -757,6 +792,8 @@ Les anciennes API de boutons (0.2) et les composants dépréciés sont **supprim
 ### Imports et formulaires à étapes
 
 Combiner `Stepper`, `FileUpload`, `ProgressBar` et `InlineAlert` : l'app gère lecture, validation et transfert. Une étape terminée peut être revisitée via `onStepClick`. Une erreur de soumission est résumée en haut par `ErrorSummary`, qui donne accès aux champs par id ou ref. Conserver aussi le message d’erreur propre à chaque champ. Le pattern **Assistant / import** couvre ce parcours.
+
+Avec plusieurs objets répétés, l'avancement appartient à chaque objet : `Stepper` dessine les états, le produit les calcule. Changer d'objet restaure son avancement ; modifier une étape invalide celles qui en dépendent. `available` ouvre une étape non terminée, sans contourner la validation du produit.
 
 Pour une sélection multiple avec recherche et groupes, utiliser **`Autocomplete multiple`** (déjà disponible), sans créer un deuxième sélecteur. La sélection globale peut être une action de composition si le produit l'exige.
 
@@ -825,6 +862,8 @@ Le code complet du layout est dans la [recette 1](#recette-1--layout-dapplicatio
 - ✅ Au-dessus d'une liste filtrable → `FilterBar` ; en dessous d'une liste paginée → `Pagination`.
 - ❌ Ne pas utiliser `TableCard` pour des milliers de lignes (pas de virtualisation, une carte par ligne).
 - ❌ Ne pas recréer un `<table>` HTML custom — `DataTable` couvre le besoin.
+
+Recherche, filtres et tri s'appliquent avant la pagination. Dans une vue par objet, des filtres combinés portent sur le même objet : règle applicative, qu'aucun composant ne garantit. La pagination locale ne résout pas le chargement d'un gros volume.
 
 ### Filtrer par catégorie : `CategoryFilter`
 
@@ -926,6 +965,8 @@ Deux composants proches mais distincts :
 - ✅ `Indicator` peut surcharger son libellé par défaut via `label`.
 - ❌ Ne pas utiliser `Badge` pour un état (utiliser `Indicator`).
 - ❌ Ne pas créer de nouvelles couleurs de statut — les 8 variantes couvrent les cas.
+
+Une perturbation grave n'est pas une erreur de formulaire : `Indicator` porte la gravité, `InlineAlert` informatif l'explication. Pour un pictogramme d'objet fourni par le produit, écrire le mapping et le repli, puis le passer par `iconElement` en décoratif, à côté d'un texte.
 
 ### Cartes : `Card`
 
@@ -1047,7 +1088,7 @@ Une `Card` est **interactive** de deux façons :
 ### Règles
 
 - ✅ Les toasts s'affichent via le **`Toaster`** : monter un seul `<Toaster />` à la racine de l'app, puis déclencher avec `useToast()`. Ne pas instancier `AlertToast` à la main dans le flux.
-- ✅ Position : **bas à droite**, en `position: fixed`. Empilement avec effet de profondeur (la plus récente au premier plan) ; au survol, la pile se déploie.
+- ✅ Position : **bas à droite**, en `position: fixed`, au-dessus du `footer` d'`AppLayout` s'il existe. Empilement avec effet de profondeur (la plus récente au premier plan) ; au survol, la pile se déploie.
 - ✅ `success` / `information` / `warning` : auto-dismiss après 4 s (géré par le `Toaster`, en pause au survol). `error` : reste jusqu'à fermeture manuelle.
 - ✅ Max 3 toasts simultanés (le `Toaster` retire les plus anciens au-delà).
 - ✅ Boutons d'action d'un toast : **faible emphase** — `GhostButton` (secondaire) + `PrimaryButton outline` (principale). **Jamais de bouton rempli** : exception assumée à la règle « groupe de deux = outline + rempli », justifiée par le contexte transitoire et non bloquant du toast.
@@ -1087,6 +1128,7 @@ Les composants n'ont pas tous le même fuseau par défaut. Dans une composition,
 | `TimePicker`, `RouteStopList`, `ServiceCalendar` | heures et dates de service, sans fuseau | — |
 
 - ✅ Une page = un fuseau et une horloge (`now`) partagés par tous ses composants.
+- ✅ `DatePicker` ne remonte qu'une valeur confirmée et n'expose pas sa saisie en cours : ne pas fonder une validation sur l'ancienne valeur pendant une frappe. Stabiliser les `Date` passées en prop (`useMemo`) et normaliser les valeurs restaurées.
 - ❌ Ne pas mélanger une date sans décalage (`2026-06-12T08:15:00`, lue en heure locale) et une date en UTC (`…Z`) dans une même vue.
 
 ## Page patterns
@@ -1142,6 +1184,8 @@ FormActions  →  Link · GhostButton · PrimaryButton
 **Accessibilité** — un seul `h1` (`PageHeader`), sections en `h2` sans saut de niveau ; `ErrorSummary` prend le focus et liste des liens vers les champs ; chaque champ a un `label`, l'erreur dans son `helperText` + `state="error"`.
 
 **Règles** — ✅ `PageSection` empilées, multi-colonnes seulement via `FieldRow`. ✅ Un seul `PrimaryButton`, en dernier. ❌ Pas de synthèse à droite du formulaire. ❌ Pas de `<section>` + `<h2>` inline : `PageSection`.
+
+**Depuis une maquette** — suivre le [guide de migration](docs/MIGRATION-TO-CADENCE.md) ; comparer les exemples aux composants réels. Un parcours peut combiner Formulaire et Assistant, avec des états applicatifs.
 
 **Gabarit** — vérifié : [`src/patterns/FormulairePattern.tsx`](src/patterns/FormulairePattern.tsx), affiché dans *Storybook → Page patterns / Formulaire / Documentation*.
 
@@ -1729,10 +1773,14 @@ Squelette d'application : la `Sidebar` à gauche et le contenu de la page dans u
 | `sidebar` | `ReactNode` | **requis** | La `Sidebar` de l'app |
 | `children` | `ReactNode` | **requis** | Contenu de la page |
 | `contentLabel` | `string` | `"Contenu principal"` | Nom accessible de la zone `<main>` |
+| `footer` | `ReactNode` | — | Pied persistant : hors de la zone qui défile, dans le conteneur. Sa hauteur mesurée décale les toasts |
+| `footerPadding` | `"default" \| "none"` | `"default"` | `"none"` : l'app gère ses marges (progression bord à bord). Par défaut `12px` et `--cadence-page-padding-inline`, compact sous 760px |
 | `className` | `string` | — | — |
 
 ⚠️ Le fond de l'app reprend la couleur produit de la `Sidebar` passée dans `sidebar` (datahub par défaut). Il est lu par CSS (`:has()`) : pas de prop `product` à dupliquer.
 ⚠️ Le conteneur suit la largeur courante de la Sidebar (dépliée ou repliée) sans mesure : ne pas ajouter de `marginLeft` ni de `position: fixed`.
+⚠️ Pas de navigation mobile intégrée : à 390px, une `Sidebar` ouverte écrase le contenu et son pied. L'app prévoit un menu.
+⚠️ Un `Dropdown` posé dans `footer` s'ouvre vers le bas et sera coupé par le conteneur : préférer `ActionMenu` ou `Popover`, retournés au-dessus.
 
 ### AlertToast
 
@@ -2899,11 +2947,14 @@ Section de page : un titre (`h2` par défaut, `h3`/`h4` pour une sous-section), 
 | `description` | `string` | — | Texte sous le titre |
 | `actions` | `ReactNode` | — | Actions alignées à droite du titre |
 | `gap` | `number` | `20` | Espacement vertical (échelle 4/8/12/16/20/24/32/48) |
-| `surface` | `"none" \| "card"` | `"none"` | `"card"` : enveloppe de `Card` (bordure, rayon `lg`, fond blanc), en-tête rembourré (16px 20px) séparé du corps par un filet. ⚠️ Le corps n'a **pas de padding** : liste ou tableau bord à bord ; un contenu libre prend son propre padding. `gap` n'espace plus que les enfants du corps |
+| `bodyPadding` | `"inline" \| "none"` | `"inline"` | Avec `surface="elevated"` : padding latéral du corps (`--cadence-section-padding-inline`), ou aucun pour une progression, un tableau ou des séparateurs bord à bord |
+| `surface` | `"none" \| "card" \| "elevated"` | `"none"` | `"elevated"` : titre, description et actions hors de la boîte ; seul le corps porte fond blanc, bordure, rayon `xl` et `--cadence-shadow-section`. `"card"` : enveloppe de `Card` (bordure, rayon `lg`, fond blanc), en-tête rembourré (16px 20px) séparé du corps par un filet. ⚠️ Le corps n'a **pas de padding** : liste ou tableau bord à bord ; un contenu libre prend son propre padding. `gap` n'espace plus que les enfants du corps |
 | `children` | `ReactNode` | **requis** | Contenu de la section |
 | `id` / `className` | `string` | — | — |
 
 - ✅ Enchaîner des `PageSection` dans un conteneur en colonne pour structurer une page de formulaire ou de détail. Le multi-colonnes (`FieldRow`) vit **à l'intérieur** d'une section.
+- ✅ Entre sections `elevated`, appliquer `--cadence-section-gap` une seule fois, par le `gap` du parent.
+- ⚠️ `surface="elevated"` : `gap` n'espace que les enfants du corps ; l'écart de 12px sous le titre vient de `--cadence-section-heading-gap`, et un retrait latéral de 8px (`--cadence-section-inset-inline`) s'ajoute au padding de page. Le corps n'a **pas de padding vertical** : le contenu apporte le sien. Sans `overflow: hidden`, les menus débordent ; un contenu bord à bord à fond coloré doit gérer lui-même l'arrondi. Réservé aux sections principales : pas sur les cartes imbriquées.
 - ❌ Ne pas sauter de niveau de titre : après le `h1` du `PageHeader`, les sections sont en `h2`.
 
 **Compléments lot 6**
@@ -2929,6 +2980,7 @@ Rangée de champs de formulaire à **largeurs égales**, alignés par le bas (`a
 | `className` | `string` | — | — |
 
 - ✅ Pour 2-3 champs d'un même gabarit de hauteur (40 px) côte à côte dans une section.
+- ⚠️ Passe en une colonne à 1024px de fenêtre et moins. Le repli dépend de la fenêtre, pas de la place disponible.
 - ❌ Ne pas y mélanger un champ 40 px et un contrôle compact 29 px (voir [Hauteurs de contrôle](#hauteurs-de-contrôle-et-alignement-sur-une-rangée)). Pas de `helperText` sous un seul champ de la rangée (il décale l'alignement).
 
 ### FormActions
@@ -3392,6 +3444,8 @@ Menu d'actions par ligne, déclenché par un bouton icône (« … »). À utili
 
 Panneau latéral droit pour consulter le détail d'un élément **sans quitter la liste** (≠ `Modal`, dialogue bloquant). Voile, Échap, clic sur le voile, bouton fermer, **piège à focus et retour du focus** (primitives de surcouche partagées, également utilisées par `Modal`). Entrée/sortie en `transform` (250 ms, comme la `Sidebar`), coupées sous `prefers-reduced-motion`.
 
+L'entrée est animée dans tous les cas, y compris quand le panneau est monté avec `isOpen` (chargement différé, changement de `key`) : pas besoin de le monter fermé. Elle est coupée sous `prefers-reduced-motion`.
+
 Avec `navigation`, les flèches précédent/suivant et le compteur occupent une seconde ligne alignée à droite sous la croix. Le contenu complémentaire `headerContent` (badge ou statut) est placé à gauche sur cette même ligne, dans l’en-tête.
 
 | Prop | Type | Défaut | Description |
@@ -3535,9 +3589,12 @@ Liste ordonnée d'étapes. État explicite en texte (terminée, en cours, à ven
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `steps` | `StepperStep[]` | **requis** | `{ id: string; label: string; description?: string; state: StepState }` |
+| `steps` | `StepperStep[]` | **requis** | `{ id: string; label: string; description?: string; state: StepState; icon?: IconName; available?: boolean }` |
 | `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Horizontal empilé sous 480px |
-| `onStepClick` | `(id: string) => void` | — | Retour vers une étape terminée |
+| `density` | `"default" \| "compact"` | `"default"` | `"compact"` : rangée d'icônes de 29px, pastille d'état, libellé actif à droite, nom complet au survol et au focus. ⚠️ Ignore `orientation` et `description` |
+| `context` | `ReactNode` | — | Compact : texte avant le libellé actif (« Impact n° 2 »), fourni par le produit |
+| `tooltipPlacement` | `"top" \| "bottom"` | `"top"` | Compact : côté de l'infobulle ; `"bottom"` en haut de page |
+| `onStepClick` | `(id: string) => void` | — | Clic sur une étape accessible : terminée, ou `available: true` |
 | `className` | `string` | — | Classe additionnelle |
 
 `StepState` : `"upcoming" | "current" | "completed" | "error"`. L'app fournit une seule étape courante et gère validation/navigation ; le composant ne valide aucun champ.
@@ -3546,11 +3603,24 @@ Liste ordonnée d'étapes. État explicite en texte (terminée, en cours, à ven
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `steps[].state` | `"upcoming" \| "current" \| "completed" \| "error" \| "warning"` | requis | warning : marqueur ! et libellé « À vérifier ». Seules les étapes terminées restent cliquables. |
+| `steps[].state` | `"upcoming" \| "current" \| "completed" \| "error" \| "warning"` | requis | warning : marqueur ! et libellé « À vérifier ». Par défaut, seules les étapes terminées sont cliquables ; `available` en décide explicitement. L'étape courante ne l'est jamais. |
 
 ```tsx
 <Stepper steps={[{ id: "quality", label: "Qualité", state: "warning" }]} />
+<Stepper
+  density="compact"
+  context="Impact n° 2"
+  onStepClick={goToStep}
+  steps={[
+    { id: "general", label: "Informations générales", icon: "info-circle", state: "completed", available: true },
+    { id: "severity", label: "Sévérité", icon: "alert-triangle", state: "current" },
+    { id: "summary", label: "Résumé", icon: "file-05", state: "upcoming" },
+  ]}
+/>
 ```
+
+- ✅ En densité compacte, une étape indisponible garde `aria-disabled` : elle reste atteignable au clavier pour lire son nom, sans effet au clic.
+- ⚠️ La progression d'une `ProgressBar` voisine exprime une position dans le parcours, pas un taux de complétude métier.
 
 ### FileUpload
 

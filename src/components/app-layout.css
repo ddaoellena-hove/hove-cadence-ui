@@ -44,6 +44,7 @@
   box-sizing: border-box;
   display: flex;
   flex: 1;
+  flex-direction: column;
   min-height: 0;
   min-width: 0;
   overflow: hidden;
@@ -61,4 +62,27 @@
   overflow: auto;
   padding: 24px 32px;
   position: relative;
+}
+
+/* Pied persistant : frère de la zone qui défile, il suit la largeur du conteneur.
+   Positionné au-dessus d'elle pour qu'un menu ouvert vers le haut la recouvre. */
+.app-layout__footer {
+  background: var(--cadence-color-white, #ffffff);
+  border-top: 1px solid var(--cadence-color-divider, #f0f0f0);
+  box-sizing: border-box;
+  flex-shrink: 0;
+  min-width: 0;
+  padding: 12px var(--cadence-page-padding-inline, 32px);
+  position: relative;
+  z-index: 1;
+}
+
+.app-layout__footer--flush {
+  padding: 0;
+}
+
+@media (max-width: 760px) {
+  .app-layout__footer:not(.app-layout__footer--flush) {
+    padding-inline: var(--cadence-page-padding-inline-compact, 16px);
+  }
 }

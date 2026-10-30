@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import { Drawer } from "./Drawer";
@@ -49,7 +49,7 @@ export const PiedCompose: Story = {
     body.scrollTop = body.scrollHeight;
     await expect(footer.getBoundingClientRect().bottom).toBe(before.bottom);
     await expect(footer.getBoundingClientRect().width).toBe(dialog.getBoundingClientRect().width);
-    await expect(within(footer).getByRole("button", { name: "Valider les modifications" })).toBeVisible();
+    await waitFor(() => expect(within(footer).getByRole("button", { name: "Valider les modifications" })).toBeVisible());
   },
 };
 
@@ -303,7 +303,7 @@ export const Navigation: Story = {
 
     await expect(c.getByRole("button", { name: "Élément précédent" })).toBeDisabled();
     await userEvent.click(c.getByRole("button", { name: "Élément suivant" }));
-    await expect(c.getByRole("dialog", { name: "Objet 2" })).toBeVisible();
+    await waitFor(() => expect(c.getByRole("dialog", { name: "Objet 2" })).toBeVisible());
     await expect(c.getByRole("status")).toHaveTextContent("2 sur 3");
   },
 };
@@ -355,5 +355,60 @@ export const AvecOnglets: Story = {
     await userEvent.click(next);
     await waitFor(() => expect(indicator).toHaveClass("tab-list__indicator--ready"));
     await waitFor(() => expect(indicator.style.left).toBe(`${next.offsetLeft}px`));
+  },
+};
+
+// Relève, au commit du premier rendu, si le panneau démarre fermé.
+const FirstCommitProbe = ({ onCommit }: { onCommit: (startsClosed: boolean) => void }) => {
+  const ref = useRef<HTMLSpanElement>(null);
+  useLayoutEffect(() => {
+    const panel = ref.current?.closest(".drawer__panel");
+    onCommit(Boolean(panel) && !panel?.classList.contains("drawer__panel--open"));
+  }, [onCommit]);
+  return <span ref={ref} />;
+};
+
+/** Monté directement avec `isOpen` (chargement différé, changement de clé) : le panneau glisse quand même. */
+export const OuvertAuMontage: Story = {
+  name: "Ouvert au premier montage",
+  args: { isOpen: true, onClose: fn(), title: "Objet impacté", children: null },
+  render: function Render(args) {
+    const [key, setKey] = useState(0);
+    const [commits, setCommits] = useState<boolean[]>([]);
+    const [onCommit] = useState(() => (startsClosed: boolean) => setCommits((list) => [...list, startsClosed]));
+    return (
+      <Drawer key={key} {...args} primaryAction={{ label: "Objet suivant", onClick: () => setKey((value) => value + 1) }}>
+        <FirstCommitProbe onCommit={onCommit} />
+        <p data-testid="commits">{commits.join(",")}</p>
+      </Drawer>
+    );
+  },
+  play: async () => {
+    const page = within(document.body);
+    await waitFor(() => expect(page.getByTestId("commits")).toHaveTextContent(/^true/));
+    await waitFor(() => expect(document.querySelector(".drawer__panel")).toHaveClass("drawer__panel--open"));
+    // Changement de clé : nouvelle entrée animée
+    await userEvent.click(page.getByRole("button", { name: "Objet suivant" }));
+    await waitFor(() => expect(page.getByTestId("commits")).toHaveTextContent(/^true/));
+    await waitFor(() => expect(document.querySelector(".drawer__panel")).toHaveClass("drawer__panel--open"));
+  },
+};
+
+/** Fermeture pendant l'entrée : aucun panneau orphelin. */
+export const FermeturePendantEntree: Story = {
+  name: "Fermeture pendant l'entrée",
+  args: { isOpen: true, onClose: fn(), title: "Objet impacté", children: "Contenu" },
+  render: function Render(args) {
+    const [open, setOpen] = useState(args.isOpen);
+    return (
+      <>
+        <button type="button" onClick={() => setOpen(true)}>Ouvrir</button>
+        <Drawer {...args} isOpen={open} onClose={() => setOpen(false)} />
+      </>
+    );
+  },
+  play: async () => {
+    await userEvent.keyboard("{Escape}");
+    await waitFor(() => expect(document.querySelector(".drawer__panel")).toBeNull(), { timeout: 1000 });
   },
 };

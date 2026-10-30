@@ -1,5 +1,15 @@
 # Relais de développement — 25 octobre 2026
 
+## Mise à jour — 30 octobre 2026 : migration Traffic Report
+
+- **Source** : dossier de passation `cadence-migration-handoff.zip`. Périmètre choisi par l'utilisateur : documentation + P1 ciblés (E1 à E4, repli `FieldRow`). N1, N2, E5, E6, E7 et les P2/P3 restent à faire : [backlog](proposals/traffic-report-backlog.md).
+- **Branches** : `feat/page-hero-v2` a reçu le commit `d01018c` (PageHero V2, en-tête Drawer, tokens, `translate-01`), puis `feat/cadence-migration` en part. Le travail de cette branche y est commité ; rien n'est poussé ni publié.
+- **Fait** : `PageSection surface="elevated"` + `bodyPadding`, `Stepper density="compact"`, `AppLayout footer`, entrée du `Drawer`, repli `FieldRow`, `Accordion` ouvert sans clipping. Guide, étude de cas et grille dans `docs/`.
+- **Décisions** : `Stepper` compact sans `Dropdown` mobile (icônes à la ligne), car `Dropdown` ne s'ouvre pas vers le haut. Étapes indisponibles en `aria-disabled` pour rester lisibles au clavier. Hauteur du pied transmise au `Toaster` par `--cadence-app-footer-offset`, posée sur la racine, hors `tokens.css`.
+- **À savoir** : `placeAnchored` / `useAnchoredPanel` couvrent déjà une partie de N2, contrairement à ce que suppose le backlog d'origine. Les stories Drawer qui testent la visibilité attendent désormais la fin de l'entrée.
+- **Validé** : `tsc`, ESLint des fichiers touchés, `build:lib`, `check:types`, suite complète 1 036 tests / 171 fichiers (config Chromium 1248), exemples du guide compilés, liens et ancres contrôlés ; pied et toasts à 1 280 px, pied à 390 px, repli `FieldRow` à 1 000 px, infobulle au clavier. Non exécutés : `test:react18`, lecteur d'écran, `prefers-reduced-motion`.
+- **Traffic Report non migré** : contournements à retirer listés dans [l'étude de cas](case-studies/traffic-report-migration.md).
+
 ## Mise à jour — 28 octobre 2026 (fin de journée) : PageHero V2, non commité
 
 - **État de `main`** (`6314a54`) : PR #66 (clic `BarChart`), #67 (corrections visuelles du lot 6), #68 (Drawer : glissement avec onglets, navigation dans l'en-tête) et #69 (retours Datapilot : infobulle des boutons icône seule, libellés d'annotation, `PageSection surface="card"`, `PageHero` `valueType`/`valueCaption`/`valueTone`/`icon`, focus de `SecretField`) fusionnées. #69 a été fusionnée **sans attendre sa CI**, sur demande de l'utilisateur ; la suite complète sur `main` fusionné n'a pas été relancée : vérifier la CI de `main`.

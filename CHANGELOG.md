@@ -17,6 +17,17 @@ Version majeure : **retrait des API dépréciées** annoncées depuis la 0.3.0, 
 - `PageHero` : valeurs texte (`valueType`, déduit du type de `value`) en sans-serif pour la valeur principale et les KPI ; `valueCaption` distinct de l'unité ; `valueTone` (alerte) ; tuile `icon` teintée par le statut.
 - `PageHero` V2 (supervision) : `tone` (accent du bandeau), `valueLabel`, `actionPanel` (sujets, impact, action de 44px), `actionLabel` par carte, `state` `"loading" | "error"` avec `errorMessage` / `onRetry`, fraîcheur dans l'en-tête et `updatedAt: null` ; cartes sur 1, 2 puis 4 colonnes selon la largeur du bandeau.
 
+### Migration Traffic Report — non publié
+
+- `PageSection surface="elevated"` (titre hors de la boîte, corps avec `--cadence-shadow-section`) et `bodyPadding` ; anciennes surfaces inchangées.
+- `Stepper density="compact"`, `context`, `tooltipPlacement`, `steps[].icon` et `steps[].available`. `onStepClick` : comportement par défaut inchangé.
+- `AppLayout footer` et `footerPadding` : pied persistant hors du défilement ; les toasts se placent au-dessus de lui.
+- `Drawer` : entrée animée aussi quand il est monté ouvert.
+- `FieldRow` : repli en une colonne à 1024px et moins, comme l'annonçait le pattern Formulaire. ⚠️ Changement visible pour toute page à 1024px de large ou moins.
+- `Accordion` : le contenu ouvert ne coupe plus les menus.
+- Tokens de composition de page et de section, `--cadence-shadow-section`, icône `translate-01`.
+- Documentation : [guide de migration](docs/MIGRATION-TO-CADENCE.md), étude de cas, grille d'audit, [backlog restant](docs/proposals/traffic-report-backlog.md).
+
 ### Ajouté
 
 - **`BulkActionBar`** (*Données et tableaux*) : barre d'actions groupées flottante pour une sélection multiple (`DataTable selectable`, liste de `TableCard`). Placée après la liste, elle colle au bas de la zone visible pendant le défilement ; surface blanche surélevée, compteur puis actions `size="sm"`, masquée sans sélection, compteur annoncé aux lecteurs d'écran (`countLabel` pour nommer les éléments). Le pattern **Liste / index** et les recettes 2 et 5 l'utilisent à la place de la barre de sélection assemblée à la main.

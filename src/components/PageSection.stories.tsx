@@ -1,8 +1,12 @@
+import type { ReactNode } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, within } from "storybook/test";
+import { expect, userEvent, within } from "storybook/test";
 import { PageSection } from "./PageSection";
 import { TextInput } from "./TextInput";
 import { GhostButton } from "./GhostButton";
+import { Accordion } from "./Accordion";
+import { Dropdown } from "./Dropdown";
+import { ProgressBar } from "./ProgressBar";
 
 const meta: Meta<typeof PageSection> = {
   title: "Composants/Structure et mise en page/PageSection",
@@ -88,3 +92,83 @@ export const Carte: Story = {
 };
 
 export const IconesLot6: Story = { render: () => <div style={{ display: "grid", gap: 24 }}>{(["label", "muted", "accent"] as const).map(tone => <PageSection key={tone} title={`Section ${tone}`} icon="database" iconTone={tone} description="Source de données"><span>Contenu</span></PageSection>)}</div>, play: async ({ canvasElement }) => { await lot6Test.expect(lot6Test.within(canvasElement).getAllByRole("heading", { level: 2 })).toHaveLength(3); } };
+
+const Padded = ({ children }: { children: ReactNode }) => (
+  <div style={{ display: "flex", flexDirection: "column", gap: 20, padding: "20px 16px" }}>{children}</div>
+);
+
+/** Titre et actions hors de la boîte ; seul le corps porte fond, bordure, rayon et ombre. */
+export const Surelevee: Story = {
+  name: "Surface surélevée",
+  args: {
+    title: "Informations générales",
+    description: "Communes à tous les impacts de la perturbation.",
+    surface: "elevated",
+    actions: <GhostButton size="sm" iconStart="plus" label="Ajouter" />,
+    children: (
+      <Padded>
+        <TextInput label="Nom" placeholder="Ex : Travaux de voie" />
+        <Dropdown label="Cause" placeholder="Sélectionner" options={[{ id: "works", label: "Travaux" }, { id: "weather", label: "Météo" }, { id: "tech", label: "Incident technique" }]} />
+      </Padded>
+    ),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const region = canvas.getByRole("region", { name: "Informations générales" });
+    const head = region.querySelector<HTMLElement>(".page-section__head")!;
+    const body = region.querySelector<HTMLElement>(".page-section__body")!;
+    const style = getComputedStyle(body);
+    await expect(style.borderTopLeftRadius).toBe("12px");
+    await expect(style.boxShadow).not.toBe("none");
+    await expect(style.overflowY).toBe("visible");
+    await expect(getComputedStyle(head).boxShadow).toBe("none");
+    // Espace unique de 12px entre l'en-tête extérieur et la boîte
+    await expect(Math.round(body.getBoundingClientRect().top - head.getBoundingClientRect().bottom)).toBe(12);
+    // Le menu d'un champ n'est pas coupé par la surface
+    await userEvent.click(canvas.getByRole("button", { name: /Cause/ }));
+    const option = await canvas.findByRole("option", { name: "Incident technique" });
+    await expect(option.getBoundingClientRect().bottom).toBeGreaterThan(0);
+  },
+};
+
+/** Corps sans padding : progression et séparateurs atteignent les bords de la surface. */
+export const SureleveeBordABord: Story = {
+  name: "Surface surélevée, corps bord à bord",
+  args: {
+    title: "Impacts de la perturbation",
+    surface: "elevated",
+    bodyPadding: "none",
+    gap: 0,
+    children: (
+      <>
+        <ProgressBar label="Avancement" value={40} />
+        <Padded><TextInput label="Objet impacté" /></Padded>
+      </>
+    ),
+  },
+  play: async ({ canvasElement }) => {
+    const body = canvasElement.querySelector<HTMLElement>(".page-section__body")!;
+    await expect(getComputedStyle(body).paddingLeft).toBe("0px");
+  },
+};
+
+/** Accordéon en contenu : pas de filet doublé en haut ni en bas, ouvert comme fermé. */
+export const SureleveeAvecAccordeon: Story = {
+  name: "Surface surélevée avec accordéon",
+  args: {
+    title: "Informations générales",
+    surface: "elevated",
+    children: (
+      <Accordion items={[
+        { id: "details", title: "Détails de la perturbation", content: <TextInput label="Référence" /> },
+        { id: "labels", title: "Étiquettes", content: "Aucune étiquette." },
+      ]} />
+    ),
+  },
+  play: async ({ canvasElement }) => {
+    const accordion = canvasElement.querySelector<HTMLElement>(".accordion")!;
+    const items = accordion.querySelectorAll<HTMLElement>(".accordion__item");
+    await expect(getComputedStyle(accordion).borderTopWidth).toBe("0px");
+    await expect(getComputedStyle(items[items.length - 1]).borderBottomWidth).toBe("0px");
+  },
+};
