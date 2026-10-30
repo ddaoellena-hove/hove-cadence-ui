@@ -409,3 +409,29 @@ export const HauteurStable: Story = {
     await expect(canvas.getByRole("dialog", { name: "Calendrier" })).toBeInTheDocument();
   },
 };
+
+const insets = (panel: HTMLElement) => {
+  const box = panel.getBoundingClientRect();
+  const calendar = panel.querySelector(".calendar-month")!.getBoundingClientRect();
+  return { left: calendar.left - box.left, right: box.right - calendar.right };
+};
+
+/** Le calendrier occupe toute la largeur du panneau : marges égales, en champ comme en bouton. */
+export const MargesEgales: Story = {
+  name: "Marges égales",
+  render: () => (
+    <div style={{ display: "flex", gap: 24, paddingBottom: 380 }}>
+      <DatePicker label="Champ" />
+      <DatePicker aria-label="Bouton" variant="button" />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    for (const name of [/Ouvrir le calendrier/, /Bouton/]) {
+      await userEvent.click(canvas.getByRole("button", { name }));
+      const { left, right } = insets(canvas.getByRole("dialog", { name: "Calendrier" }));
+      await expect(left).toBe(right);
+      await userEvent.keyboard("{Escape}");
+    }
+  },
+};
