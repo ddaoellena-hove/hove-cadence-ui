@@ -71,17 +71,8 @@ Dernier état applicatif rapporté : 37 tests de règles métier, contrôle stat
 
 Restent ouverts : géométrie limitée à six arrêts fictifs, identifiants locaux sans référentiel transport, fuseau du navigateur, absence de concurrence serveur, et propriétés d'informations générales en attente d'un catalogue. Un socle React + Vite ne prouve pas la tenue à fort volume.
 
-## À retirer côté produit après mise à jour de Cadence
+## Après la mise à jour de Cadence
 
-Non réalisé : ces étapes supposent la publication de Cadence, ou une nouvelle synchronisation de la copie embarquée.
+Traffic Report a synchronisé sa copie sur `cb11f6e` dans `691a373` et adopté `AppLayout footer`, `PageSection surface="elevated"`, `Stepper density="compact"`, le placement des surcouches, les erreurs de champs et `onInputStateChange`.
 
-- Montage différé du `Drawer` dans `ObjectImpactDrawer.jsx`.
-- Sélecteurs `.section-preview.page-section--card`, au profit de `surface="elevated"`.
-- Transformation locale de `.app-layout__scroll` en colonne, au profit de `footer`.
-- `CompactImpactStepper`, à évaluer face à `Stepper density="compact"`. Celui-ci remplace le sélecteur mobile par des icônes qui passent à la ligne : à valider par le produit.
-- Repli local de `FieldRow` à 1024 px.
-- Surcharges `top: auto; bottom: …` du `Dropdown` et des infobulles dans le pied.
-- `datePending`, inspection du DOM et `useMemo` de `WorkflowDate`, au profit d'`onInputStateChange`.
-- `TextArea` des messages, à évaluer face à `RichTextEditor` : décision produit, le stockage changeant.
-- Enveloppes d'erreur autour de `Dropdown` et `DatePicker`, au profit d'`error` et des refs.
-- Correctif de débordement du contenu d'`Accordion`.
+Choix produit conservés : sélecteur `Dropdown` sur mobile et `TextArea` pour les messages. Des surcharges de classes internes subsistent, suivies dans la [liste du refactoring v2](../proposals/refactoring-v2.md) (projet 12).
