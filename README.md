@@ -51,7 +51,7 @@ Storybook est servi sur le port 6006. Il constitue la vitrine principale ; `npm 
 
 ## Parcours de référence
 
-Dans Storybook, rubrique **Page patterns** : onze gabarits de page vérifiés (coque d'application, liste, liste + détail latéral, détail, formulaire, assistant d'import, supervision, analyse, planification, paramètres, états de page), avec leur documentation. Les anciennes stories `Recettes/*` ont été retirées en 1.0.0 ; la page *Recettes / Vers les Page patterns* donne la correspondance.
+Dans Storybook, rubrique **Page patterns** : quinze gabarits de page vérifiés (coque d'application, liste, liste + détail latéral, détail, formulaire, assistant d'import, supervision, analyse, planification, paramètres, états de page, rapport qualité, sélection multiple, périodes et créneaux, messages par canal), avec leur documentation. Les anciennes stories `Recettes/*` ont été retirées en 1.0.0 ; la page *Recettes / Vers les Page patterns* donne la correspondance.
 
 ## Migrer une maquette
 

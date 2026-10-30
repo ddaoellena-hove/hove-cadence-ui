@@ -77,7 +77,10 @@ La ressemblance ne prouve pas l'équivalence. Avant de substituer un composant, 
 | Période de jours entiers | [`DateRangePicker`](../GUIDELINES.md#daterangepicker) | Pas d'heures : deux `DatePicker withTime` sinon |
 | Heure seule | `TimePicker` | `allowOvernight`, `error`, `helperText` |
 | Option immédiate | `Toggle` | Effet sans soumission |
-| Sélection à confirmer | `Checkbox` | Pilotée par `state` |
+| Sélection à confirmer | [`Checkbox`](../GUIDELINES.md#checkbox) | Pilotée par `state` ; `label` pour une ligne cliquable |
+| Sélection multiple confirmée | [Pattern](../GUIDELINES.md#pattern--sélection-transactionnelle-multiple) | Copie de travail, déduplication, annulation |
+| Périodes, créneaux | [Pattern](../GUIDELINES.md#pattern--périodes-et-créneaux) | Nuit, chevauchements, fuseau |
+| Messages par canal | [Pattern](../GUIDELINES.md#pattern--messages-par-canal) | Saisies conservées, aucun envoi simulé |
 | Étapes | [`Stepper`](../GUIDELINES.md#stepper), `ProgressBar` | Le produit calcule états et disponibilité |
 | Erreurs de saisie | `ErrorSummary` et erreur du champ | Cible visible et active |
 | Propriétés | `DescriptionList` | Textes longs, valeur absente (`emptyValue`) |

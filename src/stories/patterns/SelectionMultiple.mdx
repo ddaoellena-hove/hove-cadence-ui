@@ -1,0 +1,45 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import gabarit from "../../patterns/SelectionMultiplePattern.tsx?raw";
+
+<Meta title="Page patterns/Sélection multiple/Documentation" />
+
+<style>{`.pp{font-family:var(--cadence-font-sans,"ABC Diatype","Inter",sans-serif);max-width:820px;color:var(--cadence-color-primary,#002830)}.pp h1{font-family:var(--cadence-font-display,"Uxum Grotesque",sans-serif);font-size:32px;font-weight:500}.pp h2{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--cadence-color-text-secondary,#607075);margin:32px 0 10px;border-bottom:1px solid var(--cadence-color-divider,#f0f0f0);padding-bottom:6px}.pp pre{background:var(--cadence-color-surface-subtle,#fafafa);border:1px solid var(--cadence-color-divider,#f0f0f0);border-radius:8px;padding:16px;overflow:auto;font-family:var(--cadence-font-mono,monospace);font-size:12px;line-height:1.6}`}</style>
+
+<div className="pp">
+
+# Pattern — Sélection transactionnelle multiple
+
+**Quand l'utiliser** — choisir plusieurs objets dans un catalogue, puis confirmer en une fois. **Ne pas confondre avec** — un `Autocomplete multiple` seul, sans étape de confirmation.
+
+## Anatomie
+```
+PageSection : liste confirmée + GhostButton
+Drawer
+  Autocomplete multiple
+  TableCard (sélection temporaire, retrait)
+  Pied : Annuler · Confirmer (n)
+```
+
+## Variantes
+Recherche côté serveur : `onInputChange`, `filter={false}`, `loading`.
+
+## États
+Vide (`EmptyState`), chargement (`loading`), aucun résultat (`noResultsLabel`), erreur (`InlineAlert`).
+
+## Comportements
+La copie de travail ne rejoint la donnée qu'à la confirmation ; annuler la jette. Le produit fournit l'identité de déduplication.
+
+## Responsive
+Le `Drawer` occupe toute la largeur sur mobile.
+
+## Accessibilité
+L'aide parle d'objets, jamais de « drawer » ; le nombre sélectionné figure dans l'action.
+
+## Règles
+- ✅ Annuler ne modifie pas la donnée initiale.
+- ❌ Ne pas créer de `MultiSelect` : `Autocomplete multiple` existe.
+
+## Gabarit
+<pre><code>{gabarit}</code></pre>
+
+</div>
